@@ -18,29 +18,26 @@ function getDiscussAccountId(req: NextRequest): string | null {
   }
 }
 
-// GET /api/discuss — approved posts by default, or filter by ?status=
+// GET /api/discuss/mine — get posts belonging to the logged-in club account
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    const url = req.nextUrl;
-    const status = url.searchParams.get("status");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const query: any = status ? { status } : { status: "approved" };
-    const posts = await Discuss.find(query).sort({ createdAt: -1 });
+    const accountId = getDiscussAccountId(req);
+    if (!accountId) return NextResponse.json({ message: "No token provided" }, { status: 401 });
+
+    const posts = await Discuss.find({ account: accountId }).sort({ createdAt: -1 });
     return NextResponse.json(posts);
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
   }
 }
 
-// POST /api/discuss — create a post (requires discuss account token)
+// POST /api/discuss/mine — create a post (alternative to the main POST which uses admin auth)
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const accountId = getDiscussAccountId(req);
-    if (!accountId) {
-      return NextResponse.json({ message: "Club account login required" }, { status: 401 });
-    }
+    if (!accountId) return NextResponse.json({ message: "No token provided" }, { status: 401 });
 
     const account = await DiscussAccount.findById(accountId);
     if (!account) return NextResponse.json({ message: "Discuss account not found" }, { status: 404 });

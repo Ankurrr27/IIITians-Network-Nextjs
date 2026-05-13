@@ -1,0 +1,71 @@
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongoose";
+import Discuss from "@/models/Discuss";
+import DiscussAccount from "@/models/DiscussAccount";
+import jwt from "jsonwebtoken";
+
+function getDiscussAccountId(req: NextRequest): string | null {
+  const auth = req.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return null;
+  const secret = process.env.JWT_SECRET;
+  if (!secret) return null;
+  try {
+    const decoded = jwt.verify(auth.split(" ")[1], secret) as { id: string; kind: string };
+    if (decoded.kind !== "discuss_account") return null;
+    return decoded.id;
+  } catch {
+    return null;
+  }
+}
+
+// PATCH /api/discuss/mine/[id] — edit own post
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await connectDB();
+    const accountId = getDiscussAccountId(req);
+    if (!accountId) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const { id } = await params;
+
+    const post = await Discuss.findOne({ _id: id, account: accountId });
+    if (!post) return NextResponse.json({ message: "Post not found" }, { status: 404 });
+
+    const body = await req.json();
+    const allowed = ["title", "description", "type", "actionLink", "eventDate"];
+    allowed.forEach((f) => {
+      if (body[f] !== undefined) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (post as any)[f] = body[f];
+      }
+    });
+
+    // Re-evaluate auto-approve
+    const account = await DiscussAccount.findById(accountId);
+    const isPrivileged = ["club_manager", "publisher"].includes(account?.role ?? "");
+    post.status = account?.isAuthorized && isPrivileged ? "approved" : "pending";
+    post.isAuthorisedPost = Boolean(account?.isAuthorized);
+    post.badgeLabel = account?.badgeLabel || post.badgeLabel;
+    post.accountRole = account?.role || post.accountRole;
+
+    await post.save();
+    return NextResponse.json(post);
+  } catch (err: unknown) {
+    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
+  }
+}
+
+// DELETE /api/discuss/mine/[id] — delete own post
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await connectDB();
+    const accountId = getDiscussAccountId(req);
+    if (!accountId) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    const { id } = await params;
+
+    const post = await Discuss.findOneAndDelete({ _id: id, account: accountId });
+    if (!post) return NextResponse.json({ message: "Post not found" }, { status: 404 });
+
+    return NextResponse.json({ message: "Your post was deleted successfully" });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
+  }
+}
