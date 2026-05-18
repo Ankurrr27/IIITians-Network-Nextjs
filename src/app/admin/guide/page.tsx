@@ -28,12 +28,12 @@ export default function AdminGuidePage() {
           <p className="mb-4 font-semibold text-slate-800">Quick Admin Actions</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
-              { label: "Manage Colleges", href: "/colleges/admin" },
-              { label: "Manage Events", href: "/events/admin" },
-              { label: "Manage Legacy", href: "/legacy/admin" },
-              { label: "Manage Team", href: "/team/admin" },
-              { label: "Manage Placements", href: "/placement/admin" },
-              { label: "Manage Discuss", href: "/discuss/admin" },
+              { label: "Manage Colleges", href: "/admin/colleges" },
+              { label: "Manage Events", href: "/admin/events" },
+              { label: "Manage Legacy", href: "/admin/legacy" },
+              { label: "Manage Team", href: "/admin/team" },
+              { label: "Manage Placements", href: "/admin/placement" },
+              { label: "Manage Discuss", href: "/admin/discuss" },
               { label: "Gallery Manager", href: "/admin/gallery" },
               { label: "Push Notification", href: "/admin/notifications" },
             ].map((item) => (

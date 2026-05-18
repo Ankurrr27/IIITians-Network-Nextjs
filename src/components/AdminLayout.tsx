@@ -7,12 +7,12 @@ import Image from "next/image";
 import RequireAdmin from "@/components/RequireAdmin";
 
 const adminLinks = [
-  { label: "Network Legacy", href: "/legacy/admin" },
-  { label: "Colleges", href: "/colleges/admin" },
-  { label: "Events", href: "/events/admin" },
-  { label: "Discuss", href: "/discuss/admin" },
-  { label: "Team", href: "/team/admin" },
-  { label: "Placements", href: "/placement/admin" },
+  { label: "Network Legacy", href: "/admin/legacy" },
+  { label: "Colleges", href: "/admin/colleges" },
+  { label: "Events", href: "/admin/events" },
+  { label: "Discuss", href: "/admin/discuss" },
+  { label: "Team", href: "/admin/team" },
+  { label: "Placements", href: "/admin/placement" },
   { label: "Notifications", href: "/admin/notifications" },
   { label: "Gallery", href: "/admin/gallery" },
   { label: "Guide", href: "/admin/guide" },
@@ -65,15 +65,15 @@ function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMen
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-white/60 bg-white/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 sm:py-2.5">
-          <div className="flex items-center gap-3">
-            <Image src="/IIITians-Network-Logo-Blue.png" alt="IIITians Network" width={32} height={32}
-              className="hidden h-8 w-auto sm:block mix-blend-multiply" style={{ filter: "hue-rotate(240deg) saturate(1.8) brightness(0.9)" }} />
+        <div className="mx-auto flex max-w-7xl w-full items-center justify-between px-4 py-3 sm:px-6 lg:px-8 sm:py-3.5">
+          <div className="flex items-center gap-3.5 shrink-0">
+            <Image src="/IIITians-Network-Logo-Blue.png" alt="IIITians Network" width={180} height={50}
+              className="hidden h-11 w-auto sm:block mix-blend-multiply" style={{ filter: "hue-rotate(240deg) saturate(1.8) brightness(0.9)" }} />
             <div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-700 sm:text-xs">
                 <ShieldCheck className="h-3 w-3" /> Admin
               </div>
-              <h1 className="mt-0.5 text-base font-semibold tracking-tight text-slate-900 sm:text-lg">IIITians Network Admin</h1>
+              <h1 className="mt-0.5 text-sm font-semibold tracking-tight text-slate-900 sm:text-base whitespace-nowrap">IIITians Network Admin</h1>
             </div>
           </div>
 

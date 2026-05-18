@@ -7,7 +7,7 @@ import api from "@/lib/apiClient";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ username: "", password: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,12 +18,12 @@ export default function AdminLoginPage() {
     try {
       const res = await api.post("/admin/login", form);
       localStorage.setItem("adminToken", res.data.token);
-      router.replace("/legacy/admin");
-    } catch (err: unknown) {
+      router.replace("/admin/legacy");
+    } catch (err: any) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "Login failed. Check your credentials."
+        err?.response?.data?.message ||
+        err?.message ||
+        "Login failed. Check your credentials."
       );
     } finally {
       setLoading(false);
@@ -43,12 +43,12 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <div>
-            <label className="mb-1.5 block text-xs font-semibold text-slate-300">Username</label>
+            <label className="mb-1.5 block text-xs font-semibold text-slate-300">Email Address</label>
             <input
-              type="text" required autoComplete="username"
-              value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })}
+              type="email" required autoComplete="email"
+              value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-slate-500 outline-none focus:border-emerald-500/50 focus:ring-2 focus:ring-emerald-500/20"
-              placeholder="admin username"
+              placeholder="admin@iiitiansnetwork.in"
             />
           </div>
           <div>

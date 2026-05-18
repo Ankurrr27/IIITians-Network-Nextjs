@@ -4,6 +4,7 @@ import api from "@/lib/apiClient";
 import AdminLayout from "@/components/AdminLayout";
 import type { IDiscussPost, IDiscussAccount } from "@/types";
 import { Check, X, Trash2, ShieldCheck, ShieldOff } from "lucide-react";
+import DiscussCard from "@/components/discuss/DiscussCard";
 
 type Tab = "posts" | "accounts";
 
@@ -81,33 +82,15 @@ export default function DiscussAdminPage() {
               ))}
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {filteredPosts.map((p) => (
-                <div key={p._id} className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-slate-900">{p.title}</p>
-                    <p className="truncate text-xs text-slate-500">{p.collegeName} · {p.clubName} · {p.type}</p>
-                    <p className="mt-0.5 text-xs text-slate-400 line-clamp-1">{p.description}</p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${p.status === "approved" ? "bg-emerald-50 text-emerald-600" : p.status === "rejected" ? "bg-rose-50 text-rose-600" : "bg-amber-50 text-amber-600"}`}>
-                      {p.status}
-                    </span>
-                    {p.status !== "approved" && (
-                      <button onClick={() => setPostStatus(p._id, "approved")} className="rounded-lg p-2 text-slate-400 hover:bg-emerald-50 hover:text-emerald-600 transition" title="Approve">
-                        <Check className="h-4 w-4" />
-                      </button>
-                    )}
-                    {p.status !== "rejected" && (
-                      <button onClick={() => setPostStatus(p._id, "rejected")} className="rounded-lg p-2 text-slate-400 hover:bg-amber-50 hover:text-amber-600 transition" title="Reject">
-                        <X className="h-4 w-4" />
-                      </button>
-                    )}
-                    <button onClick={() => deletePost(p._id)} className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
+                <DiscussCard
+                  key={p._id}
+                  post={p}
+                  onApprove={(id) => setPostStatus(id, "approved")}
+                  onReject={(id) => setPostStatus(id, "rejected")}
+                  onDelete={deletePost}
+                />
               ))}
               {filteredPosts.length === 0 && <p className="py-10 text-center text-sm text-slate-400">No posts found.</p>}
             </div>

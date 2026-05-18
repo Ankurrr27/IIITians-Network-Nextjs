@@ -1,133 +1,211 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import {
+  ArrowLeft,
+  Calendar,
+  Plus,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
 import api from "@/lib/apiClient";
 import AdminLayout from "@/components/AdminLayout";
 import type { IEvent } from "@/types";
-import { Plus, Trash2, Pencil, X } from "lucide-react";
+import EventCard from "@/components/events/EventCard";
 
-interface EventForm {
-  title: string;
-  collegeName: string;
-  clubName: string;
-  description: string;
-  date: string;
-  link: string;
-  type: string;
-  isPublished: boolean;
-}
-
-const EMPTY: EventForm = { title: "", collegeName: "", clubName: "", description: "", date: "", link: "", type: "hackathon", isPublished: true };
+// Import modular form component
+import AddEventForm from "@/components/events/AddEventForm";
 
 export default function EventsAdminPage() {
+  const router = useRouter();
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({ totalPages: 1 });
+
   const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [form, setForm] = useState<EventForm>(EMPTY);
+  const [editingEvent, setEditingEvent] = useState<IEvent | null>(null);
 
-  useEffect(() => { load(); }, []);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("newest");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-  const load = async () => {
+  const loadEvents = async () => {
+    setLoading(true);
     try {
-      const res = await api.get("/events");
-      setEvents(res.data);
-    } catch { /*silent*/ } finally { setLoading(false); }
+      const res = await api.get("/events", {
+        params: {
+          page: currentPage,
+          limit: itemsPerPage,
+          search: search,
+          sortBy: sortBy,
+        },
+      });
+      if (res.data && Array.isArray(res.data)) {
+        setEvents(res.data);
+        setPagination({ totalPages: Math.ceil(res.data.length / itemsPerPage) || 1 });
+      } else if (res.data) {
+        setEvents(res.data.events || []);
+        setPagination(res.data.pagination || { totalPages: 1 });
+      }
+    } catch (err) {
+      console.error("Could not load events:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const openAdd = () => { setForm(EMPTY); setEditId(null); setShowForm(true); };
-  const openEdit = (e: IEvent) => {
-    setForm({ title: e.title, collegeName: e.collegeName, clubName: e.clubName || "", description: e.description || "", date: e.date ? e.date.slice(0, 10) : "", link: e.link || "", type: e.type || "hackathon", isPublished: e.isPublished ?? true });
-    setEditId(e._id);
+  useEffect(() => {
+    loadEvents();
+  }, [currentPage, search, sortBy]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, sortBy]);
+
+  const handleSuccess = () => {
+    setEditingEvent(null);
+    setShowForm(false);
+    loadEvents();
+  };
+
+  const handleEdit = (event: IEvent) => {
+    setEditingEvent(event);
     setShowForm(true);
   };
 
-  const handleSubmit = async (ev: React.FormEvent) => {
-    ev.preventDefault();
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this event permanently?")) return;
     try {
-      if (editId) await api.patch(`/events/${editId}`, form);
-      else {
-        await api.post("/events", form);
-      }
+      await api.delete(`/events/${id}`);
+      setEvents((prev) => prev.filter((e) => e._id !== id));
+      setEditingEvent(null);
       setShowForm(false);
-      load();
-    } catch { alert("Failed to save event."); }
+      loadEvents();
+    } catch (err) {
+      console.error("Failed to delete event:", err);
+      alert("Failed to delete event.");
+    }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Delete this event?")) return;
-    await api.delete(`/events/${id}`);
-    load();
-  };
+  const totalPages = pagination.totalPages || 1;
 
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Events Management</h2>
-          <button onClick={openAdd} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
-            <Plus className="h-4 w-4" /> Add Event
-          </button>
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" /></div>
-        ) : (
-          <div className="space-y-3">
-            {events.map((e) => (
-              <div key={e._id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">{e.title}</p>
-                  <p className="text-xs text-slate-500">{e.collegeName} · {new Date(e.date).toLocaleDateString("en-IN")}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => openEdit(e)} className="rounded-lg p-2 text-slate-400 hover:bg-indigo-50 hover:text-indigo-600 transition"><Pencil className="h-4 w-4" /></button>
-                  <button onClick={() => handleDelete(e._id)} className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition"><Trash2 className="h-4 w-4" /></button>
+        {/* Header Block */}
+        <section className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => router.back()}
+                  className="group flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 bg-white/80 text-indigo-600 shadow-sm backdrop-blur-sm transition-all hover:bg-white hover:text-indigo-700 hover:shadow-md active:scale-95"
+                >
+                  <ArrowLeft size={18} className="transition-transform group-hover:-translate-x-0.5" />
+                </button>
+                <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-700">
+                  <Calendar className="h-4 w-4" />
+                  Events Workspace
                 </div>
               </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                Event Management
+              </h1>
+              <p className="mt-2 text-sm text-slate-600 font-semibold leading-relaxed">
+                Add, configure, and coordinate community events, hackathons, and webinars across campuses.
+              </p>
+            </div>
+
+            <button
+              onClick={() => {
+                setEditingEvent(null);
+                setShowForm(true);
+              }}
+              className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-100 transition hover:bg-indigo-700 hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Plus className="h-4 w-4" /> Add Campus Event
+            </button>
+          </div>
+        </section>
+
+        {/* Filters */}
+        <section className="rounded-[1.4rem] border border-slate-200 bg-white p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Search by title, description, or college name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none focus:border-indigo-600 focus:bg-white transition"
+            />
+          </div>
+          <div className="flex items-center gap-3">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm outline-none font-semibold text-slate-700 focus:bg-white"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </section>
+
+        {/* Inline Edit/Add Form */}
+        {showForm && (
+          <AddEventForm
+            editingEvent={editingEvent}
+            onSuccess={handleSuccess}
+            onCancel={() => {
+              setEditingEvent(null);
+              setShowForm(false);
+            }}
+          />
+        )}
+
+        {/* Loading Spinner / Grid View */}
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {events.map((event) => (
+              <EventCard
+                key={event._id}
+                event={event}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
-            {events.length === 0 && <p className="py-10 text-center text-sm text-slate-400">No events yet.</p>}
+            {events.length === 0 && (
+              <p className="col-span-3 py-10 text-center text-sm font-semibold text-slate-400">
+                No events found matching your current query.
+              </p>
+            )}
           </div>
         )}
 
-        {/* Modal */}
-        {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={() => setShowForm(false)}>
-            <form onSubmit={handleSubmit} className="w-full max-w-lg space-y-4 rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold text-slate-900">{editId ? "Edit Event" : "Add Event"}</h3>
-                <button type="button" onClick={() => setShowForm(false)}><X className="h-5 w-5 text-slate-400" /></button>
-              </div>
-              {(["title", "collegeName", "clubName", "description", "link"] as const).map((field) => (
-                <div key={field}>
-                  <label className="mb-1 block text-xs font-semibold capitalize text-slate-600">{field}</label>
-                  {field === "description" ? (
-                    <textarea rows={3} value={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300" />
-                  ) : (
-                    <input type={field === "link" ? "url" : "text"} value={form[field]} onChange={(e) => setForm({ ...form, [field]: e.target.value })}
-                      required={field === "title" || field === "collegeName"}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300" />
-                  )}
-                </div>
-              ))}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-600">Date</label>
-                  <input type="date" required value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300" />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-600">Type</label>
-                  <select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-indigo-300">
-                    {["hackathon", "tech-talk", "cultural", "sports", "workshop", "seminar", "other"].map((t) => <option key={t} value={t}>{t}</option>)}
-                  </select>
-                </div>
-              </div>
-              <button type="submit" className="w-full rounded-xl bg-indigo-600 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700">
-                {editId ? "Update" : "Create"} Event
-              </button>
-            </form>
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-12 flex items-center justify-center gap-6">
+            <button
+              onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="rounded-full border border-slate-200 bg-white px-6 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40 shadow-sm"
+            >
+              Previous
+            </button>
+            <div className="text-xs font-bold text-slate-500">
+              Page <span className="text-indigo-600 font-extrabold">{currentPage}</span> of {totalPages}
+            </div>
+            <button
+              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="rounded-full border border-slate-200 bg-white px-6 py-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-40 shadow-sm"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>

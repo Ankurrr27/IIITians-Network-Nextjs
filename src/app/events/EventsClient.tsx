@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import type { IEvent } from "@/types";
 import { Calendar, ExternalLink, Search } from "lucide-react";
 import { notifyPageEntry } from "@/utils/appNotifications";
+import EventCard from "@/components/events/EventCard";
 
 interface Props {
   initialEvents: IEvent[];
@@ -84,29 +85,7 @@ function EventSection({ title, events, accent, emptyMsg }: { title: string; even
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => (
-            <article key={event._id} className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
-              {event.banner?.url && (
-                <div className="relative h-36 overflow-hidden bg-indigo-50">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={event.banner.url} alt={event.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                </div>
-              )}
-              <div className="flex flex-1 flex-col p-5">
-                <div className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-indigo-500">
-                  <Calendar className="h-3.5 w-3.5" />
-                  {new Date(event.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                </div>
-                <h3 className="text-sm font-bold text-slate-900">{event.title}</h3>
-                <p className="mt-1 text-xs text-slate-500">{event.collegeName}{event.clubName ? ` · ${event.clubName}` : ""}</p>
-                {event.description && <p className="mt-2 text-xs text-slate-400 line-clamp-2">{event.description}</p>}
-                {event.link && (
-                  <a href={event.link} target="_blank" rel="noreferrer"
-                    className="mt-auto inline-flex items-center gap-1 pt-4 text-xs font-semibold text-indigo-600 transition hover:text-indigo-800">
-                    Learn More <ExternalLink className="h-3 w-3" />
-                  </a>
-                )}
-              </div>
-            </article>
+            <EventCard key={event._id} event={event} />
           ))}
         </div>
       )}

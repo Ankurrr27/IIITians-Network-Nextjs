@@ -4,9 +4,10 @@ import api from "@/lib/apiClient";
 import Link from "next/link";
 import {
   Megaphone, Plus, LogIn, LogOut, UserPlus, Send,
-  ShieldCheck, Building2, BadgeCheck, MapPin, User, Mail, Phone, Trash2, Clock,
+  ShieldCheck, MapPin, User, Mail, Phone, Trash2,
 } from "lucide-react";
 import type { IDiscussPost, IDiscussAccount } from "@/types";
+import DiscussCard from "@/components/discuss/DiscussCard";
 
 const POST_TYPES = ["announcement", "event", "campaign", "collaboration", "opportunity"] as const;
 
@@ -209,21 +210,7 @@ export default function DiscussPage() {
             </div>
           ) : (
             posts.filter((p) => p.status === "approved").map((post) => (
-              <article key={post._id} className="rounded-2xl border border-sky-100 bg-white/90 shadow-sm overflow-hidden">
-                <div className="p-5">
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    <span className="rounded-full bg-sky-50 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-sky-700">{post.type}</span>
-                    {post.badgeLabel && <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1"><BadgeCheck className="h-3 w-3" />{post.badgeLabel}</span>}
-                    <span className="flex items-center gap-1 text-[11px] text-slate-400"><Building2 className="h-3 w-3" />{post.collegeName}</span>
-                    <span className="text-[11px] text-slate-400">· {post.clubName}</span>
-                  </div>
-                  <h2 className="text-base font-bold text-slate-900">{post.title}</h2>
-                  <p className="mt-1.5 text-sm text-slate-500 line-clamp-3">{post.description}</p>
-                  {post.actionLink && (
-                    <a href={post.actionLink} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-sky-600 hover:underline">View →</a>
-                  )}
-                </div>
-              </article>
+              <DiscussCard key={post._id} post={post} />
             ))
           )}
         </div>

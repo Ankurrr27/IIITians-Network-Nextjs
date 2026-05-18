@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
+import CollegeCard from "@/components/colleges/CollegeCard";
 
 const RECENT_KEY = "iiitians-network-recent-college-searches";
 
@@ -40,6 +41,14 @@ export default function CollegesClient({ initialColleges, initialTeamMembers, in
       return ia !== ib ? ia - ib : a.name.localeCompare(b.name);
     });
   }
+
+  const handleRecentSearch = (name: string) => {
+    try {
+      const stored = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+      const next = [name, ...stored.filter((s: string) => s.toLowerCase() !== name.toLowerCase())].slice(0, 8);
+      localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+    } catch {}
+  };
 
   return (
     <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-14 pt-20 sm:pb-16 sm:pt-24">
@@ -88,48 +97,14 @@ export default function CollegesClient({ initialColleges, initialTeamMembers, in
               const alumniCount = initialAlumni.filter((a) => a.iiit === college.name).length;
               const clubCount = initialDiscussClubs.filter((c) => c.collegeName === college.name).length;
               return (
-                <article key={college._id} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                  {/* Cover */}
-                  <div className="relative h-44 bg-gradient-to-br from-indigo-50 to-blue-100">
-                    {college.photo?.url ? (
-                      <Image src={college.photo.url} alt={college.name} fill className="object-cover" sizes="(max-width:768px) 100vw, 33vw" />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-4xl font-bold text-indigo-200">{college.name[0]}</div>
-                    )}
-                  </div>
-
-                  <div className="p-5">
-                    <div className="flex items-center gap-3">
-                      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl bg-white shadow ring-1 ring-slate-100">
-                        {college.logo?.url ? (
-                          <Image src={college.logo.url} alt="logo" fill className="object-contain p-1" sizes="40px" />
-                        ) : (
-                          <div className="flex h-full items-center justify-center text-xs font-bold text-indigo-500">{college.name[0]}</div>
-                        )}
-                      </div>
-                      <h2 className="text-sm font-bold text-slate-900 leading-tight">{college.name}</h2>
-                    </div>
-
-                    {college.description && (
-                      <p className="mt-3 text-xs text-slate-500 line-clamp-2">{college.description}</p>
-                    )}
-
-                    <div className="mt-3 flex flex-wrap gap-1.5 text-[10px] font-semibold uppercase tracking-wide">
-                      {memberCount > 0 && <span className="rounded-full bg-indigo-50 px-2 py-0.5 text-indigo-600">{memberCount} Members</span>}
-                      {alumniCount > 0 && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-emerald-600">{alumniCount} Alumni</span>}
-                      {clubCount > 0 && <span className="rounded-full bg-rose-50 px-2 py-0.5 text-rose-600">{clubCount} Clubs</span>}
-                    </div>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {college.website && (
-                        <a href={college.website} target="_blank" rel="noreferrer" className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-700">Website →</a>
-                      )}
-                      {(college.gallery?.length ?? 0) > 0 && (
-                        <Link href={`/college/${encodeURIComponent(college.name)}/gallery`} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-700">Gallery</Link>
-                      )}
-                    </div>
-                  </div>
-                </article>
+                <CollegeCard
+                  key={college._id}
+                  college={college}
+                  memberCount={memberCount}
+                  alumniCount={alumniCount}
+                  clubCount={clubCount}
+                  onRecentSearchClick={handleRecentSearch}
+                />
               );
             })}
           </div>

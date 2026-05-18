@@ -5,6 +5,7 @@ import AdminLayout from "@/components/AdminLayout";
 import type { ITeamMember } from "@/types";
 import { Plus, Trash2, Pencil, X, Upload, ToggleLeft, ToggleRight } from "lucide-react";
 import Image from "next/image";
+import TeamMemberCard from "@/components/team/TeamMemberCard";
 
 interface MemberForm {
   name: string; role: string; roleType: "EXEC" | "LEAD" | "MEMBER";
@@ -102,30 +103,7 @@ export default function TeamAdminPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((m) => (
-              <div key={m._id} className={`flex flex-col rounded-2xl border bg-white p-4 shadow-sm transition ${m.isActive ? "border-slate-200" : "border-dashed border-slate-300 opacity-60"}`}>
-                <div className="flex items-center gap-3">
-                  <div className="relative h-10 w-10 overflow-hidden rounded-full bg-indigo-50">
-                    {m.photo?.url ? (
-                      <Image src={m.photo.url} alt={m.name} fill className="object-cover" sizes="40px" />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-sm font-bold text-indigo-400">{m.name[0]}</div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-slate-900">{m.name}</p>
-                    <p className="truncate text-xs text-slate-400">{m.role} · {m.team}</p>
-                  </div>
-                </div>
-                <p className="mt-2 text-[11px] text-slate-400">{m.iiit} · {m.year}</p>
-                <div className="mt-3 flex gap-1.5">
-                  <button onClick={() => openEdit(m)} className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 hover:bg-indigo-50 hover:text-indigo-700">
-                    <Pencil className="inline h-3 w-3 mr-0.5" /> Edit
-                  </button>
-                  <button onClick={() => handleDelete(m._id)} className="ml-auto rounded-lg px-2 py-1 text-xs font-semibold text-rose-500 hover:bg-rose-50">
-                    <Trash2 className="inline h-3 w-3" />
-                  </button>
-                </div>
-              </div>
+              <TeamMemberCard key={m._id} member={m} onEdit={openEdit} onDelete={handleDelete} />
             ))}
             {filtered.length === 0 && <p className="col-span-4 py-10 text-center text-sm text-slate-400">No members.</p>}
           </div>

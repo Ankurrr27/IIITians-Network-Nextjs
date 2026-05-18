@@ -57,7 +57,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
               className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-700">
               Add Your Profile →
             </button>
-            <Link href="/legacy/admin" className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+            <Link href="/admin/legacy" className="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
               Admin
             </Link>
           </div>

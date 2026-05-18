@@ -11,9 +11,44 @@
   --foreground: #ededed;
 }
 
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  --animate-waveSlow: waveSlow 20s ease-in-out infinite;
+  --animate-waveMedium: waveMedium 15s ease-in-out infinite;
+  --animate-waveFast: waveFast 10s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-spin-slow: spinSlow 18s linear infinite;
+  --animate-wave: wave 3s ease-out infinite;
+
+  @keyframes waveSlow {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-25%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes waveMedium {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-15%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes waveFast {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(-10%); }
+    100% { transform: translateX(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  @keyframes spinSlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  @keyframes wave {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────── */
