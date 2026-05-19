@@ -26,9 +26,6 @@ export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Hide on admin routes
-  if (pathname.includes("/admin")) return null;
-
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -54,6 +51,9 @@ export default function Navigation() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Hide on admin routes — MUST be after all hooks
+  if (pathname.includes("/admin")) return null;
 
   const handleNavClick = (event: React.MouseEvent, href: string) => {
     event.preventDefault();
