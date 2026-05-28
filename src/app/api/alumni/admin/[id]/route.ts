@@ -47,8 +47,12 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const authPayload = requireAdmin(req);
     if (isNextResponse(authPayload)) return authPayload;
     const { id } = await params;
-    const alumni = await Alumni.findByIdAndDelete(id);
+    const alumni = await Alumni.findById(id);
     if (!alumni) return NextResponse.json({ message: "Alumni entry not found" }, { status: 404 });
+    if (alumni.photo?.public_id) {
+      await deleteFromCloudinary(alumni.photo.public_id);
+    }
+    await alumni.deleteOne();
     return NextResponse.json({ message: "Alumni entry deleted successfully" });
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });

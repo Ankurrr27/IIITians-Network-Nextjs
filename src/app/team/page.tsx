@@ -21,7 +21,6 @@ function serialize<T>(data: T): T {
 
 export default async function TeamPage() {
   await connectDB();
-  const members = await TeamMember.find({ isActive: true }).sort({ order: 1, createdAt: 1 }).lean();
+  const members = await TeamMember.find().sort({ order: 1, createdAt: 1 }).lean();
   return <TeamClient initialMembers={serialize(members) as unknown as ITeamMember[]} />;
-
 }

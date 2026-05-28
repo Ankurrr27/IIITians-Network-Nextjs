@@ -10,13 +10,13 @@ import { ThemeModeProvider } from "@/hooks/useThemeMode";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://iiitiansnetwork.com"),
   title: { default: "IIITians Network Connect", template: "%s | IIITians Network" },
   description:
     "A student-led community connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.",
   keywords: ["IIIT", "IIITians", "network", "alumni", "placements", "events", "colleges"],
   icons: {
     icon: [
-      { url: "/favicon.ico" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [

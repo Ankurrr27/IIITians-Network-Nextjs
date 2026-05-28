@@ -3,6 +3,7 @@ import connectDB from "@/lib/mongoose";
 import Alumni from "@/models/Alumni";
 import TeamMember from "@/models/TeamMember";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
+import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
 
 function normalizePayload(body: Record<string, unknown>) {
   return { ...body, name: (body.name as string)?.trim(), email: (body.email as string)?.trim().toLowerCase(), iiit: (body.iiit as string)?.trim(), generation: (body.generation as string)?.trim(), branch: (body.branch as string)?.trim(), networkPost: (body.networkPost as string)?.trim() || "", currentRole: (body.currentRole as string)?.trim() || "", currentCompany: (body.currentCompany as string)?.trim() || "", location: (body.location as string)?.trim() || "", linkedin: (body.linkedin as string)?.trim() || "", instagram: (body.instagram as string)?.trim() || "", bio: (body.bio as string)?.trim() || "", graduationYear: Number(body.graduationYear) };
@@ -22,10 +23,13 @@ async function resolvePhoto(file: File | null, email: string, existingPhoto?: { 
   return existingPhoto || undefined;
 }
 
-// PUT /api/alumni/[id] — public self-update
+// PUT /api/alumni/[id] — admin update
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
+    const authPayload = requireAdmin(req);
+    if (isNextResponse(authPayload)) return authPayload;
+    
     const { id } = await params;
     const formData = await req.formData();
     const file = formData.get("photo") as File | null;
@@ -45,6 +49,28 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const nextStatus = alumni.legacyType === "team_member" ? "approved" : alumni.status || "approved";
     const updated = await Alumni.findByIdAndUpdate(id, { ...payload, photo, status: nextStatus, reviewedAt: nextStatus === "approved" ? alumni.reviewedAt || new Date() : null }, { new: true, runValidators: true });
     return NextResponse.json({ message: "Legacy profile updated successfully.", alumni: updated });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });
+  }
+}
+
+// DELETE /api/alumni/[id] — admin delete
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    await connectDB();
+    const authPayload = requireAdmin(req);
+    if (isNextResponse(authPayload)) return authPayload;
+    
+    const { id } = await params;
+    const alumni = await Alumni.findById(id);
+    if (!alumni) return NextResponse.json({ message: "Alumni entry not found" }, { status: 404 });
+    
+    if (alumni.photo?.public_id) {
+      await deleteFromCloudinary(alumni.photo.public_id);
+    }
+    
+    await alumni.deleteOne();
+    return NextResponse.json({ message: "Alumni entry deleted successfully" });
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });
   }

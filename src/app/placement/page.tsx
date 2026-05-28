@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Building2, Calendar, ChevronDown, Loader2, Search, ArrowUpRight, Award } from "lucide-react";
 import api from "@/lib/apiClient";
@@ -11,6 +11,18 @@ import {
 } from "@/lib/placementInsights";
 
 export default function PlacementPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-600" />
+      </div>
+    }>
+      <PlacementPageClient />
+    </Suspense>
+  );
+}
+
+function PlacementPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
 

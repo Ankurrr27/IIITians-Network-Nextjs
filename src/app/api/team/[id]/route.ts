@@ -47,10 +47,17 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
     const payload = requireAdmin(req);
     if (isNextResponse(payload)) return payload;
     const { id } = await params;
-    const member = await TeamMember.findByIdAndDelete(id);
+    const member = await TeamMember.findById(id);
     if (!member) return NextResponse.json({ message: "Team member not found" }, { status: 404 });
+    if (member.photo?.public_id) {
+      await deleteFromCloudinary(member.photo.public_id);
+    }
+    await member.deleteOne();
     return NextResponse.json({ message: "Team member deleted successfully" });
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });
   }
 }
+
+export const PUT = PATCH;
+

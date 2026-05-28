@@ -10,6 +10,7 @@ import TeamMember from "@/models/TeamMember";
 import Alumni from "@/models/Alumni";
 import DiscussAccount from "@/models/DiscussAccount";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
+import { Suspense } from "react";
 import CollegesClient from "./CollegesClient";
 
 export const metadata: Metadata = {
@@ -37,11 +38,17 @@ export default async function CollegesPage() {
   ]);
 
   return (
-    <CollegesClient
-      initialColleges={serialize(colleges) as unknown as ICollege[]}
-      initialTeamMembers={serialize(teamMembers) as unknown as ITeamMember[]}
-      initialAlumni={serialize(alumni) as unknown as IAlumni[]}
-      initialDiscussClubs={serialize(discussAccounts) as unknown as IDiscussAccount[]}
-    />
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+      </div>
+    }>
+      <CollegesClient
+        initialColleges={serialize(colleges) as unknown as ICollege[]}
+        initialTeamMembers={serialize(teamMembers) as unknown as ITeamMember[]}
+        initialAlumni={serialize(alumni) as unknown as IAlumni[]}
+        initialDiscussClubs={serialize(discussAccounts) as unknown as IDiscussAccount[]}
+      />
+    </Suspense>
   );
 }

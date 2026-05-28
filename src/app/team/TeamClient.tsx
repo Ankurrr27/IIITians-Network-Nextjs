@@ -14,6 +14,7 @@ const ROLE_ORDER = ["EXEC", "LEAD", "MEMBER"] as const;
 
 export default function TeamClient({ initialMembers }: Props) {
   const [filter, setFilter] = useState("All");
+  const [selectedYear, setSelectedYear] = useState("All");
 
   useEffect(() => {
     notifyPageEntry("Team page loaded", "Meet the people behind IIITians Network.", "page-team-loaded");
@@ -22,8 +23,14 @@ export default function TeamClient({ initialMembers }: Props) {
   const teams = ["All", ...Array.from(new Set(initialMembers.map((m) => m.team)))];
   const years = Array.from(new Set(initialMembers.map((m) => m.year))).sort((a, b) => b.localeCompare(a));
 
-  const filtered = filter === "All" ? initialMembers : initialMembers.filter((m) => m.team === filter);
+  const filtered = initialMembers.filter((m) => {
+    const matchesTeam = filter === "All" || m.team === filter;
+    const matchesYear = selectedYear === "All" || m.year === selectedYear;
+    return matchesTeam && matchesYear;
+  });
   const sorted = [...filtered].sort((a, b) => ROLE_ORDER.indexOf(a.roleType) - ROLE_ORDER.indexOf(b.roleType) || (a.order ?? 0) - (b.order ?? 0));
+
+  const displayYears = selectedYear === "All" ? years : [selectedYear];
 
   return (
     <main className="relative min-h-screen bg-[linear-gradient(180deg,_#f5f3ff_0%,_#f9fcff_50%,_#f9fcff_100%)] pb-20 pt-24">
@@ -45,17 +52,27 @@ export default function TeamClient({ initialMembers }: Props) {
         </header>
 
         {/* Filter tabs */}
-        <div className="mb-8 flex flex-wrap justify-center gap-2">
-          {teams.map((team) => (
-            <button key={team} onClick={() => setFilter(team)}
-              className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${filter === team ? "bg-indigo-600 text-white shadow" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-indigo-50 hover:text-indigo-600"}`}>
-              {team}
-            </button>
-          ))}
+        <div className="flex flex-col gap-3 mb-10 items-center justify-center">
+          <div className="flex flex-wrap justify-center gap-2">
+            {teams.map((team) => (
+              <button key={team} onClick={() => setFilter(team)}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${filter === team ? "bg-indigo-600 text-white shadow" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-indigo-50 hover:text-indigo-600"}`}>
+                {team}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {["All", ...years].map((year) => (
+              <button key={year} onClick={() => setSelectedYear(year)}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition ${selectedYear === year ? "bg-indigo-600 text-white shadow" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-indigo-50 hover:text-indigo-600"}`}>
+                {year === "All" ? "All Batches" : `Batch ${year}`}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Members grid — grouped by year */}
-        {years.map((year) => {
+        {displayYears.map((year) => {
           const yearMembers = sorted.filter((m) => m.year === year);
           if (!yearMembers.length) return null;
           return (
