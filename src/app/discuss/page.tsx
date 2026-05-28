@@ -4,10 +4,11 @@ import api from "@/lib/apiClient";
 import Link from "next/link";
 import {
   Megaphone, Plus, LogIn, LogOut, UserPlus, Send,
-  ShieldCheck, MapPin, User, Mail, Phone, Trash2,
+  ShieldCheck, MapPin, User, Mail, Phone, Trash2, Image as ImageIcon,
 } from "lucide-react";
 import type { IDiscussPost, IDiscussAccount } from "@/types";
 import DiscussCard from "@/components/discuss/DiscussCard";
+import ImageCropModal from "@/components/ImageCropModal";
 
 const POST_TYPES = ["announcement", "event", "campaign", "collaboration", "opportunity"] as const;
 
@@ -47,6 +48,9 @@ export default function DiscussPage() {
   const [postState, setPostState] = useState({ loading: false, error: "", success: "" });
   const [authState, setAuthState] = useState({ loading: false, error: "", success: "" });
   const [colleges, setColleges] = useState<string[]>([]);
+  const [postPhotos, setPostPhotos] = useState<File[]>([]);
+  const [rawCropFile, setRawCropFile] = useState<File | null>(null);
+  const [clubHandles, setClubHandles] = useState<string[]>([]);
 
   const stats = useMemo(() => ({
     total: posts.length,
@@ -78,9 +82,10 @@ export default function DiscussPage() {
     loadPosts();
     loadAccount();
     api.get("/colleges").then((r) => setColleges((r.data || []).map((c: { name: string }) => c.name)));
+    api.get("/discuss-accounts/handles").then((r) => setClubHandles(r.data || [])).catch(() => {});
   }, []);
 
-  const closePanel = () => { setPanelMode(""); setEditingId(""); setPostForm(INIT_POST); };
+  const closePanel = () => { setPanelMode(""); setEditingId(""); setPostForm(INIT_POST); setPostPhotos([]); };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,8 +122,12 @@ export default function DiscussPage() {
     if (!token) return;
     setPostState({ loading: true, error: "", success: "" });
     try {
-      if (editingId) await api.patch(`/discuss/mine/${editingId}`, postForm, { headers: { Authorization: `Bearer ${token}` } });
-      else await api.post("/discuss", postForm, { headers: { Authorization: `Bearer ${token}` } });
+      const fd = new FormData();
+      Object.entries(postForm).forEach(([k, v]) => fd.append(k, v));
+      postPhotos.forEach(f => fd.append("photos", f));
+      const headers = { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" };
+      if (editingId) await api.patch(`/discuss/mine/${editingId}`, fd, { headers });
+      else await api.post("/discuss", fd, { headers });
       closePanel();
       await Promise.all([loadPosts(), loadAccount()]);
       setPostState({ loading: false, error: "", success: editingId ? "Post updated." : "Submitted for review." });
@@ -239,6 +248,19 @@ export default function DiscussPage() {
                       <input type="date" required value={postForm.eventDate} onChange={(e) => setPostForm({ ...postForm, eventDate: e.target.value })} className={input} />
                     )}
                     <textarea required rows={6} placeholder="Description…" value={postForm.description} onChange={(e) => setPostForm({ ...postForm, description: e.target.value })} className={`${input} resize-none`} />
+                    <div>
+                      <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-400">Attach Images</label>
+                      <div className="flex flex-wrap gap-2">
+                        {postPhotos.map((f, i) => (
+                          <div key={i} className="relative h-16 w-16 rounded-xl overflow-hidden ring-1 ring-slate-200">
+                            <img src={URL.createObjectURL(f)} alt="" className="h-full w-full object-cover" />
+                            <button type="button" onClick={() => setPostPhotos(ps => ps.filter((_, j) => j !== i))} className="absolute -right-1 -top-1 rounded-full bg-rose-500 p-0.5 text-white"><Trash2 className="h-3 w-3" /></button>
+                          </div>
+                        ))}
+                        <button type="button" onClick={() => document.getElementById("discuss-photo-input")?.click()} className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-dashed border-slate-200 text-slate-400 hover:border-sky-400 hover:text-sky-500 transition"><ImageIcon className="h-5 w-5" /></button>
+                        <input id="discuss-photo-input" type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) setRawCropFile(f); e.target.value = ""; }} />
+                      </div>
+                    </div>
                     <button type="submit" disabled={postState.loading} className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white disabled:opacity-60">
                       <Send className="h-4 w-4" /> {postState.loading ? "Saving…" : editingId ? "Save changes" : "Publish"}
                     </button>
@@ -269,7 +291,10 @@ export default function DiscussPage() {
                           <div key={p._id} className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5">
                             <div>
                               <p className="text-xs font-semibold text-slate-800 truncate max-w-[200px]">{p.title}</p>
-                              <span className={`text-[10px] font-bold uppercase ${p.status === "approved" ? "text-emerald-600" : p.status === "rejected" ? "text-rose-600" : "text-amber-600"}`}>{p.status}</span>
+                              <div className="flex items-center gap-2">
+                                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${p.status === "approved" ? "bg-emerald-50 text-emerald-600" : p.status === "rejected" ? "bg-rose-50 text-rose-600" : "bg-amber-50 text-amber-600"}`}>{p.status}</span>
+                                {p.createdAt && <span className="text-[10px] text-slate-400">{new Date(p.createdAt).toLocaleDateString()}</span>}
+                              </div>
                             </div>
                             <div className="flex gap-1">
                               <button onClick={() => { setEditingId(p._id); setPostForm({ title: p.title, description: p.description, type: p.type, actionLink: p.actionLink || "", eventDate: p.eventDate ? String(p.eventDate).slice(0, 10) : "" }); setPanelMode("composer"); }} className="rounded-lg px-2 py-1 text-xs font-semibold text-slate-500 hover:bg-white">Edit</button>
@@ -296,7 +321,8 @@ export default function DiscussPage() {
                   </div>
                   {authMode === "login" ? (
                     <form onSubmit={handleLogin} className="space-y-3">
-                      <input required placeholder="Club handle" value={loginForm.handle} onChange={(e) => setLoginForm({ ...loginForm, handle: e.target.value })} className={input} />
+                      <input required placeholder="Club handle" list="club-handle-list" value={loginForm.handle} onChange={(e) => setLoginForm({ ...loginForm, handle: e.target.value })} className={input} />
+                      <datalist id="club-handle-list">{clubHandles.map(h => <option key={h} value={h} />)}</datalist>
                       <input required type="password" placeholder="Password" value={loginForm.password} onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} className={input} />
                       <button type="submit" disabled={authState.loading} className="w-full rounded-2xl bg-slate-900 py-3 text-sm font-bold text-white disabled:opacity-60">
                         {authState.loading ? "Logging in…" : "Login"}
@@ -322,6 +348,27 @@ export default function DiscussPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Mobile FAB */}
+      {account && !panelMode && (
+        <button
+          onClick={() => { setEditingId(""); setPostForm(INIT_POST); setPostState({ loading: false, error: "", success: "" }); setPanelMode("composer"); }}
+          className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-sky-600 text-white shadow-xl shadow-sky-600/30 transition hover:bg-sky-700 active:scale-95 md:hidden"
+          aria-label="New post"
+        >
+          <Plus className="h-6 w-6" />
+        </button>
+      )}
+
+      {/* Image Crop Modal */}
+      {rawCropFile && (
+        <ImageCropModal
+          file={rawCropFile}
+          aspect={16 / 9}
+          onClose={() => setRawCropFile(null)}
+          onCrop={(cropped) => { setPostPhotos(ps => [...ps, cropped]); setRawCropFile(null); }}
+        />
       )}
     </section>
   );
