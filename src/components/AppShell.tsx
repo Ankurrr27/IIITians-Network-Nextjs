@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { usePathname } from "next/navigation";
 import Footer from "@/components/Footer";
 import InAppNotifications from "@/components/InAppNotifications";
@@ -13,7 +14,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeModeProvider>
-      {!isAdminPage && <Navigation />}
+      {!isAdminPage && (
+        <Suspense fallback={null}>
+          <Navigation />
+        </Suspense>
+      )}
       {!isAdminPage && <InAppNotifications />}
       <ScrollToTop />
       <main>{children}</main>

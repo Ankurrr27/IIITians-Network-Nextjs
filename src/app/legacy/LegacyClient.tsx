@@ -957,144 +957,163 @@ function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
 }
 
 function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: boolean }) {
-  const { companyValue, showRoleChip, showCompanyChip, dedupedRoleHistory, totalTerms } = getLegacyEntryViewModel(entry);
+  const { dedupedRoleHistory, totalTerms } = getLegacyEntryViewModel(entry);
+  const contribution = entry.contribution?.trim();
+  const message = entry.bio?.trim();
+  const hasJourney = dedupedRoleHistory.length > 0;
+  const serviceLine =
+    entry.legacyType === "team_member" && totalTerms > 0
+      ? `${entry.iiit} - Served ${totalTerms} ${totalTerms > 1 ? "terms" : "term"}`
+      : `${entry.iiit} - Class of ${entry.graduationYear}`;
+  const roleLine = [entry.networkPost, entry.currentRole, entry.currentCompany].filter(Boolean).join(" / ");
+  const displayMessage =
+    message ||
+    `${entry.name} is part of the IIITians Network legacy and has contributed to the community through their journey.`;
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[1.75rem] border transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_70px_rgba(99,102,241,0.15)] sm:rounded-[2.25rem] ${
-        isDarkMode ? "border-slate-800 bg-slate-900/60 backdrop-blur-md" : "border-indigo-100 bg-white shadow-[0_15px_45px_rgba(148,163,184,0.08)]"
+      className={`group relative overflow-hidden rounded-[1.75rem] border transition-all duration-500 hover:-translate-y-1 sm:rounded-[2rem] ${
+        isDarkMode
+          ? "border-slate-800 bg-slate-900/80 shadow-[0_24px_70px_rgba(2,6,23,0.34)] backdrop-blur-md"
+          : "border-slate-200/80 bg-white shadow-[0_24px_80px_rgba(79,70,229,0.09)]"
       }`}
     >
-      <div className="flex flex-col lg:grid lg:grid-cols-[18rem_minmax(0,1fr)]">
-        {entry.photo?.url ? (
-          <div className="relative h-64 overflow-hidden sm:h-72 lg:h-full">
+      <div className="grid lg:grid-cols-[18rem_minmax(0,1fr)] xl:grid-cols-[22rem_minmax(0,1fr)]">
+        <div className="relative min-h-72 overflow-hidden bg-slate-100 sm:min-h-80 lg:min-h-[24rem]">
+          {entry.photo?.url ? (
             <Image
               src={entry.photo.url}
               alt={entry.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-              sizes="(max-width: 1024px) 100vw, 288px"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.035]"
+              sizes="(max-width: 1024px) 100vw, 352px"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-900/10 to-transparent" />
-            <div className="absolute left-4 top-4">
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] backdrop-blur-md ${
-                  isDarkMode ? "bg-slate-950/80 text-indigo-400" : "bg-white/90 text-indigo-700 shadow-sm"
-                }`}
-              >
-                {entry.generation}
-              </span>
-            </div>
-          </div>
-        ) : (
-          <div
-            className={`flex min-h-[16rem] items-end p-6 sm:min-h-[18rem] lg:min-h-full ${
-              isDarkMode
-                ? "bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.15),transparent),linear-gradient(to_bottom_right,rgba(15,23,42,1),rgba(30,41,59,1))]"
-                : "bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.1),transparent),linear-gradient(to_bottom_right,rgba(238,242,255,1),rgba(255,255,255,1))]"
-            }`}
-          >
-            <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700 shadow-sm">
-              {entry.generation}
-            </span>
-          </div>
-        )}
-
-        <div className="flex flex-col p-5 sm:p-7 lg:p-8">
-          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
-            <div className="min-w-0 flex-1">
-              <h3 className={`text-2xl font-bold tracking-tight sm:text-3xl lg:text-[2.25rem] ${isDarkMode ? "text-slate-50" : "text-slate-900"}`}>
-                {entry.name}
-              </h3>
-
-              <div className="mt-3 flex flex-wrap gap-2">
-                {entry.networkPost && (
-                  <span className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold ring-1 ${isDarkMode ? "bg-indigo-500/10 text-indigo-300 ring-indigo-500/20" : "bg-indigo-50 text-indigo-700 ring-indigo-100"}`}>
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                    {entry.networkPost}
-                  </span>
-                )}
-                {showRoleChip && (
-                  <span className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium ring-1 ${isDarkMode ? "bg-slate-800 text-slate-300 ring-slate-700" : "bg-slate-50 text-slate-700 ring-slate-200"}`}>
-                    <Briefcase className="h-3.5 w-3.5 text-slate-400" />
-                    {entry.currentRole}
-                  </span>
-                )}
-                {showCompanyChip && (
-                  <span className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-medium ring-1 ${isDarkMode ? "bg-slate-800 text-slate-300 ring-slate-700" : "bg-slate-50 text-slate-700 ring-slate-200"}`}>
-                    <Building2 className="h-3.5 w-3.5 text-slate-400" />
-                    {companyValue}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className={`relative overflow-hidden rounded-[1.5rem] border p-4 sm:min-w-[14rem] ${isDarkMode ? "border-slate-700/50 bg-slate-800/40 text-slate-300" : "border-indigo-50 bg-indigo-50/40 text-indigo-900"}`}>
-              <div className="relative z-10 space-y-1">
-                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-500/80">
-                  <Building2 className="h-3 w-3" />
-                  {entry.iiit}
-                </div>
-                <div className="text-sm font-semibold">{entry.branch}</div>
-                <div className="flex items-center gap-2 text-xs font-medium opacity-80">
-                  <Milestone className="h-3 w-3" />
-                  {entry.legacyType === "team_member" ? `Served ${totalTerms} ${totalTerms > 1 ? "terms" : "term"}` : `Class of ${entry.graduationYear}`}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {entry.bio && <p className={`mt-6 text-sm leading-relaxed sm:text-[15px] lg:max-w-4xl ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>{entry.bio}</p>}
-
-          {dedupedRoleHistory.length > 0 && (
-            <div className={`mt-6 rounded-[1.5rem] border p-4 transition-colors ${isDarkMode ? "border-slate-800 bg-slate-950/40 hover:border-slate-700" : "border-slate-200/60 bg-slate-50/50 hover:border-slate-300/60"}`}>
-              <div className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] ${isDarkMode ? "text-slate-500" : "text-slate-400"}`}>
-                <ShieldCheck className="h-3.5 w-3.5 text-indigo-500" />
-                Network Journey
-              </div>
-              <div className="mt-3.5 flex flex-wrap gap-2">
-                {dedupedRoleHistory.map((item, index) => (
-                  <div
-                    key={`${item.year}-${item.team}-${item.role}-${index}`}
-                    className={`rounded-xl border px-3 py-1.5 text-[11px] font-semibold transition-all hover:scale-[1.02] ${
-                      isDarkMode ? "border-slate-700 bg-slate-800 text-slate-200 hover:bg-slate-700" : "border-white bg-white text-slate-700 shadow-sm ring-1 ring-slate-200/50 hover:ring-indigo-200"
-                    }`}
-                  >
-                    <span className="text-indigo-500">{item.year ? `${item.year}: ` : ""}</span>
-                    {item.role}
-                    {item.team ? <span className="opacity-60"> ({item.team})</span> : ""}
-                  </div>
-                ))}
-              </div>
+          ) : (
+            <div className="flex h-full min-h-72 items-center justify-center bg-[linear-gradient(135deg,#1e1b4b,#0f172a)] text-7xl font-black text-white/20">
+              {entry.name?.[0]}
             </div>
           )}
+        </div>
 
-          <div className="mt-auto pt-6">
-            <div className="flex flex-wrap items-center gap-6">
-              <a href={`mailto:${entry.email}`} className="group flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-600">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isDarkMode ? "bg-slate-800" : "bg-slate-100 group-hover:bg-indigo-50"}`}>
+        <div
+          className={`grid gap-6 p-5 sm:p-7 lg:p-8 xl:p-9 ${
+            hasJourney ? "md:grid-cols-[minmax(0,1fr)_18rem] md:items-center xl:grid-cols-[minmax(0,1fr)_21rem]" : ""
+          }`}
+        >
+          <div className="min-w-0">
+            <h3 className={`text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>
+              {entry.name}
+            </h3>
+
+            <p className={`mt-3 text-sm font-semibold sm:text-base ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+              {serviceLine}
+            </p>
+
+            {contribution && (
+              <div className={`mt-6 rounded-[1.35rem] border p-4 sm:p-5 ${
+                isDarkMode
+                  ? "border-indigo-500/25 bg-indigo-500/10"
+                  : "border-indigo-100 bg-[linear-gradient(135deg,#f8fbff,#f1f5ff)]"
+              }`}>
+                <p className={`text-[11px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
+                  Contribution made
+                </p>
+                <p className={`mt-3 line-clamp-4 text-sm font-medium leading-7 sm:text-[15px] ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                  {contribution}
+                </p>
+              </div>
+            )}
+
+            {roleLine && (
+              <p className={`mt-5 line-clamp-2 text-sm font-semibold leading-6 ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>
+                {roleLine}
+              </p>
+            )}
+
+            {displayMessage && (
+              <p className={`mt-3 line-clamp-3 text-sm font-medium leading-7 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                {displayMessage}
+              </p>
+            )}
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${entry.email}`}
+                className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
+                  isDarkMode
+                    ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                }`}
+              >
+                <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
                   <Mail className="h-4 w-4" />
-                </div>
+                </span>
                 Email
               </a>
               {entry.linkedin && (
-                <a href={entry.linkedin} target="_blank" rel="noreferrer" className="group flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-600">
-                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isDarkMode ? "bg-slate-800" : "bg-slate-100 group-hover:bg-indigo-50"}`}>
+                <a
+                  href={entry.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
+                    isDarkMode
+                      ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                  }`}
+                >
+                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
                     <Linkedin className="h-4 w-4" />
-                  </div>
+                  </span>
                   LinkedIn
                 </a>
               )}
               {entry.instagram && (
-                <a href={entry.instagram} target="_blank" rel="noreferrer" className="group flex items-center gap-2 text-sm font-bold text-slate-500 transition-colors hover:text-indigo-600">
-                  <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${isDarkMode ? "bg-slate-800" : "bg-slate-100 group-hover:bg-indigo-50"}`}>
+                <a
+                  href={entry.instagram}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
+                    isDarkMode
+                      ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                  }`}
+                >
+                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
                     <Instagram className="h-4 w-4" />
-                  </div>
+                  </span>
                   Instagram
                 </a>
               )}
             </div>
           </div>
+
+          {hasJourney && (
+            <aside className={`rounded-[1.75rem] p-5 sm:p-6 ${
+              isDarkMode
+                ? "bg-slate-950/70 ring-1 ring-slate-800"
+                : "bg-[linear-gradient(180deg,#f6f7ff,#eef2ff)] ring-1 ring-indigo-100"
+            }`}>
+              <h4 className={`text-sm font-bold ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
+                Network Journey
+              </h4>
+              <div className="relative mt-7 space-y-7 pl-8">
+                <div className={`absolute bottom-1 left-[0.45rem] top-2 w-px ${isDarkMode ? "bg-slate-600" : "bg-indigo-200"}`} />
+                {dedupedRoleHistory.map((item, index) => (
+                  <div key={`${item.year}-${item.team}-${item.role}-${index}`} className="relative">
+                    <span className={`absolute -left-[2rem] top-1 h-4 w-4 rounded-full ring-4 ${
+                      isDarkMode ? "bg-indigo-300 ring-slate-950" : "bg-slate-950 ring-indigo-50"
+                    }`} />
+                    <p className={`text-sm font-bold leading-5 ${isDarkMode ? "text-slate-100" : "text-slate-950"}`}>
+                      {item.role || entry.networkPost || "Legacy Member"}
+                    </p>
+                    <p className={`mt-1 text-xs font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                      {[item.year, item.team].filter(Boolean).join(" - ")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </aside>
+          )}
         </div>
       </div>
     </article>

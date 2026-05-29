@@ -21,6 +21,7 @@ export interface IAlumniDocument extends Document {
   instagram?: string;
   twitter?: string;
   bio?: string;
+  contribution?: string;
   photo?: { public_id?: string; url?: string };
   status: "pending" | "approved" | "rejected";
   legacyType: "alumni" | "team_member";
@@ -52,6 +53,7 @@ const alumniSchema = new Schema<IAlumniDocument>(
     instagram: { type: String, trim: true, default: "" },
     twitter: { type: String, trim: true, default: "" },
     bio: { type: String, trim: true, maxlength: 500, default: "" },
+    contribution: { type: String, trim: true, maxlength: 800, default: "" },
     photo: { public_id: { type: String, trim: true }, url: { type: String, trim: true } },
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending", index: true },
     reviewedAt: { type: Date, default: null },

@@ -1,7 +1,7 @@
 "use client";
-import React from "react";
+
 import type { IDiscussPost } from "@/types";
-import { Building2, BadgeCheck, Check, X, Trash2, ExternalLink } from "lucide-react";
+import { BadgeCheck, Check, ExternalLink, Megaphone, Trash2, X } from "lucide-react";
 
 interface DiscussCardProps {
   post: IDiscussPost;
@@ -15,67 +15,54 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
     ...(post.banner?.url ? [post.banner] : []),
     ...(post.photos || []),
   ].filter((image, index, list) => image?.url && list.findIndex((item) => item?.url === image.url) === index);
+  const coverUrl = images[0]?.url || "/IIITians-Network-Logo-Dark.png";
 
   return (
-    <article
-      className="
-        relative rounded-[1.6rem] border border-sky-100 bg-white/95 shadow-sm overflow-hidden
-        transition-all duration-300 hover:shadow-md hover:border-sky-200 hover:-translate-y-0.5
-      "
-    >
-      {images.length > 0 && (
-        <div className="grid gap-1 bg-slate-100 p-1 sm:grid-cols-2">
-          {images.slice(0, 4).map((image, index) => (
-            <a
-              key={image.url}
-              href={image.url}
-              target="_blank"
-              rel="noreferrer"
-              className={`relative block overflow-hidden bg-slate-200 ${images.length === 1 ? "sm:col-span-2" : ""}`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={image.url}
-                alt={`${post.title} photo ${index + 1}`}
-                className="h-56 w-full object-cover transition duration-300 hover:scale-[1.02]"
-              />
-              {index === 3 && images.length > 4 && (
-                <span className="absolute inset-0 flex items-center justify-center bg-slate-950/55 text-sm font-bold text-white">
-                  +{images.length - 4} more
-                </span>
-              )}
-            </a>
-          ))}
-        </div>
-      )}
+    <article className="relative overflow-hidden rounded-[1.8rem] border border-sky-100 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md">
+      <div className="grid min-h-[15rem] md:grid-cols-[19rem_minmax(0,1fr)] lg:grid-cols-[21rem_minmax(0,1fr)]">
+        <a
+          href={coverUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="relative block min-h-64 overflow-hidden bg-slate-950 md:min-h-full"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={coverUrl}
+            alt={post.title}
+            className="h-full w-full object-cover transition duration-500 hover:scale-[1.03]"
+          />
+          {images.length > 1 && (
+            <span className="absolute bottom-3 right-3 rounded-full bg-slate-950/80 px-3 py-1 text-[11px] font-bold text-white backdrop-blur">
+              +{images.length - 1} photos
+            </span>
+          )}
+        </a>
 
-      <div className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="min-w-0 flex-1">
-          {/* Metadata Tags */}
-          <div className="flex flex-wrap items-center gap-2 mb-2.5">
-            <span className="rounded-full bg-sky-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-sky-700">
+        <div className="flex flex-col justify-center gap-4 p-5 sm:p-7">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.22em] text-indigo-700">
+              <Megaphone className="h-3.5 w-3.5" />
               {post.type}
             </span>
-            {post.badgeLabel && (
-              <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1">
-                <BadgeCheck className="h-3 w-3" />
-                {post.badgeLabel}
-              </span>
-            )}
-            <span className="flex items-center gap-1 text-[11px] font-semibold text-slate-400">
-              <Building2 className="h-3.5 w-3.5 text-slate-400" />
+            <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">
               {post.collegeName}
             </span>
-            <span className="text-[11px] font-semibold text-slate-400">
-              · {post.clubName}
+            <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">
+              {post.clubName}
             </span>
+            {post.badgeLabel && (
+              <span className="flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white">
+                <BadgeCheck className="h-3 w-3" />
+                Verified
+              </span>
+            )}
           </div>
 
-          {/* Title & Description */}
-          <h3 className="text-base font-extrabold leading-snug text-slate-900 line-clamp-1">
+          <h3 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950">
             {post.title}
           </h3>
-          <p className="mt-2 text-xs leading-relaxed text-slate-600 font-semibold line-clamp-3">
+          <p className="text-sm font-medium leading-8 text-slate-700 sm:text-[15px]">
             {post.description}
           </p>
 
@@ -84,36 +71,18 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
               href={post.actionLink}
               target="_blank"
               rel="noreferrer"
-              className="mt-3.5 inline-flex items-center gap-1 text-xs font-bold text-sky-600 hover:text-sky-800 transition hover:underline"
+              className="inline-flex w-fit items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
             >
-              View Link <ExternalLink className="h-3 w-3" />
+              Open link <ExternalLink className="h-4 w-4" />
             </a>
           )}
-        </div>
 
-        {/* Action Panel (Status or Admin Buttons) */}
-        <div className="flex shrink-0 items-center gap-3 border-t border-slate-50 pt-4 md:border-t-0 md:pt-0">
-          {post.status && (
-            <span
-              className={`rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide ${
-                post.status === "approved"
-                  ? "bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100"
-                  : post.status === "rejected"
-                  ? "bg-rose-50 text-rose-600 ring-1 ring-rose-100"
-                  : "bg-amber-50 text-amber-600 ring-1 ring-amber-100"
-              }`}
-            >
-              {post.status}
-            </span>
-          )}
-
-          {/* Admin Action Buttons */}
           {(onApprove || onReject || onDelete) && (
-            <div className="flex items-center gap-2 border-l border-slate-100 pl-3">
+            <div className="flex items-center gap-2 border-t border-slate-100 pt-4">
               {onApprove && post.status !== "approved" && (
                 <button
                   onClick={() => onApprove(post._id)}
-                  className="rounded-full bg-slate-50 p-2 text-slate-500 hover:bg-emerald-50 hover:text-emerald-600 transition shadow-sm border border-slate-100"
+                  className="rounded-full border border-slate-100 bg-slate-50 p-2 text-slate-500 shadow-sm transition hover:bg-emerald-50 hover:text-emerald-600"
                   title="Approve Post"
                 >
                   <Check className="h-4 w-4" />
@@ -122,7 +91,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
               {onReject && post.status !== "rejected" && (
                 <button
                   onClick={() => onReject(post._id)}
-                  className="rounded-full bg-slate-50 p-2 text-slate-500 hover:bg-amber-50 hover:text-amber-600 transition shadow-sm border border-slate-100"
+                  className="rounded-full border border-slate-100 bg-slate-50 p-2 text-slate-500 shadow-sm transition hover:bg-amber-50 hover:text-amber-600"
                   title="Reject Post"
                 >
                   <X className="h-4 w-4" />
@@ -131,7 +100,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
               {onDelete && (
                 <button
                   onClick={() => onDelete(post._id)}
-                  className="rounded-full bg-rose-50 p-2 text-rose-500 hover:bg-rose-600 hover:text-white transition shadow-sm border border-rose-100"
+                  className="rounded-full border border-rose-100 bg-rose-50 p-2 text-rose-500 shadow-sm transition hover:bg-rose-600 hover:text-white"
                   title="Delete Post"
                 >
                   <Trash2 className="h-4 w-4" />

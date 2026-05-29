@@ -57,6 +57,7 @@ export default function LegacyAdminPage() {
     linkedin: "",
     instagram: "",
     bio: "",
+    contribution: "",
   });
 
   // Team Addition States
@@ -157,6 +158,7 @@ export default function LegacyAdminPage() {
       linkedin: entry.linkedin || "",
       instagram: entry.instagram || "",
       bio: entry.bio || "",
+      contribution: entry.contribution || "",
     });
     setError("");
     setSuccess("");
@@ -402,6 +404,19 @@ export default function LegacyAdminPage() {
                               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-600 focus:bg-white"
                             />
                           </div>
+                          <div className="sm:col-span-2">
+                            <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-400">
+                              Contribution made
+                            </label>
+                            <textarea
+                              name="contribution"
+                              value={editForm.contribution}
+                              onChange={handleEditChange}
+                              placeholder="Admin-only contribution text shown in the contribution box"
+                              rows={3}
+                              className="w-full rounded-xl border border-indigo-100 bg-indigo-50/50 px-4 py-2 text-sm text-slate-900 outline-none transition focus:border-indigo-600 focus:bg-white"
+                            />
+                          </div>
                         </div>
                       ) : (
                         <>
@@ -477,6 +492,15 @@ export default function LegacyAdminPage() {
                   {!isEditing && a.bio && (
                     <p className="mt-4 rounded-xl bg-slate-50 p-3 text-sm leading-relaxed text-slate-600">
                       {a.bio}
+                    </p>
+                  )}
+
+                  {!isEditing && a.contribution && (
+                    <p className="mt-3 rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 text-sm leading-relaxed text-indigo-950">
+                      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-indigo-600">
+                        Contribution made
+                      </span>
+                      {a.contribution}
                     </p>
                   )}
 

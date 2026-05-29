@@ -8,7 +8,7 @@ import {
   ExternalLink, MoreHorizontal, Link2, ShieldCheck,
   Users, Images, ImagePlus, X, Plus,
   ChevronLeft, ChevronRight, Upload, Trash2, Globe,
-  BriefcaseBusiness,
+  BriefcaseBusiness, History,
 } from "lucide-react";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
@@ -501,25 +501,25 @@ function CollegeCard({
           <div className="grid grid-cols-2 gap-2">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-slate-800 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/10 active:scale-95 sm:text-[11px]"
             >
               <Images size={14} /> Gallery
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-indigo-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-indigo-700 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-indigo-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-600/10 active:scale-95 sm:text-[11px]"
             >
               <Users size={14} /> Clubs
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition hover:bg-slate-50 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-sky-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/10 active:scale-95 sm:text-[11px]"
             >
-              Legacy
+              <History size={14} /> Legacy
             </Link>
             <Link
               href={`/placement?college=${encodeURIComponent(name)}`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition hover:bg-emerald-50 hover:text-emerald-700 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-emerald-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/10 active:scale-95 sm:text-[11px]"
             >
               <BriefcaseBusiness size={14} /> Placement
             </Link>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import api from "@/lib/apiClient";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -35,6 +35,18 @@ function Message({ tone, children }: { tone: "error" | "success"; children: Reac
 }
 
 export default function DiscussPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-sky-200 border-t-sky-600" />
+      </div>
+    }>
+      <DiscussPageClient />
+    </Suspense>
+  );
+}
+
+function DiscussPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [posts, setPosts] = useState<IDiscussPost[]>([]);

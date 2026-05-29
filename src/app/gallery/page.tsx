@@ -14,6 +14,8 @@ import {
   Sparkles,
   Upload,
   Send,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import api from "@/lib/apiClient";
@@ -73,6 +75,8 @@ function GalleryPageClient() {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState({ type: "", text: "" });
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 12;
 
   const normalizedCollegeName = useMemo(
     () => (collegeName ? decodeURIComponent(collegeName).toLowerCase() : ""),
@@ -121,6 +125,10 @@ function GalleryPageClient() {
     if (matchedCollege?._id) setUploadCollegeId(matchedCollege._id);
   }, [collegeName, colleges, normalizedCollegeName, uploadCollegeId]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchQuery, collegeName]);
+
   const allPhotos = useMemo(() => {
     const photos = colleges.flatMap((college) =>
       (college.gallery || []).map((img) => ({
@@ -161,6 +169,13 @@ function GalleryPageClient() {
       return matchesCategory && matchesSearch;
     });
   }, [scopedPhotos, selectedCategory, searchQuery, normalizedCollegeName]);
+
+  const paginatedPhotos = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredPhotos.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredPhotos, currentPage]);
+
+  const totalPages = Math.ceil(filteredPhotos.length / ITEMS_PER_PAGE);
 
   // Auto-open photo from URL
   useEffect(() => {
@@ -330,8 +345,8 @@ function GalleryPageClient() {
 
         {/* Photo Grid */}
         <div className="columns-1 gap-5 sm:columns-2 lg:columns-3 xl:columns-4">
-          {filteredPhotos.map((photo, index) => (
-            <div key={(photo.url || "") + index} onClick={() => openPhoto(photo, index)}
+          {paginatedPhotos.map((photo) => (
+            <div key={photo.url} onClick={() => openPhoto(photo, filteredPhotos.indexOf(photo))}
               className="group relative mb-5 inline-block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-[1.6rem] border border-slate-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
               <div className="relative overflow-hidden bg-slate-100">
                 <img src={optimizeCloudinaryImage(photo.url, "f_auto,q_auto,w_900")} alt={photo.caption || "Gallery photo"}
@@ -349,6 +364,42 @@ function GalleryPageClient() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-10 flex items-center justify-center gap-2">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {Array.from({ length: totalPages }).map((_, i) => {
+              const p = i + 1;
+              return (
+                <button
+                  key={p}
+                  onClick={() => setCurrentPage(p)}
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-sm font-semibold transition ${
+                    currentPage === p
+                      ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
+                      : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  }`}
+                >
+                  {p}
+                </button>
+              );
+            })}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
 
         {filteredPhotos.length === 0 && (
           <div className="flex flex-col items-center justify-center py-32 text-center">
