@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import {
   BookOpenText,
   Building2,
@@ -207,6 +207,18 @@ const guideActivityFeed = [
 ];
 
 export default function GuidePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+      </div>
+    }>
+      <GuidePageClient />
+    </Suspense>
+  );
+}
+
+function GuidePageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialFlow = searchParams.get("flow");

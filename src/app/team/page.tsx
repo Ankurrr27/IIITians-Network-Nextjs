@@ -6,6 +6,7 @@ export const dynamic = 'force-dynamic';
 
 import TeamMember from "@/models/TeamMember";
 import type { ITeamMember } from "@/types";
+import { Suspense } from "react";
 import TeamClient from "./TeamClient";
 
 export const metadata: Metadata = {
@@ -22,5 +23,13 @@ function serialize<T>(data: T): T {
 export default async function TeamPage() {
   await connectDB();
   const members = await TeamMember.find().sort({ order: 1, createdAt: 1 }).lean();
-  return <TeamClient initialMembers={serialize(members) as unknown as ITeamMember[]} />;
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center bg-white">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+      </div>
+    }>
+      <TeamClient initialMembers={serialize(members) as unknown as ITeamMember[]} />
+    </Suspense>
+  );
 }

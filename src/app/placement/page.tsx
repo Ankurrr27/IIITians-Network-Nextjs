@@ -2,8 +2,24 @@
 
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Building2, Calendar, ChevronDown, Loader2, Search, ArrowUpRight, Award } from "lucide-react";
 import api from "@/lib/apiClient";
+import PlacementGrowthSection from "./sections/PlacementGrowthSection.jsx";
+import PlacementBarSection from "./sections/PlacementBarSection.jsx";
+import { Building2, Search, Loader2, Calendar, Award, ArrowUpRight, ChevronDown } from "lucide-react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+} from "recharts";
 import {
   formatLpa, summarizePlacementYear, summarizeAllYears,
   summarizePlacementCollection, buildPlacementFaqs,
@@ -60,21 +76,52 @@ function PlacementPageClient() {
     setSearched(true);
     setCollege(name);
     try {
-      const res = await api.get(`/placements/college/${encodeURIComponent(name)}`);
+      const res = await api.get(`/placements/college-name/${encodeURIComponent(name)}`);
       setData(res.data);
       const years = (res.data.yearlyPlacements || []).map((e: any) => e.year);
       let nextYear = targetYear || year;
       if (!nextYear || !years.includes(nextYear)) nextYear = years.length ? Math.max(...years) : null;
       setYear(nextYear);
+
+      // Sync URL parameters to make it shareable
+      const url = new URL(window.location.href);
+      url.searchParams.set("college", res.data.college?.name || name);
+      if (nextYear) {
+        url.searchParams.set("year", nextYear.toString());
+      } else {
+        url.searchParams.delete("year");
+      }
+      window.history.replaceState({}, "", url.toString());
     } catch {
       setData(null);
       setYear(null);
+      // Clear URL parameters on failure
+      const url = new URL(window.location.href);
+      url.searchParams.delete("college");
+      url.searchParams.delete("year");
+      window.history.replaceState({}, "", url.toString());
     } finally {
       setLoading(false);
     }
   };
 
-  const handleYearChange = (y: number | null) => setYear(y);
+  const handleYearChange = (y: number | null) => {
+    setYear(y);
+    const url = new URL(window.location.href);
+    const currentCollege = data?.college?.name || college;
+    if (currentCollege) {
+      url.searchParams.set("college", currentCollege);
+      if (y) {
+        url.searchParams.set("year", y.toString());
+      } else {
+        url.searchParams.delete("year");
+      }
+    } else {
+      url.searchParams.delete("college");
+      url.searchParams.delete("year");
+    }
+    window.history.replaceState({}, "", url.toString());
+  };
 
   const yearData = year ? data?.yearlyPlacements?.find((y2: any) => y2.year === year) : null;
   const selectedCollegeName = data?.college?.name || (searched ? college : null);
@@ -164,13 +211,15 @@ function PlacementPageClient() {
         </section>
 
         {/* Preview (before search) */}
-        {!searched && <PlacementPreview />}
+        {!searched && <PlacementPreview onSelectCollege={(name) => searchCollege(name, null)} />}
 
         {/* Snapshot */}
         {data && <PlacementSnapshot data={data} />}
+        {data && <PlacementGrowthSection data={data} selectedCollegeName={selectedCollegeName} />}
+        {yearData && <PlacementBarSection yearData={yearData} />}
 
         {/* Results */}
-        {data && !loading && yearData && (
+        {data && !loading && (
           <PlacementResults data={data} year={year} yearData={yearData} selectedCollegeName={selectedCollegeName} />
         )}
 
@@ -209,7 +258,7 @@ function YearSelector({ years = [], value, onChange }: { years: number[]; value:
 }
 
 /* ─── PlacementPreview ───────────────────────────────────────────────────── */
-function PlacementPreview() {
+function PlacementPreview({ onSelectCollege }: { onSelectCollege: (name: string) => void }) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -240,7 +289,7 @@ function PlacementPreview() {
       ) : items.length > 0 ? (
         <div className="mt-5 grid gap-3 sm:mt-8 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
           {items.map((c: any) => (
-            <div key={c.id} className="rounded-[1.15rem] border border-slate-200 bg-slate-50 p-3.5 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-sm sm:rounded-[1.25rem] sm:p-4">
+            <div key={c.id} onClick={() => onSelectCollege(c.collegeName)} className="cursor-pointer rounded-[1.15rem] border border-slate-200 bg-slate-50 p-3.5 transition hover:-translate-y-0.5 hover:bg-white hover:shadow-sm sm:rounded-[1.25rem] sm:p-4">
               <p className="text-sm font-semibold leading-tight text-slate-900 sm:text-base">{c.collegeName}</p>
               <p className="mt-1 text-xs text-slate-500 sm:text-sm">Latest year: {c.year}</p>
               <div className="mt-3 grid grid-cols-2 gap-2 text-left">

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Images,
@@ -49,6 +49,14 @@ function optimizeCloudinaryImage(url: string, transformations: string) {
 }
 
 export default function GalleryPage() {
+  return (
+    <Suspense fallback={<GallerySkeleton />}>
+      <GalleryPageClient />
+    </Suspense>
+  );
+}
+
+function GalleryPageClient() {
   const params = useParams();
   const collegeName = params?.collegeName as string | undefined;
   const [searchParamsObj] = [useSearchParams()];
