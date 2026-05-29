@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import api from "@/lib/apiClient";
+import AdminLayout from "@/components/AdminLayout";
 
 interface LogEntry {
   _id: string;
@@ -63,16 +64,17 @@ export default function AdminLogsPage() {
 
   const getQuickLink = (resource?: string) => {
     const normalized = resource?.toLowerCase();
-    if (normalized === "alumni" || normalized === "legacy") return "/admin/legacy";
-    if (normalized === "event") return "/admin/events";
-    if (normalized === "team") return "/admin/team";
-    if (normalized === "college") return "/admin/colleges";
-    if (normalized === "discuss") return "/admin/discuss";
-    if (normalized === "placement") return "/admin/placement";
+    if (normalized === "alumni" || normalized === "legacy") return "/legacy/admin";
+    if (normalized === "event") return "/events/admin";
+    if (normalized === "team") return "/team/admin";
+    if (normalized === "college") return "/colleges/admin";
+    if (normalized === "discuss") return "/discuss/admin";
+    if (normalized === "placement") return "/placement/admin";
     return null;
   };
 
   return (
+    <AdminLayout>
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -210,5 +212,6 @@ export default function AdminLogsPage() {
         )}
       </div>
     </div>
+    </AdminLayout>
   );
 }

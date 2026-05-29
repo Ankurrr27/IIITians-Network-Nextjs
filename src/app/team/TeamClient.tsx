@@ -1,14 +1,13 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, Search, SlidersHorizontal, Users, UserPlus, Linkedin, Instagram } from "lucide-react";
+import { ArrowRight, Search, SlidersHorizontal, Users, UserPlus } from "lucide-react";
 
 import type { ITeamMember } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
-import TeamMemberCard from "@/components/team/TeamMemberCard";
+import SourceTeamGrid from "@/components/team/SourceTeamGrid";
 
 interface Props {
   initialMembers: ITeamMember[];
@@ -252,57 +251,7 @@ export default function TeamClient({ initialMembers }: Props) {
 
       {/* Members Grid - Organized by Role Type */}
       <section className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 sm:pb-24 space-y-16">
-        {/* Executive Team */}
-        {sortedMembers.filter((m) => m.roleType === "EXEC").length > 0 && (
-          <div>
-            <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 mb-10">
-              Executive Team
-            </h2>
-            <div className="space-y-6">
-              {sortedMembers.filter((m) => m.roleType === "EXEC").map((member) => (
-                <ExecutiveCard key={member._id} member={member} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Team Leads */}
-        {sortedMembers.filter((m) => m.roleType === "LEAD").length > 0 && (
-          <div>
-            <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 mb-10">
-              Team Lead
-            </h2>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {sortedMembers.filter((m) => m.roleType === "LEAD").map((member) => (
-                <TeamLeadCard key={member._id} member={member} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Members */}
-        {sortedMembers.filter((m) => m.roleType === "MEMBER").length > 0 && (
-          <div>
-            <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900 mb-10">
-              Members
-            </h2>
-            {sortedMembers.filter((m) => m.roleType === "MEMBER").length === 0 ? (
-              <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white px-6 py-20 text-center shadow-sm">
-                <div className="mx-auto max-w-2xl">
-                  <div className="text-xl font-semibold text-slate-900">
-                    {hasDirectoryData ? "No members found." : "Members will appear here soon."}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-                {sortedMembers.filter((m) => m.roleType === "MEMBER").map((member) => (
-                  <MemberCard key={member._id} member={member} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        {sortedMembers.length > 0 && <SourceTeamGrid members={sortedMembers} />}
 
         {filteredMembers.length === 0 && (
           <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white px-6 py-20 text-center shadow-sm">
@@ -321,198 +270,6 @@ export default function TeamClient({ initialMembers }: Props) {
       </section>
 
       {/* Helper Components */}
-    </div>
-  );
-}
-
-// Executive Card Component
-function ExecutiveCard({ member }: { member: ITeamMember }) {
-  return (
-    <div className="group rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:shadow-lg overflow-hidden">
-      <div className="grid gap-0 sm:grid-cols-[320px_1fr] p-0">
-        {/* Image */}
-        <div className="relative h-64 sm:h-auto overflow-hidden bg-slate-100">
-          {member.photo?.url ? (
-            <Image
-              src={member.photo.url}
-              alt={member.name}
-              fill
-              className="object-cover group-hover:scale-105 transition duration-300"
-              sizes="(max-width: 768px) 100vw, 320px"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-400 to-blue-500">
-              <span className="text-6xl font-bold text-white opacity-30">{member.name?.[0]}</span>
-            </div>
-          )}
-          {/* Year Badge */}
-          {member.year && (
-            <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border border-white bg-white/95 backdrop-blur px-3 py-1.5 shadow-sm">
-              <span className="text-xs font-bold text-slate-900">{member.year}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Content */}
-        <div className="flex flex-col p-6 sm:p-8">
-          {/* Role Badge + Year */}
-          <div className="flex items-center gap-3 mb-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-indigo-700 border border-indigo-200">
-              {member.role}
-            </span>
-            {member.year && <span className="text-xs font-semibold text-slate-500">{member.year}</span>}
-          </div>
-
-          {/* Name */}
-          <h3 className="text-2xl sm:text-3xl font-bold text-slate-900">{member.name}</h3>
-
-          {/* Position */}
-          {member.iiit && (
-            <p className="mt-1 text-sm font-semibold text-indigo-600">{member.role} - {member.iiit}</p>
-          )}
-
-          {/* About */}
-          {member.about && (
-            <p className="mt-4 text-sm leading-6 text-slate-600">{member.about}</p>
-          )}
-
-          {/* Message */}
-          {member.message && (
-            <div className="mt-6 border-t border-slate-200 pt-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-indigo-600">Message</p>
-              <p className="mt-2 text-sm text-slate-600 italic">"{member.message}"</p>
-            </div>
-          )}
-
-          {/* Social Links */}
-          <div className="mt-6 flex items-center gap-3">
-            {member.linkedin && (
-              <a
-                href={member.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                className="text-slate-400 hover:text-indigo-600 transition"
-                title="LinkedIn"
-              >
-                <Linkedin className="h-5 w-5" />
-              </a>
-            )}
-            {member.instagram && (
-              <a
-                href={member.instagram}
-                target="_blank"
-                rel="noreferrer"
-                className="text-slate-400 hover:text-rose-500 transition"
-                title="Instagram"
-              >
-                <Instagram className="h-5 w-5" />
-              </a>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Team Lead Card Component
-function TeamLeadCard({ member }: { member: ITeamMember }) {
-  return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-lg h-64">
-      {/* Image Background */}
-      {member.photo?.url ? (
-        <Image
-          src={member.photo.url}
-          alt={member.name}
-          fill
-          className="object-cover group-hover:scale-105 transition duration-300"
-          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center">
-          <span className="text-7xl font-bold text-white opacity-20">{member.name?.[0]}</span>
-        </div>
-      )}
-
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-      {/* Badge */}
-      <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-100/90 backdrop-blur px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-emerald-700 border border-emerald-200">
-        Lead Team
-      </div>
-
-      {/* Social Links - Top Right */}
-      <div className="absolute top-3 right-3 flex items-center gap-2">
-        {member.linkedin && (
-          <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/90 text-indigo-600 hover:bg-white transition">
-            <Linkedin className="h-4 w-4" />
-          </a>
-        )}
-        {member.instagram && (
-          <a href={member.instagram} target="_blank" rel="noreferrer" className="flex items-center justify-center w-8 h-8 rounded-full bg-white/90 text-rose-500 hover:bg-white transition">
-            <Instagram className="h-4 w-4" />
-          </a>
-        )}
-      </div>
-
-      {/* Content - Bottom */}
-      <div className="absolute bottom-0 inset-x-0 p-4">
-        <h4 className="text-lg font-bold text-white">{member.name}</h4>
-        {member.iiit && <p className="mt-1 text-sm text-white/90">{member.iiit}</p>}
-      </div>
-    </div>
-  );
-}
-
-// Member Card Component
-function MemberCard({ member }: { member: ITeamMember }) {
-  return (
-    <div className="group relative overflow-hidden rounded-2xl border border-slate-200 shadow-sm transition-all duration-300 hover:shadow-lg">
-      {/* Image */}
-      <div className="relative aspect-square overflow-hidden bg-slate-100">
-        {member.photo?.url ? (
-          <Image
-            src={member.photo.url}
-            alt={member.name}
-            fill
-            className="object-cover group-hover:scale-110 transition duration-300"
-            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center">
-            <span className="text-5xl font-bold text-white opacity-20">{member.name?.[0]}</span>
-          </div>
-        )}
-
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300" />
-
-        {/* Role Badge - Bottom Left */}
-        <div className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full bg-indigo-600/90 backdrop-blur px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white border border-indigo-400">
-          {member.role}
-        </div>
-
-        {/* Social Links - Bottom Right */}
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition duration-300">
-          {member.linkedin && (
-            <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center justify-center w-7 h-7 rounded-full bg-white/90 text-indigo-600 hover:bg-white transition">
-              <Linkedin className="h-3.5 w-3.5" />
-            </a>
-          )}
-          {member.instagram && (
-            <a href={member.instagram} target="_blank" rel="noreferrer" className="flex items-center justify-center w-7 h-7 rounded-full bg-white/90 text-rose-500 hover:bg-white transition">
-              <Instagram className="h-3.5 w-3.5" />
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* Info */}
-      <div className="p-3">
-        <h4 className="text-sm font-bold text-slate-900">{member.name}</h4>
-        {member.iiit && <p className="mt-0.5 text-xs text-slate-600">{member.iiit}</p>}
-      </div>
     </div>
   );
 }

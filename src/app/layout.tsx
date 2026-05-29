@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
-import InAppNotifications from "@/components/InAppNotifications";
-import ScrollToTop from "@/components/ScrollToTop";
-import { ThemeModeProvider } from "@/hooks/useThemeMode";
+import AppShell from "@/components/AppShell";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
@@ -48,13 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans bg-background text-foreground`}>
-        <ThemeModeProvider>
-          <ScrollToTop />
-          <Navigation />
-          <main>{children}</main>
-          <Footer />
-          <InAppNotifications />
-        </ThemeModeProvider>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

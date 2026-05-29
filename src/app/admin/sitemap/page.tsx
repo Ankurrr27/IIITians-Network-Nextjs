@@ -16,6 +16,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import api from "@/lib/apiClient";
 import type { ICollege } from "@/types";
+import AdminLayout from "@/components/AdminLayout";
 
 export default function AdminSitemapPage() {
   const [colleges, setColleges] = useState<ICollege[]>([]);
@@ -40,8 +41,8 @@ export default function AdminSitemapPage() {
       title: "Content & Assets",
       icon: Building2,
       links: [
-        { name: "Colleges Directory", path: "/admin/colleges", desc: "Manage IIITs and their details" },
-        { name: "Global Events", path: "/admin/events", desc: "Create and update events" },
+        { name: "Colleges Directory", path: "/colleges/admin", desc: "Manage IIITs and their details" },
+        { name: "Global Events", path: "/events/admin", desc: "Create and update events" },
         { name: "Platform Gallery", path: "/admin/gallery", desc: "Review and manage site images" },
       ],
     },
@@ -49,16 +50,16 @@ export default function AdminSitemapPage() {
       title: "Users & Community",
       icon: Users2,
       links: [
-        { name: "Team Directory", path: "/admin/team", desc: "Manage core team members" },
-        { name: "Network Legacy", path: "/admin/legacy", desc: "Approve legacy/alumni submissions" },
-        { name: "Student Discuss", path: "/admin/discuss", desc: "Moderate student discussions" },
+        { name: "Team Directory", path: "/team/admin", desc: "Manage core team members" },
+        { name: "Network Legacy", path: "/legacy/admin", desc: "Approve legacy/alumni submissions" },
+        { name: "Student Discuss", path: "/discuss/admin", desc: "Moderate student discussions" },
       ],
     },
     {
       title: "System & Operations",
       icon: Settings,
       links: [
-        { name: "Placement Records", path: "/admin/placement", desc: "Update placement stats" },
+        { name: "Placement Records", path: "/placement/admin", desc: "Update placement stats" },
         { name: "System Notifications", path: "/admin/notifications", desc: "Broadcast app notifications" },
         { name: "Admin Guide", path: "/admin/guide", desc: "Read operational procedures" },
       ],
@@ -66,6 +67,7 @@ export default function AdminSitemapPage() {
   ];
 
   return (
+    <AdminLayout>
     <div className="w-full px-4 py-8">
       <div className="mb-8 flex flex-col gap-2">
         <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm w-fit">
@@ -153,7 +155,7 @@ export default function AdminSitemapPage() {
                   <div className="mb-5 text-lg font-bold text-slate-900">{college.name}</div>
                   <div className="flex flex-col gap-3 border-l-2 border-indigo-100 pl-4">
                     <Link
-                      href={`/admin/colleges?college=${encodeName}`}
+                      href={`/colleges/admin?college=${encodeName}`}
                       className="group flex items-center gap-3 text-sm font-medium text-slate-600 hover:text-indigo-700"
                     >
                       <div className="rounded-lg bg-indigo-50 p-2 ring-1 ring-indigo-100 transition-colors group-hover:bg-indigo-100">
@@ -171,7 +173,7 @@ export default function AdminSitemapPage() {
                       Manage Gallery
                     </Link>
                     <Link
-                      href={`/admin/events?college=${encodeName}`}
+                      href={`/events/admin?college=${encodeName}`}
                       className="group flex items-center gap-3 text-sm font-medium text-slate-600 hover:text-indigo-700"
                     >
                       <div className="rounded-lg bg-amber-50 p-2 ring-1 ring-amber-100 transition-colors group-hover:bg-amber-100">
@@ -180,7 +182,7 @@ export default function AdminSitemapPage() {
                       Manage Events
                     </Link>
                     <Link
-                      href={`/admin/placement?college=${encodeName}`}
+                      href={`/placement/admin?college=${encodeName}`}
                       className="group flex items-center gap-3 text-sm font-medium text-slate-600 hover:text-indigo-700"
                     >
                       <div className="rounded-lg bg-emerald-50 p-2 ring-1 ring-emerald-100 transition-colors group-hover:bg-emerald-100">
@@ -201,5 +203,6 @@ export default function AdminSitemapPage() {
         )}
       </motion.div>
     </div>
+    </AdminLayout>
   );
 }

@@ -11,6 +11,11 @@ interface DiscussCardProps {
 }
 
 export default function DiscussCard({ post, onApprove, onReject, onDelete }: DiscussCardProps) {
+  const images = [
+    ...(post.banner?.url ? [post.banner] : []),
+    ...(post.photos || []),
+  ].filter((image, index, list) => image?.url && list.findIndex((item) => item?.url === image.url) === index);
+
   return (
     <article
       className="
@@ -18,6 +23,32 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
         transition-all duration-300 hover:shadow-md hover:border-sky-200 hover:-translate-y-0.5
       "
     >
+      {images.length > 0 && (
+        <div className="grid gap-1 bg-slate-100 p-1 sm:grid-cols-2">
+          {images.slice(0, 4).map((image, index) => (
+            <a
+              key={image.url}
+              href={image.url}
+              target="_blank"
+              rel="noreferrer"
+              className={`relative block overflow-hidden bg-slate-200 ${images.length === 1 ? "sm:col-span-2" : ""}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={image.url}
+                alt={`${post.title} photo ${index + 1}`}
+                className="h-56 w-full object-cover transition duration-300 hover:scale-[1.02]"
+              />
+              {index === 3 && images.length > 4 && (
+                <span className="absolute inset-0 flex items-center justify-center bg-slate-950/55 text-sm font-bold text-white">
+                  +{images.length - 4} more
+                </span>
+              )}
+            </a>
+          ))}
+        </div>
+      )}
+
       <div className="p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div className="min-w-0 flex-1">
           {/* Metadata Tags */}

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Globe,
   MessageSquare,
@@ -20,18 +19,15 @@ import api from "@/lib/apiClient";
 const BASE_VIEW_COUNT = 27385;
 
 export default function Footer() {
-  const pathname = usePathname();
   const [stats, setStats] = useState({
     views: BASE_VIEW_COUNT,
     members: 0,
-    alumni: 0,
+    legacy: 0,
     colleges: 0,
     clubs: 31,
     events: 0,
     photos: 0,
   });
-
-  if (pathname.includes("/admin")) return null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -54,7 +50,7 @@ export default function Footer() {
           collegesRes,
           clubsRes,
           siteStatsRes,
-          alumniRes,
+          legacyRes,
           eventsRes,
         ] = await Promise.allSettled([
           api.get("/team"),
@@ -70,7 +66,14 @@ export default function Footer() {
           const colleges = collegesRes.status === "fulfilled" ? collegesRes.value.data?.length || 0 : 0;
           const clubs = clubsRes.status === "fulfilled" ? clubsRes.value.data?.length || 31 : 31;
           const views = siteStatsRes.status === "fulfilled" ? siteStatsRes.value.data?.totalViews || prev.views : prev.views;
-          const alumni = alumniRes.status === "fulfilled" ? alumniRes.value.data?.length || 0 : 0;
+          const legacy =
+            legacyRes.status === "fulfilled"
+              ? Array.isArray(legacyRes.value.data)
+                ? legacyRes.value.data.length || 0
+                : legacyRes.value.data?.pagination?.total ||
+                  legacyRes.value.data?.alumni?.length ||
+                  0
+              : 0;
           
           let events = 0;
           if (eventsRes.status === "fulfilled" && eventsRes.value.data) {
@@ -94,7 +97,7 @@ export default function Footer() {
             members,
             colleges,
             clubs,
-            alumni,
+            legacy,
             events,
             photos,
           };
@@ -127,7 +130,7 @@ export default function Footer() {
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <StatChip icon={Users2} value={stats.members} label="Team" />
-              <StatChip icon={GraduationCap} value={stats.alumni} label="Alumni" />
+              <StatChip icon={GraduationCap} value={stats.legacy} label="Legacy" />
               <StatChip icon={Building2} value={stats.colleges} label="IIITs" />
               <StatChip icon={ShieldCheck} value={stats.clubs} label="Clubs" />
               <StatChip icon={Calendar} value={stats.events} label="Events" />

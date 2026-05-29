@@ -33,4 +33,20 @@ export function notifyPageEntry(title: string, message: string, dedupeKey: strin
   notifyAppAction({ title, message, type: "milestone", dedupeKey, dedupeWindowMs: 60000 });
 }
 
+export async function notifyPromise<T>(
+  promise: Promise<T>,
+  messages: { loading: string; success?: string; error?: string }
+) {
+  notifyAppAction({ title: messages.loading, type: "milestone" });
+
+  try {
+    const result = await promise;
+    if (messages.success) notifyAppAction({ title: messages.success, type: "milestone" });
+    return result;
+  } catch (error) {
+    if (messages.error) notifyAppAction({ title: messages.error, type: "milestone" });
+    throw error;
+  }
+}
+
 export { APP_NOTIFICATION_EVENT };

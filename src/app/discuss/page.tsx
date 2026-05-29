@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "@/lib/apiClient";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Megaphone, Plus, LogIn, LogOut, UserPlus, Send,
   ShieldCheck, MapPin, User, Mail, Phone, Trash2, Image as ImageIcon,
@@ -34,6 +35,8 @@ function Message({ tone, children }: { tone: "error" | "success"; children: Reac
 }
 
 export default function DiscussPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [posts, setPosts] = useState<IDiscussPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [account, setAccount] = useState<IDiscussAccount | null>(null);
@@ -63,6 +66,19 @@ export default function DiscussPage() {
     try { setPosts((await api.get("/discuss")).data || []); } finally { setLoading(false); }
   };
 
+  const setClubAccountQuery = (open: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (open) params.set("clubAccount", "true");
+    else params.delete("clubAccount");
+    const query = params.toString();
+    router.replace(query ? `/discuss?${query}` : "/discuss", { scroll: false });
+  };
+
+  const openClubAccountPanel = () => {
+    setPanelMode("auth");
+    setClubAccountQuery(true);
+  };
+
   const loadAccount = async () => {
     const token = localStorage.getItem("discussToken");
     if (!token) { setAccount(null); setMyPosts([]); setAccountLoading(false); return; }
@@ -85,7 +101,19 @@ export default function DiscussPage() {
     api.get("/discuss-accounts/handles").then((r) => setClubHandles(r.data || [])).catch(() => {});
   }, []);
 
-  const closePanel = () => { setPanelMode(""); setEditingId(""); setPostForm(INIT_POST); setPostPhotos([]); };
+  useEffect(() => {
+    if (searchParams.get("clubAccount") === "true") {
+      setPanelMode("auth");
+    }
+  }, [searchParams]);
+
+  const closePanel = () => {
+    setPanelMode("");
+    setEditingId("");
+    setPostForm(INIT_POST);
+    setPostPhotos([]);
+    setClubAccountQuery(false);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,7 +209,7 @@ export default function DiscussPage() {
                     className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700">
                     <Plus className="h-4 w-4" /> Post update
                   </button>
-                  <button onClick={() => setPanelMode("auth")}
+                  <button onClick={openClubAccountPanel}
                     className="rounded-full border border-sky-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-sky-50">
                     Account
                   </button>
@@ -191,7 +219,7 @@ export default function DiscussPage() {
               <div className="space-y-3">
                 <p className="text-sm text-slate-600">Register your club once, then post from the same account.</p>
                 <div className="flex gap-2">
-                  <button onClick={() => setPanelMode("auth")} className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-sky-50">
+                  <button onClick={openClubAccountPanel} className="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-white/90 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-sky-50">
                     <LogIn className="h-4 w-4" /> Club account
                   </button>
                   <Link href="/guide" className="inline-flex items-center gap-1.5 rounded-full border border-sky-100 bg-sky-50 px-4 py-2.5 text-sm font-semibold text-sky-700 transition hover:bg-sky-100">
