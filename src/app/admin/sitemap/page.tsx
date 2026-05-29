@@ -68,39 +68,39 @@ export default function AdminSitemapPage() {
 
   return (
     <AdminLayout>
-    <div className="w-full px-4 py-8">
-      <div className="mb-8 flex flex-col gap-2">
+    <div className="w-full px-2 py-4 sm:px-0">
+      <div className="mb-6 flex flex-col gap-2">
         <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm w-fit">
           <FolderTree size={16} />
           Workflow Overview
         </div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Admin Sitemap</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Admin Sitemap</h1>
         <p className="text-slate-600 font-medium text-sm">
           A centralized overview of the administrative workflow and management routes.
         </p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {adminSections.map((section, idx) => (
           <motion.div
             key={section.title}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 * idx }}
-            className="rounded-[1.5rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7))] p-6 shadow-[0_20px_60px_rgba(148,163,184,0.12)] backdrop-blur-sm"
+            className="rounded-[1.15rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7))] p-4 shadow-[0_20px_60px_rgba(148,163,184,0.12)] backdrop-blur-sm"
           >
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100 animate-pulse">
-                <section.icon size={22} />
+            <div className="mb-4 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
+                <section.icon size={19} />
               </div>
-              <h2 className="text-lg font-bold text-slate-900">{section.title}</h2>
+              <h2 className="text-base font-bold text-slate-900">{section.title}</h2>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
               {section.links.map((link) => (
                 <Link
                   key={link.path}
                   href={link.path}
-                  className="group block rounded-xl border border-slate-100 bg-white/60 p-4 transition-all hover:border-indigo-200 hover:bg-white hover:shadow-md"
+                  className="group block rounded-lg border border-slate-100 bg-white/60 p-3 transition-all hover:border-indigo-200 hover:bg-white hover:shadow-md"
                 >
                   <div className="flex items-center justify-between">
                     <div className="font-semibold text-slate-900 transition-colors group-hover:text-indigo-700">
@@ -124,15 +124,15 @@ export default function AdminSitemapPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="mt-12 rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7))] p-6 shadow-[0_20px_60px_rgba(148,163,184,0.12)] backdrop-blur-sm sm:p-8"
+        className="mt-8 rounded-[1.25rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.7))] p-4 shadow-[0_20px_60px_rgba(148,163,184,0.12)] backdrop-blur-sm sm:p-5"
       >
-        <div className="mb-10 flex flex-col gap-4 border-b border-indigo-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100 animate-pulse">
-              <Building2 size={28} />
+        <div className="mb-6 flex flex-col gap-3 border-b border-indigo-100 pb-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
+              <Building2 size={20} />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">Detailed College Management</h2>
+              <h2 className="text-xl font-bold text-slate-900">Detailed College Management</h2>
               <p className="text-slate-600 font-medium text-sm">Direct administrative workflows for individual IIITs</p>
             </div>
           </div>
@@ -143,17 +143,17 @@ export default function AdminSitemapPage() {
             <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-600"></div>
           </div>
         ) : colleges.length > 0 ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {colleges.map((college) => {
               const encodeName = encodeURIComponent(college.name);
 
               return (
                 <div
                   key={college._id}
-                  className="rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
+                  className="rounded-xl border border-slate-200/80 bg-white/80 p-4 shadow-sm transition-all hover:border-indigo-200 hover:shadow-md"
                 >
-                  <div className="mb-5 text-lg font-bold text-slate-900">{college.name}</div>
-                  <div className="flex flex-col gap-3 border-l-2 border-indigo-100 pl-4">
+                  <div className="mb-4 text-base font-bold text-slate-900">{college.name}</div>
+                  <div className="flex flex-col gap-2.5 border-l-2 border-indigo-100 pl-3">
                     <Link
                       href={`/colleges/admin?college=${encodeName}`}
                       className="group flex items-center gap-3 text-sm font-medium text-slate-600 hover:text-indigo-700"

@@ -265,7 +265,7 @@ export default function LegacyAdminPage() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header Block */}
-        <section className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -344,7 +344,7 @@ export default function LegacyAdminPage() {
 
         {/* Profiles Grid */}
         {loading ? (
-          <div className="flex justify-center py-20">
+          <div className="flex justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
           </div>
         ) : (
@@ -357,7 +357,7 @@ export default function LegacyAdminPage() {
               return (
                 <article
                   key={a._id}
-                  className="rounded-[1.5rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-[2rem] sm:p-6"
+                  className="rounded-[1.15rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
                 >
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
@@ -505,7 +505,7 @@ export default function LegacyAdminPage() {
                   )}
 
                   {isAddingToTeam && (
-                    <div className="mt-5 rounded-[1.5rem] border border-indigo-100 bg-indigo-50/60 p-4 space-y-4">
+                    <div className="mt-4 space-y-3 rounded-[1.15rem] border border-indigo-100 bg-indigo-50/60 p-4">
                       <div>
                         <p className="text-sm font-bold text-slate-900">
                           Add to Team History

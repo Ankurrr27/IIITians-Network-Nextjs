@@ -384,7 +384,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
           )}
 
           <div
-            className={`overflow-hidden rounded-[1.75rem] border p-4 shadow-[0_22px_60px_rgba(99,102,241,0.08)] sm:rounded-[2rem] sm:p-5 lg:p-6 ${
+            className={`overflow-hidden rounded-[1.25rem] border p-4 shadow-[0_22px_60px_rgba(99,102,241,0.08)] sm:p-5 ${
               isDarkMode ? cardShell.dark : "border-indigo-100 bg-[linear-gradient(135deg,rgba(239,246,255,0.9),rgba(255,255,255,0.95))]"
             }`}
           >
@@ -481,7 +481,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
 function LegacyHeroSection({ isDarkMode, stats }: { isDarkMode: boolean; stats: ReturnType<typeof getLegacyStats> }) {
   return (
     <div className="relative pb-8 sm:pb-12 lg:pb-14">
-      <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="max-w-3xl lg:pr-8">
           <div
             className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] ${
@@ -492,7 +492,7 @@ function LegacyHeroSection({ isDarkMode, stats }: { isDarkMode: boolean; stats: 
             Network Legacy
           </div>
 
-          <h1 className={`mt-5 text-3xl font-semibold tracking-tight sm:text-5xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
+          <h1 className={`mt-4 text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
             Network Legacy
           </h1>
 
@@ -561,7 +561,7 @@ function LegacySubmissionSection({
 }) {
   return (
     <div className="space-y-6">
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-8">
+      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
         <div className="max-w-2xl">
           <h2 className={`text-xl font-semibold sm:text-2xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
             Add your Network Legacy profile
@@ -920,7 +920,7 @@ function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: bo
   if (entries.length === 0) {
     return (
       <div
-        className={`rounded-[1.5rem] border border-dashed p-6 text-center sm:rounded-[2rem] sm:p-8 ${
+        className={`rounded-[1.25rem] border border-dashed p-5 text-center sm:p-6 ${
           isDarkMode ? "border-slate-700 bg-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.25)]" : "border-slate-300 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.05)]"
         }`}
       >
@@ -943,7 +943,7 @@ function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: bo
 
 function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <div className={`animate-pulse overflow-hidden rounded-[1.5rem] border sm:rounded-[2rem] ${isDarkMode ? cardShell.dark : cardShell.light}`}>
+    <div className={`animate-pulse overflow-hidden rounded-[1.25rem] border ${isDarkMode ? cardShell.dark : cardShell.light}`}>
       <div className="flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
         <div className="h-64 bg-slate-200 sm:h-72 lg:h-[22rem]" />
         <div className="space-y-5 p-4 sm:p-6 lg:p-7">
@@ -972,7 +972,7 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[1.75rem] border transition-all duration-500 hover:-translate-y-1 sm:rounded-[2rem] ${
+      className={`group relative overflow-hidden rounded-[1.25rem] border transition-all duration-500 hover:-translate-y-0.5 ${
         isDarkMode
           ? "border-slate-800 bg-slate-900/80 shadow-[0_24px_70px_rgba(2,6,23,0.34)] backdrop-blur-md"
           : "border-slate-200/80 bg-white shadow-[0_24px_80px_rgba(79,70,229,0.09)]"
@@ -996,7 +996,7 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
         </div>
 
         <div
-          className={`grid gap-6 p-5 sm:p-7 lg:p-8 xl:p-9 ${
+          className={`grid gap-5 p-5 sm:p-6 lg:p-7 ${
             hasJourney ? "md:grid-cols-[minmax(0,1fr)_18rem] md:items-center xl:grid-cols-[minmax(0,1fr)_21rem]" : ""
           }`}
         >

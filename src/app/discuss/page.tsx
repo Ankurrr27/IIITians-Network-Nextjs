@@ -183,26 +183,26 @@ function DiscussPageClient() {
     await Promise.all([loadPosts(), loadAccount()]);
   };
 
-  const input = "w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100";
+  const input = "w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100";
 
   return (
-    <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-16 pt-24">
+    <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-12 pt-[4.5rem]">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%)]" />
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
         {/* Header */}
-        <div className="mb-10 flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+        <div className="mb-7 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-sky-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-sky-700 shadow-sm">
               <Megaphone className="h-4 w-4" /> Discuss Board
             </div>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               Network-wide updates from clubs &amp; communities.
             </h1>
             <p className="mt-3 text-sm text-slate-500">Clubs can post updates, announcements, events and collaboration opportunities.</p>
           </div>
 
           {/* Account panel */}
-          <div className="rounded-2xl border border-sky-100 bg-white/70 p-4 shadow-sm xl:max-w-sm xl:w-full">
+          <div className="rounded-xl border border-sky-100 bg-white/70 p-3.5 shadow-sm xl:w-full xl:max-w-sm">
             {accountLoading ? (
               <p className="text-sm text-slate-500">Restoring discuss account…</p>
             ) : account ? (
@@ -252,7 +252,7 @@ function DiscussPageClient() {
         {/* Posts */}
         <div className="space-y-4">
           {loading ? (
-            <div className="flex justify-center py-20"><div className="h-8 w-8 animate-spin rounded-full border-4 border-sky-200 border-t-sky-600" /></div>
+            <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-sky-200 border-t-sky-600" /></div>
           ) : posts.length === 0 ? (
             <div className="rounded-2xl border border-sky-100 bg-white/90 px-5 py-10 text-center text-sm text-slate-500">
               No live updates yet. The first approved club announcement will appear here.

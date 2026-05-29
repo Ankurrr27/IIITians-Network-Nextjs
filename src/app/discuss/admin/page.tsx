@@ -176,7 +176,7 @@ export default function DiscussAdminPage() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Workspace Summary */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
@@ -216,7 +216,7 @@ export default function DiscussAdminPage() {
         )}
 
         {/* Discuss Accounts Section */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white">
               <ShieldCheck className="h-5 w-5" />
@@ -232,7 +232,7 @@ export default function DiscussAdminPage() {
               {Array.from({ length: 2 }).map((_, index) => (
                 <div
                   key={index}
-                  className="animate-pulse rounded-[1.6rem] border border-slate-200 bg-slate-50 p-5 space-y-3"
+                  className="animate-pulse space-y-3 rounded-[1.15rem] border border-slate-200 bg-slate-50 p-4"
                 >
                   <div className="h-4 bg-slate-200 rounded w-1/3" />
                   <div className="h-6 bg-slate-200 rounded w-2/3" />
@@ -247,7 +247,7 @@ export default function DiscussAdminPage() {
               {accounts.map((account) => (
                 <article
                   key={account._id}
-                  className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fafc_100%)] p-5 shadow-sm space-y-4"
+                  className="space-y-3 rounded-[1.15rem] border border-slate-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fafc_100%)] p-4 shadow-sm"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <span
@@ -389,7 +389,7 @@ export default function DiscussAdminPage() {
         </section>
 
         {/* Discuss Posts Section */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
               <Sparkles className="h-5 w-5" />

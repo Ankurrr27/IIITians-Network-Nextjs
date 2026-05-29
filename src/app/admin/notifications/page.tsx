@@ -175,7 +175,7 @@ export default function AdminNotificationsPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="rounded-[2rem] border border-slate-200 bg-white px-6 py-16 text-center text-slate-500 shadow-sm font-semibold">
+        <div className="rounded-[1.25rem] border border-slate-200 bg-white px-5 py-10 text-center font-semibold text-slate-500 shadow-sm">
           Loading notification workspace...
         </div>
       </AdminLayout>
@@ -185,7 +185,7 @@ export default function AdminNotificationsPage() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-indigo-600">
@@ -233,7 +233,7 @@ export default function AdminNotificationsPage() {
 
         <form
           onSubmit={handleSave}
-          className="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm"
+          className="space-y-4 rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
         >
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -366,7 +366,7 @@ export default function AdminNotificationsPage() {
           </div>
         </form>
 
-        <section className="space-y-4 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="space-y-3 rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b border-slate-100 pb-4">
             <div>
               <h2 className="text-xl font-bold text-slate-900">
@@ -420,7 +420,7 @@ export default function AdminNotificationsPage() {
             {filteredNotifications.map((item, index) => (
               <article
                 key={item._id}
-                className="rounded-[1.6rem] border border-slate-200 bg-slate-50/80 p-5 shadow-sm hover:shadow-md transition-shadow"
+                className="rounded-[1.15rem] border border-slate-200 bg-slate-50/80 p-4 shadow-sm transition-shadow hover:shadow-md"
               >
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="space-y-3">

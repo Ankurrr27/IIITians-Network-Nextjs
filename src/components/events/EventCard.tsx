@@ -16,7 +16,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
   const bannerUrl = event.banner?.url || FALLBACK_BANNER;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-indigo-150">
+    <article className="group flex flex-col overflow-hidden rounded-[1.15rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md">
       {/* Event Banner */}
       <div className="relative h-44 overflow-hidden bg-slate-50 border-b border-slate-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}

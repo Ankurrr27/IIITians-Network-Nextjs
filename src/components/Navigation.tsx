@@ -14,6 +14,8 @@ import {
   ChevronDown,
   FileText,
   HelpCircle,
+  Instagram,
+  Mail,
   Megaphone,
   Menu,
   PlusCircle,
@@ -40,7 +42,9 @@ const quickLinks = {
   Institutes: [
     { title: "Explore Institutes", subtitle: "Browse and compare all IIITs", href: "/colleges", icon: Building2 },
     { title: "Add Campus Images", subtitle: "Share campus memories", href: "/gallery", icon: Camera },
+    { title: "Gallery Guide", subtitle: "How campus photos are approved", href: "/guide?flow=gallery", icon: BookOpenText },
     { title: "Register your Club", subtitle: "Create a student club account", href: "/discuss?clubAccount=true", icon: PlusCircle },
+    { title: "Club Register Guide", subtitle: "Steps for club verification", href: "/guide?flow=club-register", icon: HelpCircle },
   ],
   Events: [
     { title: "Explore Events", subtitle: "See public events and updates", href: "/events", icon: CalendarPlus },
@@ -66,6 +70,11 @@ const quickLinks = {
     { title: "Meet the Team", subtitle: "See IIITians Network members", href: "/team", icon: Users },
     { title: "Register into Network", subtitle: "Fill the team form", href: "/team/join", icon: UserPlus },
     { title: "Team Guide", subtitle: "Learn how team joining works", href: "/guide?flow=team", icon: BookOpenText },
+  ],
+  Contact: [
+    { title: "Email", subtitle: "Official inquiries and collaboration", href: "mailto:iiitiansnetwork@gmail.com", icon: Mail },
+    { title: "Instagram", subtitle: "Updates, highlights, and fast messages", href: "https://www.instagram.com/iiitiansnetwork", icon: Instagram },
+    { title: "Contact Page", subtitle: "All official channels", href: "/contact", icon: Megaphone },
   ],
   Guide: [
     { title: "Site Guide", subtitle: "Learn how to use everything", href: "/guide", icon: BookOpenText },
@@ -154,7 +163,7 @@ export default function Navigation() {
   };
 
   const navTextClass = (active: boolean) =>
-    `relative inline-flex items-center gap-1 text-sm font-medium transition-colors duration-200 py-1 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${
+    `relative inline-flex items-center gap-1 text-[13px] font-medium transition-colors duration-200 py-1 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${
       active ? "after:scale-x-100" : "after:scale-x-0"
     } ${
       isDarkMode
@@ -164,13 +173,13 @@ export default function Navigation() {
           : `after:bg-white hover:text-white ${active ? "text-white" : "text-slate-100"}`
     }`;
 
-  const dropdownClass = `rounded-2xl border p-2 shadow-2xl ${
+  const dropdownClass = `rounded-xl border p-1.5 shadow-2xl ${
     isDarkMode
       ? "border-slate-800 bg-slate-900 text-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
       : "border-slate-100 bg-white text-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
   }`;
 
-  const rowClass = `flex items-start gap-3 rounded-xl px-3 py-2.5 transition ${
+  const rowClass = `flex items-start gap-2.5 rounded-lg px-3 py-2 transition ${
     isDarkMode ? "hover:bg-slate-800" : "hover:bg-slate-50"
   }`;
 
@@ -182,10 +191,10 @@ export default function Navigation() {
             ? isDarkMode
               ? "border-b border-slate-800 bg-slate-950/92 py-2 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
               : "border-b border-slate-200 bg-white/88 py-2 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
-            : "bg-indigo-600 py-4"
+            : "bg-indigo-600 py-3"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-5 lg:px-6">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src={
@@ -197,7 +206,7 @@ export default function Navigation() {
               }
               width={56}
               height={56}
-              className="h-auto w-14 shrink-0 object-contain"
+              className="h-auto w-12 shrink-0 object-contain"
               alt="IIITians Network"
             />
             <span
@@ -209,7 +218,7 @@ export default function Navigation() {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-3 md:flex">
             {navItems.map((item) => {
               const active = isNavActive(item);
               const links = quickLinks[item.name as QuickLinkGroup];
@@ -220,7 +229,7 @@ export default function Navigation() {
                     <a
                       href={item.href}
                       onClick={(event) => handleNavClick(event, item.href)}
-                      className={`relative inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold transition duration-200 active:scale-95 ${
+                       className={`relative inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold transition duration-200 active:scale-95 ${
                         isDarkMode
                           ? "bg-indigo-500/20 text-indigo-100 ring-1 ring-indigo-400/30 hover:bg-indigo-500/30"
                           : isSolidNav
@@ -375,7 +384,7 @@ function QuickDropdown({
   isDarkMode: boolean;
 }) {
   return (
-    <div className="invisible absolute left-1/2 top-full z-50 w-80 -translate-x-1/2 translate-y-2 pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+    <div className="invisible absolute left-1/2 top-full z-50 w-72 -translate-x-1/2 translate-y-2 pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
       <div className={dropdownClass}>
         {links.map((link) => {
           const Icon = link.icon;

@@ -106,26 +106,26 @@ export default function TeamClient({ initialMembers }: Props) {
 
 
       {/* Hero Header */}
-      <section className="relative z-10 px-4 pb-8 pt-20 sm:px-6 sm:pb-12 sm:pt-24 lg:pt-28">
+      <section className="relative z-10 px-4 pb-6 pt-16 sm:px-5 sm:pb-8 sm:pt-20 lg:px-6 lg:pt-[5.5rem]">
         <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.88),rgba(255,255,255,0.7))] px-5 py-8 shadow-[0_24px_70px_rgba(148,163,184,0.14)] backdrop-blur-sm sm:px-8 sm:py-10 lg:px-10 lg:py-12">
+          <div className="relative overflow-hidden rounded-[1.35rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.88),rgba(255,255,255,0.7))] px-5 py-6 shadow-[0_24px_70px_rgba(148,163,184,0.14)] backdrop-blur-sm sm:px-6 sm:py-7 lg:px-7 lg:py-8">
             <div className="pointer-events-none absolute inset-0 opacity-80 [background-image:radial-gradient(circle_at_top_left,rgba(99,102,241,0.12),transparent_34%),radial-gradient(circle_at_85%_20%,rgba(56,189,248,0.1),transparent_28%)]" />
-            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl lg:pr-8">
                 <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
                   <Users className="h-4 w-4" />
                   Team Directory
                 </div>
-                <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+                <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                   Meet the Team
                 </h1>
-                <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
                   The people driving vision, execution, and impact across the IIITians Network.
                 </p>
-                <div className="mt-6 flex flex-wrap gap-3">
+                <div className="mt-5 flex flex-wrap gap-2.5">
                   <Link
                     href="/team/join"
-                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#0f172a,#1e293b)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_rgba(15,23,42,0.24)]"
+                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#0f172a,#1e293b)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_rgba(15,23,42,0.24)]"
                   >
                     <UserPlus className="h-4 w-4" />
                     Join the Team
@@ -133,7 +133,7 @@ export default function TeamClient({ initialMembers }: Props) {
                   </Link>
                   <Link
                     href="/guide"
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-700 transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-700 transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
                   >
                     Learn how we work
                   </Link>
@@ -141,8 +141,8 @@ export default function TeamClient({ initialMembers }: Props) {
               </div>
 
               {/* Stats cards */}
-              <div className="grid gap-3 sm:grid-cols-2 lg:w-[24rem] lg:flex-shrink-0">
-                <div className="rounded-[1.35rem] border border-white/90 bg-white/85 px-4 py-4 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
+              <div className="grid gap-2.5 sm:grid-cols-3 lg:w-[24rem] lg:flex-shrink-0">
+                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
                   <div className="text-2xl font-semibold leading-none text-slate-900">
                     {hasDirectoryData ? uniqueVisibleCount : "Soon"}
                   </div>
@@ -150,7 +150,7 @@ export default function TeamClient({ initialMembers }: Props) {
                     {hasDirectoryData ? "Visible members" : "Directory syncing"}
                   </div>
                 </div>
-                <div className="rounded-[1.35rem] border border-white/90 bg-white/85 px-4 py-4 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
+                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
                   <div className="text-2xl font-semibold leading-none text-slate-900">
                     {hasDirectoryData ? years.length - 1 : "Live"}
                   </div>
@@ -158,7 +158,7 @@ export default function TeamClient({ initialMembers }: Props) {
                     {hasDirectoryData ? "Active batches" : "Updates enabled"}
                   </div>
                 </div>
-                <div className="rounded-[1.35rem] border border-white/90 bg-white/85 px-4 py-4 shadow-[0_14px_34px_rgba(148,163,184,0.12)] sm:col-span-2">
+                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
                   <div className="text-2xl font-semibold leading-none text-slate-900">
                     {hasDirectoryData ? filteredMembers.length : "Fresh"}
                   </div>
@@ -170,14 +170,14 @@ export default function TeamClient({ initialMembers }: Props) {
             </div>
           </div>
 
-          <div className="mt-8 h-px w-full bg-gradient-to-r from-transparent via-indigo-100 to-transparent" />
+          <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-indigo-100 to-transparent" />
         </div>
       </section>
 
       {/* Filters Section */}
-      <section className="px-4 pb-2 sm:px-6">
+      <section className="px-4 pb-2 sm:px-5 lg:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="rounded-[1.75rem] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.92))] p-4 shadow-[0_20px_50px_rgba(148,163,184,0.1)] sm:p-6">
+          <div className="rounded-[1.25rem] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.92))] p-4 shadow-[0_20px_50px_rgba(148,163,184,0.1)] sm:p-5">
             <div className="max-w-2xl px-1 pb-4 sm:px-0 sm:pb-5">
               <h2 className="text-xl font-semibold text-slate-900 sm:text-2xl">
                 Search Team Directory
@@ -254,7 +254,7 @@ export default function TeamClient({ initialMembers }: Props) {
         {sortedMembers.length > 0 && <SourceTeamGrid members={sortedMembers} />}
 
         {filteredMembers.length === 0 && (
-          <div className="rounded-[2rem] border border-dashed border-slate-300 bg-white px-6 py-20 text-center shadow-sm">
+          <div className="rounded-[1.25rem] border border-dashed border-slate-300 bg-white px-5 py-12 text-center shadow-sm">
             <div className="mx-auto max-w-2xl">
               <div className="text-xl font-semibold text-slate-900">
                 {hasDirectoryData ? "No matching team members found." : "The team directory is being refreshed."}

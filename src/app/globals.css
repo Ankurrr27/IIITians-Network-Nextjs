@@ -4,6 +4,12 @@
 :root {
   --background: #ffffff;
   --foreground: #0f172a;
+  --ui-radius-card: 1.15rem;
+  --ui-radius-panel: 1.25rem;
+  --ui-shadow-soft: 0 12px 34px rgba(15, 23, 42, 0.07);
+  --ui-shadow-lift: 0 16px 42px rgba(79, 70, 229, 0.11);
+  --ui-section-y: clamp(2.75rem, 5vw, 4.75rem);
+  --ui-page-top: clamp(5.5rem, 8vw, 7.25rem);
 }
 
 [data-theme="dark"] {
@@ -54,6 +60,7 @@
 /* ─── Base ──────────────────────────────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
+  font-size: 15px;
 }
 
 body {
@@ -61,6 +68,51 @@ body {
   color: var(--foreground);
   font-family: "Inter", "Geist Sans", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.45;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 640px) {
+  html { font-size: 15.5px; }
+}
+
+/* Compact enterprise rhythm: keeps existing architecture while reducing visual weight. */
+.ui-page-shell {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 2.2vw, 1.5rem);
+}
+
+.ui-compact-card {
+  border-radius: var(--ui-radius-card);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.ui-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 9999px;
+  padding: 0.32rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[class*="shadow-[0_24"],
+[class*="shadow-[0_30"],
+[class*="shadow-[0_32"],
+[class*="shadow-2xl"] {
+  box-shadow: var(--ui-shadow-soft);
+}
+
+[class*="rounded-[2."],
+[class*="rounded-[2rem"],
+[class*="rounded-[2_"],
+[class*="rounded-3xl"] {
+  border-radius: var(--ui-radius-panel);
 }
 
 /* ─── Scrollbar ─────────────────────────────────────────────────────────── */

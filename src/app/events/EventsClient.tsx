@@ -49,27 +49,27 @@ export default function EventsClient({ initialEvents }: Props) {
     <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] pb-14 pt-20 sm:pb-16 sm:pt-24">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
 
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mb-6">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
                 <Sparkles className="h-4 w-4" />
                 Events Desk
               </div>
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Explore the latest network events.
               </h1>
-              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+              <p className="mt-3 text-sm leading-6 text-slate-600">
                 Discover cultural festivals, club launches, collaborations, and verified
                 event pushes from IIIT communities across the network.
               </p>
             </div>
 
-            <div className="w-full lg:max-w-lg rounded-[1.8rem] border border-white/60 bg-white/70 p-5 shadow-[0_18px_44px_-30px_rgba(79,70,229,0.2)] backdrop-blur-sm sm:p-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="w-full rounded-[1.25rem] border border-white/60 bg-white/70 p-4 shadow-[0_18px_44px_-30px_rgba(79,70,229,0.2)] backdrop-blur-sm lg:max-w-md">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600">
                     <BookOpenText className="h-3.5 w-3.5" />
@@ -84,13 +84,13 @@ export default function EventsClient({ initialEvents }: Props) {
                 </div>
                 <Link
                   href="/guide?flow=event"
-                  className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-3 text-xs font-bold text-white transition hover:bg-indigo-500 sm:shrink-0"
+                  className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-500 sm:shrink-0"
                 >
                   Open event guide
                   <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </Link>
               </div>
-              <div className="mt-5 flex items-center gap-2.5 rounded-2xl bg-indigo-50/50 px-3 py-2.5 text-[11px] font-medium text-indigo-700">
+              <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-indigo-50/50 px-3 py-2 text-[11px] font-medium text-indigo-700">
                 <CalendarDays className="h-4 w-4 shrink-0" />
                 <span>Discuss event pushes can appear here after approval</span>
               </div>
@@ -99,9 +99,9 @@ export default function EventsClient({ initialEvents }: Props) {
         </div>
 
         {/* Filters */}
-        <div className="mb-8">
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_14rem]">
-            <label className="flex items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-3 transition focus-within:border-indigo-400 focus-within:bg-white">
+        <div className="mb-6">
+          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem]">
+            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition focus-within:border-indigo-400 focus-within:bg-white">
               <Search className="h-4 w-4 text-slate-400" />
               <input
                 type="text"
@@ -111,7 +111,7 @@ export default function EventsClient({ initialEvents }: Props) {
                 className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
               />
             </label>
-            <label className="flex items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-slate-50 px-4 py-3 transition focus-within:border-indigo-400 focus-within:bg-white">
+            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition focus-within:border-indigo-400 focus-within:bg-white">
               <ArrowUpDown className="h-4 w-4 text-slate-400" />
               <select
                 value={sortBy}
@@ -161,7 +161,7 @@ export default function EventsClient({ initialEvents }: Props) {
 function EventsGrid({ loading, events }: { loading: boolean; events: IEvent[] }) {
   if (loading) {
     return (
-      <div className="grid items-stretch gap-2 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid items-stretch gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
           <div key={i} className="animate-pulse overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-sm">
             <div className="h-56 bg-slate-200" />
@@ -192,7 +192,7 @@ function EventsGrid({ loading, events }: { loading: boolean; events: IEvent[] })
   }
 
   return (
-    <div className="grid items-stretch gap-2 sm:gap-8 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid items-stretch gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
       {events.map((event) => (
         <EventCard key={event._id} event={event} />
       ))}

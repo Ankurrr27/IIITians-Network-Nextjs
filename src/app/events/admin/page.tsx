@@ -93,7 +93,7 @@ export default function EventsAdminPage() {
     <AdminLayout>
       <div className="space-y-6">
         {/* Header Block */}
-        <section className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="space-y-4">
               <div className="flex items-center gap-3">
@@ -129,7 +129,7 @@ export default function EventsAdminPage() {
         </section>
 
         {/* Filters */}
-        <section className="rounded-[1.4rem] border border-slate-200 bg-white p-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <section className="flex flex-col gap-3 rounded-[1.15rem] border border-slate-200 bg-white p-4 shadow-sm md:flex-row md:items-center md:justify-between">
           <div className="flex-1">
             <input
               type="text"
@@ -165,7 +165,7 @@ export default function EventsAdminPage() {
 
         {/* Loading Spinner / Grid View */}
         {loading ? (
-          <div className="flex justify-center py-20">
+          <div className="flex justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
           </div>
         ) : (

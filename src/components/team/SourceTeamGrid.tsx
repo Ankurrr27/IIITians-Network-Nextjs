@@ -104,7 +104,7 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
       : "mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 xl:grid-cols-4";
 
   if (!members.length) {
-    return <div className="py-20 text-center text-slate-500">No team members found.</div>;
+    return <div className="py-12 text-center text-slate-500">No team members found.</div>;
   }
 
   return (

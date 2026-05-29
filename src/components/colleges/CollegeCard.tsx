@@ -34,10 +34,10 @@ export default function CollegeCard({
   return (
     <article
       onClick={handleClick}
-      className="group overflow-hidden rounded-[1.6rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-indigo-150 flex flex-col"
+      className="group flex flex-col overflow-hidden rounded-[1.15rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md"
     >
       {/* Cover Photo */}
-      <div className="relative h-44 bg-gradient-to-br from-indigo-50 to-blue-100 overflow-hidden border-b border-slate-100 shrink-0">
+      <div className="relative h-40 shrink-0 overflow-hidden border-b border-slate-100 bg-gradient-to-br from-indigo-50 to-blue-100">
         {college.photo?.url ? (
           <Image
             src={coverUrl}
@@ -55,7 +55,7 @@ export default function CollegeCard({
       </div>
 
       {/* Card Body */}
-      <div className="flex flex-1 flex-col p-5">
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex items-center gap-3">
           {/* Logo Mark */}
           <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-white shadow ring-1 ring-slate-100 flex items-center justify-center">

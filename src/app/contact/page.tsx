@@ -29,6 +29,18 @@ const item = {
 export default function ContactPage() {
   const socialLinks = [
     {
+      name: "Email",
+      icon: <Mail size={18} />,
+      link: "mailto:iiitiansnetwork@gmail.com",
+      tone: "hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700",
+    },
+    {
+      name: "Instagram",
+      icon: <Instagram size={18} />,
+      link: "https://www.instagram.com/iiitiansnetwork",
+      tone: "hover:border-pink-200 hover:bg-pink-50 hover:text-pink-600",
+    },
+    {
       name: "Telegram",
       icon: <Send size={18} />,
       link: "#",
@@ -84,34 +96,34 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] pb-14 pt-24 text-slate-900 sm:pb-20 sm:pt-28">
+    <div className="relative min-h-screen bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] pb-12 pt-20 text-slate-900 sm:pb-14 sm:pt-24">
       {/* Radial Gradient Overlay */}
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6"
+        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6"
       >
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 backdrop-blur-md">
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-700 backdrop-blur-md">
             <span className="h-2 w-2 rounded-full bg-indigo-500" />
             Official Channels
           </div>
 
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div className="mt-4 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Contact The <span className="text-indigo-600 font-semibold">IIITians Network</span>
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base font-semibold">
+              <p className="mt-3 max-w-2xl text-sm font-medium leading-6 text-slate-600">
                 Reach the network through verified public channels for updates,
                 collaboration, and community coordination across IIIT campuses.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              <div className="rounded-[1.35rem] border border-slate-200 bg-white/70 backdrop-blur-md px-4 py-4 shadow-sm">
+              <div className="rounded-xl border border-slate-200 bg-white/70 px-4 py-3 shadow-sm backdrop-blur-md">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   Best For
                 </p>
@@ -119,7 +131,7 @@ export default function ContactPage() {
                   Official outreach, student queries, and updates
                 </p>
               </div>
-              <div className="rounded-[1.35rem] border border-slate-200 bg-white/70 backdrop-blur-md px-4 py-4 shadow-sm">
+              <div className="rounded-xl border border-slate-200 bg-white/70 px-4 py-3 shadow-sm backdrop-blur-md">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   Response Path
                 </p>
@@ -136,7 +148,7 @@ export default function ContactPage() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 mx-auto mt-8 max-w-7xl px-4 sm:px-6"
+        className="relative z-10 mx-auto mt-6 max-w-7xl px-4 sm:px-5 lg:px-6"
       >
         <div className="grid gap-4 md:grid-cols-3">
           {contactCards.map((card) =>
@@ -144,7 +156,7 @@ export default function ContactPage() {
               <motion.div
                 key={card.title}
                 variants={item}
-                className="rounded-[1.6rem] border border-emerald-100 bg-emerald-50/70 p-5 shadow-sm sm:p-6"
+                className="rounded-[1.15rem] border border-emerald-100 bg-emerald-50/70 p-4 shadow-sm sm:p-5"
               >
                 {card.icon}
                 <h2 className="mt-4 text-xl font-bold text-slate-900">
@@ -161,7 +173,7 @@ export default function ContactPage() {
                 href={card.href || "#"}
                 target={card.href?.startsWith("http") ? "_blank" : undefined}
                 rel={card.href?.startsWith("http") ? "noreferrer" : undefined}
-                className="group rounded-[1.6rem] border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-200 hover:shadow-[0_20px_50px_rgba(79,70,229,0.08)] sm:p-6"
+                className="group rounded-[1.15rem] border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-[0_20px_50px_rgba(79,70,229,0.08)] sm:p-5"
               >
                 {card.icon}
                 <h2 className="mt-4 text-xl font-bold text-slate-900">
@@ -184,15 +196,15 @@ export default function ContactPage() {
 
         <motion.div
           variants={item}
-          className="mt-6 rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+          className="mt-5 rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
                 Social Presence
               </p>
-              <h2 className="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
-                Follow the network across platforms
+              <h2 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
+                Fast connects
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-7 text-slate-600 font-semibold">
@@ -200,14 +212,14 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
                 href={social.link}
                 target="_blank"
                 rel="noreferrer"
-                className={`flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-sm font-bold text-slate-700 transition ${social.tone}`}
+                className={`flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-bold text-slate-700 transition ${social.tone}`}
               >
                 <span>{social.icon}</span>
                 <span>{social.name}</span>

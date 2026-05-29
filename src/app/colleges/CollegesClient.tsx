@@ -107,20 +107,20 @@ export default function CollegesClient({
   };
 
   return (
-    <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-14 pt-20 sm:pb-16 sm:pt-24">
+    <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-10 pt-16 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
 
         {/* Header */}
-        <div className="mb-8 px-3 text-left sm:mb-12 sm:px-0 sm:text-center flex flex-col items-center">
+        <div className="mb-6 flex flex-col items-center px-3 text-left sm:mb-8 sm:px-0 sm:text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
             <MapPin className="h-4 w-4" />
             IIITs Directory
           </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Indian Institutes of Information Technology
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">
             Explore official information about IIITs across India.
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function CollegesClient({
         {filtered.length === 0 ? (
           <p className="text-center text-gray-500">No colleges found.</p>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((college) => (
               <CollegeCard
                 key={college._id}
@@ -501,25 +501,25 @@ function CollegeCard({
           <div className="grid grid-cols-2 gap-2">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-slate-900 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/10 active:scale-95 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition-all duration-200 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95 sm:text-[11px]"
             >
               <Images size={14} /> Gallery
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-indigo-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-600/10 active:scale-95 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-white px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition-all duration-200 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95 sm:text-[11px]"
             >
               <Users size={14} /> Clubs
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-sky-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-sky-700 hover:shadow-lg hover:shadow-sky-600/10 active:scale-95 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition-all duration-200 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95 sm:text-[11px]"
             >
               <History size={14} /> Legacy
             </Link>
             <Link
               href={`/placement?college=${encodeURIComponent(name)}`}
-              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-emerald-600 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition-all duration-200 hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/10 active:scale-95 sm:text-[11px]"
+              className="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition-all duration-200 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700 active:scale-95 sm:text-[11px]"
             >
               <BriefcaseBusiness size={14} /> Placement
             </Link>
