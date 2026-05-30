@@ -244,7 +244,7 @@ function GalleryPageClient() {
             <Images className="h-4 w-4" />
             Photo Gallery
           </div>
-          <h1 className="mt-3 text-[2.15rem] font-semibold leading-none tracking-tight text-slate-900 sm:mt-4 sm:text-5xl">
+          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             {collegeName
               ? <>{decodeURIComponent(collegeName)} <span className="text-indigo-600">Gallery</span></>
               : <>IIIT <span className="text-indigo-600">Gallery</span></>}

@@ -31,91 +31,26 @@ export default function InAppNotifications() {
   const initializedRef = useRef(false);
 
   useEffect(() => {
-    let active = true;
-
     const pushNotification = (notification: Omit<NotificationItem, "id">) => {
       const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       setItems((prev) => [{ id, ...notification }, ...prev].slice(0, 3));
-      window.setTimeout(() => { setItems((prev) => prev.filter((item) => item.id !== id)); }, 7000);
+      window.setTimeout(() => { setItems((prev) => prev.filter((item) => item.id !== id)); }, 4000);
     };
 
-    const maybeCelebrateViews = (views: number) => {
-      if (!views) return;
-      const currentMilestone = Math.floor(views / 1000) * 1000;
-      if (currentMilestone < 1000) return;
-      const storedMilestone = Number(localStorage.getItem(VIEW_MILESTONE_STORAGE_KEY) || 0);
-      if (!storedMilestone) { localStorage.setItem(VIEW_MILESTONE_STORAGE_KEY, String(currentMilestone)); return; }
-      if (currentMilestone > storedMilestone) {
-        localStorage.setItem(VIEW_MILESTONE_STORAGE_KEY, String(currentMilestone));
-        pushNotification({ type: "milestone", title: `Milestone: ${currentMilestone.toLocaleString()} views`, message: "IIITians Network just crossed another view milestone." });
-      }
-    };
-
-    const maybeShowCustomEntryNotification = async () => {
-      try {
-        const response = await api.get("/app-notifications");
-        const notifications = Array.isArray(response.data) ? response.data : [];
-        if (!notifications.length) return;
-        const seenVersions: string[] = JSON.parse(sessionStorage.getItem(ENTRY_NOTIFICATION_STORAGE_KEY) || "[]");
-        notifications.forEach((n: { _id?: string; title?: string; message?: string; type?: string; updatedAt?: string; showOnEntry?: boolean }) => {
-          if (!n?._id || !n?.title || !n?.message) return;
-          if (!n.showOnEntry) return;
-          const version = `${n._id}:${n.updatedAt || ""}`;
-          if (seenVersions.includes(version)) return;
-          pushNotification({ type: n.type || "milestone", title: n.title, message: n.message });
-          seenVersions.push(version);
-        });
-        sessionStorage.setItem(ENTRY_NOTIFICATION_STORAGE_KEY, JSON.stringify(seenVersions.slice(-20)));
-      } catch { /*silent*/ }
-    };
-
-    const loadSnapshot = async (): Promise<Snapshot> => {
-      const [postsRes, eventsRes, legacyRes, teamRes, statsRes] = await Promise.allSettled([
-        api.get("/discuss"), api.get("/events"), api.get("/alumni"), api.get("/team"), api.get("/site-stats"),
-      ]);
-      return {
-        posts: postsRes.status === "fulfilled" ? postsRes.value.data?.length || 0 : snapshotRef.current.posts,
-        events: eventsRes.status === "fulfilled" ? eventsRes.value.data?.length || 0 : snapshotRef.current.events,
-        legacy: legacyRes.status === "fulfilled" ? legacyRes.value.data?.length || 0 : snapshotRef.current.legacy,
-        team: teamRes.status === "fulfilled" ? teamRes.value.data?.length || 0 : snapshotRef.current.team,
-        clubs: snapshotRef.current.clubs,
-        views: statsRes.status === "fulfilled" ? statsRes.value.data?.totalViews || 0 : 0,
-      };
-    };
-
-    const poll = async () => {
-      try {
-        const next = await loadSnapshot();
-        if (!active) return;
-        if (!initializedRef.current) {
-          snapshotRef.current = next;
-          initializedRef.current = true;
-          maybeCelebrateViews(next.views);
-          maybeShowCustomEntryNotification();
-          return;
-        }
-        const prev = snapshotRef.current;
-        if (next.posts > prev.posts) pushNotification({ type: "post", title: "Discussion Update", message: "Fresh conversations are now live on Discuss." });
-        if (next.events > prev.events) pushNotification({ type: "event", title: "New Event", message: "The events section has just been updated." });
-        if (next.legacy > prev.legacy) pushNotification({ type: "legacy", title: "Legacy Updated", message: "Network Legacy has been updated with new profiles." });
-        if (next.team > prev.team) pushNotification({ type: "team", title: "Team Update", message: "The live team directory has just been updated." });
-        snapshotRef.current = next;
-        maybeCelebrateViews(next.views);
-      } catch { /*silent*/ }
-    };
-
-    poll();
-    const intervalId = window.setInterval(poll, POLL_INTERVAL_MS);
     const handleAppNotification = (event: Event) => {
       const e = event as CustomEvent;
       if (!e?.detail?.title) return;
+      
+      // If it's success/error, we might want to remove loading notifications to prevent stacking too many
+      if (e.detail.type === "success" || e.detail.type === "error") {
+        setItems((prev) => prev.filter(item => item.type !== "loading"));
+      }
+
       pushNotification(e.detail);
     };
     window.addEventListener(APP_NOTIFICATION_EVENT, handleAppNotification);
 
     return () => {
-      active = false;
-      window.clearInterval(intervalId);
       window.removeEventListener(APP_NOTIFICATION_EVENT, handleAppNotification);
     };
   }, []);
@@ -136,29 +71,39 @@ export default function InAppNotifications() {
 }
 
 const NotificationCard = React.forwardRef<HTMLDivElement, { item: NotificationItem; onClose: () => void }>(
-  ({ item, onClose }, ref) => (
-    <motion.div
-      ref={ref}
-      layout
-      initial={{ opacity: 0, y: 30, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-      className="pointer-events-auto relative overflow-hidden rounded-xl border border-white/60 bg-white/70 p-4 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12)] backdrop-blur-3xl ring-1 ring-white/30"
-    >
-      <div className="absolute left-0 top-0 h-full w-1 bg-indigo-500 opacity-90" />
-      <div className="flex items-start justify-between gap-4 pl-1">
-        <div className="flex-1 min-w-0">
-          <div className="mb-1">
-            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-indigo-600/80">{item.type || "Update"}</span>
-          </div>
-          <h4 className="text-[13px] font-bold text-slate-900 leading-tight">{item.title}</h4>
-          <p className="mt-1 text-[11px] text-slate-600 font-medium leading-relaxed line-clamp-2">{item.message}</p>
+  ({ item, onClose }, ref) => {
+    const isSuccess = item.type === "success";
+    const isError = item.type === "error";
+    const isLoading = item.type === "loading";
+    
+    let colorClass = "bg-slate-800 text-white shadow-slate-800/20";
+    
+    if (isSuccess) {
+      colorClass = "bg-emerald-500 text-white shadow-emerald-500/30";
+    } else if (isError) {
+      colorClass = "bg-rose-500 text-white shadow-rose-500/30";
+    } else if (isLoading) {
+      colorClass = "bg-blue-500 text-white shadow-blue-500/30";
+    }
+
+    return (
+      <motion.div
+        ref={ref}
+        layout
+        initial={{ opacity: 0, y: 15, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+        className={`pointer-events-auto flex items-center justify-between gap-3 overflow-hidden rounded-full px-4 py-3 shadow-lg ring-1 ring-white/10 ${colorClass}`}
+      >
+        <div className="flex items-center gap-2.5">
+          {isLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />}
+          <span className="text-[13px] font-semibold tracking-wide">{item.title}</span>
         </div>
-        <button onClick={onClose} className="shrink-0 -mt-1 p-1 text-slate-300 transition-colors hover:bg-black/5 hover:text-slate-900 rounded-lg" aria-label="Dismiss">
+        <button onClick={onClose} className="p-0.5 text-white/70 transition-colors hover:text-white rounded-full">
           <X className="h-3.5 w-3.5" />
         </button>
-      </div>
-    </motion.div>
-  )
+      </motion.div>
+    );
+  }
 );
 NotificationCard.displayName = "NotificationCard";

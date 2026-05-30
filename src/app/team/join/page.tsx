@@ -104,7 +104,7 @@ export default function TeamJoinPage() {
           <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 shadow-sm ring-1 ring-emerald-200">
             <CheckCircle2 className="h-10 w-10" />
           </div>
-          <h1 className="mt-8 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mt-8 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             {applicantType === "NEW" ? "Application Received!" : "Update Submitted!"}
           </h1>
           <p className="mt-4 text-lg leading-8 text-slate-600">
@@ -133,7 +133,7 @@ export default function TeamJoinPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] shadow-sm text-indigo-700 mb-6">
             <Sparkles className="h-4 w-4" /> Join the team
           </div>
-          <h1 className="text-4xl font-semibold tracking-tight text-slate-900 sm:text-6xl mb-4">
+          <h1 className="mb-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Welcome to the Network
           </h1>
           <p className="text-lg text-slate-600 mb-12">
@@ -176,7 +176,7 @@ export default function TeamJoinPage() {
                 Change Type
               </button>
             </div>
-            <h1 className="mt-6 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-6 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               {applicantType === "NEW" ? "Team Application" : "Tenure Update"}
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600">

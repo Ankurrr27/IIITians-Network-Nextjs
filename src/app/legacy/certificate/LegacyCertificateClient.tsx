@@ -155,7 +155,7 @@ export default function LegacyCertificateClient() {
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-indigo-600">
                 Legacy Certificate
               </p>
-              <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Get your certificate
               </h1>
               <p className="mt-3 text-sm leading-7 text-slate-600">
@@ -205,7 +205,7 @@ export default function LegacyCertificateClient() {
                   <CheckCircle2 className="mr-1 inline h-4 w-4" />
                   Verified Legacy profile
                 </p>
-                <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
+                <h1 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                   Certificate for {member.name}
                 </h1>
               </div>

@@ -18,13 +18,13 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
   const coverUrl = images[0]?.url || "/IIITians-Network-Logo-Dark.png";
 
   return (
-    <article className="relative overflow-hidden rounded-[1.8rem] border border-sky-100 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md">
-      <div className="grid min-h-[15rem] md:grid-cols-[19rem_minmax(0,1fr)] lg:grid-cols-[21rem_minmax(0,1fr)]">
+    <article className="relative overflow-hidden rounded-[1.4rem] border border-sky-100 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md">
+      <div className="grid min-h-[12rem] md:grid-cols-[14rem_minmax(0,1fr)] lg:grid-cols-[16rem_minmax(0,1fr)]">
         <a
           href={coverUrl}
           target="_blank"
           rel="noreferrer"
-          className="relative block min-h-64 overflow-hidden bg-slate-950 md:min-h-full"
+          className="relative block min-h-48 overflow-hidden bg-slate-950 md:min-h-full"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -59,11 +59,17 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
             )}
           </div>
 
-          <h3 className="text-2xl font-extrabold leading-tight tracking-tight text-slate-950">
+          <h3 className="text-xl font-extrabold leading-tight tracking-tight text-slate-950">
             {post.title}
           </h3>
-          <p className="text-sm font-medium leading-8 text-slate-700 sm:text-[15px]">
-            {post.description}
+          <p className="text-sm font-medium leading-7 text-slate-700 whitespace-pre-wrap">
+            {post.description.split(/(\[.*?\]\(.*?\))/g).map((part, i) => {
+              const match = part.match(/\[(.*?)\]\((.*?)\)/);
+              if (match) {
+                return <a key={i} href={match[2]} target="_blank" rel="noreferrer" className="text-indigo-600 font-bold hover:underline">{match[1]}</a>;
+              }
+              return <span key={i}>{part}</span>;
+            })}
           </p>
 
           {post.actionLink && (

@@ -278,38 +278,41 @@ function ExecCard({ member }: { member: SocialMember }) {
 function LeadCard({ member }: { member: SocialMember }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      whileHover={{ y: -3 }}
-      className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_18px_48px_rgba(15,23,42,0.07)] transition-shadow hover:shadow-[0_26px_62px_rgba(79,70,229,0.12)]"
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{ y: -6 }}
+      className="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-100"
     >
       <div className="flex flex-col">
-        <div className="relative h-60 w-full overflow-hidden bg-slate-100 sm:h-72">
-          <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+        <div className="relative h-72 w-full overflow-hidden bg-slate-100 sm:h-80">
+          <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
+          
           <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
-            <span className="rounded-full bg-white/88 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-700 backdrop-blur">Lead Team</span>
+            <span className="rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-700 shadow-sm backdrop-blur-md">Lead Team</span>
             <div className="flex flex-shrink-0 gap-2">
               {socialLinks.map(({ key, Icon }) =>
                 member[key] ? (
-                  <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-700 transition hover:bg-white hover:text-indigo-700">
-                    <Icon size={15} />
+                  <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white shadow-sm backdrop-blur-md ring-1 ring-white/20 transition-all hover:bg-white hover:text-indigo-600 hover:scale-110">
+                    <Icon size={14} />
                   </a>
                 ) : null
               )}
             </div>
           </div>
 
-          <div className="absolute left-4 right-4 bottom-4">
-            <p className="line-clamp-2 text-lg font-semibold leading-tight text-white sm:text-xl">{member.name}</p>
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-white/80 sm:text-sm">{member.role}</p>
+          <div className="absolute left-5 right-5 bottom-5">
+            <p className="line-clamp-2 text-xl font-bold leading-tight text-white sm:text-2xl">{member.name}</p>
+            <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-indigo-300 sm:text-xs">{member.role}</p>
           </div>
         </div>
 
-        <div className="space-y-3 p-4 sm:p-5">
-          <div className="rounded-[1.2rem] bg-slate-50 px-4 py-3 ring-slate-200/80">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">Institute</p>
-            <p className="mt-1 text-sm font-medium text-slate-700 sm:text-base">{member.iiit}</p>
+        <div className="p-4 sm:p-5 bg-white">
+          <div className="rounded-2xl bg-slate-50/80 px-4 py-3.5 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-400">Institute</p>
+            <p className="mt-1 text-sm font-bold text-slate-700 sm:text-base group-hover:text-indigo-900">{member.iiit}</p>
           </div>
         </div>
       </div>

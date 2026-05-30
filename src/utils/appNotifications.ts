@@ -30,21 +30,21 @@ export function notifyAppAction({
 }
 
 export function notifyPageEntry(title: string, message: string, dedupeKey: string) {
-  notifyAppAction({ title, message, type: "milestone", dedupeKey, dedupeWindowMs: 60000 });
+  // Disabled as per user request
 }
 
 export async function notifyPromise<T>(
   promise: Promise<T>,
   messages: { loading: string; success?: string; error?: string }
 ) {
-  notifyAppAction({ title: messages.loading, type: "milestone" });
+  notifyAppAction({ title: messages.loading, type: "loading" as any });
 
   try {
     const result = await promise;
-    if (messages.success) notifyAppAction({ title: messages.success, type: "milestone" });
+    if (messages.success) notifyAppAction({ title: messages.success, type: "success" as any });
     return result;
   } catch (error) {
-    if (messages.error) notifyAppAction({ title: messages.error, type: "milestone" });
+    if (messages.error) notifyAppAction({ title: messages.error, type: "error" as any });
     throw error;
   }
 }

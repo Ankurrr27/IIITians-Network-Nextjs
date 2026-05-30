@@ -100,7 +100,7 @@ export default function CollegeGalleryPage() {
           <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-700 shadow-sm mb-4">
             <Images className="h-4 w-4" /> Gallery
           </div>
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             {collegeName ? <>{collegeName} <span className="text-indigo-600">Gallery</span></> : <>IIIT <span className="text-indigo-600">Gallery</span></>}
           </h1>
           <p className="mt-2 text-sm text-slate-500">{collegeName ? `Visual memories from ${collegeName}.` : "Explore photos from across the IIIT network."}</p>

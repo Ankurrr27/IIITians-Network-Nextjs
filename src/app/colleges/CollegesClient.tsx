@@ -113,10 +113,7 @@ export default function CollegesClient({
 
         {/* Header */}
         <div className="mb-6 flex flex-col items-center px-3 text-left sm:mb-8 sm:px-0 sm:text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
-            <MapPin className="h-4 w-4" />
-            IIITs Directory
-          </div>
+          {/* MapPin IIITs Directory badge removed as requested */}
           <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             Indian Institutes of Information Technology
           </h1>
@@ -187,40 +184,43 @@ function CollegesSearch({
   ];
 
   return (
-    <div className="relative mx-auto mb-6 max-w-full px-3 sm:mb-12 sm:max-w-md sm:px-0">
-      <div className="relative flex items-center">
-        <Search size={16} className="absolute left-3 text-gray-400" />
+    <div className="relative z-50 mx-auto mb-10 max-w-full px-4 sm:mb-14 sm:max-w-xl sm:px-0">
+      <div className="group relative flex items-center rounded-2xl bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/80 transition-all duration-300 focus-within:shadow-[0_8px_30px_rgba(79,70,229,0.1)] focus-within:border-indigo-300 focus-within:ring-4 focus-within:ring-indigo-50/50">
+        <Search size={20} className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-indigo-500" />
         <input
           type="text"
           placeholder="Search IIIT by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-xl border py-2.5 pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:py-2 sm:text-base"
+          className="w-full bg-transparent py-4 pl-12 pr-12 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none sm:text-base font-medium"
         />
         <div ref={menuRef} className="absolute right-2">
           <button
             onClick={() => setOpenMenu((p) => !p)}
-            className="rounded-lg p-2 hover:bg-gray-100 focus:outline-none sm:p-1.5"
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none"
           >
-            <MoreVertical size={18} />
+            <MoreVertical size={20} />
           </button>
           {openMenu && (
-            <div className="absolute right-0 z-10 mt-2 w-44 rounded-lg border bg-white text-sm shadow-lg sm:w-40">
-              {sortOptions.map(([value, label]) => (
+            <div className="absolute right-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-2xl border border-slate-100 bg-white/95 text-sm shadow-xl backdrop-blur-lg animate-in fade-in zoom-in-95 origin-top-right">
+              <div className="py-2">
+                {sortOptions.map(([value, label]) => (
+                  <button
+                    key={value}
+                    onClick={() => { setFilter(value); setOpenMenu(false); }}
+                    className="w-full px-4 py-2.5 text-left font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
+                  >
+                    {label}
+                  </button>
+                ))}
+                <div className="my-1 h-px bg-slate-100" />
                 <button
-                  key={value}
-                  onClick={() => { setFilter(value); setOpenMenu(false); }}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-100"
+                  onClick={() => { setFilter("NONE"); setOpenMenu(false); }}
+                  className="w-full px-4 py-2.5 text-left font-medium text-rose-500 transition-colors hover:bg-rose-50"
                 >
-                  {label}
+                  Clear Filter
                 </button>
-              ))}
-              <button
-                onClick={() => { setFilter("NONE"); setOpenMenu(false); }}
-                className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
-              >
-                Clear Filter
-              </button>
+              </div>
             </div>
           )}
         </div>

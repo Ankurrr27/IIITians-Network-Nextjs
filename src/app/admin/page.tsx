@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
               <LockKeyhole className="h-8 w-8 text-emerald-400" />
             )}
           </div>
-          <h1 className="mt-5 text-2xl font-bold text-white">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             {accessGranted ? "Admin Portal" : "Secure Gate Active"}
           </h1>
           <p className="mt-1 text-sm text-slate-400">

@@ -145,7 +145,7 @@ function PlacementPageClient() {
             <Building2 className="h-4 w-4" />
             Placement Insights
           </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             {selectedCollegeName ? `${selectedCollegeName} placements` : "Compare IIIT placements"}
           </h1>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">

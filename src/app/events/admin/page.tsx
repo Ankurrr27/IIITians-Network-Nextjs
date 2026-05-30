@@ -108,7 +108,7 @@ export default function EventsAdminPage() {
                   Events Workspace
                 </div>
               </div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Event Management
               </h1>
               <p className="mt-2 text-sm text-slate-600 font-semibold leading-relaxed">

@@ -268,7 +268,7 @@ function GuidePageClient() {
 
           <div className="mt-6 grid gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
-              <h1 className="max-w-4xl text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+              <h1 className="max-w-4xl text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Learn how to use every major part of IIITians Network.
               </h1>
               <p className="mt-4 max-w-3xl text-sm leading-8 text-slate-600 sm:text-lg">

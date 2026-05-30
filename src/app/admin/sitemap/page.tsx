@@ -74,7 +74,7 @@ export default function AdminSitemapPage() {
           <FolderTree size={16} />
           Workflow Overview
         </div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Admin Sitemap</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Admin Sitemap</h1>
         <p className="text-slate-600 font-medium text-sm">
           A centralized overview of the administrative workflow and management routes.
         </p>

@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import {
   Megaphone, Plus, LogIn, LogOut, UserPlus, Send,
   ShieldCheck, MapPin, User, Mail, Phone, Trash2, Image as ImageIcon,
+  Globe, AtSign, Lock
 } from "lucide-react";
 import type { IDiscussPost, IDiscussAccount } from "@/types";
 import DiscussCard from "@/components/discuss/DiscussCard";
@@ -287,7 +288,20 @@ function DiscussPageClient() {
                     {postForm.type === "event" && (
                       <input type="date" required value={postForm.eventDate} onChange={(e) => setPostForm({ ...postForm, eventDate: e.target.value })} className={input} />
                     )}
-                    <textarea required rows={6} placeholder="Description…" value={postForm.description} onChange={(e) => setPostForm({ ...postForm, description: e.target.value })} className={`${input} resize-none`} />
+                    <div className="relative">
+                      <div className="flex gap-2 mb-1 px-1">
+                        <button type="button" onClick={() => {
+                          const url = window.prompt("Enter link URL:");
+                          const text = window.prompt("Enter link text:");
+                          if (url && text) {
+                            setPostForm(prev => ({ ...prev, description: prev.description + ` [${text}](${url})` }));
+                          }
+                        }} className="text-xs font-bold text-sky-600 hover:text-sky-700 bg-sky-50 px-2 py-1 rounded-md transition inline-flex items-center gap-1">
+                          + Add inline link
+                        </button>
+                      </div>
+                      <textarea required rows={6} placeholder="Description… (You can use [Text](URL) for links)" value={postForm.description} onChange={(e) => setPostForm({ ...postForm, description: e.target.value })} className={`${input} resize-none`} />
+                    </div>
                     <div>
                       <label className="mb-2 block text-xs font-bold uppercase tracking-widest text-slate-400">Attach Images</label>
                       <div className="flex flex-wrap gap-2">
@@ -360,26 +374,65 @@ function DiscussPageClient() {
                     ))}
                   </div>
                   {authMode === "login" ? (
-                    <form onSubmit={handleLogin} className="space-y-3">
-                      <input required placeholder="Club handle" list="club-handle-list" value={loginForm.handle} onChange={(e) => setLoginForm({ ...loginForm, handle: e.target.value })} className={input} />
-                      <datalist id="club-handle-list">{clubHandles.map(h => <option key={h} value={h} />)}</datalist>
-                      <input required type="password" placeholder="Password" value={loginForm.password} onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} className={input} />
-                      <button type="submit" disabled={authState.loading} className="w-full rounded-2xl bg-slate-900 py-3 text-sm font-bold text-white disabled:opacity-60">
-                        {authState.loading ? "Logging in…" : "Login"}
+                    <form onSubmit={handleLogin} className="space-y-4 mt-2">
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required placeholder="Club handle" list="club-handle-list" value={loginForm.handle} onChange={(e) => setLoginForm({ ...loginForm, handle: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                        <datalist id="club-handle-list">{clubHandles.map(h => <option key={h} value={h} />)}</datalist>
+                        <div className="relative">
+                          <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required type="password" placeholder="Password" value={loginForm.password} onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                      </div>
+                      <button type="submit" disabled={authState.loading} className="w-full rounded-2xl bg-indigo-600 py-3.5 text-sm font-bold text-white shadow-[0_12px_24px_rgba(79,70,229,0.2)] transition hover:bg-indigo-700 hover:-translate-y-0.5 disabled:opacity-60 flex items-center justify-center gap-2 disabled:hover:translate-y-0">
+                        {authState.loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <LogIn className="h-4 w-4" />} Login
                       </button>
                     </form>
                   ) : (
-                    <form onSubmit={handleRegister} className="space-y-3">
-                      <input required placeholder="College / IIIT" list="college-list" value={regForm.collegeName} onChange={(e) => setRegForm({ ...regForm, collegeName: e.target.value })} className={input} />
-                      <datalist id="college-list">{colleges.map((c) => <option key={c} value={c} />)}</datalist>
-                      <input required placeholder="Club / Society name" value={regForm.clubName} onChange={(e) => setRegForm({ ...regForm, clubName: e.target.value })} className={input} />
-                      <input required placeholder="Contact name" value={regForm.contactName} onChange={(e) => setRegForm({ ...regForm, contactName: e.target.value })} className={input} />
-                      <input placeholder="Contact phone" value={regForm.contactPhone} onChange={(e) => setRegForm({ ...regForm, contactPhone: e.target.value })} className={input} />
-                      <input placeholder="Club website / Linktree" value={regForm.website} onChange={(e) => setRegForm({ ...regForm, website: e.target.value })} className={input} />
-                      <input required placeholder="Club handle (e.g. ecellkota)" value={regForm.handle} onChange={(e) => setRegForm({ ...regForm, handle: e.target.value })} className={input} />
-                      <input required type="password" placeholder="Password" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} className={input} />
-                      <button type="submit" disabled={authState.loading} className="w-full rounded-2xl bg-emerald-600 py-3 text-sm font-bold text-white disabled:opacity-60 flex items-center justify-center gap-2">
-                        <UserPlus className="h-4 w-4" /> {authState.loading ? "Creating…" : "Create club account"}
+                    <form onSubmit={handleRegister} className="space-y-4 mt-2">
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <MapPin className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required placeholder="College / IIIT" list="college-list" value={regForm.collegeName} onChange={(e) => setRegForm({ ...regForm, collegeName: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                        <datalist id="college-list">{colleges.map((c) => <option key={c} value={c} />)}</datalist>
+                        
+                        <div className="relative">
+                          <ShieldCheck className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required placeholder="Club / Society name" value={regForm.clubName} onChange={(e) => setRegForm({ ...regForm, clubName: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="relative">
+                            <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <input required placeholder="Contact name" value={regForm.contactName} onChange={(e) => setRegForm({ ...regForm, contactName: e.target.value })} className={`${input} pl-10`} />
+                          </div>
+                          <div className="relative">
+                            <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <input placeholder="Phone" value={regForm.contactPhone} onChange={(e) => setRegForm({ ...regForm, contactPhone: e.target.value })} className={`${input} pl-10`} />
+                          </div>
+                        </div>
+
+                        <div className="relative">
+                          <Globe className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input placeholder="Club website / Linktree" value={regForm.website} onChange={(e) => setRegForm({ ...regForm, website: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                        
+                        <div className="relative">
+                          <AtSign className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required placeholder="Club handle (e.g. ecellkota)" value={regForm.handle} onChange={(e) => setRegForm({ ...regForm, handle: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                        
+                        <div className="relative">
+                          <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                          <input required type="password" placeholder="Password" value={regForm.password} onChange={(e) => setRegForm({ ...regForm, password: e.target.value })} className={`${input} pl-10`} />
+                        </div>
+                      </div>
+
+                      <button type="submit" disabled={authState.loading} className="w-full rounded-2xl bg-indigo-600 py-3.5 text-sm font-bold text-white shadow-[0_12px_24px_rgba(79,70,229,0.2)] transition hover:bg-indigo-700 hover:-translate-y-0.5 disabled:opacity-60 flex items-center justify-center gap-2 disabled:hover:translate-y-0">
+                        {authState.loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <UserPlus className="h-4 w-4" />} Create club account
                       </button>
                     </form>
                   )}

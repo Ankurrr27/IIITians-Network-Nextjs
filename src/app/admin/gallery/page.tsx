@@ -225,7 +225,7 @@ export default function AdminGalleryPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                   Manage <span className="text-indigo-600">Gallery</span>
                 </h1>
                 <p className="max-w-2xl text-sm font-medium leading-6 text-slate-600">

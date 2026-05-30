@@ -23,7 +23,7 @@ export default function NotFound() {
               </div>
             </div>
 
-            <h1 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="mt-4 max-w-2xl text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               This page wandered off the map.
             </h1>
 

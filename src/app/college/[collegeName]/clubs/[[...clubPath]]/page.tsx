@@ -202,7 +202,7 @@ export default function CollegeClubsPage() {
           </Link>
 
           <div className="mt-8 max-w-3xl">
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               {collegeName} <span className="font-semibold text-indigo-600">Network</span>
             </h1>
             <p className="mt-3 text-sm font-semibold text-slate-500 sm:text-lg">
@@ -255,7 +255,7 @@ export default function CollegeClubsPage() {
               <AnimatePresence mode="wait">
                 {!selectedClub ? (
                   <div className="hidden lg:block">
-                    <IntroductionCard name={collegeName} />
+                    <IntroductionCard name={collegeName} college={currentCollege} />
                   </div>
                 ) : (
                   <>
@@ -622,17 +622,23 @@ function ClubInfoPanel({ club, onClose, isMobile = false, events = [] }: ClubInf
   );
 }
 
-function IntroductionCard({ name }: { name: string }) {
+function IntroductionCard({ name, college }: { name: string; college?: ICollege }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-slate-200 bg-white p-16 text-center shadow-sm">
-      <motion.div
-        animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-8 border border-indigo-100 shadow-sm relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
-        <Users size={36} className="relative z-10" />
-      </motion.div>
+    <div className="flex flex-col items-center justify-center rounded-[2.5rem] border border-dashed border-slate-200 bg-white p-12 text-center shadow-sm relative overflow-hidden group">
+      {college?.logo?.url ? (
+        <div className="relative mb-6 flex h-28 w-28 items-center justify-center rounded-3xl bg-white shadow-xl shadow-slate-200/50 ring-1 ring-slate-100 transition-transform duration-500 group-hover:scale-105 p-4">
+          <img src={college.logo.url} alt={`${name} logo`} className="h-full w-full object-contain" />
+        </div>
+      ) : (
+        <motion.div
+          animate={{ scale: [1, 1.05, 1], rotate: [0, 2, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          className="flex h-20 w-20 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-8 border border-indigo-100 shadow-sm relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
+          <Users size={36} className="relative z-10" />
+        </motion.div>
+      )}
       <h3 className="text-2xl font-semibold tracking-tight text-slate-900">Institute Ecosystem</h3>
       <p className="mt-4 text-sm font-medium leading-relaxed text-slate-500 max-w-[280px]">
         Select an entity from {name} to view its verified community records and historical milestones.

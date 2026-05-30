@@ -55,10 +55,7 @@ export default function EventsClient({ initialEvents }: Props) {
         <div className="mb-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
-                <Sparkles className="h-4 w-4" />
-                Events Desk
-              </div>
+              {/* Events Desk Badge removed as requested */}
               <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Explore the latest network events.
               </h1>

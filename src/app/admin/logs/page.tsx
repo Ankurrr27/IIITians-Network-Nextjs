@@ -78,7 +78,7 @@ export default function AdminLogsPage() {
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">System Activity Logs</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">System Activity Logs</h1>
           <p className="text-sm text-slate-500">Track all administrative actions, approvals, and system changes.</p>
         </div>
 

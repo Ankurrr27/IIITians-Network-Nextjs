@@ -185,7 +185,7 @@ export default function DiscussAdminPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
                 Discuss Workspace
               </p>
-              <h1 className="mt-2 text-3xl font-bold text-slate-900">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Discuss Accounts & Moderation
               </h1>
               <p className="mt-2 text-sm text-slate-600 font-semibold leading-relaxed">

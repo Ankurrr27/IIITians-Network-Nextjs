@@ -76,7 +76,7 @@ export default function FounderSection() {
             role="Former CEO"
             college="IIIT Guwahati"
             image="/Founders/3rd.jpeg"
-            desc="Contributed to strategy, operations, and scaling the initiative across multiple IIIT campuses."
+            desc="IIITians Network has been a key achievement in my career. Started with peers across IIITs, it aimed to unite students, learn new technologies, collaborate on freelancing, and support placements and startups. We organized hackathons, launched “Code Chronicles,” and built ventures like CometLabs. Now, I’m working to revive these initiatives with juniors."
             links={{
               linkedin: "https://www.linkedin.com/in/prashant-milan-katiyar/",
               instagram: "https://www.instagram.com/k.prashant__/?hl=en",

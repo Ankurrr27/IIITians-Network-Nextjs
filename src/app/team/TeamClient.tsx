@@ -114,7 +114,7 @@ export default function TeamClient({ initialMembers }: Props) {
                 <Users className="h-4 w-4" />
                 Team Directory
               </div>
-              <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Meet the Team</h1>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Meet the Team</h1>
               <p className="text-sm text-slate-500">
                 {hasDirectoryData ? `${uniqueVisibleCount} visible members` : "Directory syncing"}
               </p>
