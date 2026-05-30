@@ -199,12 +199,16 @@ export default function Footer() {
         {/* Bottom Credits */}
         <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
           <div className="flex flex-wrap gap-1.5 items-center text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wider">
-            <span>CREATED BY</span>
-            <a href="https://www.linkedin.com/in/ankurrr27/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">ANKUR</a>
+            <span>Created by</span>
+            <a href="https://www.linkedin.com/in/varun-rajss?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Varun</a>
             <span className="text-slate-700 font-black">·</span>
-            <a href="https://linkedin.com/in/srishti-singh19/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">SRISHTI</a>
+            <a href="https://www.linkedin.com/in/yash-kapoor-a17026251?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Yash</a>
             <span className="text-slate-700 font-black">·</span>
-            <a href="https://linkedin.com/in/utkarsh-pratap-460502251/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">UTKARSH</a>
+            <a href="https://ankurdev.vercel.app" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Ankur</a>
+            <span className="text-slate-700 font-black">·</span>
+            <a href="https://linkedin.com/in/srishti-singh19/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Srishti</a>
+            <span className="text-slate-700 font-black">·</span>
+            <a href="https://linkedin.com/in/utkarsh-pratap-460502251/" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Utkarsh</a>
           </div>
           <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wider">
             <span>&copy; {new Date().getFullYear()} IIITIANS NETWORK</span>
