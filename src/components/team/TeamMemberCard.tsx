@@ -8,10 +8,41 @@ interface TeamMemberCardProps {
   member: ITeamMember;
   onEdit?: (member: ITeamMember) => void;
   onDelete?: (id: string) => void;
+  onPromote?: (id: string) => void;
+  onEndTenure?: (id: string) => void;
+  onCopyToTeam?: (id: string) => void;
+  onRemoveFromTeam?: (id: string) => void;
 }
 
-export default function TeamMemberCard({ member, onEdit, onDelete }: TeamMemberCardProps) {
+export default function TeamMemberCard({
+  member,
+  onEdit,
+  onDelete,
+  onPromote,
+  onEndTenure,
+  onCopyToTeam,
+  onRemoveFromTeam,
+}: TeamMemberCardProps) {
   const photoUrl = member.photo?.url;
+  async function callAction(action: string, payload: Record<string, any> = {}) {
+    try {
+      const res = await fetch("/api/admin/team/actions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, memberId: member._id, ...payload }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.message || "Request failed");
+      // Simple feedback — consumer components can refresh on their own
+      // eslint-disable-next-line no-alert
+      alert(`Success: ${action}`);
+      return data;
+    } catch (err: unknown) {
+      // eslint-disable-next-line no-alert
+      alert(err instanceof Error ? err.message : "Action failed");
+      throw err;
+    }
+  }
 
   return (
     <article
@@ -91,7 +122,7 @@ export default function TeamMemberCard({ member, onEdit, onDelete }: TeamMemberC
         </div>
 
         {/* Admin Actions */}
-        {(onEdit || onDelete) && (
+        {(onEdit || onDelete || onPromote || onEndTenure || onCopyToTeam || onRemoveFromTeam) && (
           <div className="flex items-center gap-1.5 pl-2 border-l border-slate-100">
             {onEdit && (
               <button
@@ -102,6 +133,76 @@ export default function TeamMemberCard({ member, onEdit, onDelete }: TeamMemberC
                 <Pencil size={11} />
               </button>
             )}
+
+            {onPromote && (
+              <button
+                onClick={async () => {
+                  // Ask admin for the target roleId (object id) — minimal UX for now
+                  const toRoleId = window.prompt("Enter target roleId (ObjectId) for promotion:");
+                  if (!toRoleId) return;
+                  try {
+                    await callAction("promote", { toRoleId });
+                    onPromote(member._id);
+                  } catch {}
+                }}
+                className="rounded-lg border border-amber-200 p-1 text-amber-600 hover:bg-amber-50 transition"
+                title="Promote"
+              >
+                P
+              </button>
+            )}
+
+            {onEndTenure && (
+              <button
+                onClick={async () => {
+                  if (!confirm("End tenure for this member?")) return;
+                  try {
+                    await callAction("endTenure");
+                    onEndTenure(member._id);
+                  } catch {}
+                }}
+                className="rounded-lg border border-slate-200 p-1 text-slate-600 hover:bg-slate-50 transition"
+                title="End Tenure"
+              >
+                E
+              </button>
+            )}
+
+            {onCopyToTeam && (
+              <button
+                onClick={async () => {
+                  const targetTermId = window.prompt("Enter target termId (ObjectId) to copy into:");
+                  const targetCommitteeId = window.prompt("Enter target committeeId (ObjectId):");
+                  const targetRoleId = window.prompt("Enter target roleId (ObjectId):");
+                  if (!targetTermId || !targetCommitteeId || !targetRoleId) return;
+                  try {
+                    await callAction("copy", { targetTermId, targetCommitteeId, targetRoleId });
+                    onCopyToTeam(member._id);
+                  } catch {}
+                }}
+                className="rounded-lg border border-sky-200 p-1 text-sky-600 hover:bg-sky-50 transition"
+                title="Copy to Team"
+              >
+                C
+              </button>
+            )}
+
+            {onRemoveFromTeam && (
+              <button
+                onClick={async () => {
+                  if (!confirm("Remove this member from the team (soft remove)?")) return;
+                  try {
+                    await callAction("remove");
+                    onRemoveFromTeam(member._id);
+                  } catch {}
+                }}
+                className="rounded-lg p-1 text-rose-500 hover:bg-rose-50 transition"
+                title="Remove from Team"
+              >
+                <Trash2 size={11} />
+              </button>
+            )}
+
             {onDelete && (
               <button
                 onClick={() => onDelete(member._id)}

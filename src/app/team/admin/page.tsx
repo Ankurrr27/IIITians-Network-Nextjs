@@ -8,8 +8,10 @@ import { AdminCard, AdminCardHeader } from "@/components/admin/AdminCard";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminInput, AdminSelect, AdminTextarea } from "@/components/admin/AdminInput";
 import { AdminTable, AdminTableHeader, AdminTh, AdminTableBody, AdminTableRow, AdminTd, AdminBadge } from "@/components/admin/AdminTable";
+import { AdminSectionTabs } from "@/components/admin/AdminSectionTabs";
 import type { ITeamMember } from "@/types";
 import { Plus, Trash2, Pencil, Users, AlertCircle, CheckCircle2, Copy, TrendingUp, Search } from "lucide-react";
+import AdminActionModal from "@/components/admin/AdminActionModal";
 
 export default function TeamAdminPage() {
   const [members, setMembers] = useState<ITeamMember[]>([]);
@@ -32,7 +34,10 @@ export default function TeamAdminPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [query, setQuery] = useState("");
-
+  
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState<"promote" | "copy">("promote");
+  const [modalMemberId, setModalMemberId] = useState<string | undefined>(undefined);
   const loadMembers = async () => {
     setLoading(true);
     try {
@@ -44,7 +49,6 @@ export default function TeamAdminPage() {
       setLoading(false);
     }
   };
-
   useEffect(() => { loadMembers(); }, []);
 
   const filteredMembers = useMemo(() => {
@@ -124,13 +128,18 @@ export default function TeamAdminPage() {
               <AdminStatCard label="Total Active" value={members.length} color="indigo" />
             </div>
           }
+          actions={<AdminButton size="sm" onClick={openAdd} icon={Plus}>Add Member</AdminButton>}
         />
 
-        <div className="flex gap-2 mb-4">
-          <AdminButton variant={activeTab === "team" ? "primary" : "outline"} onClick={() => setActiveTab("team")}>Active Team</AdminButton>
-          <AdminButton variant={activeTab === "copy" ? "primary" : "outline"} onClick={() => setActiveTab("copy")} icon={Copy}>Copy Previous Team</AdminButton>
-          <AdminButton variant={activeTab === "promote" ? "primary" : "outline"} onClick={() => setActiveTab("promote")} icon={TrendingUp}>Promote Members</AdminButton>
-        </div>
+        <AdminSectionTabs
+          active={activeTab}
+          onChange={setActiveTab}
+          tabs={[
+            { id: "team", label: "Active Team", icon: Users, count: members.length },
+            { id: "copy", label: "Copy Previous Team", icon: Copy },
+            { id: "promote", label: "Promote Members", icon: TrendingUp },
+          ]}
+        />
 
         {(error || success) && (
           <div className="space-y-2 mb-4">
@@ -147,7 +156,6 @@ export default function TeamAdminPage() {
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                   <input type="text" placeholder="Search team members..." value={query} onChange={e => setQuery(e.target.value)} className="w-full rounded-xl border border-slate-200 bg-slate-50 px-10 py-2.5 text-sm outline-none focus:border-indigo-600" />
                 </div>
-                <AdminButton onClick={openAdd} icon={Plus}>Add Member</AdminButton>
               </div>
             </AdminCard>
 
@@ -157,6 +165,7 @@ export default function TeamAdminPage() {
                 <AdminTh>Role / Team</AdminTh>
                 <AdminTh>Year</AdminTh>
                 <AdminTh>Status</AdminTh>
+                <AdminTh>Actions</AdminTh>
               </AdminTableHeader>
               <AdminTableBody>
                 {filteredMembers.map((m) => (
@@ -204,24 +213,25 @@ export default function TeamAdminPage() {
                         if (e.target.checked) setSelectedPromotions(p => [...p, m._id]);
                         else setSelectedPromotions(p => p.filter(id => id !== m._id));
                       }} className="h-4 w-4 rounded text-indigo-600 focus:ring-indigo-500" />
-                      <div>
-                        <div className="font-bold text-sm text-slate-900">{m.name}</div>
-                        <div className="text-xs text-slate-500">{m.role} · {m.team}</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-slate-900">{m.name}</div>
+                        <div className="text-xs text-slate-500">{m.email}</div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button type="button" title="Promote" onClick={() => { setModalAction("promote"); setModalMemberId(m._id); setModalOpen(true); }} className="rounded px-2 py-1 text-xs bg-amber-50 text-amber-600">Promote</button>
+                        <button type="button" title="Copy to Term" onClick={() => { setModalAction("copy"); setModalMemberId(m._id); setModalOpen(true); }} className="rounded px-2 py-1 text-xs bg-sky-50 text-sky-600">Copy</button>
                       </div>
                     </label>
                   ))}
                 </div>
               </div>
-              <div className="flex-1">
-                <form onSubmit={handleBulkPromote} className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                  <AdminInput label="Target Role ID (ObjectId)" required value={promoteForm.newRoleId} onChange={e => setPromoteForm({...promoteForm, newRoleId: e.target.value})} placeholder="e.g. 64b..." />
-                  <AdminTextarea label="Promotion Reason" required value={promoteForm.reason} onChange={e => setPromoteForm({...promoteForm, reason: e.target.value})} rows={3} placeholder="End of year elevations" />
-                  <AdminButton type="submit" icon={TrendingUp} className="w-full">Promote Selected Members</AdminButton>
-                </form>
-              </div>
-            </div>
-          </AdminCard>
-        )}
+                <div className="w-full sm:w-80">
+                  <form onSubmit={handleBulkPromote} className="space-y-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <AdminInput label="Target Role ID (ObjectId)" required value={promoteForm.newRoleId} onChange={e => setPromoteForm({...promoteForm, newRoleId: e.target.value})} placeholder="e.g. 64b..." />
+                    <AdminTextarea label="Reason (optional)" value={promoteForm.reason} onChange={e => setPromoteForm({...promoteForm, reason: e.target.value})} placeholder="Promotion reason or note" />
+                    <AdminButton type="submit">Promote Selected</AdminButton>
+                  </form>
+                </div>
 
         {showForm && (
           <div className="fixed inset-0 z-50 flex justify-center overflow-y-auto bg-black/40 p-4 backdrop-blur-sm" onClick={() => setShowForm(false)}>
@@ -246,7 +256,17 @@ export default function TeamAdminPage() {
             </form>
           </div>
         )}
+            </div>
+          </AdminCard>
+        )}
       </div>
+      <AdminActionModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        action={modalAction}
+        memberId={modalMemberId}
+        onSuccess={() => { setModalOpen(false); loadMembers(); setSuccess("Action completed."); }}
+      />
     </AdminLayout>
   );
 }

@@ -47,6 +47,38 @@ export async function GET() {
       };
     }).sort((a, b) => a.order - b.order || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
+    // Also include TeamMember profiles that do not have an ACTIVE tenure yet
+    const allMembers = await TeamMember.find().lean();
+    const presentMemberIds = new Set(formattedMembers.map((f: any) => String(f.memberId)));
+    for (const mem of allMembers) {
+      if (!presentMemberIds.has(String(mem._id))) {
+        formattedMembers.push({
+          _id: mem._id,
+          memberId: mem._id,
+          name: mem.name,
+          role: "Member",
+          roleType: "MEMBER",
+          iiit: mem.iiit || "",
+          photo: mem.photo,
+          email: mem.email,
+          linkedin: mem.linkedin,
+          instagram: mem.instagram,
+          twitter: mem.twitter,
+          currentCompany: mem.currentCompany,
+          location: mem.location,
+          aboutText: mem.aboutText,
+          messageText: mem.messageText,
+          team: (mem as any).team || "Core",
+          year: (mem as any).year || "",
+          isActive: (mem as any).isActive ?? false,
+          order: 9999,
+          createdAt: mem.createdAt,
+        });
+      }
+    }
+
+    formattedMembers.sort((a: any, b: any) => a.order - b.order || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
     return NextResponse.json(formattedMembers);
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });

@@ -20,6 +20,8 @@ import { AdminCard } from "@/components/admin/AdminCard";
 import { AdminButton } from "@/components/admin/AdminButton";
 import { AdminInput, AdminSelect, AdminTextarea } from "@/components/admin/AdminInput";
 import type { IAlumni } from "@/types";
+import AdminActionModal from "@/components/admin/AdminActionModal";
+import { AdminSectionTabs } from "@/components/admin/AdminSectionTabs";
 
 type StatusFilter = "all" | "pending" | "approved" | "rejected";
 
@@ -29,6 +31,7 @@ export default function LegacyAdminPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("pending");
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"newest"|"oldest"|"year-desc"|"year-asc"|"name-asc"|"name-desc">("newest");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [busyId, setBusyId] = useState("");
@@ -36,8 +39,9 @@ export default function LegacyAdminPage() {
   const [editEntryId, setEditEntryId] = useState("");
   const [editForm, setEditForm] = useState<any>({});
   
-  const [teamEntryId, setTeamEntryId] = useState("");
-  const [teamForm, setTeamForm] = useState<any>({});
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalAction, setModalAction] = useState<"promote" | "copy">("copy");
+  const [modalMemberId, setModalMemberId] = useState<string | undefined>(undefined);
 
   const load = async () => {
     setLoading(true);
@@ -54,6 +58,7 @@ export default function LegacyAdminPage() {
     }
   };
 
+
   useEffect(() => {
     const timer = setTimeout(() => load(), 300);
     return () => clearTimeout(timer);
@@ -66,6 +71,30 @@ export default function LegacyAdminPage() {
     const rejected = alumni.filter((a) => (a.status || "approved") === "rejected").length;
     return { total, pending, approved, rejected };
   }, [alumni]);
+
+  const sortedAlumni = useMemo(() => {
+    const items = [...alumni];
+    switch (sortBy) {
+      case "oldest":
+        return items.sort((a, b) => (a.createdAt ? new Date(a.createdAt).getTime() : 0) - (b.createdAt ? new Date(b.createdAt).getTime() : 0));
+      case "year-desc":
+        return items.sort((a, b) => (b.graduationYear || 0) - (a.graduationYear || 0));
+      case "year-asc":
+        return items.sort((a, b) => (a.graduationYear || 0) - (b.graduationYear || 0));
+      case "name-asc":
+        return items.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
+      case "name-desc":
+        return items.sort((a, b) => (b.name || "").localeCompare(a.name || ""));
+      case "newest":
+      default:
+        return items.sort((a, b) => (b.createdAt ? new Date(b.createdAt).getTime() : 0) - (a.createdAt ? new Date(a.createdAt).getTime() : 0));
+    }
+  }, [alumni, sortBy]);
+
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewProfile, setViewProfile] = useState<IAlumni | null>(null);
+
+  const openView = (a: IAlumni) => { setViewProfile(a); setViewOpen(true); };
 
   const setStatus = async (id: string, status: "approved" | "rejected" | "pending") => {
     setBusyId(id);
@@ -113,35 +142,7 @@ export default function LegacyAdminPage() {
     }
   };
 
-  const startAddToTeam = (entry: IAlumni) => {
-    setTeamEntryId(entry._id);
-    setTeamForm({
-      name: entry.name || "",
-      role: entry.networkPost || entry.currentRole || "",
-      roleType: "MEMBER",
-      iiit: entry.iiit || "",
-      email: entry.email || "",
-      team: "Core",
-      year: entry.generation || new Date().getFullYear().toString(),
-      order: 0,
-    });
-  };
-
-  const handleAddToTeam = async (entry: IAlumni) => {
-    setBusyId(entry._id);
-    try {
-      const formData = new FormData();
-      Object.entries(teamForm).forEach(([key, value]) => formData.append(key, String(value)));
-      if (entry.photo?.url) formData.append("photoSourceAlumniId", entry._id);
-      await api.post("/team", formData);
-      setSuccess(`Added ${entry.name} to the team history.`);
-      setTeamEntryId("");
-    } catch (err: any) {
-      setError("Could not add legacy profile to team.");
-    } finally {
-      setBusyId("");
-    }
-  };
+  // Use AdminActionModal (copy) to add legacy profile to team/term instead of inline form
 
   return (
     <AdminLayout>
@@ -151,14 +152,26 @@ export default function LegacyAdminPage() {
         badge="Legacy Moderation"
         backHref="/admin"
         icon={ShieldCheck}
-        stats={
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <AdminStatCard label="Total" value={stats.total} color="slate" />
+          stats={
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <AdminStatCard label="Total" value={stats.total} color="slate" />
             <AdminStatCard label="Pending" value={stats.pending} color="amber" />
             <AdminStatCard label="Approved" value={stats.approved} color="emerald" />
-            <AdminStatCard label="Rejected" value={stats.rejected} color="rose" />
-          </div>
-        }
+              <AdminStatCard label="Rejected" value={stats.rejected} color="rose" />
+            </div>
+          }
+          actions={<AdminButton size="sm" icon={PlusCircle} onClick={() => router.push("/legacy#legacy-form")}>Add Profile</AdminButton>}
+        />
+
+      <AdminSectionTabs
+        active={statusFilter}
+        onChange={setStatusFilter}
+        tabs={[
+          { id: "all", label: "All", count: stats.total },
+          { id: "pending", label: "Pending", icon: Clock3, count: stats.pending },
+          { id: "approved", label: "Approved", icon: CheckCircle2, count: stats.approved },
+          { id: "rejected", label: "Rejected", icon: XCircle, count: stats.rejected },
+        ]}
       />
 
       <AdminCard className="mb-6">
@@ -173,18 +186,16 @@ export default function LegacyAdminPage() {
               className="w-full rounded-xl border border-slate-200 bg-slate-50 px-10 py-2.5 text-sm outline-none focus:border-indigo-600 focus:bg-white transition"
             />
           </div>
-          <div className="flex gap-2 w-full sm:w-auto overflow-x-auto">
-            {(["all", "pending", "approved", "rejected"] as StatusFilter[]).map((s) => (
-              <button
-                key={s}
-                onClick={() => setStatusFilter(s)}
-                className={`rounded-full px-4 py-2 text-xs font-bold capitalize transition whitespace-nowrap ${
-                  statusFilter === s ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                }`}
-              >
-                {s}
-              </button>
-            ))}
+          <div className="ml-auto">
+            <label className="block text-xs text-slate-500 mb-1">Sort</label>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)} className="rounded-full border bg-white px-3 py-1 text-sm">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="year-desc">Year (latest)</option>
+              <option value="year-asc">Year (earliest)</option>
+              <option value="name-asc">Name A–Z</option>
+              <option value="name-desc">Name Z–A</option>
+            </select>
           </div>
         </div>
       </AdminCard>
@@ -199,14 +210,21 @@ export default function LegacyAdminPage() {
       {loading ? (
         <div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" /></div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {alumni.map((a) => {
+        <div className="overflow-x-auto rounded-[1.2rem] border border-slate-200 bg-white shadow-sm">
+          <div className="min-w-[980px]">
+          <div className="grid grid-cols-[minmax(220px,1.35fr)_minmax(160px,0.9fr)_110px_120px_minmax(260px,1fr)] border-b border-slate-200 bg-slate-50/80 px-5 py-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+            <div>Member</div>
+            <div>Institute / Team</div>
+            <div>Year</div>
+            <div>Status</div>
+            <div className="text-right">Actions</div>
+          </div>
+          {sortedAlumni.map((a) => {
             const isEditing = editEntryId === a._id;
-            const isAdding = teamEntryId === a._id;
             return (
-              <AdminCard key={a._id} className="flex flex-col h-full">
+              <div key={a._id} className="border-b border-slate-100 px-5 py-4 last:border-b-0">
                 {isEditing ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200">
                     <div className="grid grid-cols-2 gap-3">
                       <AdminInput label="Name" value={editForm.name} onChange={e => setEditForm({...editForm, name: e.target.value})} />
                       <AdminInput label="Email" value={editForm.email} onChange={e => setEditForm({...editForm, email: e.target.value})} />
@@ -222,52 +240,86 @@ export default function LegacyAdminPage() {
                       <AdminButton variant="ghost" onClick={() => setEditEntryId("")}>Cancel</AdminButton>
                     </div>
                   </div>
-                ) : isAdding ? (
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-bold">Add to Team History</h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <AdminInput label="Name" value={teamForm.name} onChange={e => setTeamForm({...teamForm, name: e.target.value})} />
-                      <AdminInput label="Role" value={teamForm.role} onChange={e => setTeamForm({...teamForm, role: e.target.value})} />
-                      <AdminSelect label="Role Type" value={teamForm.roleType} onChange={e => setTeamForm({...teamForm, roleType: e.target.value})} options={[{label:"Exec",value:"EXEC"},{label:"Lead",value:"LEAD"},{label:"Member",value:"MEMBER"}]} />
-                      <AdminSelect label="Team" value={teamForm.team} onChange={e => setTeamForm({...teamForm, team: e.target.value})} options={[{label:"Core",value:"Core"},{label:"Tech",value:"Tech"}]} />
-                      <AdminInput label="Term Year" value={teamForm.year} onChange={e => setTeamForm({...teamForm, year: e.target.value})} />
-                      <AdminInput label="Order" type="number" value={teamForm.order} onChange={e => setTeamForm({...teamForm, order: e.target.value})} />
-                    </div>
-                    <div className="flex gap-2">
-                      <AdminButton icon={PlusCircle} onClick={() => handleAddToTeam(a)}>Confirm Add</AdminButton>
-                      <AdminButton variant="ghost" onClick={() => setTeamEntryId("")}>Cancel</AdminButton>
-                    </div>
-                  </div>
                 ) : (
-                  <>
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
+                  <div className="grid items-center gap-4 md:grid-cols-[minmax(220px,1.35fr)_minmax(160px,0.9fr)_110px_120px_minmax(260px,1fr)]">
+                    <div className="min-w-0">
                         <h3 className="font-bold text-slate-900">{a.name}</h3>
                         <p className="text-xs text-slate-500">{a.email}</p>
-                      </div>
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${a.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : a.status === 'rejected' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-900">{a.networkPost || a.currentRole || "Legacy Member"}</div>
+                      <div className="text-xs text-slate-500">{a.iiit}</div>
+                    </div>
+                    <div>
+                      <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-bold text-indigo-700 ring-1 ring-indigo-100">
+                        {a.generation || a.graduationYear || "-"}
+                      </span>
+                    </div>
+                    <div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ring-1 ${a.status === 'approved' ? 'bg-emerald-50 text-emerald-700 ring-emerald-100' : a.status === 'rejected' ? 'bg-rose-50 text-rose-700 ring-rose-100' : 'bg-amber-50 text-amber-700 ring-amber-100'}`}>
                         {a.status || 'approved'}
                       </span>
                     </div>
-                    <div className="flex flex-wrap gap-1 mt-2 mb-4">
-                      <span className="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-semibold">{a.iiit}</span>
-                      <span className="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-semibold">{a.generation}</span>
-                    </div>
-                    <div className="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-100">
+                    <div className="flex flex-wrap justify-start gap-2 md:justify-end">
                       <AdminButton size="sm" variant="outline" icon={Pencil} onClick={() => startEdit(a)}>Edit</AdminButton>
-                      <AdminButton size="sm" variant="outline" icon={PlusCircle} onClick={() => startAddToTeam(a)}>Team</AdminButton>
+                      <AdminButton size="sm" variant="outline" icon={PlusCircle} onClick={() => { setModalAction("copy"); setModalMemberId(a._id); setModalOpen(true); }}>Team</AdminButton>
+                      <AdminButton size="sm" variant="ghost" icon={Search} onClick={() => openView(a)}>View</AdminButton>
                       {a.status !== 'approved' && <AdminButton size="sm" variant="secondary" icon={CheckCircle2} onClick={() => setStatus(a._id, 'approved')}>Approve</AdminButton>}
                       {a.status !== 'rejected' && <AdminButton size="sm" variant="danger" icon={XCircle} onClick={() => setStatus(a._id, 'rejected')}>Reject</AdminButton>}
                       <AdminButton size="sm" variant="ghost" icon={Trash2} onClick={() => deleteAlumni(a._id)} className="ml-auto text-rose-500 hover:text-rose-600 hover:bg-rose-50" />
                     </div>
-                  </>
+                  </div>
                 )}
-              </AdminCard>
+              </div>
             )
           })}
-          {alumni.length === 0 && <div className="col-span-2 py-8 text-center text-slate-500">No legacy profiles found.</div>}
+          {alumni.length === 0 && <div className="py-8 text-center text-slate-500">No legacy profiles found.</div>}
+          </div>
         </div>
       )}
-    </AdminLayout>
+
+          <AdminActionModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            action={modalAction}
+            memberId={modalMemberId}
+            onSuccess={() => { setModalOpen(false); load(); setSuccess("Action completed."); }}
+          />
+          {viewOpen && viewProfile && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="w-full max-w-2xl rounded-lg bg-white p-6 shadow-xl">
+                <div className="flex justify-between items-start mb-4">
+                  <h3 className="text-lg font-bold">{viewProfile.name}</h3>
+                  <div className="text-sm text-slate-500">{viewProfile.email}</div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-slate-600">Institute</p>
+                    <div className="font-medium">{viewProfile.iiit || '—'}</div>
+                    <p className="text-sm text-slate-600 mt-2">Generation</p>
+                    <div className="font-medium">{viewProfile.generation || '—'}</div>
+                    <p className="text-sm text-slate-600 mt-2">Graduation Year</p>
+                    <div className="font-medium">{viewProfile.graduationYear || '—'}</div>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-600">Branch</p>
+                    <div className="font-medium">{viewProfile.branch || '—'}</div>
+                    <p className="text-sm text-slate-600 mt-2">Current Role</p>
+                    <div className="font-medium">{viewProfile.currentRole || '—'}</div>
+                    <p className="text-sm text-slate-600 mt-2">Company</p>
+                    <div className="font-medium">{viewProfile.currentCompany || '—'}</div>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-slate-600">Bio</p>
+                  <div className="p-3 rounded border bg-slate-50 text-sm text-slate-700">{viewProfile.bio || '—'}</div>
+                </div>
+                <div className="mt-6 flex justify-end">
+                  <button onClick={() => { setViewOpen(false); setViewProfile(null); }} className="rounded px-3 py-2 border">Close</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </AdminLayout>
   );
 }

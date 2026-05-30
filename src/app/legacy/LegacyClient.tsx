@@ -974,81 +974,82 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
     <article
       className={`group relative overflow-hidden rounded-[1.25rem] border transition-all duration-500 hover:-translate-y-0.5 ${
         isDarkMode
-          ? "border-slate-800 bg-slate-900/80 shadow-[0_24px_70px_rgba(2,6,23,0.34)] backdrop-blur-md"
-          : "border-slate-200/80 bg-white shadow-[0_24px_80px_rgba(79,70,229,0.09)]"
+          ? "border-slate-800 bg-slate-900/80 shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-md"
+          : "border-slate-100 bg-white shadow-[0_12px_30px_rgba(99,102,241,0.06)]"
       }`}
     >
       <div className="grid lg:grid-cols-[18rem_minmax(0,1fr)] xl:grid-cols-[22rem_minmax(0,1fr)]">
-        <div className="relative min-h-72 overflow-hidden bg-slate-100 sm:min-h-80 lg:min-h-[24rem]">
+        <div className="relative min-h-72 overflow-hidden bg-slate-50 sm:min-h-80 lg:min-h-[24rem]">
           {entry.photo?.url ? (
             <Image
               src={entry.photo.url}
               alt={entry.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.035]"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
               sizes="(max-width: 1024px) 100vw, 352px"
             />
           ) : (
-            <div className="flex h-full min-h-72 items-center justify-center bg-[linear-gradient(135deg,#1e1b4b,#0f172a)] text-7xl font-black text-white/20">
+            <div className="flex h-full min-h-72 items-center justify-center bg-gradient-to-br from-indigo-50 to-violet-50 text-7xl font-extrabold text-indigo-200">
               {entry.name?.[0]}
             </div>
           )}
         </div>
 
         <div
-          className={`grid gap-5 p-5 sm:p-6 lg:p-7 ${
+          className={`grid gap-4 p-5 sm:p-6 lg:p-6 ${
             hasJourney ? "md:grid-cols-[minmax(0,1fr)_18rem] md:items-center xl:grid-cols-[minmax(0,1fr)_21rem]" : ""
           }`}
         >
           <div className="min-w-0">
-            <h3 className={`text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-slate-50" : "text-slate-950"}`}>
+            <h3 className={`text-2xl leading-tight font-bold tracking-tight sm:text-3xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
               {entry.name}
             </h3>
 
-            <p className={`mt-3 text-sm font-semibold sm:text-base ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+            <p className={`mt-2 text-sm font-medium sm:text-sm ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>
               {serviceLine}
             </p>
 
             {contribution && (
-              <div className={`mt-6 rounded-[1.35rem] border p-4 sm:p-5 ${
+              <div className={`mt-5 rounded-[1.35rem] border p-3 sm:p-4 ${
                 isDarkMode
-                  ? "border-indigo-500/25 bg-indigo-500/10"
-                  : "border-indigo-100 bg-[linear-gradient(135deg,#f8fbff,#f1f5ff)]"
+                  ? "border-indigo-500/20 bg-indigo-900/10"
+                  : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"
               }`}>
-                <p className={`text-[11px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
+                <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isDarkMode ? "text-indigo-200" : "text-indigo-700"}`}>
                   Contribution made
                 </p>
-                <p className={`mt-3 line-clamp-4 text-sm font-medium leading-7 sm:text-[15px] ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                <p className={`mt-2 line-clamp-4 text-sm font-normal leading-6 sm:text-sm ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>
                   {contribution}
                 </p>
               </div>
             )}
 
+
             {roleLine && (
-              <p className={`mt-5 line-clamp-2 text-sm font-semibold leading-6 ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>
+              <p className={`mt-3 line-clamp-2 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>
                 {roleLine}
               </p>
             )}
 
             {displayMessage && (
-              <p className={`mt-3 line-clamp-3 text-sm font-medium leading-7 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`mt-2 line-clamp-3 text-sm font-normal leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                 {displayMessage}
               </p>
             )}
 
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${entry.email}`}
                 className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
                   isDarkMode
                     ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                    : "border-transparent bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:shadow-sm"
                 }`}
               >
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
+                <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
                   <Mail className="h-4 w-4" />
                 </span>
-                Email
+                <span className="text-sm font-medium">Email</span>
               </a>
               {entry.linkedin && (
                 <a
@@ -1058,13 +1059,13 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
                   className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
                     isDarkMode
                       ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                      : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50 hover:shadow-sm"
                   }`}
                 >
-                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
-                    <Linkedin className="h-4 w-4" />
+                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
+                    <Linkedin className="h-4 w-4 text-indigo-600" />
                   </span>
-                  LinkedIn
+                  <span className="text-sm font-medium">LinkedIn</span>
                 </a>
               )}
               {entry.instagram && (
@@ -1075,38 +1076,38 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
                   className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
                     isDarkMode
                       ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-indigo-200 hover:text-indigo-700 hover:shadow-sm"
+                      : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50 hover:shadow-sm"
                   }`}
                 >
-                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
-                    <Instagram className="h-4 w-4" />
+                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
+                    <Instagram className="h-4 w-4 text-pink-500" />
                   </span>
-                  Instagram
+                  <span className="text-sm font-medium">Instagram</span>
                 </a>
               )}
             </div>
           </div>
 
           {hasJourney && (
-            <aside className={`rounded-[1.75rem] p-5 sm:p-6 ${
+            <aside className={`rounded-[1.25rem] p-4 sm:p-5 ${
               isDarkMode
                 ? "bg-slate-950/70 ring-1 ring-slate-800"
-                : "bg-[linear-gradient(180deg,#f6f7ff,#eef2ff)] ring-1 ring-indigo-100"
+                : "bg-gradient-to-b from-indigo-50/60 to-violet-50 ring-1 ring-indigo-100"
             }`}>
-              <h4 className={`text-sm font-bold ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
+              <h4 className={`text-xs font-semibold ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
                 Network Journey
               </h4>
-              <div className="relative mt-7 space-y-7 pl-8">
-                <div className={`absolute bottom-1 left-[0.45rem] top-2 w-px ${isDarkMode ? "bg-slate-600" : "bg-indigo-200"}`} />
+              <div className="relative mt-5 space-y-4 pl-7">
+                <div className={`absolute bottom-1 left-[0.45rem] top-1 w-px ${isDarkMode ? "bg-slate-600" : "bg-indigo-200"}`} />
                 {dedupedRoleHistory.map((item, index) => (
                   <div key={`${item.year}-${item.team}-${item.role}-${index}`} className="relative">
-                    <span className={`absolute -left-[2rem] top-1 h-4 w-4 rounded-full ring-4 ${
-                      isDarkMode ? "bg-indigo-300 ring-slate-950" : "bg-slate-950 ring-indigo-50"
+                    <span className={`absolute -left-[1.6rem] top-1 h-3 w-3 rounded-full ring-3 ${
+                      isDarkMode ? "bg-indigo-300 ring-slate-950" : "bg-indigo-700 ring-indigo-50"
                     }`} />
-                    <p className={`text-sm font-bold leading-5 ${isDarkMode ? "text-slate-100" : "text-slate-950"}`}>
+                    <p className={`text-sm font-semibold leading-5 ${isDarkMode ? "text-slate-100" : "text-slate-950"}`}>
                       {item.role || entry.networkPost || "Legacy Member"}
                     </p>
-                    <p className={`mt-1 text-xs font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                    <p className={`mt-1 text-xs font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                       {[item.year, item.team].filter(Boolean).join(" - ")}
                     </p>
                   </div>

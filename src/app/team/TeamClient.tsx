@@ -105,72 +105,38 @@ export default function TeamClient({ initialMembers }: Props) {
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
 
-      {/* Hero Header */}
-      <section className="relative z-10 px-4 pb-6 pt-16 sm:px-5 sm:pb-8 sm:pt-20 lg:px-6 lg:pt-[5.5rem]">
+      {/* Compact page header */}
+      <section className="relative z-10 px-4 pb-3 pt-16 sm:px-5 sm:pt-20 lg:px-6 lg:pt-[5.25rem]">
         <div className="mx-auto max-w-7xl">
-          <div className="relative overflow-hidden rounded-[1.35rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.88),rgba(255,255,255,0.7))] px-5 py-6 shadow-[0_24px_70px_rgba(148,163,184,0.14)] backdrop-blur-sm sm:px-6 sm:py-7 lg:px-7 lg:py-8">
-            <div className="pointer-events-none absolute inset-0 opacity-80 [background-image:radial-gradient(circle_at_top_left,rgba(99,102,241,0.12),transparent_34%),radial-gradient(circle_at_85%_20%,rgba(56,189,248,0.1),transparent_28%)]" />
-            <div className="relative flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-              <div className="max-w-3xl lg:pr-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
-                  <Users className="h-4 w-4" />
-                  Team Directory
-                </div>
-                <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                  Meet the Team
-                </h1>
-                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
-                  The people driving vision, execution, and impact across the IIITians Network.
-                </p>
-                <div className="mt-5 flex flex-wrap gap-2.5">
-                  <Link
-                    href="/team/join"
-                    className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(135deg,#0f172a,#1e293b)] px-4 py-2.5 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(15,23,42,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_44px_rgba(15,23,42,0.24)]"
-                  >
-                    <UserPlus className="h-4 w-4" />
-                    Join the Team
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                  <Link
-                    href="/guide"
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2.5 text-sm font-semibold text-slate-700 transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
-                  >
-                    Learn how we work
-                  </Link>
-                </div>
+          <div className="flex flex-col gap-3 rounded-[1.1rem] border border-white/80 bg-white/75 px-4 py-3 shadow-sm backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-2">
+              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700 shadow-sm">
+                <Users className="h-4 w-4" />
+                Team Directory
               </div>
+              <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Meet the Team</h1>
+              <p className="text-sm text-slate-500">
+                {hasDirectoryData ? `${uniqueVisibleCount} visible members` : "Directory syncing"}
+              </p>
+            </div>
 
-              {/* Stats cards */}
-              <div className="grid gap-2.5 sm:grid-cols-3 lg:w-[24rem] lg:flex-shrink-0">
-                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
-                  <div className="text-2xl font-semibold leading-none text-slate-900">
-                    {hasDirectoryData ? uniqueVisibleCount : "Soon"}
-                  </div>
-                  <div className="mt-2 text-sm leading-5 text-slate-600">
-                    {hasDirectoryData ? "Visible members" : "Directory syncing"}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
-                  <div className="text-2xl font-semibold leading-none text-slate-900">
-                    {hasDirectoryData ? years.length - 1 : "Live"}
-                  </div>
-                  <div className="mt-2 text-sm leading-5 text-slate-600">
-                    {hasDirectoryData ? "Active batches" : "Updates enabled"}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/90 bg-white/85 px-3.5 py-3 shadow-[0_14px_34px_rgba(148,163,184,0.12)]">
-                  <div className="text-2xl font-semibold leading-none text-slate-900">
-                    {hasDirectoryData ? filteredMembers.length : "Fresh"}
-                  </div>
-                  <div className="mt-2 text-sm leading-5 text-slate-600">
-                    {hasDirectoryData ? "Matching current filters" : "Profiles coming in"}
-                  </div>
-                </div>
-              </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+                {hasDirectoryData ? years.length - 1 : "Live"} batches
+              </span>
+              <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+                {hasDirectoryData ? filteredMembers.length : "Fresh"} matching
+              </span>
+              <Link
+                href="/team/join"
+                className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-slate-800"
+              >
+                <UserPlus className="h-3.5 w-3.5" />
+                Join
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </div>
-
-          <div className="mt-6 h-px w-full bg-gradient-to-r from-transparent via-indigo-100 to-transparent" />
         </div>
       </section>
 

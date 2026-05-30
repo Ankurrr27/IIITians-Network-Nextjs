@@ -11,6 +11,7 @@ import {
   Mail,
   Linkedin,
   Instagram,
+  Twitter,
   UserPlus,
 } from "lucide-react";
 import api from "@/lib/apiClient";
@@ -26,6 +27,7 @@ const initialForm = {
   role: "",
   linkedin: "",
   instagram: "",
+  twitter: "",
   aboutText: "",
   messageText: "",
 };
@@ -241,6 +243,9 @@ export default function TeamJoinPage() {
                     </div>
                     <div className="sm:col-span-2">
                       <InputGroup label="Instagram (Optional)" icon={Instagram} name="instagram" value={form.instagram} onChange={handleChange} placeholder="https://instagram.com/username" />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <InputGroup label="Twitter (Optional)" icon={Twitter} name="twitter" value={form.twitter} onChange={handleChange} placeholder="https://twitter.com/username" />
                     </div>
                     <div className="flex flex-col gap-2 sm:col-span-2">
                       <label htmlFor="aboutText" className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Your Bio / Contributions</label>
