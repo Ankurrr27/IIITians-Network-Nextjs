@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
 
 /* ─── CSS Variables ─────────────────────────────────────────────────────── */
 :root {
@@ -145,3 +146,136 @@ body {
 /* ─── Line Clamp (compat) ───────────────────────────────────────────────── */
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.leaflet-container {
+  background: #eef2ff;
+  font-family: inherit;
+}
+
+.leaflet-tooltip {
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 0.35rem 0.65rem !important;
+}
+
+.iiit-map-marker {
+  position: relative;
+  display: grid;
+  height: 32px;
+  width: 32px;
+  place-items: center;
+  border: 2.5px solid #ffffff;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2), 0 6px 18px rgba(79, 70, 229, 0.22);
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+/* Logo image inside marker */
+.iiit-map-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 3px;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Fallback initials when logo fails */
+.iiit-map-logo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+  color: #ffffff;
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  border-radius: 9999px;
+}
+
+.iiit-map-pin-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+}
+
+.iiit-map-label {
+  max-width: 8.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.1);
+  color: #0f172a;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 0.4rem 0.55rem;
+  text-overflow: ellipsis;
+  transform: translateY(0);
+  transition: opacity 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.iiit-map-pin-wrap.is-cluster .iiit-map-label {
+  max-width: 4.75rem;
+}
+
+.iiit-map-pin-wrap:hover .iiit-map-label {
+  box-shadow: 0 14px 28px rgba(79, 70, 229, 0.16);
+  transform: translateY(-1px);
+}
+
+.iiit-map-marker::after {
+  content: none;
+}
+
+/* Pulse ring rendered on the wrapper so overflow:hidden doesn't clip it */
+.iiit-map-pin-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(79, 70, 229, 0.4);
+  animation: markerPulse 2s ease-out infinite;
+  pointer-events: none;
+}
+
+.iiit-map-pin-wrap.is-cluster::before {
+  width: 42px;
+  height: 42px;
+}
+
+.iiit-map-marker:hover,
+.iiit-map-marker.is-selected {
+  transform: scale(1.25);
+  box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.25), 0 10px 28px rgba(79, 70, 229, 0.32);
+}
+
+.iiit-map-cluster {
+  height: 42px;
+  width: 42px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f172a, #4f46e5);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+@keyframes markerPulse {
+  0% { opacity: 0.75; transform: scale(0.75); }
+  100% { opacity: 0; transform: scale(1.55); }
+}

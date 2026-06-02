@@ -10,7 +10,7 @@ export default function EventsPreviewSection() {
   const [events, setEvents] = useState<IEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const LIMIT = 3;
+  const LIMIT = 6;
 
   useEffect(() => {
     let mounted = true;
@@ -30,8 +30,9 @@ export default function EventsPreviewSection() {
     };
   }, []);
 
-  const upcomingEvents = events
-    .filter((e) => new Date(e.date) >= new Date())
+  const latestEvents = events
+    .filter((event) => event.date)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, LIMIT);
 
   return (
@@ -64,13 +65,13 @@ export default function EventsPreviewSection() {
               />
             ))}
           </div>
-        ) : upcomingEvents.length === 0 ? (
+        ) : latestEvents.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
-            <p className="text-slate-500">No upcoming events listed at the moment.</p>
+            <p className="text-slate-500">No events listed at the moment.</p>
           </div>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {upcomingEvents.map((event) => (
+            {latestEvents.map((event) => (
               <EventCard key={event._id} event={event} />
             ))}
           </div>
