@@ -12,10 +12,7 @@ export default function FounderSection() {
     <section className="bg-white py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-6 sm:mb-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-            Team
-          </p>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             IIITians Network Team
           </h2>
         </div>
@@ -24,10 +21,7 @@ export default function FounderSection() {
 
         <div className="mb-8 rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-5 sm:mb-12 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:p-7">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-              Leadership Story
-            </p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               Founding Team
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">

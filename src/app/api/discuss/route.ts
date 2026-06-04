@@ -56,7 +56,7 @@ export async function GET(req: NextRequest) {
     const status = url.searchParams.get("status");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = status ? { status } : { status: "approved" };
-    const posts = await Discuss.find(query).sort({ createdAt: -1 });
+    const posts = await Discuss.find(query).sort({ isPinned: -1, createdAt: -1 });
     return NextResponse.json(posts);
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });

@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, LockKeyhole, ShieldCheck } from "lucide-react";
 import api from "@/lib/apiClient";
 
-export default function AdminLoginPage() {
+function AdminLoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const accessGranted = searchParams.get("gate") === "secure";
@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
               <LockKeyhole className="h-8 w-8 text-emerald-400" />
             )}
           </div>
-          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          <h1 className="mt-5 text-2xl font-semibold tracking-tight text-white sm:text-4xl">
             {accessGranted ? "Admin Portal" : "Secure Gate Active"}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
@@ -121,5 +121,17 @@ export default function AdminLoginPage() {
         </p>
       </div>
     </main>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={
+      <main className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,_#0f172a_0%,_#1e1b4b_40%,_#0f172a_100%)]">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-emerald-500" />
+      </main>
+    }>
+      <AdminLoginPageContent />
+    </Suspense>
   );
 }

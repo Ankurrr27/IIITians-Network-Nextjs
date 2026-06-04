@@ -39,10 +39,7 @@ export default function DiscussPreviewSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-              Community Discussions
-            </p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               Latest from <span className="text-indigo-600">Discuss</span>
             </h2>
           </div>

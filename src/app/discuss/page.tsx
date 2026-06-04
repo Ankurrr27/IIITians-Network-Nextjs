@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -12,6 +12,7 @@ import {
   CalendarDays,
   Clock,
   Edit3,
+  ExternalLink,
   Eye,
   Flame,
   Globe,
@@ -142,36 +143,115 @@ function MetricPill({ icon: Icon, label, value }: { icon: React.ElementType; lab
 }
 
 function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }) {
-  const imageUrl = post.banner?.url || post.photos?.[0]?.url || "/IIITians-Network-Logo-Dark.png";
-  const tones = [
-    "from-slate-950 via-indigo-950 to-sky-800",
-    "from-emerald-800 via-teal-800 to-slate-900",
-    "from-violet-800 via-fuchsia-800 to-slate-950",
+  const imageUrl = post.banner?.url || post.photos?.[0]?.url || null;
+  const fallbackTones = [
+    "from-slate-950 via-indigo-950 to-sky-900",
+    "from-emerald-900 via-teal-900 to-slate-950",
+    "from-violet-900 via-fuchsia-900 to-slate-950",
   ];
+  const fallbackPattern = fallbackTones[index % fallbackTones.length];
 
   return (
-    <article className={`relative min-h-44 overflow-hidden rounded-xl bg-gradient-to-br ${tones[index % tones.length]} p-5 text-white shadow-sm`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={imageUrl} alt="" className="absolute inset-y-0 right-0 h-full w-1/2 object-cover opacity-24 mix-blend-screen" />
-      <div className="relative z-10 flex h-full flex-col justify-between">
-        <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/14 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-white/90 ring-1 ring-white/20">
-            <Pin className="h-3.5 w-3.5" />
-            {post.type}
-          </span>
-          <h2 className="mt-4 line-clamp-2 max-w-xs text-xl font-bold leading-tight">{post.title}</h2>
-          <p className="mt-2 line-clamp-2 max-w-sm text-sm text-white/76">{post.description}</p>
+    <article className="group relative min-h-56 overflow-hidden rounded-2xl shadow-md cursor-default">
+      {/* Background: real image or gradient fallback */}
+      {imageUrl ? (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={post.title}
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+          {/* Multi-stop dark overlay: transparent top → heavy black bottom */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+        </>
+      ) : (
+        <div className={`absolute inset-0 bg-gradient-to-br ${fallbackPattern}`}>
+          {/* Decorative logo watermark */}
+          <div className="absolute inset-0 flex items-center justify-center opacity-[0.06]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/IIITians-Network-Logo-Dark.png" alt="" className="w-48 object-contain" />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         </div>
-        <div className="mt-4 flex items-center justify-between gap-3 text-xs font-semibold text-white/80">
-          <span>{post.clubName}</span>
-          <span>{post.collegeName}</span>
+      )}
+
+      {/* Content overlay */}
+      <div className="relative z-10 flex h-full min-h-56 flex-col justify-between p-5">
+        {/* Top: link only */}
+        <div className="flex items-start justify-end">
+          {post.actionLink && (
+            <a
+              href={post.actionLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/30 hover:scale-102 active:scale-98 ring-1 ring-white/20"
+            >
+              Link <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
+        </div>
+
+        {/* Bottom: heading (title) only */}
+        <div>
+          <h2 className="line-clamp-3 text-[1.2rem] font-black leading-snug text-white drop-shadow-md">
+            {post.title}
+          </h2>
         </div>
       </div>
     </article>
   );
 }
 
-function OfficialPostRow({ post }: { post: IDiscussPost }) {
+function OfficialPostRow({
+  post,
+  isVoted,
+  onVote,
+}: {
+  post: IDiscussPost;
+  isVoted: boolean;
+  onVote: (postId: string) => void;
+}) {
+  const [hasViewed, setHasViewed] = useState(false);
+  const [viewsCount, setViewsCount] = useState(post.views || 0);
+  const elementRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    setViewsCount(post.views || 0);
+  }, [post.views]);
+
+  useEffect(() => {
+    const el = elementRef.current;
+    if (!el || hasViewed) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasViewed) {
+            setHasViewed(true);
+            api.post(`/discuss/${post._id}/view`)
+              .then((res) => {
+                if (res.data?.views !== undefined) {
+                  setViewsCount(res.data.views);
+                } else {
+                  setViewsCount((prev) => prev + 1);
+                }
+              })
+              .catch(() => {
+                setViewsCount((prev) => prev + 1);
+              });
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => {
+      if (el) observer.unobserve(el);
+    };
+  }, [post._id, hasViewed]);
+
   const images = [
     ...(post.banner?.url ? [post.banner] : []),
     ...(post.photos || []),
@@ -180,15 +260,20 @@ function OfficialPostRow({ post }: { post: IDiscussPost }) {
   const date = post.createdAt ? new Date(post.createdAt).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "Recent";
 
   return (
-    <article className="border-b border-slate-200 py-6">
+    <article ref={elementRef} className={`border-b py-6 ${post.isPinned ? "border-amber-100 bg-amber-50/40 -mx-4 px-4 sm:-mx-6 sm:px-6" : "border-slate-200"}`}>
       <div className="flex gap-4">
         <div className="hidden pt-1 sm:block">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-white">
-            <Megaphone className="h-5 w-5" />
+          <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white ${post.isPinned ? "bg-amber-500" : "bg-slate-950"}`}>
+            {post.isPinned ? <Pin className="h-5 w-5" /> : <Megaphone className="h-5 w-5" />}
           </div>
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+            {post.isPinned && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+                <Pin className="h-3 w-3 fill-amber-500" /> Pinned
+              </span>
+            )}
             <span className="font-semibold text-slate-800">{post.clubName}</span>
             {post.badgeLabel && <BadgeCheck className="h-4 w-4 fill-sky-500 text-white" />}
             <span>{post.collegeName}</span>
@@ -209,8 +294,16 @@ function OfficialPostRow({ post }: { post: IDiscussPost }) {
             })}
           </p>
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-            <span className="inline-flex items-center gap-1.5"><ArrowUp className="h-4 w-4" /> {Math.max(12, post.title.length + post.clubName.length)}</span>
-            <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {Math.max(240, post.description.length * 7).toLocaleString("en-IN")}</span>
+            <button
+              onClick={() => onVote(post._id)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 transition cursor-pointer hover:bg-slate-100 ${
+                isVoted ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-500"
+              }`}
+            >
+              <ArrowUp className={`h-4 w-4 ${isVoted ? "stroke-[2.5px]" : ""}`} />
+              {post.upvotes || 0}
+            </button>
+            <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {viewsCount.toLocaleString("en-IN")}</span>
             <span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> Official</span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-slate-600">{post.type}</span>
           </div>
@@ -231,7 +324,15 @@ function OfficialPostRow({ post }: { post: IDiscussPost }) {
   );
 }
 
-function QueryRow({ query }: { query: QueryPost }) {
+function QueryRow({
+  query,
+  isVoted,
+  onVote,
+}: {
+  query: QueryPost;
+  isVoted: boolean;
+  onVote: (queryId: string) => void;
+}) {
   return (
     <article className="border-b border-slate-200 py-6">
       <div className="flex gap-4">
@@ -249,7 +350,15 @@ function QueryRow({ query }: { query: QueryPost }) {
           <h3 className="mt-2 text-xl font-bold leading-snug text-slate-950">{query.title}</h3>
           <p className="mt-3 text-base leading-7 text-slate-600">{query.body}</p>
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
-            <span className="inline-flex items-center gap-1.5"><ArrowUp className="h-4 w-4" /> {query.votes}</span>
+            <button
+              onClick={() => onVote(query.id)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 transition cursor-pointer hover:bg-slate-100 ${
+                isVoted ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-500"
+              }`}
+            >
+              <ArrowUp className={`h-4 w-4 ${isVoted ? "stroke-[2.5px]" : ""}`} />
+              {query.votes}
+            </button>
             <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {query.views}</span>
             <span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> {query.replies}</span>
             <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">#{query.category}</span>
@@ -287,7 +396,7 @@ function DiscussPageClient() {
   const [loginForm, setLoginForm] = useState(INIT_LOGIN);
   const [regForm, setRegForm] = useState(INIT_REG);
   const [queryForm, setQueryForm] = useState(INIT_QUERY);
-  const [queries, setQueries] = useState<QueryPost[]>(starterQueries);
+  const [queries, setQueries] = useState<QueryPost[]>([]);
   const [activeTopic, setActiveTopic] = useState<(typeof TOPIC_FILTERS)[number]>("For You");
   const [search, setSearch] = useState("");
   const [postState, setPostState] = useState({ loading: false, error: "", success: "" });
@@ -297,9 +406,25 @@ function DiscussPageClient() {
   const [postPhotos, setPostPhotos] = useState<File[]>([]);
   const [rawCropFile, setRawCropFile] = useState<File | null>(null);
   const [clubHandles, setClubHandles] = useState<string[]>([]);
+  const [showQueryForm, setShowQueryForm] = useState(false);
+  const [votedPostIds, setVotedPostIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("votedPostIds");
+        if (saved) {
+          setVotedPostIds(new Set(JSON.parse(saved)));
+        }
+      } catch (e) {
+        console.error("Failed to load voted post IDs", e);
+      }
+    }
+  }, []);
 
   const approvedPosts = useMemo(() => posts.filter((p) => p.status === "approved"), [posts]);
-  const featuredPosts = useMemo(() => approvedPosts.slice(0, 3), [approvedPosts]);
+  const pinnedPosts = useMemo(() => approvedPosts.filter((p) => p.isPinned), [approvedPosts]);
+  const featuredPosts = useMemo(() => (pinnedPosts.length > 0 ? pinnedPosts : approvedPosts).slice(0, 3), [pinnedPosts, approvedPosts]);
 
   const stats = useMemo(() => ({
     total: approvedPosts.length + queries.length,
@@ -315,6 +440,9 @@ function DiscussPageClient() {
       return topicMatch && searchMatch;
     });
   }, [activeTopic, approvedPosts, search]);
+
+  const filteredPinnedPosts = useMemo(() => filteredOfficialPosts.filter((p) => p.isPinned), [filteredOfficialPosts]);
+  const filteredRegularPosts = useMemo(() => filteredOfficialPosts.filter((p) => !p.isPinned), [filteredOfficialPosts]);
 
   const filteredQueries = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -404,6 +532,92 @@ function DiscussPageClient() {
   useEffect(() => {
     if (searchParams.get("clubAccount") === "true") setPanelMode("auth");
   }, [searchParams]);
+
+  const handleVote = async (postId: string) => {
+    const isVoted = votedPostIds.has(postId);
+    const newVoted = new Set(votedPostIds);
+    const action = isVoted ? "down" : "up";
+
+    if (isVoted) {
+      newVoted.delete(postId);
+    } else {
+      newVoted.add(postId);
+    }
+
+    setVotedPostIds(newVoted);
+    localStorage.setItem("votedPostIds", JSON.stringify(Array.from(newVoted)));
+
+    // Optimistically update the UI count
+    setPosts((prevPosts) =>
+      prevPosts.map((p) => {
+        if (p._id === postId) {
+          const currentUpvotes = p.upvotes || 0;
+          return {
+            ...p,
+            upvotes: Math.max(0, currentUpvotes + (action === "up" ? 1 : -1)),
+          };
+        }
+        return p;
+      })
+    );
+
+    try {
+      const res = await api.post(`/discuss/${postId}/vote`, { action });
+      const serverUpvotes = res.data.upvotes;
+      setPosts((prevPosts) =>
+        prevPosts.map((p) => {
+          if (p._id === postId) {
+            return { ...p, upvotes: serverUpvotes };
+          }
+          return p;
+        })
+      );
+    } catch (err) {
+      console.error("Failed to send vote to backend", err);
+      // Revert state on error
+      const revertedVoted = new Set(votedPostIds);
+      setVotedPostIds(revertedVoted);
+      localStorage.setItem("votedPostIds", JSON.stringify(Array.from(revertedVoted)));
+      setPosts((prevPosts) =>
+        prevPosts.map((p) => {
+          if (p._id === postId) {
+            const currentUpvotes = p.upvotes || 0;
+            return {
+              ...p,
+              upvotes: Math.max(0, currentUpvotes + (action === "up" ? -1 : 1)),
+            };
+          }
+          return p;
+        })
+      );
+    }
+  };
+
+  const handleQueryVote = (queryId: string) => {
+    const isVoted = votedPostIds.has(queryId);
+    const newVoted = new Set(votedPostIds);
+    
+    if (isVoted) {
+      newVoted.delete(queryId);
+    } else {
+      newVoted.add(queryId);
+    }
+    
+    setVotedPostIds(newVoted);
+    localStorage.setItem("votedPostIds", JSON.stringify(Array.from(newVoted)));
+    
+    setQueries((prevQueries) =>
+      prevQueries.map((q) => {
+        if (q.id === queryId) {
+          return {
+            ...q,
+            votes: q.votes + (isVoted ? -1 : 1),
+          };
+        }
+        return q;
+      })
+    );
+  };
 
   const closePanel = () => {
     setPanelMode("");
@@ -498,28 +712,47 @@ function DiscussPageClient() {
   const input = "w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100";
 
   return (
-    <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] text-slate-950">
-      <div className="border-b border-slate-200 bg-white/92 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-5 sm:px-5 lg:flex-row lg:items-center lg:justify-between lg:px-6">
+    <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] text-slate-950 pb-12">
+      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-indigo-600">
-              <Sparkles className="h-4 w-4" />
-              IIITians Discuss
-            </p>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-4xl">Ask, answer, and follow club updates.</h1>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+              Ask, answer, and follow club updates.
+            </h1>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          
+          <div className="flex flex-wrap items-center gap-2.5">
             <div className="relative w-full sm:w-72">
               <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search discussions" className={`${input} bg-slate-100 pl-10`} />
+              <input 
+                value={search} 
+                onChange={(e) => setSearch(e.target.value)} 
+                placeholder="Search discussions..." 
+                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 pl-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 shadow-sm" 
+              />
             </div>
             {account ? (
-              <button onClick={openComposer} className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-700">
-                <Edit3 className="h-4 w-4" />
-                Create
-              </button>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <button 
+                  onClick={openComposer} 
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4.5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 active:scale-98 cursor-pointer shadow-sm shadow-indigo-600/10"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Create
+                </button>
+                <button 
+                  onClick={handleLogout} 
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 active:scale-98 cursor-pointer shadow-sm"
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
             ) : (
-              <button onClick={openClubAccountPanel} className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-800">
+              <button 
+                onClick={openClubAccountPanel} 
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 active:scale-98 cursor-pointer shadow-sm"
+              >
                 <LogIn className="h-4 w-4" />
                 Club login
               </button>
@@ -552,32 +785,72 @@ function DiscussPageClient() {
             )}
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <MetricPill icon={MessageCircle} label="Threads" value={stats.total} />
-            <MetricPill icon={Building2} label="Colleges" value={stats.colleges || "New"} />
-            <MetricPill icon={Users} label="Clubs" value={stats.clubs || "Join"} />
-          </div>
-
-          <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-            <form onSubmit={handleSubmitQuery} className="space-y-3">
-              <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                <MessageCircle className="h-4 w-4 text-indigo-600" />
-                Raise a query
-              </div>
-              <input value={queryForm.title} onChange={(e) => setQueryForm({ ...queryForm, title: e.target.value })} placeholder="Title, e.g. Need help with a club event or placement roadmap" className={input} />
-              <textarea value={queryForm.body} onChange={(e) => setQueryForm({ ...queryForm, body: e.target.value })} rows={3} placeholder="Write your question or message for the community" className={`${input} resize-none`} />
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <select value={queryForm.category} onChange={(e) => setQueryForm({ ...queryForm, category: e.target.value })} className={`${input} sm:w-52`}>
-                  {TOPIC_FILTERS.filter((topic) => topic !== "For You").map((topic) => <option key={topic}>{topic}</option>)}
-                </select>
-                <button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700">
-                  <Send className="h-4 w-4" />
-                  Post query
+          {account && (
+            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              {!showQueryForm ? (
+                <button
+                  type="button"
+                  onClick={() => setShowQueryForm(true)}
+                  className="flex w-full items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100/80 cursor-pointer"
+                >
+                  <span className="flex items-center gap-2">
+                    <MessageCircle className="h-4 w-4 text-indigo-600" />
+                    Raise a query
+                  </span>
+                  <Plus className="h-4 w-4 text-slate-500" />
                 </button>
-              </div>
-              {queryState && <p className="text-sm font-medium text-emerald-700">{queryState}</p>}
-            </form>
-          </div>
+              ) : (
+                <form onSubmit={handleSubmitQuery} className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
+                      <MessageCircle className="h-4 w-4 text-indigo-600" />
+                      Raise a query
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowQueryForm(false)}
+                      className="rounded-full p-1 text-slate-400 hover:bg-slate-100 transition cursor-pointer"
+                      aria-label="Close query form"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                  <input
+                    value={queryForm.title}
+                    onChange={(e) => setQueryForm({ ...queryForm, title: e.target.value })}
+                    placeholder="Title, e.g. Need help with a club event or placement roadmap"
+                    className={input}
+                  />
+                  <textarea
+                    value={queryForm.body}
+                    onChange={(e) => setQueryForm({ ...queryForm, body: e.target.value })}
+                    rows={3}
+                    placeholder="Write your question or message for the community"
+                    className={`${input} resize-none`}
+                  />
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <select
+                      value={queryForm.category}
+                      onChange={(e) => setQueryForm({ ...queryForm, category: e.target.value })}
+                      className={`${input} sm:w-52`}
+                    >
+                      {TOPIC_FILTERS.filter((topic) => topic !== "For You").map((topic) => (
+                        <option key={topic}>{topic}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="submit"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 cursor-pointer"
+                    >
+                      <Send className="h-4 w-4" />
+                      Post query
+                    </button>
+                  </div>
+                  {queryState && <p className="text-sm font-medium text-emerald-700">{queryState}</p>}
+                </form>
+              )}
+            </div>
+          )}
 
           <div className="mt-6">
             <div className="flex gap-2 overflow-x-auto pb-2">
@@ -604,8 +877,46 @@ function DiscussPageClient() {
               </div>
             ) : (
               <>
-                {filteredOfficialPosts.map((post) => <OfficialPostRow key={post._id} post={post} />)}
-                {filteredQueries.map((query) => <QueryRow key={query.id} query={query} />)}
+                {/* Pinned posts section */}
+                {filteredPinnedPosts.length > 0 && (
+                  <>
+                    <div className="flex items-center gap-2 pt-4 pb-1">
+                      <Pin className="h-3.5 w-3.5 fill-amber-500 text-amber-500" />
+                      <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-amber-600">Pinned by admin</span>
+                    </div>
+                    {filteredPinnedPosts.map((post) => (
+                      <OfficialPostRow
+                        key={post._id}
+                        post={post}
+                        isVoted={votedPostIds.has(post._id)}
+                        onVote={handleVote}
+                      />
+                    ))}
+                    {(filteredRegularPosts.length > 0 || filteredQueries.length > 0) && (
+                      <div className="flex items-center gap-2 pt-4 pb-1">
+                        <Megaphone className="h-3.5 w-3.5 text-slate-400" />
+                        <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">All posts</span>
+                      </div>
+                    )}
+                  </>
+                )}
+                {/* Regular posts */}
+                {filteredRegularPosts.map((post) => (
+                  <OfficialPostRow
+                    key={post._id}
+                    post={post}
+                    isVoted={votedPostIds.has(post._id)}
+                    onVote={handleVote}
+                  />
+                ))}
+                {filteredQueries.map((query) => (
+                  <QueryRow
+                    key={query.id}
+                    query={query}
+                    isVoted={votedPostIds.has(query.id)}
+                    onVote={handleQueryVote}
+                  />
+                ))}
               </>
             )}
           </section>

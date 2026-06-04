@@ -12,10 +12,10 @@ export function requireAdmin(
   if (!auth?.startsWith("Bearer ")) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-  const payload = verifyToken(auth.slice(7));
-  if (!payload) {
+  const payload = verifyToken(auth.slice(7)) as any;
+  if (!payload || (payload.role !== "super_admin" && payload.role !== "admin") || payload.kind) {
     return NextResponse.json(
-      { message: "Invalid or expired token" },
+      { message: "Unauthorized admin access" },
       { status: 401 }
     );
   }

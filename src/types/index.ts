@@ -167,6 +167,9 @@ export interface IDiscussPost {
   isAuthorisedPost?: boolean;
   badgeLabel?: string;
   status: "pending" | "approved" | "rejected";
+  upvotes?: number;
+  views?: number;
+  isPinned?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

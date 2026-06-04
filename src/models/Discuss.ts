@@ -18,6 +18,9 @@ export interface IDiscussDocument extends Document {
   isAuthorisedPost?: boolean;
   badgeLabel?: string;
   status: "pending" | "approved" | "rejected";
+  upvotes?: number;
+  views?: number;
+  isPinned?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -41,6 +44,9 @@ const discussSchema = new Schema<IDiscussDocument>(
     isAuthorisedPost: { type: Boolean, default: false },
     badgeLabel: { type: String, trim: true },
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+    upvotes: { type: Number, default: 0 },
+    views: { type: Number, default: 0 },
+    isPinned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

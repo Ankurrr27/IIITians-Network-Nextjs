@@ -37,53 +37,33 @@ const projects = [
 
 export default function Initiatives() {
   return (
-    <div>
-      <h2 className="text-2xl sm:text-4xl font-semibold tracking-tight text-gray-900 mb-4 sm:mb-12 text-left">
-        <br />
+    <div className="space-y-6">
+      <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl lg:text-[1.85rem] lg:leading-tight">
         Our Initiatives
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         {projects.map((project, index) => {
           const IconComponent = project.icon;
           return (
             <Link
               key={index}
               href={project.route}
-              className="
-                bg-gradient-to-br from-white to-indigo-50
-                rounded-xl sm:rounded-2xl
-                p-4 sm:p-8
-                shadow-lg border border-indigo-100
-                hover:shadow-xl transition-all duration-300
-                transform hover:-translate-y-2
-                flex sm:block
-                gap-4
-              "
+              className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-100/50 hover:ring-4 hover:ring-indigo-50"
             >
-              {/* ICON */}
-              <div
-                className="
-                  text-indigo-600
-                  flex-shrink-0
-                  mt-1 sm:mt-0
-                "
-              >
-                <span className="sm:hidden">
+              <div>
+                {/* ICON */}
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition group-hover:bg-indigo-600 group-hover:text-white">
                   <IconComponent size={20} />
-                </span>
-                <span className="hidden sm:block">
-                  <IconComponent size={28} />
-                </span>
-              </div>
+                </div>
 
-              {/* TEXT */}
-              <div className="mt-1 sm:mt-0">
-                <h3 className="text-sm sm:text-xl font-semibold tracking-tight text-gray-900 mb-1 sm:mb-3">
+                {/* TITLE */}
+                <h3 className="mt-4 text-base font-bold text-slate-900 transition group-hover:text-indigo-600">
                   {project.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-gray-700 leading-relaxed">
+                {/* DESCRIPTION */}
+                <p className="mt-2 text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
                   {project.description}
                 </p>
               </div>

@@ -6,11 +6,11 @@ import {
   Building2,
   MapPin,
   Search,
-  Sparkles,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { iiitCampuses } from "@/data/iiitCampuses";
 import type { IIITCampus } from "@/data/iiitCampuses";
+import api from "@/lib/apiClient";
 
 const ExploreYourIIITMap = dynamic(() => import("./ExploreYourIIITMap"), {
   ssr: false,
@@ -30,17 +30,47 @@ function MiniStat({ label, value }: { label: string; value: string | number }) {
 
 export default function ExploreYourIIITSection() {
   const [query, setQuery] = useState("");
+  const [campuses, setCampuses] = useState<IIITCampus[]>(iiitCampuses);
   const [selectedCampus, setSelectedCampus] = useState<IIITCampus>(iiitCampuses[0]);
+
+  useEffect(() => {
+    api.get("/colleges")
+      .then((res) => {
+        const dbColleges = Array.isArray(res.data) ? res.data : [];
+        const merged = iiitCampuses.map((campus) => {
+          const matched = dbColleges.find(
+            (c) => c.name?.trim().toLowerCase() === campus.name.trim().toLowerCase()
+          );
+          if (matched && matched.logo?.url) {
+            return {
+              ...campus,
+              logo: matched.logo.url,
+            };
+          }
+          return campus;
+        });
+        setCampuses(merged);
+        setSelectedCampus((prev) => {
+          const found = merged.find((c) => c.id === prev.id);
+          return found || merged[0];
+        });
+      })
+      .catch((err) => {
+        console.error("Failed to load college logos from database:", err);
+      });
+  }, []);
 
   const filteredCampuses = useMemo(() => {
     const normalized = query.trim().toLowerCase();
-    if (!normalized) return iiitCampuses;
-    return iiitCampuses.filter((campus) =>
+    if (!normalized) return campuses;
+    return campuses.filter((campus) =>
       [campus.name, campus.city, campus.state].some((value) => value.toLowerCase().includes(normalized))
     );
-  }, [query]);
+  }, [query, campuses]);
 
-  const statesCovered = new Set(iiitCampuses.map((campus) => campus.state)).size;
+  const statesCovered = useMemo(() => {
+    return new Set(campuses.map((campus) => campus.state)).size;
+  }, [campuses]);
 
   const handleSelect = (campus: IIITCampus) => {
     setSelectedCampus(campus);
@@ -59,17 +89,13 @@ export default function ExploreYourIIITSection() {
           className="space-y-4 self-start"
         >
           <div className="rounded-[1.25rem] border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur sm:p-5">
-            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-indigo-700 shadow-sm">
-              <Sparkles className="h-4 w-4" />
-              Campus Explorer
-            </div>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Explore Your IIIT</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Explore Your IIIT</h2>
             <p className="mt-2 max-w-xl text-sm font-medium leading-6 text-slate-600">
               Explore every IIIT across India, compare campuses, and discover the student communities connected through IIITians Network.
             </p>
 
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <MiniStat label="Total IIITs" value={iiitCampuses.length} />
+              <MiniStat label="Total IIITs" value={campuses.length} />
               <MiniStat label="States" value={statesCovered} />
               <MiniStat label="Network" value="50K+" />
             </div>
@@ -113,7 +139,7 @@ export default function ExploreYourIIITSection() {
           transition={{ duration: 0.45, delay: 0.05 }}
           className="relative self-start"
         >
-          <ExploreYourIIITMap campuses={iiitCampuses} selectedCampus={selectedCampus} onSelect={setSelectedCampus} />
+          <ExploreYourIIITMap campuses={campuses} selectedCampus={selectedCampus} onSelect={setSelectedCampus} />
           <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/80 bg-white/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-600 shadow-sm backdrop-blur">
             <span className="inline-flex items-center gap-1.5">
               <Building2 className="h-3.5 w-3.5 text-indigo-600" />
@@ -125,3 +151,4 @@ export default function ExploreYourIIITSection() {
     </section>
   );
 }
+

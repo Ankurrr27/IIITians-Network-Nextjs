@@ -56,8 +56,8 @@ export async function GET() {
           _id: mem._id,
           memberId: mem._id,
           name: mem.name,
-          role: "Member",
-          roleType: "MEMBER",
+          role: (mem as any).role || "Member",
+          roleType: (mem as any).roleType || "MEMBER",
           iiit: mem.iiit || "",
           photo: mem.photo,
           email: mem.email,
@@ -71,7 +71,7 @@ export async function GET() {
           team: (mem as any).team || "Core",
           year: (mem as any).year || "",
           isActive: (mem as any).isActive ?? false,
-          order: 9999,
+          order: (mem as any).order ?? 9999,
           createdAt: mem.createdAt,
         });
       }

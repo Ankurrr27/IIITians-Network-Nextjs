@@ -12,6 +12,12 @@ export interface ITeamMemberDocument extends Document {
   location?: string;
   aboutText?: string;
   messageText?: string;
+  role?: string;
+  roleType?: string;
+  team?: string;
+  year?: string;
+  isActive?: boolean;
+  order?: number;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -29,6 +35,12 @@ const teamMemberSchema = new Schema<ITeamMemberDocument>(
     location: { type: String, trim: true, default: "" },
     aboutText: { type: String, trim: true },
     messageText: { type: String, trim: true },
+    role: { type: String, default: "Member" },
+    roleType: { type: String, default: "MEMBER" },
+    team: { type: String, default: "Core" },
+    year: { type: String, default: "" },
+    isActive: { type: Boolean, default: false },
+    order: { type: Number, default: 9999 },
   },
   { timestamps: true }
 );
