@@ -4,13 +4,13 @@ import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import {
   Building2,
-  MapPin,
   Search,
 } from "lucide-react";
 import { useMemo, useState, useEffect } from "react";
 import { iiitCampuses } from "@/data/iiitCampuses";
 import type { IIITCampus } from "@/data/iiitCampuses";
 import api from "@/lib/apiClient";
+import type { ICollege } from "@/types";
 
 const ExploreYourIIITMap = dynamic(() => import("./ExploreYourIIITMap"), {
   ssr: false,
@@ -28,6 +28,15 @@ function MiniStat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+function normalizeCollegeName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/international institute of information technology/g, "iiit")
+    .replace(/indian institute of information technology/g, "iiit")
+    .replace(/atal bihari vajpayee/g, "abv")
+    .replace(/[^a-z0-9]/g, "");
+}
+
 export default function ExploreYourIIITSection() {
   const [query, setQuery] = useState("");
   const [campuses, setCampuses] = useState<IIITCampus[]>(iiitCampuses);
@@ -36,10 +45,14 @@ export default function ExploreYourIIITSection() {
   useEffect(() => {
     api.get("/colleges")
       .then((res) => {
-        const dbColleges = Array.isArray(res.data) ? res.data : [];
+        const dbColleges = Array.isArray(res.data) ? res.data as ICollege[] : [];
         const merged = iiitCampuses.map((campus) => {
           const matched = dbColleges.find(
-            (c) => c.name?.trim().toLowerCase() === campus.name.trim().toLowerCase()
+            (college) => {
+              const campusName = normalizeCollegeName(campus.name);
+              const collegeName = normalizeCollegeName(college.name || "");
+              return collegeName === campusName || collegeName.includes(campusName) || campusName.includes(collegeName);
+            }
           );
           if (matched && matched.logo?.url) {
             return {
@@ -151,4 +164,3 @@ export default function ExploreYourIIITSection() {
     </section>
   );
 }
-

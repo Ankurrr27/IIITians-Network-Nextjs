@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import { Suspense, useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
@@ -8,8 +9,6 @@ import {
   AtSign,
   BadgeCheck,
   BookOpen,
-  Building2,
-  CalendarDays,
   Clock,
   Edit3,
   ExternalLink,
@@ -33,11 +32,9 @@ import {
   Search,
   Send,
   ShieldCheck,
-  Sparkles,
   Trash2,
   User,
   UserPlus,
-  Users,
   X,
 } from "lucide-react";
 import ImageCropModal from "@/components/ImageCropModal";
@@ -54,7 +51,7 @@ const INIT_POST = {
   actionLink: "",
   eventDate: "",
 };
-const INIT_LOGIN = { handle: "", password: "" };
+const INIT_LOGIN = { clubName: "", contactName: "", password: "" };
 const INIT_REG = {
   collegeName: "",
   clubName: "",
@@ -83,62 +80,11 @@ type QueryPost = {
   votes: number;
 };
 
-const starterQueries: QueryPost[] = [
-  {
-    id: "q-placement-roadmap",
-    title: "Need a study circle for placement prep across IIITs",
-    body: "Looking for people who want to revise DSA, core CS, aptitude, and interview stories together. Clubs can also share sessions or resources here.",
-    author: "student_iiit",
-    college: "IIIT Community",
-    category: "Career",
-    createdAt: "2 hours ago",
-    replies: 8,
-    views: "1.4K",
-    votes: 31,
-  },
-  {
-    id: "q-club-registration",
-    title: "How can a new club post official announcements?",
-    body: "Our club wants to share events and opportunities on the network. What details are needed for verification and approval?",
-    author: "club_lead",
-    college: "IIIT Network",
-    category: "Club Help",
-    createdAt: "5 hours ago",
-    replies: 5,
-    views: "620",
-    votes: 18,
-  },
-  {
-    id: "q-hackathon-team",
-    title: "Open call for hackathon teammates this weekend",
-    body: "Anyone interested in building a social impact project? Designers, backend folks, and ML beginners are welcome.",
-    author: "hack_builder",
-    college: "Cross-campus",
-    category: "Collaboration",
-    createdAt: "1 day ago",
-    replies: 12,
-    views: "2.1K",
-    votes: 44,
-  },
-];
-
 function Message({ tone, children }: { tone: "error" | "success"; children: React.ReactNode }) {
   return (
     <p className={`rounded-xl border px-4 py-3 text-sm ${tone === "error" ? "border-rose-200 bg-rose-50 text-rose-700" : "border-emerald-200 bg-emerald-50 text-emerald-700"}`}>
       {children}
     </p>
-  );
-}
-
-function MetricPill({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string | number }) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-      <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-        <Icon className="h-3.5 w-3.5" />
-        {label}
-      </p>
-      <p className="mt-1 text-lg font-bold text-slate-950">{value}</p>
-    </div>
   );
 }
 
@@ -405,7 +351,7 @@ function DiscussPageClient() {
   const [colleges, setColleges] = useState<string[]>([]);
   const [postPhotos, setPostPhotos] = useState<File[]>([]);
   const [rawCropFile, setRawCropFile] = useState<File | null>(null);
-  const [clubHandles, setClubHandles] = useState<string[]>([]);
+  const [clubNames, setClubNames] = useState<string[]>([]);
   const [showQueryForm, setShowQueryForm] = useState(false);
   const [votedPostIds, setVotedPostIds] = useState<Set<string>>(new Set());
 
@@ -425,12 +371,6 @@ function DiscussPageClient() {
   const approvedPosts = useMemo(() => posts.filter((p) => p.status === "approved"), [posts]);
   const pinnedPosts = useMemo(() => approvedPosts.filter((p) => p.isPinned), [approvedPosts]);
   const featuredPosts = useMemo(() => (pinnedPosts.length > 0 ? pinnedPosts : approvedPosts).slice(0, 3), [pinnedPosts, approvedPosts]);
-
-  const stats = useMemo(() => ({
-    total: approvedPosts.length + queries.length,
-    colleges: new Set(approvedPosts.map((p) => p.collegeName).filter(Boolean)).size,
-    clubs: new Set(approvedPosts.map((p) => `${p.collegeName}::${p.clubName}`).filter(Boolean)).size,
-  }), [approvedPosts, queries.length]);
 
   const filteredOfficialPosts = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -513,10 +453,13 @@ function DiscussPageClient() {
       ]);
       setAccount(accRes.data);
       setMyPosts(myRes.data || []);
-    } catch {
-      localStorage.removeItem("discussToken");
-      setAccount(null);
-      setMyPosts([]);
+    } catch (err: unknown) {
+      const response = (err as { response?: { status?: number } }).response;
+      if (response && (response.status === 401 || response.status === 403)) {
+        localStorage.removeItem("discussToken");
+        setAccount(null);
+        setMyPosts([]);
+      }
     } finally {
       setAccountLoading(false);
     }
@@ -526,7 +469,7 @@ function DiscussPageClient() {
     loadPosts();
     loadAccount();
     api.get("/colleges").then((r) => setColleges((r.data || []).map((c: { name: string }) => c.name)));
-    api.get("/discuss-accounts/handles").then((r) => setClubHandles(r.data || [])).catch(() => {});
+    api.get("/discuss-accounts/handles").then((r) => setClubNames(r.data || [])).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -763,20 +706,20 @@ function DiscussPageClient() {
 
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
         <main className="min-w-0">
-          <div className="grid gap-4 md:grid-cols-3">
-            {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <FeaturedClubCard key={post._id} post={post} index={index} />) : (
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [column-fill:balance]">
+            {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <div key={post._id} className="break-inside-avoid mb-4"><FeaturedClubCard post={post} index={index} /></div>) : (
               <>
-                <div className="rounded-xl bg-gradient-to-br from-slate-950 via-indigo-950 to-sky-800 p-5 text-white">
+                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-slate-950 via-indigo-950 to-sky-800 p-5 text-white">
                   <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Club posts</p>
                   <h2 className="mt-4 text-xl font-bold">Official updates appear here first</h2>
                   <p className="mt-2 text-sm text-white/72">Announcements, events, campaigns, and opportunities from verified clubs.</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-emerald-800 via-teal-800 to-slate-900 p-5 text-white">
+                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-emerald-800 via-teal-800 to-slate-900 p-5 text-white">
                   <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Ask queries</p>
                   <h2 className="mt-4 text-xl font-bold">Students can raise questions</h2>
                   <p className="mt-2 text-sm text-white/72">Use the composer below for help, teams, resources, or guidance.</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-violet-800 via-fuchsia-800 to-slate-950 p-5 text-white">
+                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-violet-800 via-fuchsia-800 to-slate-950 p-5 text-white">
                   <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Community</p>
                   <h2 className="mt-4 text-xl font-bold">One feed for the network</h2>
                   <p className="mt-2 text-sm text-white/72">Club posts and student questions sit together for faster discovery.</p>
@@ -1084,10 +1027,16 @@ function DiscussPageClient() {
                   {authMode === "login" ? (
                     <form onSubmit={handleLogin} className="mt-2 space-y-4">
                       <div className="relative">
-                        <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                        <input required placeholder="Club handle" list="club-handle-list" value={loginForm.handle} onChange={(e) => setLoginForm({ ...loginForm, handle: e.target.value })} className={`${input} pl-10`} />
+                        <ShieldCheck className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input required placeholder="Club Name (e.g. E-Cell)" list="club-name-list" value={loginForm.clubName} onChange={(e) => setLoginForm({ ...loginForm, clubName: e.target.value })} className={`${input} pl-10`} />
                       </div>
-                      <datalist id="club-handle-list">{clubHandles.map((h) => <option key={h} value={h} />)}</datalist>
+                      <datalist id="club-name-list">{clubNames.map((n) => <option key={n} value={n} />)}</datalist>
+                      
+                      <div className="relative">
+                        <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input required placeholder="Point of contact name" value={loginForm.contactName} onChange={(e) => setLoginForm({ ...loginForm, contactName: e.target.value })} className={`${input} pl-10`} />
+                      </div>
+
                       <div className="relative">
                         <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                         <input required type="password" placeholder="Password" value={loginForm.password} onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })} className={`${input} pl-10`} />

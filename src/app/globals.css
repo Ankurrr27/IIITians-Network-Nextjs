@@ -165,26 +165,40 @@ body {
 .iiit-map-marker {
   position: relative;
   display: grid;
-  height: 32px;
-  width: 32px;
+  height: 28px;
+  width: 28px;
   place-items: center;
-  border: 2.5px solid #ffffff;
+  border: 2px solid #ffffff;
   border-radius: 9999px;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2), 0 6px 18px rgba(79, 70, 229, 0.22);
+  background: rgba(79, 70, 229, 0.92);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.14), 0 6px 16px rgba(79, 70, 229, 0.2);
   cursor: pointer;
   overflow: hidden;
   transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.iiit-map-logo-marker {
+  height: 28px;
+  width: 28px;
+}
+
+.iiit-map-dot {
+  display: block;
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  background: #ffffff;
 }
 
 /* Logo image inside marker */
 .iiit-map-logo-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  padding: 3px;
+  object-fit: cover;
+  padding: 0;
   border-radius: 9999px;
   pointer-events: none;
+  background: #ffffff;
 }
 
 /* Fallback initials when logo fails */
@@ -194,9 +208,9 @@ body {
   justify-content: center;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #4f46e5, #0ea5e9);
-  color: #ffffff;
-  font-size: 8px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 7px;
   font-weight: 900;
   letter-spacing: 0.02em;
   border-radius: 9999px;
@@ -223,7 +237,9 @@ body {
   line-height: 1;
   padding: 0.4rem 0.55rem;
   text-overflow: ellipsis;
-  transform: translateY(0);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-0.25rem);
   transition: opacity 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
@@ -231,9 +247,11 @@ body {
   max-width: 4.75rem;
 }
 
-.iiit-map-pin-wrap:hover .iiit-map-label {
+.iiit-map-pin-wrap:hover .iiit-map-label,
+.iiit-map-pin-wrap:has(.is-selected) .iiit-map-label {
+  opacity: 1;
   box-shadow: 0 14px 28px rgba(79, 70, 229, 0.16);
-  transform: translateY(-1px);
+  transform: translateX(0);
 }
 
 .iiit-map-marker::after {
@@ -246,8 +264,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 9999px;
   border: 1.5px solid rgba(79, 70, 229, 0.4);
   animation: markerPulse 2s ease-out infinite;
@@ -255,8 +273,8 @@ body {
 }
 
 .iiit-map-pin-wrap.is-cluster::before {
-  width: 42px;
-  height: 42px;
+  width: 32px;
+  height: 32px;
 }
 
 .iiit-map-marker:hover,
@@ -266,12 +284,12 @@ body {
 }
 
 .iiit-map-cluster {
-  height: 42px;
-  width: 42px;
+  height: 32px;
+  width: 32px;
   overflow: hidden;
   background: linear-gradient(135deg, #0f172a, #4f46e5);
   color: #ffffff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
 }
 

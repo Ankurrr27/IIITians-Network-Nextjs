@@ -54,7 +54,7 @@ export default function EventsPreviewSection() {
         </div>
 
         {loading ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: LIMIT }).map((_, index) => (
               <div
                 key={index}
@@ -67,7 +67,7 @@ export default function EventsPreviewSection() {
             <p className="text-slate-500">No events listed at the moment.</p>
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {latestEvents.map((event) => (
               <EventCard key={event._id} event={event} />
             ))}

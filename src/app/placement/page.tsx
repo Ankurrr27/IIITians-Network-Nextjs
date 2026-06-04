@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -7,7 +7,7 @@ import api from "@/lib/apiClient";
 import PlacementAnalytics from "./sections/PlacementAnalytics";
 import { 
   Building2, Search, Loader2, Calendar, Award, ArrowUpRight, 
-  ChevronDown, ArrowUpDown, Sparkles, Filter, Info, Briefcase, GraduationCap
+  ChevronDown, ArrowUpDown, Sparkles, Filter, Info, Briefcase, GraduationCap, X
 } from "lucide-react";
 import {
   formatLpa, summarizePlacementYear, summarizeAllYears,
@@ -142,7 +142,7 @@ function PlacementPageClient() {
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-8 px-4 sm:space-y-12 sm:px-6">
         
-        {/* ─── HERO HEADER ─── */}
+        {/* â”€â”€â”€ HERO HEADER â”€â”€â”€ */}
         <header className="space-y-4 text-left max-w-4xl">
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
@@ -181,7 +181,7 @@ function PlacementPageClient() {
           </motion.p>
         </header>
 
-        {/* ─── SEARCH & FILTER UTILITY BAR ─── */}
+        {/* â”€â”€â”€ SEARCH & FILTER UTILITY BAR â”€â”€â”€ */}
         <motion.section 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -270,7 +270,7 @@ function PlacementPageClient() {
           </div>
         </motion.section>
 
-        {/* ─── DYNAMIC CONTENT AREA ─── */}
+        {/* â”€â”€â”€ DYNAMIC CONTENT AREA â”€â”€â”€ */}
         
         {/* Loading Skeletons */}
         {loading && <PlacementSkeleton />}
@@ -313,7 +313,7 @@ function PlacementPageClient() {
   );
 }
 
-/* ─── YearSelector Chip Strip (Replaces Default HTML Select) ───────────────── */
+/* â”€â”€â”€ YearSelector Chip Strip (Replaces Default HTML Select) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function YearSelector({ years = [], value, onChange }: { years: number[]; value: number | null; onChange: (y: number | null) => void }) {
   if (!years.length) return null;
   const sorted = [...years].sort((a, b) => b - a);
@@ -362,7 +362,7 @@ function YearSelector({ years = [], value, onChange }: { years: number[]; value:
   );
 }
 
-/* ─── PlacementPreview Cards List ─────────────────────────────────────────── */
+/* â”€â”€â”€ PlacementPreview Cards List â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PlacementPreview({ onSelectCollege }: { onSelectCollege: (name: string) => void }) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -454,7 +454,7 @@ function PreviewStat({ label, value }: { label: string; value: string }) {
   );
 }
 
-/* ─── PlacementResults (Table & FAQ Container) ────────────────────────────── */
+/* â”€â”€â”€ PlacementResults (Table & FAQ Container) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PlacementResults({
   data,
   year,
@@ -626,12 +626,12 @@ function PlacementResults({
                             </td>
                             {showHighestCol && (
                               <td className="px-4 py-2.5 text-right font-bold text-indigo-600">
-                                {p.highestPackage > 0 ? `${p.highestPackage.toFixed(1)} LPA` : "—"}
+                                {p.highestPackage > 0 ? `${p.highestPackage.toFixed(1)} LPA` : "â€”"}
                               </td>
                             )}
                             {showAverageCol && (
                               <td className="px-4 py-2.5 text-right font-bold text-slate-950">
-                                {p.averagePackage > 0 ? `${p.averagePackage.toFixed(1)} LPA` : "—"}
+                                {p.averagePackage > 0 ? `${p.averagePackage.toFixed(1)} LPA` : "â€”"}
                               </td>
                             )}
                             {showPlacedCol && (
@@ -647,7 +647,7 @@ function PlacementResults({
                                     {p.placementPercentage}%
                                   </span>
                                 ) : (
-                                  <span className="text-slate-400 text-[10px] font-semibold">—</span>
+                                  <span className="text-slate-400 text-[10px] font-semibold">â€”</span>
                                 )}
                               </td>
                             )}
@@ -670,13 +670,13 @@ function PlacementResults({
         )}
       </div>
 
-      {/* ─── FAQs ─── */}
+      {/* â”€â”€â”€ FAQs â”€â”€â”€ */}
       <PlacementFaqs data={data} yearData={yearData} />
     </div>
   );
 }
 
-/* ─── FAQs Accordion ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€ FAQs Accordion â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PlacementFaqs({ data, yearData }: { data: any; yearData: any }) {
   const [openIndex, setOpenIndex] = useState<number>(0);
   const faqs = useMemo(() => {
@@ -727,7 +727,7 @@ function PlacementFaqs({ data, yearData }: { data: any; yearData: any }) {
   );
 }
 
-/* ─── Visual Skeletons for Loading State ───────────────────────────────────── */
+/* â”€â”€â”€ Visual Skeletons for Loading State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PlacementSkeleton() {
   return (
     <div className="space-y-8 animate-pulse">

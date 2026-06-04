@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
+import { ExternalLink, Plus } from "lucide-react";
 
 const counsellingPoints = [
   {
@@ -34,6 +34,11 @@ const counsellingPoints = [
     content:
       "Promoting campus events, student hackathons, and innovative startups or products developed by members of the IIIT network.",
   },
+];
+
+const counsellingPortals = [
+  { label: "JoSAA Official Website", href: "https://josaa.nic.in" },
+  { label: "CSAB Official Website", href: "https://csab.nic.in" },
 ];
 
 export default function CounsellingSection() {
@@ -93,8 +98,20 @@ export default function CounsellingSection() {
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
                 Official counselling portals
               </p>
-
-
+              <div className="grid gap-3 sm:grid-cols-2">
+                {counsellingPortals.map((portal) => (
+                  <a
+                    key={portal.href}
+                    href={portal.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                  >
+                    <span>{portal.label}</span>
+                    <ExternalLink className="h-4 w-4 shrink-0 text-slate-400 transition group-hover:text-indigo-600" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -139,23 +156,18 @@ export default function CounsellingSection() {
 
         {/* Mobile View Portals */}
         <div className="mt-10 flex flex-col gap-3 sm:hidden">
-          <a
-            href="https://josaa.nic.in"
-            target="_blank"
-            rel="noreferrer"
-            className="w-full rounded-xl border border-indigo-600 py-2.5 text-center text-sm font-medium text-indigo-600 cursor-pointer"
-          >
-            JoSAA Official Website
-          </a>
-
-          <a
-            href="https://csab.nic.in"
-            target="_blank"
-            rel="noreferrer"
-            className="w-full rounded-xl border border-indigo-600 py-2.5 text-center text-sm font-medium text-indigo-600 cursor-pointer"
-          >
-            CSAB Official Website
-          </a>
+          {counsellingPortals.map((portal) => (
+            <a
+              key={portal.href}
+              href={portal.href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-sm transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+            >
+              {portal.label}
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          ))}
         </div>
       </div>
     </section>

@@ -16,9 +16,9 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
   const bannerUrl = event.banner?.url || FALLBACK_BANNER;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[1.15rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md">
-      {/* Event Banner */}
-      <div className="relative h-44 overflow-hidden bg-slate-50 border-b border-slate-100">
+    <article className="group h-full flex flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md">
+      {/* Event Banner - Fixed Height */}
+      <div className="relative h-52 w-full overflow-hidden bg-slate-50 border-b border-slate-100 flex-shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={bannerUrl}
@@ -26,11 +26,15 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           loading="lazy"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/30 to-transparent" />
         {event.type && (
           <span className="absolute left-4 top-4 rounded-full bg-slate-900/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
             {event.type}
           </span>
         )}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          <h3 className="max-w-[90%] text-lg font-semibold leading-tight line-clamp-2">{event.title}</h3>
+        </div>
       </div>
 
       {/* Card Content */}
@@ -40,21 +44,24 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
           {new Date(event.date).toLocaleDateString("en-IN", {
             day: "numeric",
             month: "short",
-            year: "numeric",
           })}
         </div>
 
-        <h3 className="text-base font-extrabold leading-snug text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-          {event.title}
-        </h3>
-
-        <p className="mt-1 text-xs font-semibold text-slate-500">
-          {event.collegeName}
-          {event.clubName ? ` · ${event.clubName}` : ""}
-        </p>
+        <div className="mb-2 flex flex-wrap gap-2">
+          {event.collegeName && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700">
+              {event.collegeName}
+            </span>
+          )}
+          {event.clubName && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700">
+              {event.clubName}
+            </span>
+          )}
+        </div>
 
         {event.description && (
-          <p className="mt-3 text-xs leading-relaxed text-slate-600 font-semibold line-clamp-2">
+          <p className="min-h-[3rem] text-sm leading-6 text-slate-600 line-clamp-2">
             {event.description}
           </p>
         )}

@@ -62,6 +62,23 @@ function getClusteredCampuses(campuses: IIITCampus[], zoom: number): ClusterPoin
   }));
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function getWebsiteFavicon(website: string) {
+  try {
+    const hostname = new URL(website).hostname;
+    return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(hostname)}&sz=64`;
+  } catch {
+    return "";
+  }
+}
+
 export default function ExploreYourIIITMap({
   campuses,
   selectedCampus,
@@ -112,29 +129,39 @@ export default function ExploreYourIIITMap({
             .slice(0, 3)
             .map((w) => w[0])
             .join("");
+          const logoUrl = campus.logo || getWebsiteFavicon(campus.website);
+          const fallbackLogoUrl = getWebsiteFavicon(campus.website);
+          const escapedLogoUrl = escapeHtml(logoUrl);
+          const escapedFallbackLogoUrl = escapeHtml(fallbackLogoUrl);
+          const escapedCampusName = escapeHtml(campus.name);
+          const escapedMarkerTitle = escapeHtml(markerTitle);
+          const escapedShortName = escapeHtml(shortName);
+          const escapedInitials = escapeHtml(initials || "IIIT");
+          const showLogo = zoom >= 7 || isSelected;
           const icon = divIcon({
-            className: "",
+            className: "iiit-map-div-icon",
             html: isCluster
               ? `<div class="iiit-map-pin-wrap is-cluster">
-                  <button class="iiit-map-marker iiit-map-cluster ${isSelected ? "is-selected" : ""}" aria-label="${markerTitle}" title="${markerTitle}">
+                  <button class="iiit-map-marker iiit-map-cluster ${isSelected ? "is-selected" : ""}" aria-label="${escapedMarkerTitle}" title="${escapedMarkerTitle}">
                     <span>${point.campuses.length}</span>
                   </button>
                   <span class="iiit-map-label">${point.campuses.length} IIITs</span>
                 </div>`
               : `<div class="iiit-map-pin-wrap">
-                  <button class="iiit-map-marker iiit-map-logo-marker ${isSelected ? "is-selected" : ""}" aria-label="${markerTitle}" title="${markerTitle}">
-                    <img
-                      src="${campus.logo}"
-                      alt="${campus.name} logo"
-                      class="iiit-map-logo-img"
-                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-                    />
-                    <span class="iiit-map-logo-fallback" style="display:none">${initials}</span>
+                  <button class="iiit-map-marker iiit-map-logo-marker ${isSelected ? "is-selected" : ""}" aria-label="${escapedMarkerTitle}" title="${escapedMarkerTitle}">
+                    ${showLogo ? `<img
+                        src="${escapedLogoUrl}"
+                        alt="${escapedCampusName} logo"
+                        class="iiit-map-logo-img"
+                        referrerpolicy="no-referrer"
+                        onerror="if('${escapedFallbackLogoUrl}' && this.src !== '${escapedFallbackLogoUrl}') { this.src='${escapedFallbackLogoUrl}'; } else { this.style.display='none'; this.nextElementSibling.style.display='flex'; }"
+                      />
+                      <span class="iiit-map-logo-fallback" style="display:none">${escapedInitials}</span>` : `<span class="iiit-map-dot"></span>`}
                   </button>
-                  <span class="iiit-map-label">${shortName}</span>
+                  <span class="iiit-map-label">${escapedShortName}</span>
                 </div>`,
-            iconSize: isCluster ? [130, 42] : [168, 38],
-            iconAnchor: isCluster ? [21, 21] : [16, 16],
+            iconSize: isCluster ? [96, 32] : [42, 28],
+            iconAnchor: isCluster ? [14, 14] : [14, 14],
           });
 
           return (

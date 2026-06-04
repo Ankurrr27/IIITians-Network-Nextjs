@@ -11,7 +11,8 @@ export default function AboutSection() {
         <div className="space-y-6">
           <div>
             <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
-              Built by students, shaped for the IIIT community.
+              Built by students, <br></br>
+              shaped for the IIIT community.
             </h2>
           </div>
 

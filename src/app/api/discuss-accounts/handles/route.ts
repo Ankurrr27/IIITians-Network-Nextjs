@@ -8,16 +8,18 @@ export async function GET() {
     await connectDB();
     const accounts = await DiscussAccount.find(
       { isAuthorized: true },
-      { email: 1, clubName: 1, _id: 0 }
+      { clubName: 1, _id: 0 }
     ).lean();
-    // Extract the handle prefix from normalized email (e.g. "ecellkota@iiitiansnetwork" → "ecellkota")
-    const handles = accounts
-      .map((a: { email?: string }) => {
-        const email = a.email || "";
-        return email.includes("@") ? email.split("@")[0] : email;
-      })
-      .filter(Boolean);
-    return NextResponse.json(handles);
+    
+    const names = Array.from(
+      new Set(
+        accounts
+          .map((a: { clubName?: string }) => (a.clubName || "").trim())
+          .filter(Boolean)
+      )
+    );
+    
+    return NextResponse.json(names);
   } catch {
     return NextResponse.json([], { status: 200 });
   }

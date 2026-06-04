@@ -238,7 +238,6 @@ export default function Navigation() {
                       } ${active ? "ring-2 ring-indigo-400" : ""}`}
                     >
                       {item.name}
-                      {links && <ChevronDown className="h-3.5 w-3.5" />}
                     </a>
                     {links && <QuickDropdown links={links} dropdownClass={dropdownClass} rowClass={rowClass} isDarkMode={isDarkMode} />}
                   </div>
@@ -253,7 +252,6 @@ export default function Navigation() {
                     className={navTextClass(active)}
                   >
                     <span>{item.name}</span>
-                    {links && <ChevronDown className="h-3.5 w-3.5 transition-transform group-hover:rotate-180" />}
                   </a>
                   {links && <QuickDropdown links={links} dropdownClass={dropdownClass} rowClass={rowClass} isDarkMode={isDarkMode} />}
                 </div>

@@ -4,39 +4,44 @@ import DiscussAccount from "@/models/DiscussAccount";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const DOMAIN = "@iiitiansnetwork";
 
-function normalizeHandle(value = ""): string {
-  const raw = value.trim().toLowerCase();
-  if (!raw) return "";
-  const handle = raw.includes("@") ? raw.split("@")[0] : raw;
-  const safe = handle.replace(/[^a-z0-9._-]/g, "");
-  return safe ? `${safe}${DOMAIN}` : "";
-}
+const escapeRegex = (string: string) => {
+  return string.replace(/[/\-\\^$*+?.()|[\]{}]/g, "\\$&");
+};
 
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const { handle, email, password } = await req.json();
-    const normalizedEmail = normalizeHandle(handle || email);
+    const { clubName, contactName, password } = await req.json();
 
-    if (!normalizedEmail || !password) {
-      return NextResponse.json({ message: "Handle & password required" }, { status: 400 });
+    if (!clubName || !contactName || !password) {
+      return NextResponse.json(
+        { message: "Club Name, POC Name & Password are required" },
+        { status: 400 }
+      );
     }
 
-    const account = await DiscussAccount.findOne({ email: normalizedEmail });
+    const account = await DiscussAccount.findOne({
+      contactName: { $regex: new RegExp(`^${escapeRegex(contactName.trim())}$`, "i") },
+      clubName: { $regex: new RegExp(`^${escapeRegex(clubName.trim())}$`, "i") }
+    });
+
     if (!account) {
-      return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Invalid club name or POC name" },
+        { status: 401 }
+      );
     }
 
-    const match = await bcrypt.compare(password, account.password);
+    // Direct comparison (plaintext) or bcrypt hash match
+    const match = password === account.password || await bcrypt.compare(password, account.password).catch(() => false);
     if (!match) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
     if (!account.isAuthorized) {
       return NextResponse.json(
-        { message: "Your club request is still pending admin approval. Wait for verification first." },
+        { message: "Your club request is still pending admin approval." },
         { status: 403 }
       );
     }
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET not configured");
 
-    const token = jwt.sign({ id: account._id.toString(), kind: "discuss_account" }, secret, { expiresIn: "7d" });
+    const token = jwt.sign({ id: account._id.toString(), kind: "discuss_account" }, secret, { expiresIn: "36500d" });
 
     account.lastLogin = new Date();
     await account.save();

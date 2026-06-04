@@ -18,7 +18,7 @@ export default function EventsClient({ initialEvents }: Props) {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 8;
+  const itemsPerPage = 15;
 
   useEffect(() => {
     notifyPageEntry("Events page loaded", "Discover upcoming events across IIITs.", "page-events-loaded");
@@ -63,34 +63,6 @@ export default function EventsClient({ initialEvents }: Props) {
                 Discover cultural festivals, club launches, collaborations, and verified
                 event pushes from IIIT communities across the network.
               </p>
-            </div>
-
-            <div className="w-full rounded-[1.25rem] border border-white/60 bg-white/70 p-4 shadow-[0_18px_44px_-30px_rgba(79,70,229,0.2)] backdrop-blur-sm lg:max-w-md">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.18em] text-indigo-600">
-                    <BookOpenText className="h-3.5 w-3.5" />
-                    Need help?
-                  </div>
-                  <div className="text-lg font-bold text-slate-900">
-                    Learn how event pushes work
-                  </div>
-                  <p className="max-w-xs text-xs leading-5 text-slate-500">
-                    See how a club announcement becomes a verified event and gets listed here.
-                  </p>
-                </div>
-                <Link
-                  href="/guide?flow=event"
-                  className="group inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-500 sm:shrink-0"
-                >
-                  Open event guide
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </Link>
-              </div>
-              <div className="mt-4 flex items-center gap-2.5 rounded-xl bg-indigo-50/50 px-3 py-2 text-[11px] font-medium text-indigo-700">
-                <CalendarDays className="h-4 w-4 shrink-0" />
-                <span>Discuss event pushes can appear here after approval</span>
-              </div>
             </div>
           </div>
         </div>
