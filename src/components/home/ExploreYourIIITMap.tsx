@@ -160,8 +160,8 @@ export default function ExploreYourIIITMap({
                   </button>
                   <span class="iiit-map-label">${escapedShortName}</span>
                 </div>`,
-            iconSize: isCluster ? [96, 32] : [42, 28],
-            iconAnchor: isCluster ? [14, 14] : [14, 14],
+            iconSize: isCluster ? [104, 40] : [52, 40],
+            iconAnchor: isCluster ? [16, 31] : [15, 30],
           });
 
           return (

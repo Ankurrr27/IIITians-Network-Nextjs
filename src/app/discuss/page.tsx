@@ -13,9 +13,7 @@ import {
   Edit3,
   ExternalLink,
   Eye,
-  Flame,
   Globe,
-  Hash,
   HelpCircle,
   Image as ImageIcon,
   Link as LinkIcon,
@@ -29,7 +27,6 @@ import {
   Phone,
   Pin,
   Plus,
-  Search,
   Send,
   ShieldCheck,
   Trash2,
@@ -40,6 +37,7 @@ import {
 import ImageCropModal from "@/components/ImageCropModal";
 import api from "@/lib/apiClient";
 import type { IDiscussAccount, IDiscussPost } from "@/types";
+import PageHeader from "@/components/PageHeader";
 
 const POST_TYPES = ["announcement", "event", "campaign", "collaboration", "opportunity"] as const;
 const TOPIC_FILTERS = ["For You", "Career", "Contest", "Club Help", "Collaboration", "Events"] as const;
@@ -657,54 +655,17 @@ function DiscussPageClient() {
   return (
     <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] text-slate-950 pb-12">
       <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-              Ask, answer, and follow club updates.
-            </h1>
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-2.5">
-            <div className="relative w-full sm:w-72">
-              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <input 
-                value={search} 
-                onChange={(e) => setSearch(e.target.value)} 
-                placeholder="Search discussions..." 
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 pl-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 shadow-sm" 
-              />
-            </div>
-            {account ? (
-              <div className="flex gap-2 w-full sm:w-auto">
-                <button 
-                  onClick={openComposer} 
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4.5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 active:scale-98 cursor-pointer shadow-sm shadow-indigo-600/10"
-                >
-                  <Edit3 className="h-4 w-4" />
-                  Create
-                </button>
-                <button 
-                  onClick={handleLogout} 
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 active:scale-98 cursor-pointer shadow-sm"
-                  title="Logout"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={openClubAccountPanel} 
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 active:scale-98 cursor-pointer shadow-sm"
-              >
-                <LogIn className="h-4 w-4" />
-                Club login
-              </button>
-            )}
-          </div>
-        </div>
+        <PageHeader
+          title="Ask, answer, and follow club updates."
+          description="Browse official club posts, student queries, collaborations, and announcements from the IIIT network."
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search discussions..."
+          className="mb-4 sm:mb-5"
+        />
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
         <main className="min-w-0">
           <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [column-fill:balance]">
             {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <div key={post._id} className="break-inside-avoid mb-4"><FeaturedClubCard post={post} index={index} /></div>) : (
@@ -796,15 +757,7 @@ function DiscussPageClient() {
           )}
 
           <div className="mt-6">
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {TOPIC_FILTERS.map((topic) => (
-                <button key={topic} onClick={() => setActiveTopic(topic)} className={`inline-flex shrink-0 items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition ${activeTopic === topic ? "bg-slate-950 text-white" : "bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50"}`}>
-                  {topic === "For You" ? <Flame className="h-4 w-4" /> : <Hash className="h-4 w-4" />}
-                  {topic}
-                </button>
-              ))}
-            </div>
-            <div className="mt-3 flex items-center gap-5 text-sm font-medium text-slate-500">
+            <div className="flex items-center gap-5 text-sm font-medium text-slate-500">
               <span className="inline-flex items-center gap-1.5"><ArrowUp className="h-4 w-4" /> Most Votes</span>
               <span className="inline-flex items-center gap-1.5"><Clock className="h-4 w-4" /> Newest</span>
             </div>

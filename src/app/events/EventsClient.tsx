@@ -5,9 +5,10 @@ import Link from "next/link";
 import type { IEvent } from "@/types";
 import {
   ArrowUpRight, BookOpenText, CalendarDays, Sparkles,
-  Search, ArrowUpDown, ArrowRight, ExternalLink, MapPin, Users,
+  ArrowRight, ExternalLink, MapPin, Users,
 } from "lucide-react";
 import { notifyPageEntry } from "@/utils/appNotifications";
+import PageHeader, { pageHeaderControlClass } from "@/components/PageHeader";
 
 interface Props {
   initialEvents: IEvent[];
@@ -51,50 +52,25 @@ export default function EventsClient({ initialEvents }: Props) {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
 
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div className="max-w-2xl">
-              {/* Events Desk Badge removed as requested */}
-              <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-                Explore the latest network events.
-              </h1>
-              <p className="mt-3 text-sm leading-6 text-slate-600">
-                Discover cultural festivals, club launches, collaborations, and verified
-                event pushes from IIIT communities across the network.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6">
-          <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem]">
-            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition focus-within:border-indigo-400 focus-within:bg-white">
-              <Search className="h-4 w-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search events, colleges, clubs..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
-              />
-            </label>
-            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition focus-within:border-indigo-400 focus-within:bg-white">
-              <ArrowUpDown className="h-4 w-4 text-slate-400" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full bg-transparent text-sm text-slate-700 outline-none"
-              >
-                <option value="newest">Newest first</option>
-                <option value="oldest">Oldest first</option>
-                <option value="az">Title A-Z</option>
-                <option value="za">Title Z-A</option>
-              </select>
-            </label>
-          </div>
-        </div>
+        <PageHeader
+          title="Explore the latest network events."
+          description="Discover cultural festivals, club launches, collaborations, and verified event pushes from IIIT communities across the network."
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search events, colleges, clubs..."
+          filters={
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className={`${pageHeaderControlClass} w-full sm:w-56`}
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="az">Title A-Z</option>
+              <option value="za">Title Z-A</option>
+            </select>
+          }
+        />
 
         {/* Grid */}
         <EventsGrid loading={false} events={paginated} />

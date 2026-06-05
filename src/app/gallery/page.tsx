@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Images,
-  Search,
   Camera,
   MapPin,
   ExternalLink,
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import api from "@/lib/apiClient";
+import PageHeader, { pageHeaderButtonClass } from "@/components/PageHeader";
 
 const categories = [
   { id: "all", label: "All Photos", icon: <Images size={16} /> },
@@ -238,48 +238,37 @@ function GalleryPageClient() {
   return (
     <div className="min-h-screen bg-white pb-16 pt-20 sm:pb-20 sm:pt-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Header */}
-        <div className="mb-6 flex flex-col items-start px-2 text-left sm:mb-12 sm:items-center sm:px-0 sm:text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-indigo-700 shadow-sm sm:text-[11px] sm:tracking-[0.24em]">
-            <Images className="h-4 w-4" />
-            Photo Gallery
-          </div>
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            {collegeName
-              ? <>{decodeURIComponent(collegeName)} <span className="text-indigo-600">Gallery</span></>
-              : <>IIIT <span className="text-indigo-600">Gallery</span></>}
-          </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:mt-4 sm:max-w-2xl sm:text-base sm:leading-7">
-            {collegeName
-              ? `Explore photos from ${decodeURIComponent(collegeName)}.`
-              : "Explore photos from across the IIIT network."}
-          </p>
-        </div>
-
-        {/* Filters & Search */}
-        <div className="mb-6 flex flex-col gap-3 sm:mb-8 sm:gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            {categories.map((cat) => (
-              <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-all sm:px-4 sm:text-xs ${
-                  selectedCategory === cat.id
-                    ? "bg-indigo-700 text-white shadow-sm"
-                    : "border border-indigo-100 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-700"
-                }`}>
-                {cat.icon}
-                {cat.label}
-                <span className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                  selectedCategory === cat.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
-                }`}>{categoryCounts[cat.id] || 0}</span>
-              </button>
-            ))}
-          </div>
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} />
-            <input type="text" placeholder="Search photos..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-4 text-sm text-slate-700 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 sm:py-2" />
-          </div>
-        </div>
+        <PageHeader
+          title={collegeName ? `${decodeURIComponent(collegeName)} Gallery` : "IIIT Gallery"}
+          description={collegeName ? `Explore photos from ${decodeURIComponent(collegeName)}.` : "Explore photos from across the IIIT network."}
+          searchValue={searchQuery}
+          onSearchChange={setSearchQuery}
+          searchPlaceholder="Search photos..."
+          filters={
+            <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`${pageHeaderButtonClass} shrink-0 ${
+                    selectedCategory === cat.id
+                      ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white"
+                      : ""
+                  }`}
+                >
+                  {cat.icon}
+                  {cat.label}
+                  <span className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
+                    selectedCategory === cat.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
+                  }`}>
+                    {categoryCounts[cat.id] || 0}
+                  </span>
+                </button>
+              ))}
+            </div>
+          }
+        />
 
         {/* Upload Section */}
         <section className="mb-8 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.1),_transparent_32%),linear-gradient(180deg,_#f8faff_0%,_#ffffff_100%)] p-4 shadow-[0_20px_60px_-35px_rgba(99,102,241,0.35)] sm:mb-10 sm:rounded-[2rem] sm:p-6">

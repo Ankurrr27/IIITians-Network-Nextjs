@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
-  MapPin, Search, MoreVertical,
+  MapPin,
   ExternalLink, MoreHorizontal, Link2, ShieldCheck,
   Users, Images, ImagePlus, X, Plus,
   ChevronLeft, ChevronRight, Upload, Trash2, Globe,
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
+import PageHeader, { pageHeaderControlClass } from "@/components/PageHeader";
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 interface Props {
@@ -111,23 +111,25 @@ export default function CollegesClient({
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
 
-        {/* Header */}
-        <div className="mb-6 flex flex-col items-center px-3 text-left sm:mb-8 sm:px-0 sm:text-center">
-          {/* MapPin IIITs Directory badge removed as requested */}
-          <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
-            Indian Institutes of Information Technology
-          </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-            Explore official information about IIITs across India.
-          </p>
-        </div>
-
-        {/* Search */}
-        <CollegesSearch
-          search={search}
-          setSearch={setSearch}
-          setFilter={setFilter}
-          hasRecentSearches={recentSearches.length > 0}
+        <PageHeader
+          title="Indian Institutes of Information Technology"
+          description="Explore official information about IIITs across India."
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search IIIT by name..."
+          filters={
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className={`${pageHeaderControlClass} w-full sm:w-56`}
+            >
+              <option value="NONE">Default order</option>
+              <option value="AZ">Sort A-Z</option>
+              <option value="ZA">Sort Z-A</option>
+              <option value="WEBSITE">Has website</option>
+              {recentSearches.length > 0 && <option value="RECENT">Recently searched</option>}
+            </select>
+          }
         />
 
         {/* Grid */}
@@ -155,80 +157,6 @@ export default function CollegesClient({
 }
 
 /* ─── CollegesSearch ─────────────────────────────────────────────────────── */
-function CollegesSearch({
-  search, setSearch, setFilter, hasRecentSearches = false,
-}: {
-  search: string;
-  setSearch: (v: string) => void;
-  setFilter: (v: string) => void;
-  hasRecentSearches?: boolean;
-}) {
-  const [openMenu, setOpenMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpenMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const sortOptions: [string, string][] = [
-    ["AZ", "Sort A-Z"],
-    ["ZA", "Sort Z-A"],
-    ["WEBSITE", "Has Website"],
-    ...(hasRecentSearches ? [["RECENT", "Recently Searched"] as [string, string]] : []),
-  ];
-
-  return (
-    <div className="relative z-50 mx-auto mb-10 max-w-full px-4 sm:mb-14 sm:max-w-xl sm:px-0">
-      <div className="group relative flex items-center rounded-2xl bg-white/80 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/80 transition-all duration-300 focus-within:shadow-[0_8px_30px_rgba(79,70,229,0.1)] focus-within:border-indigo-300 focus-within:ring-4 focus-within:ring-indigo-50/50">
-        <Search size={20} className="absolute left-4 text-slate-400 transition-colors group-focus-within:text-indigo-500" />
-        <input
-          type="text"
-          placeholder="Search IIIT by name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-transparent py-4 pl-12 pr-12 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none sm:text-base font-medium"
-        />
-        <div ref={menuRef} className="absolute right-2">
-          <button
-            onClick={() => setOpenMenu((p) => !p)}
-            className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 focus:outline-none"
-          >
-            <MoreVertical size={20} />
-          </button>
-          {openMenu && (
-            <div className="absolute right-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-2xl border border-slate-100 bg-white/95 text-sm shadow-xl backdrop-blur-lg animate-in fade-in zoom-in-95 origin-top-right">
-              <div className="py-2">
-                {sortOptions.map(([value, label]) => (
-                  <button
-                    key={value}
-                    onClick={() => { setFilter(value); setOpenMenu(false); }}
-                    className="w-full px-4 py-2.5 text-left font-medium text-slate-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700"
-                  >
-                    {label}
-                  </button>
-                ))}
-                <div className="my-1 h-px bg-slate-100" />
-                <button
-                  onClick={() => { setFilter("NONE"); setOpenMenu(false); }}
-                  className="w-full px-4 py-2.5 text-left font-medium text-rose-500 transition-colors hover:bg-rose-50"
-                >
-                  Clear Filter
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ─── CollegeCard ────────────────────────────────────────────────────────── */
 function CollegeCard({
   college, teamCount = 0, discussClubs = [],

@@ -196,16 +196,6 @@ const flowTabs: FlowTab[] = [
   },
 ];
 
-const guideActivityFeed = [
-  "Club request created",
-  "Legacy profile approved",
-  "Event push reviewed",
-  "Placement record initialized",
-  "College gallery audited",
-  "Yearly stats published",
-  "Announcement published",
-];
-
 export default function GuidePage() {
   return (
     <Suspense fallback={
@@ -327,24 +317,6 @@ function GuidePageClient() {
                 </button>
               );
             })}
-          </div>
-
-          <div className="mt-5 overflow-hidden rounded-[1.6rem] border border-indigo-100 bg-white/60 p-1.5 shadow-[0_12px_40px_-20px_rgba(79,70,229,0.15)] backdrop-blur-md">
-            <div className="flex flex-col gap-2 p-2.5 sm:flex-row sm:items-center">
-              <div className="shrink-0 text-[10px] font-bold uppercase tracking-[0.24em] text-indigo-700">
-                Activity Stream
-              </div>
-              <div className="flex flex-1 flex-wrap gap-2">
-                {guideActivityFeed.map((item) => (
-                  <span
-                    key={item}
-                    className="inline-flex items-center rounded-full bg-indigo-50/80 px-3 py-1.5 text-[11px] font-semibold text-indigo-700 ring-1 ring-indigo-200/50"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
 
           <div className="mt-6">

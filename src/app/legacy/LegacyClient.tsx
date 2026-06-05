@@ -17,9 +17,7 @@ import {
   Linkedin,
   Mail,
   Milestone,
-  Search,
   ShieldCheck,
-  SlidersHorizontal,
   Sparkles,
   Users,
 } from "lucide-react";
@@ -28,6 +26,7 @@ import type { IAlumni, ICollege, ITeamMember } from "@/types";
 import ImageCropModal from "@/components/ImageCropModal";
 import useThemeMode from "@/hooks/useThemeMode";
 import { notifyPromise } from "@/utils/appNotifications";
+import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
 
 interface Props {
   initialAlumni: IAlumni[];
@@ -166,10 +165,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
   const [loading, setLoading] = useState(true);
   const [apiUnavailable, setApiUnavailable] = useState(false);
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [generationFilter, setGenerationFilter] = useState(searchParams.get("generation") || "");
   const [iiitFilter, setIiitFilter] = useState(searchParams.get("iiit") || "");
-  const [professionalStatusFilter, setProfessionalStatusFilter] = useState(searchParams.get("professionalStatus") || "");
-  const [legacyTypeFilter, setLegacyTypeFilter] = useState(searchParams.get("legacyType") || "");
   const [networkPostFilter, setNetworkPostFilter] = useState(searchParams.get("networkPost") || "");
   const [areFiltersOpen, setAreFiltersOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -189,21 +185,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
     const promise = api.get("/alumni", {
       params: {
         search,
-        generation: generationFilter,
         iiit: iiitFilter,
-        professionalStatus: professionalStatusFilter,
-        legacyType: legacyTypeFilter,
         networkPost: networkPostFilter,
         page,
         limit: itemsPerPage,
         ...filters,
       },
     });
-
-    notifyPromise(promise, {
-      loading: "Updating network legacy directory...",
-      success: "Directory updated",
-    }).catch(() => undefined);
 
     try {
       const response = await promise;
@@ -238,10 +226,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
   useEffect(() => {
     setSearch(searchParams.get("search") || "");
-    setGenerationFilter(searchParams.get("generation") || "");
     setIiitFilter(searchParams.get("iiit") || "");
-    setProfessionalStatusFilter(searchParams.get("professionalStatus") || "");
-    setLegacyTypeFilter(searchParams.get("legacyType") || "");
     setNetworkPostFilter(searchParams.get("networkPost") || "");
   }, [searchParams]);
 
@@ -252,7 +237,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
     }, 250);
 
     return () => clearTimeout(timeout);
-  }, [search, generationFilter, iiitFilter, professionalStatusFilter, legacyTypeFilter, networkPostFilter]);
+  }, [search, iiitFilter, networkPostFilter]);
 
   useEffect(() => {
     fetchEntries({}, currentPage);
@@ -268,11 +253,6 @@ export default function LegacyClient({ initialAlumni }: Props) {
         .sort((a, b) => String(b.year || "").localeCompare(String(a.year || ""), undefined, { numeric: true }))[0] || null
     );
   }, [form.email, teamMembers]);
-
-  const generationOptions = useMemo(() => {
-    const values = entries.map((entry) => entry.generation).filter((value): value is string => Boolean(value));
-    return [...new Set(values)].sort((a, b) => b.localeCompare(a));
-  }, [entries]);
 
   const iiitOptions = useMemo(() => {
     const values = [
@@ -358,7 +338,59 @@ export default function LegacyClient({ initialAlumni }: Props) {
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-        <LegacyHeroSection isDarkMode={isDarkMode} stats={stats} />
+        <PageHeader
+          title="Network Legacy"
+          description="Once a member of the network, always a part of its legacy."
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search by name, role, company, or institute..."
+          controlsClassName="xl:grid xl:grid-cols-[minmax(36rem,1fr)_13rem_14rem_auto_auto] xl:items-center xl:gap-3"
+          filtersClassName="xl:contents"
+          filters={
+            <>
+              <select
+                value={iiitFilter}
+                onChange={(e) => setIiitFilter(e.target.value)}
+                className={`${pageHeaderControlClass} w-full`}
+              >
+                <option value="">All institutes</option>
+                {iiitOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              <select
+                value={networkPostFilter}
+                onChange={(e) => setNetworkPostFilter(e.target.value)}
+                className={`${pageHeaderControlClass} w-full`}
+              >
+                <option value="">All network posts</option>
+                {networkPostOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setIsFormOpen((prev) => !prev)}
+                title="Submit your legacy profile"
+                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition hover:bg-indigo-700"
+              >
+                {isFormOpen ? "Close form" : "Open form"}
+                {isFormOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearch("");
+                  setIiitFilter("");
+                  setNetworkPostFilter("");
+                }}
+                className={`${pageHeaderButtonClass} shrink-0`}
+              >
+                Clear filters
+              </button>
+            </>
+          }
+        />
 
         <div className="space-y-3 pb-10 sm:space-y-4 sm:pb-16">
           {apiUnavailable && (
@@ -383,57 +415,29 @@ export default function LegacyClient({ initialAlumni }: Props) {
             </div>
           )}
 
-          <div
-            className={`overflow-hidden rounded-[1.25rem] border p-4 shadow-[0_22px_60px_rgba(99,102,241,0.08)] sm:p-5 ${
-              isDarkMode ? cardShell.dark : "border-indigo-100 bg-[linear-gradient(135deg,rgba(239,246,255,0.9),rgba(255,255,255,0.95))]"
-            }`}
-          >
-            <LegacySubmissionSection
-              isDarkMode={isDarkMode}
-              isFormOpen={isFormOpen}
-              setIsFormOpen={setIsFormOpen}
-              handleSubmit={handleSubmit}
-              submitState={submitState}
-              form={form}
-              handleChange={handleChange}
-              iiitOptions={iiitOptions}
-              matchedTeamMember={matchedTeamMember}
-              photo={photo}
-              setRawPhoto={setRawPhoto}
-              useTeamPhoto={useTeamPhoto}
-              setUseTeamPhoto={setUseTeamPhoto}
-            />
-
+          {isFormOpen && (
             <div
-              className={`my-8 h-px ${
-                isDarkMode
-                  ? "bg-gradient-to-r from-transparent via-slate-700 to-transparent"
-                  : "bg-gradient-to-r from-transparent via-indigo-200/50 to-transparent"
+              className={`overflow-hidden rounded-[1.25rem] border p-4 shadow-[0_22px_60px_rgba(99,102,241,0.08)] sm:p-5 ${
+                isDarkMode ? cardShell.dark : "border-indigo-100 bg-[linear-gradient(135deg,rgba(239,246,255,0.9),rgba(255,255,255,0.95))]"
               }`}
-            />
-
-            <LegacyFiltersSection
-              isDarkMode={isDarkMode}
-              search={search}
-              setSearch={setSearch}
-              areFiltersOpen={areFiltersOpen}
-              setAreFiltersOpen={setAreFiltersOpen}
-              generationFilter={generationFilter}
-              setGenerationFilter={setGenerationFilter}
-              iiitFilter={iiitFilter}
-              setIiitFilter={setIiitFilter}
-              professionalStatusFilter={professionalStatusFilter}
-              setProfessionalStatusFilter={setProfessionalStatusFilter}
-              legacyTypeFilter={legacyTypeFilter}
-              setLegacyTypeFilter={setLegacyTypeFilter}
-              networkPostFilter={networkPostFilter}
-              setNetworkPostFilter={setNetworkPostFilter}
-              generationOptions={generationOptions}
-              iiitOptions={iiitOptions}
-              networkPostOptions={networkPostOptions}
-              filterSelectClass={filterSelectClass}
-            />
-          </div>
+            >
+              <LegacySubmissionSection
+                isDarkMode={isDarkMode}
+                isFormOpen={isFormOpen}
+                setIsFormOpen={setIsFormOpen}
+                handleSubmit={handleSubmit}
+                submitState={submitState}
+                form={form}
+                handleChange={handleChange}
+                iiitOptions={iiitOptions}
+                matchedTeamMember={matchedTeamMember}
+                photo={photo}
+                setRawPhoto={setRawPhoto}
+                useTeamPhoto={useTeamPhoto}
+                setUseTeamPhoto={setUseTeamPhoto}
+              />
+            </div>
+          )}
 
           <LegacyEntriesSection isDarkMode={isDarkMode} loading={loading} entries={entries} />
 
@@ -560,43 +564,8 @@ function LegacySubmissionSection({
   setUseTeamPhoto: (value: boolean) => void;
 }) {
   return (
-    <div className="space-y-6">
-      <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6">
-        <div className="max-w-2xl">
-          <h2 className={`text-xl font-semibold sm:text-2xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
-            Add your Network Legacy profile
-          </h2>
-          <p className={`mt-2 text-sm leading-6 sm:leading-7 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-            Send your profile for review. Only approved entries are shown in the public legacy page.
-          </p>
-          <Link
-            href="/guide"
-            className="mt-4 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white/80 px-4 py-2 text-sm font-semibold text-indigo-700 transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
-          >
-            Need help? Open Guide
-          </Link>
-          <Link
-            href="/legacy/certificate"
-            className="ml-0 mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm sm:ml-3 sm:mt-4"
-          >
-            Get legacy certificate
-          </Link>
-        </div>
-
-        <div className="flex items-center justify-start lg:justify-end">
-          <button
-            type="button"
-            onClick={() => setIsFormOpen((prev) => !prev)}
-            className="inline-flex min-w-[11rem] items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#4f46e5,#6366f1)] px-5 py-3 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(99,102,241,0.28)] transition duration-300 ease-out hover:-translate-y-0.5 hover:scale-[1.01] hover:shadow-[0_24px_44px_rgba(99,102,241,0.34)] active:scale-[0.99]"
-          >
-            {isFormOpen ? "Close form" : "Open form"}
-            {isFormOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          </button>
-        </div>
-      </div>
-
-      {isFormOpen && (
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
             {legacyFormFields.map(([name, label, placeholder, type, required, span]) => (
               <label key={name} className={`flex flex-col gap-2 ${span}`}>
@@ -735,173 +704,7 @@ function LegacySubmissionSection({
           >
             {submitState.loading ? "Submitting..." : "Send legacy request"}
           </button>
-        </form>
-      )}
-    </div>
-  );
-}
-
-function LegacyFiltersSection({
-  isDarkMode,
-  search,
-  setSearch,
-  areFiltersOpen,
-  setAreFiltersOpen,
-  generationFilter,
-  setGenerationFilter,
-  iiitFilter,
-  setIiitFilter,
-  professionalStatusFilter,
-  setProfessionalStatusFilter,
-  legacyTypeFilter,
-  setLegacyTypeFilter,
-  networkPostFilter,
-  setNetworkPostFilter,
-  generationOptions,
-  iiitOptions,
-  networkPostOptions,
-  filterSelectClass,
-}: {
-  isDarkMode: boolean;
-  search: string;
-  setSearch: (value: string) => void;
-  areFiltersOpen: boolean;
-  setAreFiltersOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  generationFilter: string;
-  setGenerationFilter: (value: string) => void;
-  iiitFilter: string;
-  setIiitFilter: (value: string) => void;
-  professionalStatusFilter: string;
-  setProfessionalStatusFilter: (value: string) => void;
-  legacyTypeFilter: string;
-  setLegacyTypeFilter: (value: string) => void;
-  networkPostFilter: string;
-  setNetworkPostFilter: (value: string) => void;
-  generationOptions: string[];
-  iiitOptions: string[];
-  networkPostOptions: string[];
-  filterSelectClass: string;
-}) {
-  return (
-    <div>
-      <div className="max-w-2xl px-1 pb-2 sm:px-0 sm:pb-3">
-        <h2 className={`text-xl font-semibold sm:text-2xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>Search Network Legacy</h2>
-        <p className={`mt-0.5 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-          Filter by name, batch, network post, professional role, company, or institute.
-        </p>
-      </div>
-
-      <div className="p-0 sm:p-1">
-        <div className="flex items-center gap-3">
-          <label className="relative block flex-1">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder="Try: Ankur, Vice President, Adobe, CSE, or IIIT Surat"
-              className={`w-full rounded-2xl border px-11 py-3 text-sm outline-none transition duration-300 placeholder:text-slate-500 sm:text-base ${
-                isDarkMode
-                  ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
-                  : "border-slate-200 bg-white/90 text-slate-900 shadow-sm focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-              }`}
-            />
-          </label>
-
-          <button
-            type="button"
-            onClick={() => setAreFiltersOpen((prev) => !prev)}
-            className={`inline-flex h-[3.15rem] w-[3.15rem] flex-shrink-0 items-center justify-center rounded-2xl border transition sm:w-auto sm:gap-2 sm:px-4 ${
-              isDarkMode ? "border-slate-700 bg-slate-950 text-slate-100" : "border-slate-200 bg-white text-slate-700 shadow-sm"
-            }`}
-            aria-label="Toggle filters"
-          >
-            <SlidersHorizontal className="h-4.5 w-4.5" />
-            <span className="hidden text-sm font-semibold sm:inline">Filters</span>
-          </button>
-        </div>
-
-        <div className={`${areFiltersOpen ? "mt-4 grid" : "hidden"} gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)]`}>
-          <FilterSelect value={generationFilter} onChange={setGenerationFilter} title={generationFilter || "All generations"} className={filterSelectClass}>
-            <option value="">All generations</option>
-            {generationOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </FilterSelect>
-
-          <FilterSelect value={iiitFilter} onChange={setIiitFilter} title={iiitFilter || "All institutes"} className={filterSelectClass}>
-            <option value="">All institutes</option>
-            {iiitOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </FilterSelect>
-
-          <FilterSelect value={professionalStatusFilter} onChange={setProfessionalStatusFilter} title="All professional stages" className={filterSelectClass}>
-            <option value="">All professional stages</option>
-            <option value="working">Working professionals</option>
-            <option value="open">Open to next move</option>
-          </FilterSelect>
-
-          <FilterSelect value={legacyTypeFilter} onChange={setLegacyTypeFilter} title="All legacy types" className={filterSelectClass}>
-            <option value="">All legacy types</option>
-            <option value="team_member">Team members</option>
-            <option value="alumni">Submitted alumni</option>
-          </FilterSelect>
-
-          <FilterSelect value={networkPostFilter} onChange={setNetworkPostFilter} title={networkPostFilter || "All network posts"} className={filterSelectClass}>
-            <option value="">All network posts</option>
-            {networkPostOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </FilterSelect>
-
-          <button
-            type="button"
-            onClick={() => {
-              setSearch("");
-              setGenerationFilter("");
-              setIiitFilter("");
-              setProfessionalStatusFilter("");
-              setLegacyTypeFilter("");
-              setNetworkPostFilter("");
-            }}
-            className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 sm:text-base ${
-              isDarkMode ? "border-slate-700 bg-slate-950 text-slate-100 hover:bg-slate-900" : "border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 hover:shadow-md"
-            }`}
-          >
-            Clear filters
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function FilterSelect({
-  value,
-  onChange,
-  title,
-  className,
-  children,
-}: {
-  value: string;
-  onChange: (value: string) => void;
-  title: string;
-  className: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="relative">
-      <select value={value} onChange={(event) => onChange(event.target.value)} title={title} className={className}>
-        {children}
-      </select>
-      <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+      </form>
     </div>
   );
 }
