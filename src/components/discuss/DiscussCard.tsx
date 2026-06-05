@@ -20,7 +20,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
   return (
     <>
       {/* Mobile Layout */}
-      <article className="md:hidden relative overflow-hidden rounded-[1rem] border border-sky-100 bg-white/95 shadow-sm transition-all duration-300 hover:border-sky-200">
+      <article className="ui-card ui-card-hover relative md:hidden">
         <div className="flex flex-col">
           {/* Small Banner */}
           <div className="relative h-32 overflow-hidden bg-slate-950">
@@ -35,15 +35,15 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
           {/* Compact Content */}
           <div className="flex flex-col gap-2 p-3">
             <div className="flex flex-wrap items-center gap-1">
-              <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide text-indigo-700">
+              <span className="ui-chip border-indigo-100 bg-indigo-50 px-2 py-0.5 text-[9px] uppercase text-indigo-700">
                 <Megaphone className="h-2.5 w-2.5" />
                 {post.type}
               </span>
-              <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[8px] font-bold uppercase text-slate-600">
+              <span className="ui-chip px-2 py-0.5 text-[8px] uppercase">
                 {post.collegeName}
               </span>
               {post.badgeLabel && (
-                <span className="flex items-center gap-0.5 rounded-full bg-indigo-600 px-2 py-0.5 text-[8px] font-extrabold uppercase text-white">
+                <span className="ui-chip border-indigo-600 bg-indigo-600 px-2 py-0.5 text-[8px] uppercase text-white">
                   <BadgeCheck className="h-2 w-2" />
                   Verified
                 </span>
@@ -72,7 +72,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
       </article>
 
       {/* Desktop Layout */}
-      <article className="hidden md:block relative overflow-hidden rounded-[1.4rem] border border-sky-100 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-200 hover:shadow-md">
+      <article className="ui-card ui-card-hover relative hidden md:block">
         <div className="grid min-h-[12rem] lg:grid-cols-[16rem_minmax(0,1fr)]">
           <a
             href={coverUrl}
@@ -95,18 +95,18 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
 
           <div className="flex flex-col justify-center gap-4 p-5 sm:p-7">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.22em] text-indigo-700">
+              <span className="ui-chip border-indigo-100 bg-indigo-50 text-[11px] uppercase text-indigo-700">
                 <Megaphone className="h-3.5 w-3.5" />
                 {post.type}
               </span>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">
+              <span className="ui-chip text-[11px] uppercase">
                 {post.collegeName}
               </span>
-              <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-600">
+              <span className="ui-chip text-[11px] uppercase">
                 {post.clubName}
               </span>
               {post.badgeLabel && (
-                <span className="flex items-center gap-1 rounded-full bg-indigo-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-white">
+                <span className="ui-chip border-indigo-600 bg-indigo-600 text-[11px] uppercase text-white">
                   <BadgeCheck className="h-3 w-3" />
                   Verified
                 </span>

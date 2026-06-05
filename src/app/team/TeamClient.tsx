@@ -101,7 +101,7 @@ export default function TeamClient({ initialMembers }: Props) {
   const hasDirectoryData = initialMembers.length > 0;
 
   return (
-    <div className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)]">
+    <div className="ui-page-bg relative min-h-screen">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
       <section className="relative z-10 px-4 pb-2 pt-16 sm:px-5 sm:pt-20 lg:px-6 lg:pt-[5.25rem]">
@@ -141,15 +141,15 @@ export default function TeamClient({ initialMembers }: Props) {
             }
             actions={
               <>
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+                <span className="ui-chip">
                   {hasDirectoryData ? years.length - 1 : "Live"} batches
                 </span>
-                <span className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600">
+                <span className="ui-chip">
                   {hasDirectoryData ? filteredMembers.length : "Fresh"} matching
                 </span>
                 <Link
                   href="/team/join"
-                  className="inline-flex h-10 items-center gap-1.5 rounded-full bg-slate-900 px-3.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+                  className="ui-button ui-button-primary inline-flex h-10 min-h-10 items-center gap-1.5 px-3.5 text-xs"
                 >
                   <UserPlus className="h-3.5 w-3.5" />
                   Join
@@ -166,7 +166,7 @@ export default function TeamClient({ initialMembers }: Props) {
         {sortedMembers.length > 0 && <SourceTeamGrid members={sortedMembers} />}
 
         {filteredMembers.length === 0 && (
-          <div className="rounded-[1.25rem] border border-dashed border-slate-300 bg-white px-5 py-12 text-center shadow-sm">
+          <div className="ui-empty">
             <div className="mx-auto max-w-2xl">
               <div className="text-xl font-semibold text-slate-900">
                 {hasDirectoryData ? "No matching team members found." : "The team directory is being refreshed."}

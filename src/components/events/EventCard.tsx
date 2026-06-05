@@ -2,7 +2,6 @@
 import React from "react";
 import type { IEvent } from "@/types";
 import { Calendar, ExternalLink, Pencil, Trash2 } from "lucide-react";
-import Image from "next/image";
 
 interface EventCardProps {
   event: IEvent;
@@ -16,7 +15,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
   const bannerUrl = event.banner?.url || FALLBACK_BANNER;
 
   return (
-    <article className="group h-full flex flex-col overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-md">
+    <article className="ui-card ui-card-hover group flex h-full flex-col">
       {/* Event Banner - Fixed Height */}
       <div className="relative h-52 w-full overflow-hidden bg-slate-50 border-b border-slate-100 flex-shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -49,12 +48,12 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
 
         <div className="mb-2 flex flex-wrap gap-2">
           {event.collegeName && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700">
+            <span className="ui-chip border-indigo-100 bg-indigo-50 text-indigo-700">
               {event.collegeName}
             </span>
           )}
           {event.clubName && (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1.5 text-xs font-medium text-sky-700">
+            <span className="ui-chip border-sky-100 bg-sky-50 text-sky-700">
               {event.clubName}
             </span>
           )}

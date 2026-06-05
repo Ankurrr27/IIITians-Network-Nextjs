@@ -19,10 +19,10 @@ type PageHeaderProps = {
 };
 
 export const pageHeaderControlClass =
-  "h-12 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-400 focus:bg-white focus:ring-4 focus:ring-indigo-100";
+  "ui-control h-12 px-4 text-slate-700 placeholder:text-slate-400";
 
 export const pageHeaderButtonClass =
-  "inline-flex h-12 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-700 transition hover:border-indigo-200 hover:bg-white hover:text-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-100";
+  "ui-button ui-button-ghost inline-flex h-12 items-center justify-center gap-2 px-4";
 
 export default function PageHeader({
   title,
@@ -43,10 +43,10 @@ export default function PageHeader({
   return (
     <header className={`mb-8 text-left sm:mb-10 ${className}`}>
       <div className="max-w-3xl">
-        <h1 className="text-2xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+        <h1 className="ui-title">
           {title}
         </h1>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+        <p className="ui-subtitle mt-3">
           {description}
         </p>
       </div>
@@ -57,7 +57,7 @@ export default function PageHeader({
             {shouldRenderSearch && (
               <div className={`min-w-0 ${searchWrapperClassName}`}>
                 {searchControl || (
-                  <label className="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-100">
+                  <label className="ui-control flex h-12 items-center gap-3 px-4">
                     <Search className="h-4 w-4 shrink-0 text-slate-400" />
                     <input
                       type="text"
