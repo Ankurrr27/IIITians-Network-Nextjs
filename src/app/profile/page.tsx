@@ -21,7 +21,7 @@ import type { IDiscussAccount, IDiscussPost } from "@/types";
 
 function InfoTile({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <div className="ui-card px-4 py-3">
       <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">{label}</p>
       <p className="mt-1 truncate text-sm font-bold text-slate-950">{value}</p>
     </div>
@@ -66,9 +66,9 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#f5f7fb] pt-[5.5rem]">
-        <div className="mx-auto max-w-5xl px-4 py-12">
-          <div className="h-48 animate-pulse rounded-xl bg-white ring-1 ring-slate-200" />
+      <main className="ui-page-bg min-h-screen pt-16 sm:pt-20">
+        <div className="ui-page-shell py-8">
+          <div className="ui-card h-48 animate-pulse" />
         </div>
       </main>
     );
@@ -76,21 +76,21 @@ export default function ProfilePage() {
 
   if (!account) {
     return (
-      <main className="min-h-screen bg-[#f5f7fb] pt-[5.5rem] text-slate-950">
-        <section className="mx-auto max-w-3xl px-4 py-12 text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
+      <main className="ui-page-bg min-h-screen pt-16 text-slate-950 sm:pt-20">
+        <section className="ui-page-shell py-10 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600">
             <UserCircle className="h-8 w-8" />
           </div>
-          <h1 className="mt-5 text-3xl font-black tracking-tight">Your profile</h1>
+          <h1 className="ui-title mt-5">Your <span className="ui-title-accent">Profile</span></h1>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600">
             Login or create a Discuss account to view your profile, verification status, and your club posts.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link href="/discuss?account=true&mode=login" className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
+            <Link href="/discuss?account=true&mode=login" className="ui-button inline-flex items-center gap-2 bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800">
               <LogIn className="h-4 w-4" />
               Login
             </Link>
-            <Link href="/discuss?account=true&mode=register&type=member" className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700">
+            <Link href="/discuss?account=true&mode=register&type=member" className="ui-button ui-button-primary inline-flex items-center gap-2 px-5 py-3 text-sm font-bold">
               <UserPlus className="h-4 w-4" />
               Register
             </Link>
@@ -104,17 +104,17 @@ export default function ProfilePage() {
   const title = isMember ? account.contactName : account.clubName;
 
   return (
-    <main className="min-h-screen bg-[#f5f7fb] pt-[5.5rem] text-slate-950">
-      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-5 lg:px-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <main className="ui-page-bg min-h-screen pt-16 text-slate-950 sm:pt-20">
+      <section className="ui-page-shell py-6 sm:py-8">
+        <div className="ui-panel p-4 sm:p-5">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-2xl font-black uppercase text-white">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-xl font-black uppercase text-white">
                 {title.slice(0, 1)}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-indigo-600">Profile</p>
-                <h1 className="mt-1 truncate text-3xl font-black tracking-tight">{title}</h1>
+                <h1 className="mt-1 truncate text-2xl font-black tracking-tight sm:text-3xl">{title}</h1>
                 <p className="mt-1 flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-500">
                   <MapPin className="h-4 w-4" />
                   {account.collegeName}
@@ -122,11 +122,11 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
-              <span className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold ${isMember ? "bg-indigo-50 text-indigo-700" : account.isAuthorized ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
+              <span className={`ui-chip ${isMember ? "border-indigo-100 bg-indigo-50 text-indigo-700" : account.isAuthorized ? "border-emerald-100 bg-emerald-50 text-emerald-700" : "border-amber-100 bg-amber-50 text-amber-700"}`}>
                 {isMember ? <MessageCircle className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
                 {isMember ? "Member" : account.isAuthorized ? account.badgeLabel || "Verified club" : "Pending verification"}
               </span>
-              <button onClick={logout} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50">
+              <button onClick={logout} className="ui-button ui-button-ghost inline-flex min-h-9 items-center gap-2 px-3 text-xs">
                 <LogOut className="h-4 w-4" />
                 Logout
               </button>
@@ -141,8 +141,8 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_20rem]">
-          <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_20rem]">
+          <section className="ui-panel p-4 sm:p-5">
             <h2 className="flex items-center gap-2 text-lg font-black">
               <MessageCircle className="h-5 w-5 text-indigo-600" />
               Discuss activity
@@ -159,7 +159,7 @@ export default function ProfilePage() {
                   <p className="mt-2 font-bold text-slate-950">{post.title}</p>
                 </div>
               )) : (
-                <p className="rounded-xl bg-slate-50 px-4 py-8 text-center text-sm font-semibold text-slate-500">
+                <p className="ui-empty px-4 py-8 text-sm font-semibold">
                   No official club posts yet.
                 </p>
               )}
@@ -167,7 +167,7 @@ export default function ProfilePage() {
           </section>
 
           <aside className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="ui-panel p-4 sm:p-5">
               <h2 className="text-lg font-black">Account details</h2>
               <div className="mt-4 space-y-3 text-sm font-semibold text-slate-600">
                 <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-indigo-600" /> {account.email}</p>
@@ -177,12 +177,12 @@ export default function ProfilePage() {
             </div>
 
             {!isMember && (
-              <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="ui-panel p-4 sm:p-5">
                 <h2 className="flex items-center gap-2 text-lg font-black"><BadgeCheck className="h-5 w-5 text-indigo-600" /> Club status</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   Verified club managers and publishers can create official announcements from the Discuss page.
                 </p>
-                <Link href="/discuss" className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-indigo-700">
+                <Link href="/discuss" className="ui-button ui-button-primary mt-4 inline-flex w-full items-center justify-center px-4 py-3 text-sm font-bold">
                   Open Discuss
                 </Link>
               </div>

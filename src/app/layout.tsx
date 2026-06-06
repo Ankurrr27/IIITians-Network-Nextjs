@@ -42,8 +42,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans bg-background text-foreground`}>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="font-sans bg-background text-foreground">
         <AppShell>{children}</AppShell>
       </body>
     </html>

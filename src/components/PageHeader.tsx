@@ -19,10 +19,25 @@ type PageHeaderProps = {
 };
 
 export const pageHeaderControlClass =
-  "ui-control h-12 px-4 text-slate-700 placeholder:text-slate-400";
+  "ui-control h-11 px-3.5 text-slate-700 placeholder:text-slate-400";
 
 export const pageHeaderButtonClass =
-  "ui-button ui-button-ghost inline-flex h-12 items-center justify-center gap-2 px-4";
+  "ui-button ui-button-ghost inline-flex h-11 items-center justify-center gap-2 px-3.5";
+
+function renderTitle(title: ReactNode) {
+  if (typeof title !== "string") return title;
+
+  const words = title.trim().split(/\s+/);
+  if (words.length < 2) return title;
+
+  const accent = words.pop();
+  return (
+    <span className="ui-heading-row">
+      <span>{words.join(" ")}</span>
+      <span className="ui-title-accent">{accent}</span>
+    </span>
+  );
+}
 
 export default function PageHeader({
   title,
@@ -41,10 +56,10 @@ export default function PageHeader({
   const shouldRenderSearch = Boolean(searchControl || onSearchChange);
 
   return (
-    <header className={`mb-8 text-left sm:mb-10 ${className}`}>
+    <header className={`mb-6 text-left sm:mb-8 ${className}`}>
       <div className="max-w-3xl">
         <h1 className="ui-title">
-          {title}
+          {renderTitle(title)}
         </h1>
         <p className="ui-subtitle mt-3">
           {description}
@@ -52,12 +67,12 @@ export default function PageHeader({
       </div>
 
       {(shouldRenderSearch || filters || actions) && (
-        <div className="mt-8 space-y-3">
+        <div className="mt-5 space-y-3">
           <div className={`grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start ${controlsClassName}`}>
             {shouldRenderSearch && (
               <div className={`min-w-0 ${searchWrapperClassName}`}>
                 {searchControl || (
-                  <label className="ui-control flex h-12 items-center gap-3 px-4">
+                  <label className="ui-control flex h-11 items-center gap-3 px-3.5">
                     <Search className="h-4 w-4 shrink-0 text-slate-400" />
                     <input
                       type="text"

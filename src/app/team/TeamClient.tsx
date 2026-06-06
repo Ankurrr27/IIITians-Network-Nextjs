@@ -104,10 +104,10 @@ export default function TeamClient({ initialMembers }: Props) {
     <div className="ui-page-bg relative min-h-screen">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-      <section className="relative z-10 px-4 pb-2 pt-16 sm:px-5 sm:pt-20 lg:px-6 lg:pt-[5.25rem]">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative z-10 pb-2 pt-16 sm:pt-20">
+        <div className="ui-page-shell">
           <PageHeader
-            title="Meet the Team"
+            title="Our Team"
             description={hasDirectoryData ? `${uniqueVisibleCount} visible members across the IIITians Network team directory.` : "The team directory is being refreshed."}
             searchValue={search}
             onSearchChange={setSearch}
@@ -162,7 +162,7 @@ export default function TeamClient({ initialMembers }: Props) {
       </section>
 
       {/* Members Grid - Organized by Role Type */}
-      <section className="mx-auto max-w-7xl px-4 pb-16 pt-10 sm:px-6 sm:pb-24 space-y-16">
+      <section className="ui-page-shell space-y-10 pb-10 pt-4 sm:space-y-12 sm:pb-12">
         {sortedMembers.length > 0 && <SourceTeamGrid members={sortedMembers} />}
 
         {filteredMembers.length === 0 && (

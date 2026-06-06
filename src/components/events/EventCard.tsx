@@ -16,8 +16,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
 
   return (
     <article className="ui-card ui-card-hover group flex h-full flex-col">
-      {/* Event Banner - Fixed Height */}
-      <div className="relative h-52 w-full overflow-hidden bg-slate-50 border-b border-slate-100 flex-shrink-0">
+      <div className="relative h-44 w-full flex-shrink-0 overflow-hidden border-b border-slate-100 bg-slate-50 sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={bannerUrl}
@@ -27,17 +26,16 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-900/30 to-transparent" />
         {event.type && (
-          <span className="absolute left-4 top-4 rounded-full bg-slate-900/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
+          <span className="absolute left-3 top-3 rounded-full bg-slate-900/80 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
             {event.type}
           </span>
         )}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+        <div className="absolute bottom-0 left-0 right-0 p-3.5 text-white">
           <h3 className="max-w-[90%] text-lg font-semibold leading-tight line-clamp-2">{event.title}</h3>
         </div>
       </div>
 
-      {/* Card Content */}
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
+      <div className="flex flex-1 flex-col p-4">
         <div className="mb-2.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
           <Calendar className="h-3.5 w-3.5" />
           {new Date(event.date).toLocaleDateString("en-IN", {
@@ -66,13 +64,13 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
         )}
 
         {/* Action Panel */}
-        <div className="mt-auto flex items-center justify-between pt-5 border-t border-slate-50">
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
           {event.link ? (
             <a
               href={event.link}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 transition hover:text-indigo-800"
+              className="ui-button ui-button-primary inline-flex min-h-9 items-center gap-1.5 px-3 text-xs"
             >
               Learn More <ExternalLink className="h-3 w-3" />
             </a>
@@ -86,7 +84,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
               {onEdit && (
                 <button
                   onClick={() => onEdit(event)}
-                  className="rounded-full bg-slate-50 p-2 text-slate-500 hover:bg-indigo-50 hover:text-indigo-600 transition shadow-sm border border-slate-100"
+                  className="ui-icon-button h-9 w-9"
                   title="Edit Event"
                 >
                   <Pencil size={13} />
@@ -95,7 +93,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
               {onDelete && (
                 <button
                   onClick={() => onDelete(event._id)}
-                  className="rounded-full bg-rose-50 p-2 text-rose-600 hover:bg-rose-100 transition shadow-sm border border-rose-100"
+                  className="ui-icon-button h-9 w-9 border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100"
                   title="Delete Event"
                 >
                   <Trash2 size={13} />

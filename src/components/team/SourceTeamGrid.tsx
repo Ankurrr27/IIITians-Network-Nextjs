@@ -100,23 +100,23 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
   const leadGridClass =
     leads.length === 3
-      ? "mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 xl:grid-cols-3"
-      : "mx-auto grid max-w-7xl gap-5 sm:grid-cols-2 xl:grid-cols-4";
+      ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      : "grid gap-4 sm:grid-cols-2 xl:grid-cols-4";
 
   if (!members.length) {
     return <div className="py-12 text-center text-slate-500">No team members found.</div>;
   }
 
   return (
-    <div className="space-y-12 sm:space-y-14">
+    <div className="space-y-10 sm:space-y-12">
       {execs.length > 0 && (
         <section>
-          <div className="mb-5 text-center sm:mb-6">
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900 sm:text-3xl">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Executive Team
             </h2>
           </div>
-          <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2">
             {execs.map((member) => (
               <ExecCard key={member._id} member={member as SocialMember} />
             ))}
@@ -126,8 +126,8 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
       {leads.length > 0 && (
         <section>
-          <div className="mb-5 text-center sm:mb-6">
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900 sm:text-3xl">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Team Lead
             </h2>
           </div>
@@ -141,12 +141,12 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
       {team.length > 0 && (
         <section>
-          <div className="mb-5 text-center sm:mb-6">
-            <h2 className="mt-2 text-2xl font-semibold text-slate-900 sm:text-3xl">
+          <div className="mb-4">
+            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Members
             </h2>
           </div>
-          <div className="mx-auto grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5 xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-5 xl:grid-cols-6">
             {team.map((member) => (
               <MemberCard key={member._id} member={member as SocialMember} />
             ))}
@@ -174,15 +174,15 @@ function ExecCard({ member }: { member: SocialMember }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         whileHover={{ y: -4 }}
-        className="overflow-hidden rounded-[1.6rem] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50 shadow-[0_20px_60px_rgba(79,70,229,0.08)] lg:col-span-2"
+        className="ui-card ui-card-hover overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50 lg:col-span-2"
       >
         <div className="grid grid-cols-1 gap-0 sm:grid-cols-[170px_1fr] lg:grid-cols-[280px_1fr]">
-          <div className="relative mx-3 mt-3 overflow-hidden rounded-[1rem] bg-indigo-100 sm:mx-0 sm:mt-0 sm:rounded-none">
+          <div className="relative mx-3 mt-3 overflow-hidden rounded-xl bg-indigo-100 sm:mx-0 sm:mt-0 sm:rounded-none">
             <img src={photoUrl(member)} alt={member.name} className="aspect-square w-full object-cover object-center sm:h-full sm:aspect-auto" />
             <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
           </div>
 
-          <div className="p-4 sm:p-5 lg:p-6">
+          <div className="p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:gap-4">
               <div className="flex flex-wrap items-center gap-3">
                 <div className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white sm:text-xs">
@@ -206,12 +206,12 @@ function ExecCard({ member }: { member: SocialMember }) {
               </div>
 
               <div className="grid gap-3 lg:grid-cols-[0.92fr_1.08fr]">
-                <div className="rounded-[1rem] border border-slate-200 bg-white p-3 shadow-sm sm:rounded-[1.2rem] sm:p-4">
+                <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs">About</p>
                   <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">{about}</p>
                 </div>
 
-                <div className="rounded-[1rem] border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm sm:rounded-[1.2rem] sm:p-4">
+                <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs">Message</p>
                   <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">"{message}"</p>
                 </div>
@@ -220,7 +220,7 @@ function ExecCard({ member }: { member: SocialMember }) {
               <div className="flex flex-wrap gap-2">
                 {execSocialLinks.map(({ key, Icon }) =>
                   member[key] ? (
-                    <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
+                    <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="ui-icon-button">
                       <Icon size={18} />
                     </a>
                   ) : null
@@ -239,7 +239,7 @@ function ExecCard({ member }: { member: SocialMember }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="group overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.07)] transition-shadow hover:shadow-[0_26px_65px_rgba(79,70,229,0.14)]"
+      className="ui-card ui-card-hover group overflow-hidden"
     >
       <div className="h-1 bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400" />
       <div className="grid gap-0 md:grid-cols-[220px_1fr]">
@@ -282,10 +282,10 @@ function LeadCard({ member }: { member: SocialMember }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ y: -6 }}
-      className="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-100"
+      className="ui-card ui-card-hover group overflow-hidden"
     >
       <div className="flex flex-col">
-        <div className="relative h-72 w-full overflow-hidden bg-slate-100 sm:h-80">
+        <div className="relative h-64 w-full overflow-hidden bg-slate-100 sm:h-72">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
           
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
@@ -309,8 +309,8 @@ function LeadCard({ member }: { member: SocialMember }) {
           </div>
         </div>
 
-        <div className="p-4 sm:p-5 bg-white">
-          <div className="rounded-2xl bg-slate-50/80 px-4 py-3.5 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
+        <div className="bg-white p-4">
+          <div className="rounded-xl bg-slate-50/80 px-4 py-3 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-400">Institute</p>
             <p className="mt-1 text-sm font-bold text-slate-700 sm:text-base group-hover:text-indigo-900">{member.iiit}</p>
           </div>
@@ -322,7 +322,7 @@ function LeadCard({ member }: { member: SocialMember }) {
 
 function MemberCard({ member }: { member: SocialMember }) {
   return (
-    <article className="group overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[0_14px_36px_rgba(15,23,42,0.04)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_44px_rgba(79,70,229,0.10)]">
+    <article className="ui-card ui-card-hover group overflow-hidden">
       <div className="relative overflow-hidden bg-slate-100">
         <img src={photoUrl(member)} alt={member.name} className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
         <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-2.5">

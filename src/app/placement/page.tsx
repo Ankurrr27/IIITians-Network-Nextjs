@@ -161,23 +161,18 @@ function PlacementPageClient() {
   const showSuggestions = isFocused && filteredSuggestions.length > 0 && !loading;
 
   return (
-    <div className="relative min-h-screen bg-[linear-gradient(180deg,#f3f6fc_0%,#eff4fb_25%,#ffffff_100%)] pb-20 pt-28 text-slate-900 sm:pb-28 sm:pt-32">
-      {/* Decorative Floating Meshes & Ambient Background Auras */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-[10%] top-[5%] h-[500px] w-[500px] rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.08)_0%,transparent_70%)] blur-2xl" />
-        <div className="absolute -right-[10%] top-[15%] h-[450px] w-[450px] rounded-full bg-[radial-gradient(circle,rgba(14,165,233,0.08)_0%,transparent_70%)] blur-2xl" />
-        <div className="absolute left-[30%] bottom-[10%] h-[600px] w-[600px] rounded-full bg-[radial-gradient(circle,rgba(244,63,94,0.04)_0%,transparent_70%)] blur-3xl" />
-      </div>
+    <div className="ui-page-bg relative min-h-screen pb-10 pt-16 text-slate-900 sm:pb-12 sm:pt-20">
+      <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl space-y-8 px-4 sm:space-y-12 sm:px-6">
+      <div className="ui-page-shell relative z-10 space-y-6 sm:space-y-8">
         
         {/* ─── HERO HEADER ─── */}
         <PageHeader
-          title={selectedCollegeName ? `${selectedCollegeName} Insights` : "Explore & Compare IIIT Placements"}
+          title={selectedCollegeName ? `${selectedCollegeName} Insights` : "Placement Insights"}
           description="Detailed branch-wise packages, percentage statistics, placement ratings, and historical timelines across IIITs."
           searchControl={
             <div className="relative">
-              <div className="flex h-12 items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 transition focus-within:border-indigo-400 focus-within:bg-white focus-within:ring-4 focus-within:ring-indigo-100">
+              <div className="ui-control flex h-11 items-center gap-3 px-3.5">
                 <Search size={18} className="shrink-0 text-slate-400" />
                 <input
                   value={college}
@@ -192,7 +187,7 @@ function PlacementPageClient() {
                 {college && (
                   <button
                     onClick={() => { setCollege(""); setData(null); setSearched(false); setIsComparing(false); setCompareData(null); }}
-                    className="rounded-full bg-slate-100 p-1 text-slate-400 transition hover:bg-slate-200 hover:text-slate-600"
+                    className="ui-icon-button h-7 w-7 rounded-full"
                     aria-label="Clear search"
                   >
                     <X size={14} />
@@ -206,7 +201,7 @@ function PlacementPageClient() {
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 5 }}
-                    className="absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl"
+                    className="ui-panel absolute inset-x-0 top-[calc(100%+0.5rem)] z-30 p-2"
                   >
                     {filteredSuggestions.map((item) => (
                       <button
@@ -232,19 +227,19 @@ function PlacementPageClient() {
               onChange={handleYearChange}
             />
           ) : (
-            <span className="flex h-12 items-center rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-medium text-slate-500">
+              <span className="ui-control flex h-11 items-center px-4 text-sm font-medium text-slate-500">
               All years
             </span>
           )}
           actions={
             <>
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Top Searches:</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Top searches</span>
               {QUICK_CAMPUSES.map((name) => (
                 <button
                   key={name}
                   type="button"
                   onClick={() => { setCollege(name); searchCollege(name); }}
-                  className={`${pageHeaderButtonClass} h-10 text-xs ${
+                  className={`${pageHeaderButtonClass} min-h-9 text-xs ${
                     college === name
                       ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white"
                       : ""
@@ -268,7 +263,7 @@ function PlacementPageClient() {
                   setCompareData(null);
                 }
               }}
-              className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-xs font-black uppercase tracking-wider transition-all ${
+              className={`ui-button inline-flex min-h-10 items-center gap-2 px-4 text-xs font-black uppercase tracking-wider ${
                 isComparing 
                   ? "bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100" 
                   : "bg-white border border-slate-200 text-indigo-600 hover:bg-indigo-50/50 shadow-sm"
@@ -296,7 +291,7 @@ function PlacementPageClient() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="rounded-3xl border border-indigo-100 bg-indigo-50/20 p-5 sm:p-7 space-y-6">
+              <div className="ui-panel space-y-5 border-indigo-100 bg-indigo-50/20 p-4 sm:p-5">
                 <div>
                   <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
                     <Building2 className="h-5 w-5 text-indigo-600" />
@@ -309,7 +304,7 @@ function PlacementPageClient() {
                   <select
                     value={compareCollege}
                     onChange={(e) => handleCompareSelect(e.target.value)}
-                    className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-bold text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-500/5 shadow-sm"
+                    className="ui-control w-full px-4 py-3 text-sm font-bold"
                   >
                     <option value="">Choose campus to compare...</option>
                     {collegeOptions
@@ -362,9 +357,9 @@ function PlacementPageClient() {
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-200 bg-white p-16 text-center shadow-sm"
+            className="ui-empty flex flex-col items-center justify-center p-10"
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-500">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-rose-50 text-rose-500">
               <Info className="h-6 w-6" />
             </div>
             <h3 className="mt-4 text-lg font-black text-slate-900">No placements data found</h3>
