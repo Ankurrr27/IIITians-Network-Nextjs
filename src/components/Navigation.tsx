@@ -189,12 +189,12 @@ export default function Navigation() {
         className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
           isSolidNav
             ? isDarkMode
-              ? "border-b border-slate-800 bg-slate-950/92 py-2 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
-              : "border-b border-slate-200 bg-white/88 py-2 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
-            : "bg-indigo-600 py-3"
+              ? "border-b border-slate-800 bg-slate-950/92 py-1.5 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
+              : "border-b border-slate-200 bg-white/90 py-1.5 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
+            : "bg-indigo-600 py-2"
         }`}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-5 lg:px-6">
+        <div className="ui-page-shell flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src={
@@ -206,7 +206,7 @@ export default function Navigation() {
               }
               width={56}
               height={56}
-              className="h-auto w-12 shrink-0 object-contain"
+              className="h-auto w-10 shrink-0 object-contain"
               alt="IIITians Network"
             />
             <span
@@ -218,7 +218,7 @@ export default function Navigation() {
             </span>
           </Link>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-2.5 md:flex">
             {navItems.map((item) => {
               const active = isNavActive(item);
               const links = quickLinks[item.name as QuickLinkGroup];
@@ -259,7 +259,7 @@ export default function Navigation() {
             })}
           </div>
 
-          <button onClick={() => setIsOpen(true)} className="md:hidden">
+          <button onClick={() => setIsOpen(true)} className="ui-icon-button md:hidden" aria-label="Open navigation">
             <Menu className={`h-6 w-6 ${isDarkMode ? "text-slate-100" : isSolidNav ? "text-indigo-600" : "text-white"}`} />
           </button>
         </div>
@@ -268,7 +268,7 @@ export default function Navigation() {
       {isOpen && <div className="fixed inset-0 z-40 bg-slate-950/40" onClick={() => setIsOpen(false)} />}
 
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-72 transform shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 h-full w-[min(22rem,calc(100vw-1.25rem))] transform shadow-2xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-800"}`}
       >
@@ -279,7 +279,7 @@ export default function Navigation() {
           </button>
         </div>
 
-        <div className="flex flex-col gap-2 p-4">
+        <div className="flex flex-col gap-1.5 p-3">
           {navItems.map((item) => {
             const active = isNavActive(item);
             const links = quickLinks[item.name as QuickLinkGroup];

@@ -331,13 +331,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
   return (
     <div
-      className={`relative min-h-screen ${
-        isDarkMode ? "bg-slate-950" : "bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)]"
-      } pb-16 pt-20 text-slate-900 sm:pb-24 sm:pt-24`}
+      className={`ui-page-bg relative min-h-screen pb-10 pt-16 text-slate-900 sm:pb-12 sm:pt-20 ${
+        isDarkMode ? "bg-slate-950" : ""
+      }`}
     >
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
+      <div className="ui-page-shell relative z-10">
         <PageHeader
           title="Network Legacy"
           description="Once a member of the network, always a part of its legacy."
@@ -372,7 +372,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
                 type="button"
                 onClick={() => setIsFormOpen((prev) => !prev)}
                 title="Submit your legacy profile"
-                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition hover:bg-indigo-700"
+                className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-2 px-4 text-sm"
               >
                 {isFormOpen ? "Close form" : "Open form"}
                 {isFormOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
@@ -392,10 +392,10 @@ export default function LegacyClient({ initialAlumni }: Props) {
           }
         />
 
-        <div className="space-y-3 pb-10 sm:space-y-4 sm:pb-16">
+        <div className="space-y-3 pb-8 sm:space-y-4 sm:pb-10">
           {apiUnavailable && (
             <div
-              className={`rounded-[1.5rem] border px-4 py-3 text-sm leading-7 sm:px-5 sm:py-4 ${
+              className={`rounded-xl border px-4 py-3 text-sm leading-7 ${
                 isDarkMode ? "border-amber-900 bg-amber-950/40 text-amber-200" : "border-amber-200 bg-amber-50 text-amber-800"
               }`}
             >
@@ -417,7 +417,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
           {isFormOpen && (
             <div
-              className={`overflow-hidden rounded-[1.25rem] border p-4 shadow-[0_22px_60px_rgba(99,102,241,0.08)] sm:p-5 ${
+              className={`ui-panel overflow-hidden p-4 sm:p-5 ${
                 isDarkMode ? cardShell.dark : "border-indigo-100 bg-[linear-gradient(135deg,rgba(239,246,255,0.9),rgba(255,255,255,0.95))]"
               }`}
             >
@@ -442,22 +442,22 @@ export default function LegacyClient({ initialAlumni }: Props) {
           <LegacyEntriesSection isDarkMode={isDarkMode} loading={loading} entries={entries} />
 
           {totalPages > 1 && (
-            <div className="mt-12 flex items-center justify-center gap-6">
+            <div className="mt-8 flex items-center justify-center gap-3">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
+                className="ui-button ui-button-ghost inline-flex min-h-10 items-center gap-2 px-4 text-sm disabled:opacity-40"
               >
                 <ChevronLeft className="h-4 w-4" />
                 Previous
               </button>
-              <div className="text-sm font-medium text-slate-400">
+              <div className="ui-chip">
                 Page <span className="font-bold text-slate-900">{currentPage}</span> of {totalPages}
               </div>
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
+                className="ui-button ui-button-ghost inline-flex min-h-10 items-center gap-2 px-4 text-sm disabled:opacity-40"
               >
                 Next
                 <ChevronRight className="h-4 w-4" />
@@ -580,7 +580,7 @@ function LegacySubmissionSection({
                   onChange={handleChange}
                   placeholder={placeholder}
                   required={required}
-                  className={`rounded-2xl border px-4 py-3 text-sm outline-none transition sm:text-base ${
+              className={`ui-control px-4 py-3 text-sm sm:text-base ${
                     isDarkMode
                       ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
                       : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
@@ -601,7 +601,7 @@ function LegacySubmissionSection({
                 onChange={handleChange}
                 placeholder="Choose or type an IIIT, e.g. IIIT Kota"
                 required
-                className={`w-full rounded-2xl border px-4 py-3 text-sm outline-none transition sm:text-base ${
+                className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
                   isDarkMode
                     ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
                     : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
@@ -625,7 +625,7 @@ function LegacySubmissionSection({
                 onChange={handleChange}
                 placeholder="e.g. I worked across social media and leadership in IIITians Network, and now I am focused on building stronger student communities."
                 rows={4}
-                className={`rounded-2xl border px-4 py-3 text-sm outline-none transition sm:text-base ${
+                className={`ui-control px-4 py-3 text-sm sm:text-base ${
                   isDarkMode
                     ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
                     : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
@@ -700,7 +700,7 @@ function LegacySubmissionSection({
           <button
             type="submit"
             disabled={submitState.loading}
-            className="w-full rounded-2xl bg-[linear-gradient(135deg,#4f46e5,#6366f1)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_36px_rgba(99,102,241,0.24)] transition duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_24px_44px_rgba(99,102,241,0.3)] hover:brightness-[1.02] disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+            className="ui-button ui-button-primary w-full px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
           >
             {submitState.loading ? "Submitting..." : "Send legacy request"}
           </button>
@@ -736,7 +736,7 @@ function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: bo
   }
 
   return (
-    <div className="grid gap-3 sm:gap-4">
+      <div className="grid gap-3 sm:gap-4">
       {entries.map((entry) => (
         <LegacyEntryCard key={entry._id} entry={entry} isDarkMode={isDarkMode} />
       ))}
@@ -778,11 +778,11 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
       className={`group relative overflow-hidden rounded-[1.25rem] border transition-all duration-500 hover:-translate-y-0.5 ${
         isDarkMode
           ? "border-slate-800 bg-slate-900/80 shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-md"
-          : "border-slate-100 bg-white shadow-[0_12px_30px_rgba(99,102,241,0.06)]"
+          : "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
       }`}
     >
-      <div className="grid lg:grid-cols-[18rem_minmax(0,1fr)] xl:grid-cols-[22rem_minmax(0,1fr)]">
-        <div className="relative min-h-72 overflow-hidden bg-slate-50 sm:min-h-80 lg:min-h-[24rem]">
+      <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)]">
+        <div className="relative min-h-64 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem]">
           {entry.photo?.url ? (
             <Image
               src={entry.photo.url}
@@ -799,12 +799,12 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
         </div>
 
         <div
-          className={`grid gap-4 p-5 sm:p-6 lg:p-6 ${
+          className={`grid gap-4 p-4 sm:p-5 ${
             hasJourney ? "md:grid-cols-[minmax(0,1fr)_18rem] md:items-center xl:grid-cols-[minmax(0,1fr)_21rem]" : ""
           }`}
         >
           <div className="min-w-0">
-            <h3 className={`text-2xl leading-tight font-bold tracking-tight sm:text-3xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
+            <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-2xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
               {entry.name}
             </h3>
 

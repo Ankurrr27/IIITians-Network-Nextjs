@@ -109,10 +109,10 @@ export default function CollegesClient({
   return (
     <section className="ui-page-bg relative min-h-screen pb-10 pt-16 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
+      <div className="ui-page-shell relative z-10">
 
         <PageHeader
-          title="Indian Institutes of Information Technology"
+          title="Explore IIITs"
           description="Explore official information about IIITs across India."
           searchValue={search}
           onSearchChange={setSearch}
@@ -138,7 +138,7 @@ export default function CollegesClient({
             <p className="text-sm font-semibold">No colleges found.</p>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((college) => (
               <CollegeCard
                 key={college._id}
@@ -250,7 +250,7 @@ function CollegeCard({
   return (
     <div className="ui-card ui-card-hover group flex flex-col">
       {/* Cover image */}
-      <div className="relative aspect-[16/8.2] overflow-hidden bg-slate-100">
+      <div className="relative aspect-[16/7.6] overflow-hidden bg-slate-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={coverSrc}
@@ -296,7 +296,7 @@ function CollegeCard({
       </div>
 
       {/* Card body */}
-      <div className="relative -mt-4 flex flex-1 flex-col rounded-t-[1.6rem] bg-white p-4 transition-all duration-300 ease-out group-hover:-translate-y-1 sm:p-6 sm:rounded-t-[2rem]">
+      <div className="relative -mt-3 flex flex-1 flex-col rounded-t-[1rem] bg-white p-4 transition-all duration-300 ease-out group-hover:-translate-y-0.5">
         <div className="mb-2 flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-slate-200 transition-transform group-hover:-translate-y-1 group-hover:rotate-3">
@@ -309,7 +309,7 @@ function CollegeCard({
               />
             </div>
             <div className="flex flex-col">
-              <h3 className="text-sm font-bold text-gray-900 sm:text-lg">{name}</h3>
+              <h3 className="text-sm font-bold leading-tight text-gray-900 sm:text-base">{name}</h3>
               {website && (
                 <a
                   href={website}
@@ -338,7 +338,7 @@ function CollegeCard({
               <MoreHorizontal className="h-4 w-4" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-11 z-20 w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl ring-1 ring-black/5">
+              <div className="ui-panel absolute right-0 top-11 z-20 w-56 p-2 ring-1 ring-black/5">
                 <button
                   type="button"
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -377,7 +377,7 @@ function CollegeCard({
         {/* Description */}
         {description && (
           <div className="mb-3">
-            <p className={`text-sm font-medium text-gray-600 ${showFullDescription ? "" : "line-clamp-4"}`}>
+            <p className={`text-sm leading-6 text-gray-600 ${showFullDescription ? "" : "line-clamp-3"}`}>
               {description}
             </p>
           </div>
@@ -394,7 +394,7 @@ function CollegeCard({
         )}
 
         {showFullDescription && mergedClubs.length > 0 && (
-          <div className="mb-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/80">
+          <div className="mb-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200/80">
             <div className="mb-3 flex items-center justify-between">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 Community Societies

@@ -112,16 +112,16 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#0b1329] pb-6 pt-10 text-slate-400">
-      <div className="mx-auto max-w-7xl px-4 sm:px-5 lg:px-6">
+    <footer className="bg-[#0b1329] pb-6 pt-8 text-slate-400">
+      <div className="ui-page-shell">
         {/* Network Reach Card */}
-        <div className="mb-8 rounded-[1.25rem] border border-slate-800/80 bg-[#0d162d] px-4 py-4 shadow-sm sm:px-5">
+        <div className="mb-7 rounded-xl border border-slate-800/80 bg-[#0d162d] px-4 py-4 shadow-sm sm:px-5">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-indigo-400">
                 Network Reach
               </p>
-              <h3 className="mt-1.5 text-2xl font-bold text-white sm:text-3xl">
+              <h3 className="mt-1.5 text-xl font-bold text-white sm:text-2xl">
                 {stats.views.toLocaleString()}{" "}
                 <span className="text-base font-medium text-slate-400 sm:text-xl">
                   total views
@@ -140,7 +140,7 @@ export default function Footer() {
         </div>
 
         {/* Links Grid */}
-        <div className="grid gap-7 border-b border-slate-800/80 pb-8 md:grid-cols-5">
+        <div className="grid gap-6 border-b border-slate-800/80 pb-7 md:grid-cols-5">
           <div className="space-y-3 md:col-span-1">
             <h3 className="text-lg font-bold tracking-tight text-white">IIITians Network</h3>
             <p className="text-[13px] leading-6 text-slate-400">
