@@ -313,13 +313,82 @@ function QueryRow({
   );
 }
 
+function DiscussSkeleton() {
+  return (
+    <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] pb-12">
+      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
+        {/* Header skeleton */}
+        <div className="mb-5 space-y-3">
+          <div className="h-8 w-2/3 rounded-xl bg-slate-200 animate-pulse" />
+          <div className="h-4 w-1/2 rounded-lg bg-slate-100 animate-pulse" />
+          <div className="mt-2 h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+        </div>
+      </div>
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
+        <main className="min-w-0 space-y-4">
+          {/* Featured cards skeleton */}
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="break-inside-avoid mb-4 h-48 rounded-2xl bg-slate-200 animate-pulse" />
+            ))}
+          </div>
+          {/* Feed rows skeleton */}
+          <div className="rounded-xl border border-slate-200 bg-white px-4 shadow-sm sm:px-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="border-b border-slate-100 py-6 last:border-0">
+                <div className="flex gap-4">
+                  <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-200 animate-pulse sm:block" />
+                  <div className="flex-1 space-y-2.5">
+                    <div className="flex gap-2">
+                      <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
+                      <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
+                    </div>
+                    <div className="h-5 w-3/4 rounded-lg bg-slate-200 animate-pulse" />
+                    <div className="h-3 w-full rounded bg-slate-100 animate-pulse" />
+                    <div className="h-3 w-5/6 rounded bg-slate-100 animate-pulse" />
+                    <div className="flex gap-3 pt-1">
+                      <div className="h-6 w-14 rounded-full bg-slate-200 animate-pulse" />
+                      <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+        <aside className="space-y-5">
+          {/* Sidebar account skeleton */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="h-11 w-11 rounded-xl bg-slate-200 animate-pulse" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3.5 w-3/4 rounded bg-slate-200 animate-pulse" />
+                <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
+              </div>
+            </div>
+            <div className="mt-3 h-8 w-24 rounded-full bg-slate-100 animate-pulse" />
+            <div className="mt-3 h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+          </div>
+          {/* Sidebar explore skeleton */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
+            <div className="h-5 w-24 rounded bg-slate-200 animate-pulse" />
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="space-y-1.5 border-b border-slate-100 pb-3 last:border-0">
+                <div className="h-2.5 w-12 rounded bg-slate-100 animate-pulse" />
+                <div className="h-3.5 w-4/5 rounded bg-slate-200 animate-pulse" />
+                <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
+              </div>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+  );
+}
+
 export default function DiscussPage() {
   return (
-    <Suspense fallback={
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600" />
-      </div>
-    }>
+    <Suspense fallback={<DiscussSkeleton />}>
       <DiscussPageClient />
     </Suspense>
   );
@@ -463,8 +532,34 @@ function DiscussPageClient() {
     }
   };
 
+  const loadQueries = async () => {
+    try {
+      const res = await api.get("/discuss-queries");
+      const raw = Array.isArray(res.data) ? res.data : [];
+      setQueries(
+        raw.map((q: Record<string, unknown>) => ({
+          id: String(q._id ?? q.id ?? ""),
+          title: String(q.title ?? ""),
+          body: String(q.body ?? ""),
+          author: String(q.clubName ?? q.author ?? "Anonymous"),
+          college: String(q.collegeName ?? q.college ?? ""),
+          category: String(q.category ?? "Club Help"),
+          createdAt: q.createdAt
+            ? new Date(String(q.createdAt)).toLocaleDateString("en-IN", { month: "short", day: "numeric" })
+            : "Recent",
+          replies: Number(q.replies ?? 0),
+          views: String(q.views ?? 0),
+          votes: Number(q.upvotes ?? q.votes ?? 0),
+        }))
+      );
+    } catch (err) {
+      console.error("Failed to load queries:", err);
+    }
+  };
+
   useEffect(() => {
     loadPosts();
+    loadQueries();
     loadAccount();
     api.get("/colleges").then((r) => setColleges((r.data || []).map((c: { name: string }) => c.name)));
     api.get("/discuss-accounts/handles").then((r) => setClubNames(r.data || [])).catch(() => {});
@@ -534,30 +629,51 @@ function DiscussPageClient() {
     }
   };
 
-  const handleQueryVote = (queryId: string) => {
+  const handleQueryVote = async (queryId: string) => {
     const isVoted = votedPostIds.has(queryId);
     const newVoted = new Set(votedPostIds);
-    
+    const action = isVoted ? "down" : "up";
+
     if (isVoted) {
       newVoted.delete(queryId);
     } else {
       newVoted.add(queryId);
     }
-    
+
     setVotedPostIds(newVoted);
     localStorage.setItem("votedPostIds", JSON.stringify(Array.from(newVoted)));
-    
+
+    // Optimistic update
     setQueries((prevQueries) =>
       prevQueries.map((q) => {
         if (q.id === queryId) {
-          return {
-            ...q,
-            votes: q.votes + (isVoted ? -1 : 1),
-          };
+          return { ...q, votes: q.votes + (isVoted ? -1 : 1) };
         }
         return q;
       })
     );
+
+    try {
+      const res = await api.post(`/discuss-queries/${queryId}/vote`, { action });
+      const serverVotes = res.data?.upvotes ?? res.data?.votes;
+      if (serverVotes !== undefined) {
+        setQueries((prevQueries) =>
+          prevQueries.map((q) => (q.id === queryId ? { ...q, votes: serverVotes } : q))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to send query vote:", err);
+      // Revert
+      setVotedPostIds(new Set(votedPostIds));
+      setQueries((prevQueries) =>
+        prevQueries.map((q) => {
+          if (q.id === queryId) {
+            return { ...q, votes: q.votes + (isVoted ? 1 : -1) };
+          }
+          return q;
+        })
+      );
+    }
   };
 
   const closePanel = () => {
@@ -622,24 +738,26 @@ function DiscussPageClient() {
     }
   };
 
-  const handleSubmitQuery = (e: React.FormEvent) => {
+  const handleSubmitQuery = async (e: React.FormEvent) => {
     e.preventDefault();
+    const token = localStorage.getItem("discussToken");
+    if (!token) return;
     if (!queryForm.title.trim() || !queryForm.body.trim()) return;
-    const newQuery: QueryPost = {
-      id: `q-${Date.now()}`,
-      title: queryForm.title.trim(),
-      body: queryForm.body.trim(),
-      author: "you",
-      college: "IIIT Community",
-      category: queryForm.category,
-      createdAt: "just now",
-      replies: 0,
-      views: "1",
-      votes: 1,
-    };
-    setQueries((current) => [newQuery, ...current]);
-    setQueryForm(INIT_QUERY);
-    setQueryState("Your query is live in this page. Connect it to a backend when you want persistence.");
+    setQueryState("posting");
+    try {
+      await api.post(
+        "/discuss-queries",
+        { title: queryForm.title.trim(), body: queryForm.body.trim(), category: queryForm.category },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setQueryForm(INIT_QUERY);
+      setShowQueryForm(false);
+      setQueryState("success");
+      await loadQueries();
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || "Failed to post query.";
+      setQueryState(msg);
+    }
     window.setTimeout(() => setQueryState(""), 3500);
   };
 
@@ -668,25 +786,13 @@ function DiscussPageClient() {
       <div className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
         <main className="min-w-0">
           <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [column-fill:balance]">
-            {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <div key={post._id} className="break-inside-avoid mb-4"><FeaturedClubCard post={post} index={index} /></div>) : (
+            {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <div key={post._id} className="break-inside-avoid mb-4"><FeaturedClubCard post={post} index={index} /></div>) : loading ? (
               <>
-                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-slate-950 via-indigo-950 to-sky-800 p-5 text-white">
-                  <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Club posts</p>
-                  <h2 className="mt-4 text-xl font-bold">Official updates appear here first</h2>
-                  <p className="mt-2 text-sm text-white/72">Announcements, events, campaigns, and opportunities from verified clubs.</p>
-                </div>
-                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-emerald-800 via-teal-800 to-slate-900 p-5 text-white">
-                  <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Ask queries</p>
-                  <h2 className="mt-4 text-xl font-bold">Students can raise questions</h2>
-                  <p className="mt-2 text-sm text-white/72">Use the composer below for help, teams, resources, or guidance.</p>
-                </div>
-                <div className="break-inside-avoid mb-4 rounded-xl bg-gradient-to-br from-violet-800 via-fuchsia-800 to-slate-950 p-5 text-white">
-                  <p className="text-sm font-bold uppercase tracking-[0.14em] text-white/70">Community</p>
-                  <h2 className="mt-4 text-xl font-bold">One feed for the network</h2>
-                  <p className="mt-2 text-sm text-white/72">Club posts and student questions sit together for faster discovery.</p>
-                </div>
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="break-inside-avoid mb-4 min-h-48 rounded-2xl bg-slate-200 animate-pulse" />
+                ))}
               </>
-            )}
+            ) : null}
           </div>
 
           {account && (
@@ -744,13 +850,21 @@ function DiscussPageClient() {
                     </select>
                     <button
                       type="submit"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 cursor-pointer"
+                      disabled={queryState === "posting"}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 disabled:opacity-60 cursor-pointer"
                     >
-                      <Send className="h-4 w-4" />
-                      Post query
+                      {queryState === "posting" ? (
+                        <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> Posting...</>
+                      ) : (
+                        <><Send className="h-4 w-4" /> Post query</>
+                      )}
                     </button>
                   </div>
-                  {queryState && <p className="text-sm font-medium text-emerald-700">{queryState}</p>}
+                  {queryState && queryState !== "posting" && (
+                    <p className={`text-sm font-medium ${queryState === "success" ? "text-emerald-700" : "text-rose-600"}`}>
+                      {queryState === "success" ? "✓ Query posted successfully!" : queryState}
+                    </p>
+                  )}
                 </form>
               )}
             </div>
@@ -765,7 +879,28 @@ function DiscussPageClient() {
 
           <section className="mt-3 rounded-xl border border-slate-200 bg-white px-4 shadow-sm sm:px-6">
             {loading ? (
-              <div className="flex justify-center py-14"><div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-100 border-t-indigo-600" /></div>
+              <div>
+                {[...Array(5)].map((_, i) => (
+                  <div key={i} className="border-b border-slate-100 py-6 last:border-0">
+                    <div className="flex gap-4">
+                      <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-200 animate-pulse sm:block" />
+                      <div className="flex-1 space-y-2.5">
+                        <div className="flex gap-2">
+                          <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
+                          <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
+                        </div>
+                        <div className="h-5 w-3/4 rounded-lg bg-slate-200 animate-pulse" />
+                        <div className="h-3 w-full rounded bg-slate-100 animate-pulse" />
+                        <div className="h-3 w-5/6 rounded bg-slate-100 animate-pulse" />
+                        <div className="flex gap-3 pt-1">
+                          <div className="h-6 w-14 rounded-full bg-slate-200 animate-pulse" />
+                          <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : filteredOfficialPosts.length === 0 && filteredQueries.length === 0 ? (
               <div className="py-14 text-center">
                 <p className="font-bold text-slate-900">No discussions matched this view.</p>
@@ -821,7 +956,17 @@ function DiscussPageClient() {
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             {accountLoading ? (
-              <p className="text-sm text-slate-500">Restoring discuss account...</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-slate-200 animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3.5 w-3/4 rounded bg-slate-200 animate-pulse" />
+                    <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
+                  </div>
+                </div>
+                <div className="h-7 w-20 rounded-full bg-slate-100 animate-pulse" />
+                <div className="h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+              </div>
             ) : account ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">

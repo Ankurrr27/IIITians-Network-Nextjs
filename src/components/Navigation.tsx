@@ -259,8 +259,18 @@ export default function Navigation() {
             })}
           </div>
 
-          <button onClick={() => setIsOpen(true)} className="ui-icon-button md:hidden" aria-label="Open navigation">
-            <Menu className={`h-6 w-6 ${isDarkMode ? "text-slate-100" : isSolidNav ? "text-indigo-600" : "text-white"}`} />
+          <button
+            onClick={() => setIsOpen(true)}
+            className={`md:hidden rounded-lg p-2 transition-colors focus:outline-none ${
+              isSolidNav
+                ? isDarkMode
+                  ? "text-slate-100 hover:bg-slate-800"
+                  : "text-slate-700 hover:bg-slate-100"
+                : "text-white hover:bg-white/10"
+            }`}
+            aria-label="Open navigation"
+          >
+            <Menu className="h-6 w-6" />
           </button>
         </div>
       </nav>
@@ -268,7 +278,7 @@ export default function Navigation() {
       {isOpen && <div className="fixed inset-0 z-40 bg-slate-950/40" onClick={() => setIsOpen(false)} />}
 
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[min(22rem,calc(100vw-1.25rem))] transform shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 h-full w-[min(20rem,calc(100vw-0.5rem))] transform shadow-2xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-800"}`}
       >
@@ -279,7 +289,7 @@ export default function Navigation() {
           </button>
         </div>
 
-        <div className="flex flex-col gap-1.5 p-3">
+        <div className={`flex flex-col gap-1 p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]`}>
           {navItems.map((item) => {
             const active = isNavActive(item);
             const links = quickLinks[item.name as QuickLinkGroup];

@@ -12,11 +12,63 @@ import type { IIITCampus } from "@/data/iiitCampuses";
 import api from "@/lib/apiClient";
 import type { ICollege } from "@/types";
 
+function MapSkeleton() {
+  return (
+    <div className="relative h-[22rem] overflow-hidden rounded-none border-x-0 border-y border-slate-200 -mx-4 bg-slate-100 sm:mx-0 sm:h-[28rem] sm:rounded-[1.15rem] sm:border lg:h-[32rem]">
+      {/* shimmer overlay */}
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
+
+      {/* fake grid lines to mimic a map */}
+      <svg className="absolute inset-0 h-full w-full opacity-30" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="map-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+            <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#94a3b8" strokeWidth="0.6" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#map-grid)" />
+      </svg>
+
+      {/* fake markers scattered on the map */}
+      {[
+        { top: "28%", left: "38%" },
+        { top: "42%", left: "55%" },
+        { top: "55%", left: "32%" },
+        { top: "35%", left: "70%" },
+        { top: "65%", left: "60%" },
+        { top: "22%", left: "60%" },
+        { top: "72%", left: "44%" },
+      ].map((pos, i) => (
+        <div
+          key={i}
+          className="absolute flex h-7 w-7 items-center justify-center rounded-full border-2 border-slate-300 bg-slate-200"
+          style={{ top: pos.top, left: pos.left, transform: "translate(-50%,-50%)" }}
+        >
+          <div className="h-2.5 w-2.5 rounded-full bg-slate-300" />
+        </div>
+      ))}
+
+      {/* bottom info card skeleton */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 rounded-t-2xl border-t border-slate-200 bg-white/90 p-3 backdrop-blur sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border md:left-auto md:right-3 md:w-[22rem]">
+        <div className="flex items-center gap-2.5">
+          <div className="h-10 w-10 shrink-0 rounded-lg bg-slate-200" />
+          <div className="flex-1 space-y-2">
+            <div className="h-3.5 w-3/4 rounded bg-slate-200" />
+            <div className="h-2.5 w-1/2 rounded bg-slate-100" />
+          </div>
+        </div>
+        <div className="mt-3 grid grid-cols-3 gap-1.5">
+          <div className="h-7 rounded-full bg-slate-200" />
+          <div className="h-7 rounded-full bg-slate-100" />
+          <div className="h-7 rounded-full bg-slate-100" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const ExploreYourIIITMap = dynamic(() => import("./ExploreYourIIITMap"), {
   ssr: false,
-  loading: () => (
-    <div className="h-[22rem] animate-pulse rounded-[1.15rem] border border-white/80 bg-[linear-gradient(135deg,#eef2ff,#f8fbff)] sm:h-[28rem] lg:h-[32rem]" />
-  ),
+  loading: () => <MapSkeleton />,
 });
 
 function MiniStat({ label, value }: { label: string; value: string | number }) {
@@ -91,7 +143,7 @@ export default function ExploreYourIIITSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef7ff_100%)] py-10 sm:py-14">
+    <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f8fbff_0%,#eef7ff_100%)] py-8 sm:py-14">
       <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_15%_10%,rgba(79,70,229,0.12),transparent_30%),radial-gradient(circle_at_90%_30%,rgba(14,165,233,0.14),transparent_28%)]" />
       <div className="relative z-10 mx-auto grid max-w-7xl gap-5 px-4 sm:px-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start lg:px-6">
         <motion.div
@@ -101,21 +153,23 @@ export default function ExploreYourIIITSection() {
           transition={{ duration: 0.45 }}
           className="space-y-4 self-start"
         >
-          <div className="rounded-[1.25rem] border border-white/80 bg-white/70 p-4 shadow-sm backdrop-blur sm:p-5">
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Explore Your IIIT</h2>
+          {/* Heading + stats — flat on mobile, panel on desktop */}
+          <div className="sm:rounded-[1.25rem] sm:border sm:border-white/80 sm:bg-white/70 sm:p-5 sm:shadow-sm sm:backdrop-blur">
+            <h2 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Explore Your IIIT</h2>
             <p className="mt-2 max-w-xl text-sm font-medium leading-6 text-slate-600">
               Explore every IIIT across India, compare campuses, and discover the student communities connected through IIITians Network.
             </p>
 
-            <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-3 gap-2 sm:mt-4">
               <MiniStat label="Total IIITs" value={campuses.length} />
               <MiniStat label="States" value={statesCovered} />
               <MiniStat label="Network" value="50K+" />
             </div>
           </div>
 
-          <div className="rounded-[1.15rem] border border-white/80 bg-white/85 p-3 shadow-sm backdrop-blur">
-            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 transition focus-within:border-indigo-300 focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500/10">
+          {/* Search panel — flat on mobile, panel on desktop */}
+          <div className="sm:rounded-[1.15rem] sm:border sm:border-white/80 sm:bg-white/85 sm:p-3 sm:shadow-sm sm:backdrop-blur">
+            <label className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 transition focus-within:border-indigo-300 focus-within:ring-2 focus-within:ring-indigo-500/10">
               <Search className="h-4 w-4 text-slate-400" />
               <input
                 value={query}

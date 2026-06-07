@@ -108,17 +108,18 @@ export default function CurrentPresidentSection() {
   return (
     <div className="mb-5 overflow-hidden rounded-[1.35rem] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50 shadow-[0_20px_60px_rgba(79,70,229,0.08)] sm:mb-12 sm:rounded-[1.9rem]">
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-[150px_1fr] lg:grid-cols-[238px_1fr]">
-        <div className="relative mx-3 mt-3 overflow-hidden rounded-[1rem] bg-indigo-100 sm:mx-0 sm:mt-0 sm:rounded-none">
+        {/* Photo — compact horizontal strip on mobile, sidebar on desktop */}
+        <div className="relative h-56 overflow-hidden bg-indigo-100 sm:h-auto sm:mx-0 sm:mt-0 sm:rounded-none">
           {loading ? (
-            <div className="aspect-[1/1] w-full animate-pulse bg-indigo-100 sm:h-full sm:aspect-auto" />
+            <div className="h-full w-full animate-pulse bg-indigo-100" />
           ) : hasPhoto ? (
             <img
               src={currentPresident?.photo?.url}
               alt={currentPresident?.name || fallbackName}
-              className="aspect-[1/1] w-full object-cover object-center sm:h-full sm:aspect-auto"
+              className="h-full w-full object-cover object-center"
             />
           ) : (
-            <div className="flex aspect-[1/1] w-full items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-sky-100 p-6 text-center text-lg font-black text-indigo-700 sm:h-full sm:aspect-auto">
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-sky-100 p-6 text-center text-lg font-black text-indigo-700">
               Notes from President
             </div>
           )}
@@ -139,7 +140,7 @@ export default function CurrentPresidentSection() {
             </div>
 
             <div>
-              <h3 className="text-lg font-bold text-slate-900 sm:text-2xl">
+              <h3 className="text-base font-bold text-slate-900 sm:text-2xl">
                 {currentPresident?.name || fallbackName}
               </h3>
               <p className="mt-1 text-[11px] font-medium text-indigo-600 sm:text-sm">
@@ -147,21 +148,22 @@ export default function CurrentPresidentSection() {
               </p>
             </div>
 
-            <div className="grid gap-3 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="rounded-[1rem] border border-slate-200 bg-white p-3 shadow-sm sm:rounded-[1.2rem] sm:p-4">
+            {/* On mobile: flat text. On desktop: bordered cards side-by-side */}
+            <div className="grid gap-2 sm:gap-3 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="sm:rounded-[1.2rem] sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">
                   About
                 </p>
-                <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
+                <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
                   {about}
                 </p>
               </div>
 
-              <div className="rounded-[1rem] border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm sm:rounded-[1.2rem] sm:p-4">
+              <div className="sm:rounded-[1.2rem] sm:border sm:border-indigo-100 sm:bg-indigo-50/60 sm:p-4 sm:shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs sm:tracking-[0.16em]">
-                  President's Note
+                  President’s Note
                 </p>
-                <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
+                <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
                   "{message}"
                 </p>
               </div>
