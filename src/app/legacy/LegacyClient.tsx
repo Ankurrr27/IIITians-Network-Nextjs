@@ -379,17 +379,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
                 {isFormOpen ? "Close" : "Form"}
                 {isFormOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
               </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearch("");
-                  setIiitFilter("");
-                  setNetworkPostFilter("");
-                }}
-                className={`${pageHeaderButtonClass} h-9 shrink-0 px-3 text-xs`}
-              >
-                Clear
-              </button>
+             
             </>
           }
         />
@@ -818,20 +808,20 @@ function LegacyEntryCard({
 
   return (
     <article
-      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
+      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-t-2xl md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
         isDarkMode
           ? "border-slate-800 bg-transparent md:bg-slate-900/80 shadow-none md:shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-none md:backdrop-blur-md"
           : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
       }`}
     >
-      <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)]">
-        <div className="relative min-h-64 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem]">
+      <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)] ">
+        <div className="relative min-h-68 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem] rounded-t-2xl md:rounded-l-2xl">
           {entry.photo?.url ? (
             <Image
               src={entry.photo.url}
               alt={entry.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] z-0"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] group-hover:rounded-2xl z-0 rounded-t-2xl2xl"
               sizes="(max-width: 1024px) 100vw, 352px"
             />
           ) : (
