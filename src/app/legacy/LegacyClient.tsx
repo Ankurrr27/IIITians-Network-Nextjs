@@ -345,13 +345,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
           onSearchChange={setSearch}
           searchPlaceholder="Search by name, role, company, or institute..."
           controlsClassName="xl:grid xl:grid-cols-[minmax(36rem,1fr)_13rem_14rem_auto_auto] xl:items-center xl:gap-3"
-          filtersClassName="xl:contents"
+          filtersClassName="flex-row flex-nowrap items-center xl:contents"
           filters={
             <>
               <select
                 value={iiitFilter}
                 onChange={(e) => setIiitFilter(e.target.value)}
-                className={`${pageHeaderControlClass} w-full`}
+                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
               >
                 <option value="">All institutes</option>
                 {iiitOptions.map((option) => (
@@ -361,9 +361,9 @@ export default function LegacyClient({ initialAlumni }: Props) {
               <select
                 value={networkPostFilter}
                 onChange={(e) => setNetworkPostFilter(e.target.value)}
-                className={`${pageHeaderControlClass} w-full`}
+                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
               >
-                <option value="">All network posts</option>
+                <option value="">All posts</option>
                 {networkPostOptions.map((option) => (
                   <option key={option} value={option}>{option}</option>
                 ))}
@@ -372,10 +372,10 @@ export default function LegacyClient({ initialAlumni }: Props) {
                 type="button"
                 onClick={() => setIsFormOpen((prev) => !prev)}
                 title="Submit your legacy profile"
-                className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-2 px-4 text-sm"
+                className="ui-button ui-button-primary inline-flex h-9 shrink-0 items-center justify-center gap-1.5 px-3 text-xs"
               >
-                {isFormOpen ? "Close form" : "Open form"}
-                {isFormOpen ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+                {isFormOpen ? "Close" : "Form"}
+                {isFormOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
               </button>
               <button
                 type="button"
@@ -384,9 +384,9 @@ export default function LegacyClient({ initialAlumni }: Props) {
                   setIiitFilter("");
                   setNetworkPostFilter("");
                 }}
-                className={`${pageHeaderButtonClass} shrink-0`}
+                className={`${pageHeaderButtonClass} h-9 shrink-0 px-3 text-xs`}
               >
-                Clear filters
+                Clear
               </button>
             </>
           }
@@ -798,121 +798,118 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
           )}
         </div>
 
-        <div
-          className={`grid gap-4 p-4 sm:p-5 ${
-            hasJourney ? "md:grid-cols-[minmax(0,1fr)_18rem] md:items-center xl:grid-cols-[minmax(0,1fr)_21rem]" : ""
-          }`}
-        >
+        <div className={`grid gap-0 p-4 sm:p-5 ${hasJourney ? "md:grid-cols-[minmax(0,1fr)_15rem] md:gap-5 xl:grid-cols-[minmax(0,1fr)_17rem]" : ""}`}>
+          {/* ── Left: main content ── */}
           <div className="min-w-0">
-            <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-2xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
-              {entry.name}
-            </h3>
+            {/* Name row with inline social icons */}
+            <div className="flex items-start justify-between gap-2">
+              <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-2xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
+                {entry.name}
+              </h3>
+              <div className="flex shrink-0 items-center gap-1.5">
+                <a
+                  href={`mailto:${entry.email}`}
+                  title="Email"
+                  className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                    isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                  }`}
+                >
+                  <Mail className="h-4 w-4 shrink-0" />
+                  <span className="hidden text-xs font-semibold sm:inline">Email</span>
+                </a>
+                {entry.linkedin && (
+                  <a href={entry.linkedin} target="_blank" rel="noreferrer" title="LinkedIn"
+                    className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                      isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50"
+                    }`}
+                  >
+                    <Linkedin className="h-4 w-4 shrink-0 text-indigo-600" />
+                    <span className="hidden text-xs font-semibold sm:inline">LinkedIn</span>
+                  </a>
+                )}
+                {entry.instagram && (
+                  <a href={entry.instagram} target="_blank" rel="noreferrer" title="Instagram"
+                    className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                      isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50"
+                    }`}
+                  >
+                    <Instagram className="h-4 w-4 shrink-0 text-pink-500" />
+                    <span className="hidden text-xs font-semibold sm:inline">Instagram</span>
+                  </a>
+                )}
+              </div>
+            </div>
 
-            <p className={`mt-2 text-sm font-medium sm:text-sm ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>
-              {serviceLine}
-            </p>
+            <p className={`mt-2 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
 
             {contribution && (
-              <div className={`mt-5 rounded-[1.35rem] border p-3 sm:p-4 ${
-                isDarkMode
-                  ? "border-indigo-500/20 bg-indigo-900/10"
-                  : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"
-              }`}>
-                <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isDarkMode ? "text-indigo-200" : "text-indigo-700"}`}>
-                  Contribution made
-                </p>
-                <p className={`mt-2 line-clamp-4 text-sm font-normal leading-6 sm:text-sm ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>
-                  {contribution}
-                </p>
+              <div className={`mt-4 rounded-[1.35rem] border p-3 sm:p-4 ${isDarkMode ? "border-indigo-500/20 bg-indigo-900/10" : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"}`}>
+                <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isDarkMode ? "text-indigo-200" : "text-indigo-700"}`}>Contribution made</p>
+                <p className={`mt-2 line-clamp-4 text-sm leading-6 ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>{contribution}</p>
               </div>
             )}
 
-
             {roleLine && (
-              <p className={`mt-3 line-clamp-2 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>
-                {roleLine}
-              </p>
+              <p className={`mt-3 line-clamp-2 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>{roleLine}</p>
             )}
 
             {displayMessage && (
-              <p className={`mt-2 line-clamp-3 text-sm font-normal leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                {displayMessage}
-              </p>
+              <p className={`mt-2 line-clamp-3 text-sm leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>{displayMessage}</p>
             )}
 
-            <div className="mt-5 flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${entry.email}`}
-                className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
-                  isDarkMode
-                    ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                    : "border-transparent bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:shadow-sm"
-                }`}
-              >
-                <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
-                  <Mail className="h-4 w-4" />
-                </span>
-                <span className="text-sm font-medium">Email</span>
-              </a>
-              {entry.linkedin && (
-                <a
-                  href={entry.linkedin}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
-                    isDarkMode
-                      ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                      : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50 hover:shadow-sm"
-                  }`}
-                >
-                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
-                    <Linkedin className="h-4 w-4 text-indigo-600" />
-                  </span>
-                  <span className="text-sm font-medium">LinkedIn</span>
-                </a>
-              )}
-              {entry.instagram && (
-                <a
-                  href={entry.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition duration-300 hover:-translate-y-0.5 ${
-                    isDarkMode
-                      ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:border-indigo-400 hover:text-indigo-300"
-                      : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50 hover:shadow-sm"
-                  }`}
-                >
-                  <span className={`flex h-7 w-7 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-white shadow-sm"}`}>
-                    <Instagram className="h-4 w-4 text-pink-500" />
-                  </span>
-                  <span className="text-sm font-medium">Instagram</span>
-                </a>
-              )}
-            </div>
+            {/* Mobile-only: inline chips below bio */}
+            {hasJourney && (
+              <div className="mt-5 md:hidden">
+                <div className="flex items-center gap-3">
+                  <span className={`text-[10px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-400" : "text-indigo-500"}`}>Network Journey</span>
+                  <div className={`h-px flex-1 ${isDarkMode ? "bg-gradient-to-r from-indigo-500/30 to-transparent" : "bg-gradient-to-r from-indigo-200 to-transparent"}`} />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {dedupedRoleHistory.map((item, index) => (
+                    <div key={`m-${item.year}-${item.team}-${item.role}-${index}`}
+                      className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                        isDarkMode ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-indigo-500/20" : "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100"
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isDarkMode ? "bg-indigo-400" : "bg-indigo-500"}`} />
+                      <span className="font-bold">{item.role || entry.networkPost || "Legacy Member"}</span>
+                      {(item.year || item.team) && (
+                        <span className={isDarkMode ? "text-slate-400" : "text-indigo-400"}>{[item.year, item.team].filter(Boolean).join(" · ")}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
+          {/* ── Right: LinkedIn-style aside — desktop only ── */}
           {hasJourney && (
-            <aside className={`rounded-[1.25rem] p-4 sm:p-5 ${
+            <aside className={`hidden md:flex md:flex-col ${
               isDarkMode
-                ? "bg-slate-950/70 ring-1 ring-slate-800"
-                : "bg-gradient-to-b from-indigo-50/60 to-violet-50 ring-1 ring-indigo-100"
+                ? "border-l border-slate-800 pl-5"
+                : "border-l border-indigo-100 pl-5"
             }`}>
-              <h4 className={`text-xs font-semibold ${isDarkMode ? "text-indigo-300" : "text-indigo-700"}`}>
+              <p className={`mb-4 text-[10px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-400" : "text-indigo-500"}`}>
                 Network Journey
-              </h4>
-              <div className="relative mt-5 space-y-4 pl-7">
-                <div className={`absolute bottom-1 left-[0.45rem] top-1 w-px ${isDarkMode ? "bg-slate-600" : "bg-indigo-200"}`} />
+              </p>
+              <div className="relative space-y-4 pl-4">
+                {/* Vertical timeline line */}
+                <div className={`absolute bottom-1 left-[0.3rem] top-1 w-px ${isDarkMode ? "bg-indigo-500/20" : "bg-indigo-100"}`} />
                 {dedupedRoleHistory.map((item, index) => (
-                  <div key={`${item.year}-${item.team}-${item.role}-${index}`} className="relative">
-                    <span className={`absolute -left-[1.6rem] top-1 h-3 w-3 rounded-full ring-3 ${
-                      isDarkMode ? "bg-indigo-300 ring-slate-950" : "bg-indigo-700 ring-indigo-50"
+                  <div key={`d-${item.year}-${item.team}-${item.role}-${index}`} className="relative">
+                    <span className={`absolute -left-[1.15rem] top-[5px] h-2.5 w-2.5 rounded-full ring-2 ${
+                      isDarkMode ? "bg-indigo-400 ring-slate-900" : "bg-indigo-600 ring-white"
                     }`} />
-                    <p className={`text-sm font-semibold leading-5 ${isDarkMode ? "text-slate-100" : "text-slate-950"}`}>
+                    <p className={`text-sm font-bold leading-snug ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
                       {item.role || entry.networkPost || "Legacy Member"}
                     </p>
-                    <p className={`mt-1 text-xs font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
-                      {[item.year, item.team].filter(Boolean).join(" - ")}
-                    </p>
+                    {item.team && (
+                      <p className={`mt-0.5 text-xs font-medium ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>{item.team}</p>
+                    )}
+                    {item.year && (
+                      <p className={`mt-0.5 text-[11px] font-semibold ${isDarkMode ? "text-indigo-400" : "text-indigo-400"}`}>{item.year}</p>
+                    )}
                   </div>
                 ))}
               </div>

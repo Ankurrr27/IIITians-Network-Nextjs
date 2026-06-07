@@ -135,12 +135,12 @@ export default function Footer() {
               <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-indigo-400">
                 Network Reach
               </p>
-              <h3 className="mt-1.5 text-xl font-bold text-white sm:text-2xl">
-                {stats.views.toLocaleString()}{" "}
-                <span className="text-base font-medium text-white sm:text-xl">
+              <p className="mt-1.5 text-xl font-bold sm:text-2xl" style={{ color: "#ffffff" }}>
+                <span style={{ color: "#ffffff" }}>{stats.views.toLocaleString()}</span>{" "}
+                <span className="text-base font-medium sm:text-xl" style={{ color: "#ffffff" }}>
                   total views
                 </span>
-              </h3>
+              </p>
             </div>
             {/* Horizontally scrollable on mobile, wrapping on larger screens */}
             <div className="mobile-scroll-x xl:flex xl:flex-wrap xl:items-center xl:gap-3">
@@ -157,7 +157,7 @@ export default function Footer() {
         {/* Links Grid */}
         <div className="grid grid-cols-2 gap-6 border-b border-slate-800/80 pb-7 sm:grid-cols-3 md:grid-cols-5">
           <div className="col-span-2 space-y-3 sm:col-span-3 md:col-span-1">
-            <h3 className="text-lg font-bold tracking-tight text-white">IIITians Network</h3>
+            <p className="text-lg font-bold tracking-tight" style={{ color: "#ffffff" }}>IIITians Network</p>
             <p className="text-[13px] leading-6 text-slate-400">
               A student-led community connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.
             </p>
@@ -190,7 +190,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-white">Ecosystem</h4>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Ecosystem</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
               <li><Link href="/colleges" className="transition hover:text-white">IIIT Directory</Link></li>
               <li><Link href="/placement" className="transition hover:text-white">Placements</Link></li>
@@ -200,7 +200,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-white">Community</h4>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Community</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
               <li><Link href="/legacy" className="transition hover:text-white">Network Legacy</Link></li>
               <li><Link href="/team" className="transition hover:text-white">Our Team</Link></li>
@@ -210,7 +210,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-white">Resources</h4>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Resources</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
               <li><Link href="/gallery" className="transition hover:text-white">Gallery</Link></li>
               <li><Link href="/guide" className="transition hover:text-white">Documentation</Link></li>
@@ -220,7 +220,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-white">Legal</h4>
+            <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Legal</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
               <li><Link href="/" className="transition hover:text-white">Privacy Policy</Link></li>
               <li><Link href="/" className="transition hover:text-white">Terms of Use</Link></li>
@@ -257,7 +257,7 @@ export default function Footer() {
 }
 
 const StatChip = ({ icon: Icon, value, label }: { icon: React.ElementType; value: number; label: string }) => (
-  <div className="flex shrink-0 items-center gap-2 rounded-full border border-slate-800/80 bg-[#0b1329]/50 px-3 py-1.5 text-[13px] text-slate-200 ring-1 ring-white/5 shadow-sm">
+  <div className="flex shrink-0 items-center gap-2 rounded-full bg-[#0b1329]/50 px-3 py-1.5 text-[13px] text-slate-200 sm:border sm:border-slate-800/80 sm:ring-1 sm:ring-white/5 sm:shadow-sm">
     <Icon size={14} className="text-indigo-400" />
     <span className="font-bold text-white">{value}</span>
     <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
