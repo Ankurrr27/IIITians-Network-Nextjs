@@ -107,7 +107,7 @@ export default function CollegesClient({
   };
 
   return (
-    <section className="ui-page-bg relative min-h-screen pb-10 pt-16 sm:pb-12 sm:pt-20">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-14 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
       <div className="ui-page-shell relative z-10">
 
@@ -138,7 +138,7 @@ export default function CollegesClient({
             <p className="text-sm font-semibold">No colleges found.</p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {filtered.map((college) => (
               <CollegeCard
                 key={college._id}
@@ -428,30 +428,38 @@ function CollegeCard({
 
         {/* Bottom action buttons */}
         <div className="mt-auto pt-4 border-t border-slate-100">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-2 sm:gap-2">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-[10px] uppercase active:scale-95 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              title="Gallery"
             >
-              <Images size={14} /> Gallery
+              <Images size={16} className="shrink-0" />
+              <span className="hidden sm:inline">Gallery</span>
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-[10px] uppercase active:scale-95 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              title="Clubs"
             >
-              <Users size={14} /> Clubs
+              <Users size={16} className="shrink-0" />
+              <span className="hidden sm:inline">Clubs</span>
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-[10px] uppercase active:scale-95 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              title="Legacy"
             >
-              <History size={14} /> Legacy
+              <History size={16} className="shrink-0" />
+              <span className="hidden sm:inline">Legacy</span>
             </Link>
             <Link
               href={`/placement?college=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-3 py-2 text-[10px] uppercase active:scale-95 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              title="Placement"
             >
-              <BriefcaseBusiness size={14} /> Placement
+              <BriefcaseBusiness size={16} className="shrink-0" />
+              <span className="hidden sm:inline">Placement</span>
             </Link>
           </div>
         </div>

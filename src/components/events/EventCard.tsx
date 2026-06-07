@@ -15,8 +15,8 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
   const bannerUrl = event.banner?.url || FALLBACK_BANNER;
 
   return (
-    <article className="ui-card ui-card-hover group flex h-full flex-col">
-      <div className="relative h-44 w-full flex-shrink-0 overflow-hidden border-b border-slate-100 bg-slate-50 sm:h-48">
+    <article className="ui-card ui-card-hover group flex h-full flex-col overflow-hidden">
+      <div className="relative h-40 w-full flex-shrink-0 overflow-hidden border-b border-slate-100 bg-slate-50 sm:h-48">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={bannerUrl}
@@ -30,12 +30,12 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
             {event.type}
           </span>
         )}
-        <div className="absolute bottom-0 left-0 right-0 p-3.5 text-white">
-          <h3 className="max-w-[90%] text-lg font-semibold leading-tight line-clamp-2">{event.title}</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-3.5">
+          <h3 className="max-w-[90%] text-lg font-semibold leading-tight !text-white line-clamp-2">{event.title}</h3>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="mb-2.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
           <Calendar className="h-3.5 w-3.5" />
           {new Date(event.date).toLocaleDateString("en-IN", {

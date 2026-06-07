@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Globe,
-  MessageSquare,
   Users2,
   Building2,
   ShieldCheck,
@@ -12,9 +11,24 @@ import {
   Camera,
   Linkedin,
   Instagram,
+  Twitter,
+  Youtube,
+  Mail,
 } from "lucide-react";
 
 import api from "@/lib/apiClient";
+
+const DiscordIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19.27 4.73a16.14 16.14 0 0 0-3.8-1.2 11.23 11.23 0 0 0-.46.95 14.83 14.83 0 0 0-6 0 11.72 11.72 0 0 0-.47-.95 16.12 16.12 0 0 0-3.8 1.2 16.32 16.32 0 0 0-3.3 11.2 16.48 16.48 0 0 0 5 2.5 12.27 12.27 0 0 0 1.07-1.74 11.16 11.16 0 0 1-2.48-1.2c.2-.15.42-.3.61-.46a11.75 11.75 0 0 0 12.3 0c.19.16.4.3.61.46a11.17 11.17 0 0 1-2.48 1.2 12.06 12.06 0 0 0 1.07 1.74 16.43 16.43 0 0 0 5-2.5 16.29 16.29 0 0 0-3.26-11.2zm-10.1 8.87c-.96 0-1.74-.87-1.74-1.95s.76-1.95 1.74-1.95c.98 0 1.76.87 1.76 1.95s-.78 1.95-1.76 1.95zm5.66 0c-.96 0-1.74-.87-1.74-1.95s.76-1.95 1.74-1.95c.98 0 1.76.87 1.76 1.95s-.78 1.95-1.76 1.95z" />
+  </svg>
+);
+
+const RedditIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M24 11.5c0-1.65-1.35-3-3-3-.96 0-1.86.48-2.42 1.24-1.64-1-3.85-1.64-6.23-1.72l1.32-4.18 4.29 1c0 1.1.9 2 2 2 1.1 0 2-.9 2-2s-.9-2-2-2c-.76 0-1.43.43-1.77 1.07l-4.75-1.1c-.26-.06-.52.09-.6.35L10.3 8c-2.42.04-4.66.67-6.32 1.7-.56-.73-1.45-1.2-2.48-1.2-1.65 0-3 1.35-3 3 0 1.14.64 2.13 1.58 2.63-.05.29-.08.59-.08.9 0 3.86 4.7 7 10.5 7s10.5-3.14 10.5-7c0-.31-.03-.61-.08-.9.94-.5 1.58-1.49 1.58-2.63zm-16.5 2c0-1.1.9-2 2-2s2 .9 2 2-.9 2-2 2-2-.9-2-2zm9 4c-1.75 1.5-4.25 1.5-6 0-.18-.15-.2-.42-.05-.6.15-.18.42-.2.6-.05 1.42 1.2 3.88 1.2 5.3 0 .18-.15.45-.13.6.05.15.18.13.45-.05.6zm-.5-2c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" />
+  </svg>
+);
 
 const BASE_VIEW_COUNT = 27385;
 
@@ -123,12 +137,13 @@ export default function Footer() {
               </p>
               <h3 className="mt-1.5 text-xl font-bold text-white sm:text-2xl">
                 {stats.views.toLocaleString()}{" "}
-                <span className="text-base font-medium text-slate-400 sm:text-xl">
+                <span className="text-base font-medium text-white sm:text-xl">
                   total views
                 </span>
               </h3>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            {/* Horizontally scrollable on mobile, wrapping on larger screens */}
+            <div className="mobile-scroll-x xl:flex xl:flex-wrap xl:items-center xl:gap-3">
               <StatChip icon={Users2} value={stats.members} label="Team" />
               <StatChip icon={GraduationCap} value={stats.legacy} label="Legacy" />
               <StatChip icon={Building2} value={stats.colleges} label="IIITs" />
@@ -140,17 +155,37 @@ export default function Footer() {
         </div>
 
         {/* Links Grid */}
-        <div className="grid gap-6 border-b border-slate-800/80 pb-7 md:grid-cols-5">
-          <div className="space-y-3 md:col-span-1">
+        <div className="grid grid-cols-2 gap-6 border-b border-slate-800/80 pb-7 sm:grid-cols-3 md:grid-cols-5">
+          <div className="col-span-2 space-y-3 sm:col-span-3 md:col-span-1">
             <h3 className="text-lg font-bold tracking-tight text-white">IIITians Network</h3>
             <p className="text-[13px] leading-6 text-slate-400">
               A student-led community connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.
             </p>
-            <div className="flex gap-3 pt-1">
-              <SocialIcon href="https://linkedin.com/company/iiitians-network" icon={Linkedin} />
-              <SocialIcon href="https://instagram.com/iiitiansnetwork" icon={Instagram} />
-              <SocialIcon href="https://discord.gg/88AnpuNc6E" icon={MessageSquare} />
-              <SocialIcon href="https://iiitiansnetwork.com" icon={Globe} />
+            <div className="flex flex-wrap gap-3 pt-1">
+              <SocialIcon href="https://linkedin.com/company/iiitians-network" color="#0077b5" title="LinkedIn">
+                <Linkedin size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://instagram.com/iiitiansnetwork" color="#e1306c" title="Instagram">
+                <Instagram size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://discord.gg/88AnpuNc6E" color="#5865f2" title="Discord">
+                <DiscordIcon size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://x.com/iiitiansnetwork" color="#ffffff" title="X / Twitter">
+                <Twitter size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://www.youtube.com/@iiitiansnetwork" color="#ff0000" title="YouTube">
+                <Youtube size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://reddit.com/r/iiitiansnetwork" color="#ff4500" title="Reddit">
+                <RedditIcon size={17} />
+              </SocialIcon>
+              <SocialIcon href="mailto:iiitiansnetwork@gmail.com" color="#6366f1" title="Email">
+                <Mail size={17} />
+              </SocialIcon>
+              <SocialIcon href="https://iiitiansnetwork.com" color="#10b981" title="Website">
+                <Globe size={17} />
+              </SocialIcon>
             </div>
           </div>
 
@@ -222,15 +257,32 @@ export default function Footer() {
 }
 
 const StatChip = ({ icon: Icon, value, label }: { icon: React.ElementType; value: number; label: string }) => (
-  <div className="flex items-center gap-2 rounded-full border border-slate-800/80 bg-[#0b1329]/50 px-3 py-1.5 text-[13px] text-slate-200 ring-1 ring-white/5 shadow-sm">
+  <div className="flex shrink-0 items-center gap-2 rounded-full border border-slate-800/80 bg-[#0b1329]/50 px-3 py-1.5 text-[13px] text-slate-200 ring-1 ring-white/5 shadow-sm">
     <Icon size={14} className="text-indigo-400" />
     <span className="font-bold text-white">{value}</span>
     <span className="text-[9px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
   </div>
 );
 
-const SocialIcon = ({ href, icon: Icon }: { href: string; icon: React.ElementType }) => (
-  <a href={href} target="_blank" rel="noreferrer" className="text-slate-400 transition-colors duration-200 hover:text-white hover:scale-105 transform">
-    <Icon size={18} />
+const SocialIcon = ({
+  href,
+  color,
+  title,
+  children,
+}: {
+  href: string;
+  color: string;
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <a
+    href={href}
+    target="_blank"
+    rel="noreferrer"
+    title={title}
+    style={{ color }}
+    className="opacity-75 transition-all duration-200 hover:opacity-100 hover:scale-110 transform"
+  >
+    {children}
   </a>
 );

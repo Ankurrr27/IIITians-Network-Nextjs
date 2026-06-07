@@ -35,11 +35,11 @@ export default function DiscussPreviewSection() {
     .slice(0, LIMIT);
 
   return (
-    <section className="bg-slate-50/50 py-12 sm:py-24">
+    <section className="bg-slate-50/50 py-8 sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="mb-8 flex items-end justify-between gap-4 sm:mb-10">
+        <div className="mb-6 flex items-end justify-between gap-4 sm:mb-10">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               Latest from <span className="text-indigo-600">Discuss</span>
             </h2>
           </div>
@@ -53,7 +53,7 @@ export default function DiscussPreviewSection() {
         </div>
 
         {loading ? (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {Array.from({ length: LIMIT }).map((_, index) => (
               <div
                 key={index}
@@ -66,20 +66,20 @@ export default function DiscussPreviewSection() {
             <p className="text-slate-500">No community posts available at the moment.</p>
           </div>
         ) : (
-          <div className="space-y-6">
-            {approvedPosts.map((post) => (
-              <DiscussCard key={post._id} post={post} />
-            ))}
-
-            <div className="pt-4 text-center sm:hidden">
-              <button
-                onClick={() => router.push("/discuss")}
-                className="w-full rounded-2xl bg-indigo-600 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-indigo-200 transition hover:bg-indigo-700"
-              >
-                View More Posts
-              </button>
+          <>
+            {/* Mobile: community cards feed with gaps */}
+            <div className="flex flex-col gap-4 sm:hidden">
+              {approvedPosts.map((post) => (
+                <DiscussCard key={post._id} post={post} />
+              ))}
             </div>
-          </div>
+            {/* Desktop: spaced list */}
+            <div className="hidden space-y-6 sm:block">
+              {approvedPosts.map((post) => (
+                <DiscussCard key={post._id} post={post} />
+              ))}
+            </div>
+          </>
         )}
       </div>
     </section>

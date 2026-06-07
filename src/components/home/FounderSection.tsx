@@ -9,7 +9,7 @@ export default function FounderSection() {
   const router = useRouter();
 
   return (
-    <section className="bg-white py-14 sm:py-20">
+    <section className="bg-white py-10 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-6 sm:mb-8">
           <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
@@ -19,7 +19,7 @@ export default function FounderSection() {
 
         <CurrentPresidentSection />
 
-        <div className="mb-8 rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-5 sm:mb-12 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:p-7">
+        <div className="mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
           <div>
             <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
               Founding Team
@@ -39,7 +39,7 @@ export default function FounderSection() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-7">
           <BigTeamCard
             name="Anant Mehra"
             role="Former President and CFO"
