@@ -27,6 +27,7 @@ import ImageCropModal from "@/components/ImageCropModal";
 import useThemeMode from "@/hooks/useThemeMode";
 import { notifyPromise } from "@/utils/appNotifications";
 import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
+import LegacyPosterModal from "./LegacyPosterModal";
 
 interface Props {
   initialAlumni: IAlumni[];
@@ -161,6 +162,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
   const { isDarkMode } = useThemeMode();
   const searchParams = useSearchParams();
   const [entries, setEntries] = useState<IAlumni[]>(initialAlumni);
+  const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
   const [collegeOptions, setCollegeOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiUnavailable, setApiUnavailable] = useState(false);
@@ -439,7 +441,12 @@ export default function LegacyClient({ initialAlumni }: Props) {
             </div>
           )}
 
-          <LegacyEntriesSection isDarkMode={isDarkMode} loading={loading} entries={entries} />
+          <LegacyEntriesSection
+            isDarkMode={isDarkMode}
+            loading={loading}
+            entries={entries}
+            onSharePoster={setSelectedPosterEntry}
+          />
 
           {totalPages > 1 && (
             <div className="mt-8 flex items-center justify-center gap-3">
@@ -466,6 +473,14 @@ export default function LegacyClient({ initialAlumni }: Props) {
           )}
         </div>
       </div>
+
+      {selectedPosterEntry && (
+        <LegacyPosterModal
+          entry={selectedPosterEntry}
+          onClose={() => setSelectedPosterEntry(null)}
+          isDarkMode={isDarkMode}
+        />
+      )}
 
       {rawPhoto && (
         <ImageCropModal
@@ -709,7 +724,17 @@ function LegacySubmissionSection({
   );
 }
 
-function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: boolean; loading: boolean; entries: IAlumni[] }) {
+function LegacyEntriesSection({
+  isDarkMode,
+  loading,
+  entries,
+  onSharePoster,
+}: {
+  isDarkMode: boolean;
+  loading: boolean;
+  entries: IAlumni[];
+  onSharePoster: (entry: IAlumni) => void;
+}) {
   if (loading) {
     return (
       <div className="grid gap-4 sm:gap-5">
@@ -736,9 +761,14 @@ function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: bo
   }
 
   return (
-      <div className="grid gap-3 sm:gap-4">
+    <div className="grid gap-0 md:gap-4">
       {entries.map((entry) => (
-        <LegacyEntryCard key={entry._id} entry={entry} isDarkMode={isDarkMode} />
+        <LegacyEntryCard
+          key={entry._id}
+          entry={entry}
+          isDarkMode={isDarkMode}
+          onSharePoster={onSharePoster}
+        />
       ))}
     </div>
   );
@@ -746,7 +776,11 @@ function LegacyEntriesSection({ isDarkMode, loading, entries }: { isDarkMode: bo
 
 function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
   return (
-    <div className={`animate-pulse overflow-hidden rounded-[1.25rem] border ${isDarkMode ? cardShell.dark : cardShell.light}`}>
+    <div className={`animate-pulse overflow-hidden rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
+      isDarkMode 
+        ? "border-slate-800 bg-transparent md:bg-slate-900" 
+        : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
+    }`}>
       <div className="flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
         <div className="h-64 bg-slate-200 sm:h-72 lg:h-[22rem]" />
         <div className="space-y-5 p-4 sm:p-6 lg:p-7">
@@ -759,26 +793,35 @@ function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
   );
 }
 
-function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: boolean }) {
+function LegacyEntryCard({
+  entry,
+  isDarkMode,
+  onSharePoster,
+}: {
+  entry: IAlumni;
+  isDarkMode: boolean;
+  onSharePoster: (entry: IAlumni) => void;
+}) {
   const { dedupedRoleHistory, totalTerms } = getLegacyEntryViewModel(entry);
   const contribution = entry.contribution?.trim();
   const message = entry.bio?.trim();
   const hasJourney = dedupedRoleHistory.length > 0;
-  const serviceLine =
-    entry.legacyType === "team_member" && totalTerms > 0
-      ? `${entry.iiit} - Served ${totalTerms} ${totalTerms > 1 ? "terms" : "term"}`
-      : `${entry.iiit} - Class of ${entry.graduationYear}`;
-  const roleLine = [entry.networkPost, entry.currentRole, entry.currentCompany].filter(Boolean).join(" / ");
+  const serviceLine = entry.iiit;
+  const uniqueRoles = [entry.networkPost];
+  if (entry.currentRole && normalizeText(entry.currentRole) !== normalizeText(entry.networkPost)) {
+    uniqueRoles.push(entry.currentRole);
+  }
+  const roleLine = [...uniqueRoles, entry.currentCompany].filter(Boolean).join(" / ");
   const displayMessage =
     message ||
     `${entry.name} is part of the IIITians Network legacy and has contributed to the community through their journey.`;
 
   return (
     <article
-      className={`group relative overflow-hidden rounded-[1.25rem] border transition-all duration-500 hover:-translate-y-0.5 ${
+      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
         isDarkMode
-          ? "border-slate-800 bg-slate-900/80 shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-md"
-          : "border-slate-200 bg-white shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
+          ? "border-slate-800 bg-transparent md:bg-slate-900/80 shadow-none md:shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-none md:backdrop-blur-md"
+          : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
       }`}
     >
       <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)]">
@@ -788,7 +831,7 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
               src={entry.photo.url}
               alt={entry.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] z-0"
               sizes="(max-width: 1024px) 100vw, 352px"
             />
           ) : (
@@ -796,51 +839,121 @@ function LegacyEntryCard({ entry, isDarkMode }: { entry: IAlumni; isDarkMode: bo
               {entry.name?.[0]}
             </div>
           )}
+
+          {/* Mobile-only overlay inside the image container */}
+          <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/75 to-transparent p-4 pt-12 flex flex-col justify-end lg:hidden">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <h3 className="text-lg leading-tight font-black tracking-tight text-white drop-shadow-sm" style={{ color: '#ffffff' }}>
+                  {entry.name}
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-white/85 drop-shadow-sm" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>{serviceLine}</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => onSharePoster(entry)}
+                  title="Share Poster"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
+                </button>
+                <a
+                  href={`mailto:${entry.email}`}
+                  title="Email"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                </a>
+                {entry.linkedin && (
+                  <a
+                    href={entry.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="LinkedIn"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                  >
+                    <Linkedin className="h-3.5 w-3.5 text-sky-300" />
+                  </a>
+                )}
+                {entry.instagram && (
+                  <a
+                    href={entry.instagram}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Instagram"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                  >
+                    <Instagram className="h-3.5 w-3.5 text-pink-400" />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className={`grid gap-0 p-4 sm:p-5 ${hasJourney ? "md:grid-cols-[minmax(0,1fr)_15rem] md:gap-5 xl:grid-cols-[minmax(0,1fr)_17rem]" : ""}`}>
           {/* ── Left: main content ── */}
           <div className="min-w-0">
-            {/* Name row with inline social icons */}
-            <div className="flex items-start justify-between gap-2">
+            {/* Desktop-only: Name row with inline social icons */}
+            <div className="hidden lg:flex lg:items-start lg:justify-between lg:gap-2">
               <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-2xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
                 {entry.name}
               </h3>
               <div className="flex shrink-0 items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => onSharePoster(entry)}
+                  title="Share Poster"
+                  className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                    isDarkMode
+                      ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20"
+                      : "border-indigo-100 bg-indigo-50 text-indigo-700 hover:bg-indigo-100/80"
+                  }`}
+                >
+                  <Sparkles className="h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
+                  <span className="hidden text-xs font-semibold sm:inline">Share Poster</span>
+                </button>
                 <a
                   href={`mailto:${entry.email}`}
                   title="Email"
                   className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
-                    isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                    isDarkMode
+                      ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                      : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                   }`}
                 >
-                  <Mail className="h-4 w-4 shrink-0" />
+                  <Mail className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
                   <span className="hidden text-xs font-semibold sm:inline">Email</span>
                 </a>
                 {entry.linkedin && (
                   <a href={entry.linkedin} target="_blank" rel="noreferrer" title="LinkedIn"
                     className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
-                      isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50"
+                      isDarkMode
+                        ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                     }`}
                   >
-                    <Linkedin className="h-4 w-4 shrink-0 text-indigo-600" />
+                    <Linkedin className="h-4 w-4 shrink-0 text-indigo-600 dark:text-sky-400" />
                     <span className="hidden text-xs font-semibold sm:inline">LinkedIn</span>
                   </a>
                 )}
                 {entry.instagram && (
                   <a href={entry.instagram} target="_blank" rel="noreferrer" title="Instagram"
                     className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
-                      isDarkMode ? "border-slate-700 bg-slate-950/40 text-slate-300 hover:text-indigo-300" : "border-transparent bg-white text-indigo-700 hover:bg-indigo-50"
+                      isDarkMode
+                        ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                     }`}
                   >
-                    <Instagram className="h-4 w-4 shrink-0 text-pink-500" />
+                    <Instagram className="h-4 w-4 shrink-0 text-pink-500 dark:text-pink-400" />
                     <span className="hidden text-xs font-semibold sm:inline">Instagram</span>
                   </a>
                 )}
               </div>
             </div>
 
-            <p className={`mt-2 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
+            <p className={`hidden lg:block mt-2 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
 
             {contribution && (
               <div className={`mt-4 rounded-[1.35rem] border p-3 sm:p-4 ${isDarkMode ? "border-indigo-500/20 bg-indigo-900/10" : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"}`}>
