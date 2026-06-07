@@ -231,25 +231,7 @@ function PlacementPageClient() {
               All years
             </span>
           )}
-          actions={
-            <>
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Top searches</span>
-              {QUICK_CAMPUSES.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  onClick={() => { setCollege(name); searchCollege(name); }}
-                  className={`${pageHeaderButtonClass} min-h-9 text-xs ${
-                    college === name
-                      ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white"
-                      : ""
-                  }`}
-                >
-                  {name}
-                </button>
-              ))}
-            </>
-          }
+          actions={undefined}
         />
 
         {/* ─── COMPARISON TOGGLE BUTTON ─── */}

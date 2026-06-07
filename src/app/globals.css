@@ -283,6 +283,7 @@ body {
   font-weight: 650;
   line-height: 1;
   padding: 0.42rem 0.66rem;
+  white-space: nowrap;
 }
 
 .ui-icon-button {

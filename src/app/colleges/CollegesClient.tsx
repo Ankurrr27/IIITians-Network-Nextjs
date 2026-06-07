@@ -427,38 +427,42 @@ function CollegeCard({
         )}
 
         {/* Bottom action buttons */}
-        <div className="mt-auto pt-4 border-t border-slate-100">
-          <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-2 sm:gap-2">
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="grid grid-cols-4 gap-1 sm:grid-cols-2 sm:gap-1.5">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
               title="Gallery"
             >
-              <Images size={16} className="shrink-0" />
+              <Images size={13} className="shrink-0" />
               <span className="hidden sm:inline">Gallery</span>
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
               title="Clubs"
             >
-              <Users size={16} className="shrink-0" />
+              <Users size={13} className="shrink-0" />
               <span className="hidden sm:inline">Clubs</span>
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
               title="Legacy"
             >
-              <History size={16} className="shrink-0" />
+              <History size={13} className="shrink-0" />
               <span className="hidden sm:inline">Legacy</span>
             </Link>
             <Link
               href={`/placement?college=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap px-2 py-2.5 text-[10px] uppercase active:scale-95 sm:px-3 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
               title="Placement"
             >
-              <BriefcaseBusiness size={16} className="shrink-0" />
+              <BriefcaseBusiness size={13} className="shrink-0" />
               <span className="hidden sm:inline">Placement</span>
             </Link>
           </div>

@@ -278,7 +278,7 @@ export default function Navigation() {
       {isOpen && <div className="fixed inset-0 z-40 bg-slate-950/40" onClick={() => setIsOpen(false)} />}
 
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[min(20rem,calc(100vw-0.5rem))] transform shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 h-full w-[min(16rem,calc(100vw-0.5rem))] transform shadow-2xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-800"}`}
       >
@@ -298,42 +298,41 @@ export default function Navigation() {
             if (links) {
               return (
                 <div key={item.name} className="flex flex-col">
-                  <button
-                    onClick={() => setMobileQuickOpen(isExpanded ? "" : item.name)}
-                    className={`flex items-center justify-between rounded-xl px-4 py-3 font-medium transition ${
-                      active
-                        ? isDarkMode
-                          ? "bg-slate-900 text-white"
-                          : "bg-indigo-50 text-indigo-700"
-                        : isDarkMode
-                          ? "text-slate-100 hover:bg-slate-900"
-                          : "text-indigo-600 hover:bg-indigo-50"
-                    }`}
-                  >
-                    <span>{item.name}</span>
-                    <ChevronDown size={16} className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
-                  </button>
+                  {/* Label navigates to page; chevron toggles sub-links */}
+                  <div className={`flex items-center rounded-xl font-medium transition ${
+                    active
+                      ? isDarkMode ? "bg-slate-900 text-white" : "bg-indigo-50 text-indigo-700"
+                      : isDarkMode ? "text-slate-100 hover:bg-slate-900" : "text-indigo-600 hover:bg-indigo-50"
+                  }`}>
+                    <a
+                      href={item.href}
+                      onClick={(e) => handleNavClick(e, item.href)}
+                      className="flex-1 px-4 py-3 text-sm font-medium"
+                    >
+                      {item.name}
+                    </a>
+                    <button
+                      onClick={() => setMobileQuickOpen(isExpanded ? "" : item.name)}
+                      className="px-3 py-3"
+                      aria-label={`Toggle ${item.name} submenu`}
+                    >
+                      <ChevronDown size={15} className={`transition-transform duration-200 ${isExpanded ? "rotate-180" : ""}`} />
+                    </button>
+                  </div>
                   {isExpanded && (
-                    <div className={`ml-4 mt-1 flex flex-col gap-1 border-l pl-2 ${isDarkMode ? "border-slate-800" : "border-indigo-100"}`}>
-                      <a
-                        href={item.href}
-                        onClick={(event) => handleNavClick(event, item.href)}
-                        className={`rounded-lg px-3 py-2 text-xs font-bold ${isDarkMode ? "text-slate-300 hover:text-white" : "text-slate-700 hover:text-indigo-700"}`}
-                      >
-                        Open {item.name}
-                      </a>
+                    <div className={`ml-4 mt-0.5 flex flex-col gap-0.5 border-l pl-2 ${isDarkMode ? "border-slate-800" : "border-indigo-100"}`}>
                       {links.map((link) => {
                         const Icon = link.icon;
                         return (
                           <a
                             key={link.href}
                             href={link.href}
-                            onClick={(event) => handleNavClick(event, link.href)}
+                            onClick={(e) => handleNavClick(e, link.href)}
                             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold ${
                               isDarkMode ? "text-slate-400 hover:text-white" : "text-slate-600 hover:text-indigo-600"
                             }`}
                           >
-                            <Icon size={14} />
+                            <Icon size={13} />
                             {link.title}
                           </a>
                         );
@@ -359,12 +358,8 @@ export default function Navigation() {
                         ? "bg-indigo-500/15 text-indigo-100 ring-1 ring-indigo-400/30 hover:bg-indigo-500/25"
                         : "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-100"
                     : active
-                      ? isDarkMode
-                        ? "bg-slate-900 text-white"
-                        : "bg-indigo-50 text-indigo-700"
-                      : isDarkMode
-                        ? "text-slate-100 hover:bg-slate-900"
-                        : "text-indigo-600 hover:bg-indigo-50"
+                      ? isDarkMode ? "bg-slate-900 text-white" : "bg-indigo-50 text-indigo-700"
+                      : isDarkMode ? "text-slate-100 hover:bg-slate-900" : "text-indigo-600 hover:bg-indigo-50"
                 }`}
               >
                 <span>{item.name}</span>
