@@ -120,7 +120,7 @@ export default function CurrentPresidentSection() {
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-sky-100 p-6 text-center text-lg font-black text-indigo-700">
-              Notes from President
+              
             </div>
           )}
           <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
@@ -129,14 +129,14 @@ export default function CurrentPresidentSection() {
         <div className="p-3 sm:p-4 lg:p-5">
           <div className="flex flex-col gap-2.5 sm:gap-4">
             <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white sm:px-3 sm:text-xs sm:tracking-[0.18em]">
-                Notes from President
-              </div>
-              {currentPresident?.year && (
+              {/* <div className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white sm:px-3 sm:text-xs sm:tracking-[0.18em]">
+             
+              </div> */}
+              {/* {currentPresident?.year && (
                 <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">
                   {currentPresident.year}
                 </div>
-              )}
+              )} */}
             </div>
 
             <div>
@@ -150,21 +150,21 @@ export default function CurrentPresidentSection() {
 
             {/* On mobile: flat text. On desktop: bordered cards side-by-side */}
             <div className="grid gap-2 sm:gap-3 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="sm:rounded-[1.2rem] sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
+              {/* <div className="sm:rounded-[1.2rem] sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
                 <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">
                   About
                 </p>
                 <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
                   {about}
                 </p>
-              </div>
+              </div> */}
 
-              <div className="sm:rounded-[1.2rem] sm:border sm:border-indigo-100 sm:bg-indigo-50/60 sm:p-4 sm:shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs sm:tracking-[0.16em]">
+              <div className="sm:rounded-[1.2rem] border:border-indigo-100 bg-indigo-50/60 p-2 sm:p-4 shadow-sm">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs sm:tracking-[0.16em]">
                   President’s Note
                 </p>
                 <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
-                  "{message}"
+                  {message}
                 </p>
               </div>
             </div>

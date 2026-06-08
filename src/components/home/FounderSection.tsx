@@ -21,7 +21,7 @@ export default function FounderSection() {
 
         <div className="mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
               Founding Team
             </h2>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
@@ -33,7 +33,7 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 sm:mt-0 sm:self-auto shrink-0"
+            className="mt-4 self-start rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold text-black transition hover:bg-indigo-700 hover:text-white sm:mt-0 sm:self-auto shrink-0"
           >
             View current team
           </button>
