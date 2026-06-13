@@ -9,22 +9,24 @@ export default function FounderSection() {
   const router = useRouter();
 
   return (
-    <section className="bg-white py-10 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="mb-6 sm:mb-8">
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+    <section className="bg-slate-50 sm:bg-white py-8 sm:py-20">
+      <div className="mx-auto max-w-7xl px-0 sm:px-6">
+        <div className="px-4 sm:px-0 mb-6 sm:mb-8">
+          <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
             IIITians Network Team
           </h2>
         </div>
 
-        <CurrentPresidentSection />
+        <div className="sm:px-0">
+          <CurrentPresidentSection />
+        </div>
 
-        <div className="mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
+        <div className="px-4 sm:px-0 mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-3xl">
               Founding Team
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
               Meet the people who started IIITians Network and laid the
               foundation for a unified, transparent, and student-first platform
               across IIIT campuses.
@@ -33,13 +35,13 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start rounded-full px-5 py-2.5 text-xs sm:text-sm font-semibold text-black transition hover:bg-indigo-700 hover:text-white sm:mt-0 sm:self-auto shrink-0"
+            className="mt-4 self-start rounded-full px-5 py-2 text-xs sm:text-sm font-medium text-slate-700 bg-white border border-slate-200 shadow-sm transition hover:bg-slate-50 sm:mt-0 sm:self-auto shrink-0"
           >
             View current team
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-7">
+        <div className="grid grid-cols-1 gap-px bg-slate-200 sm:bg-transparent sm:gap-5 lg:grid-cols-3 lg:gap-7">
           <BigTeamCard
             name="Anant Mehra"
             role="Former President and CFO"

@@ -96,7 +96,7 @@ function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }
   const fallbackPattern = fallbackTones[index % fallbackTones.length];
 
   return (
-    <article className="group relative min-h-56 overflow-hidden rounded-2xl shadow-md cursor-default">
+    <article className="group relative h-36 sm:h-44 lg:h-48 overflow-hidden rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 cursor-default w-full">
       {/* Background: real image or gradient fallback */}
       {imageUrl ? (
         <>
@@ -107,7 +107,7 @@ function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           {/* Multi-stop dark overlay: transparent top → heavy black bottom */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20" />
         </>
       ) : (
         <div className={`absolute inset-0 bg-gradient-to-br ${fallbackPattern}`}>
@@ -116,12 +116,12 @@ function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/IIITians-Network-Logo-Dark.png" alt="" className="w-48 object-contain" />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
         </div>
       )}
 
       {/* Content overlay */}
-      <div className="relative z-10 flex h-full min-h-56 flex-col justify-between p-5">
+      <div className="relative z-10 flex h-full flex-col justify-between p-4 sm:p-5">
         {/* Top: link only */}
         <div className="flex items-start justify-end">
           {post.actionLink && (
@@ -129,18 +129,17 @@ function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }
               href={post.actionLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm transition hover:bg-white/30 hover:scale-102 active:scale-98 ring-1 ring-white/20"
+              className="inline-flex items-center gap-1 rounded-full bg-white/20 px-2.5 py-0.5 text-[10px] font-bold text-white backdrop-blur-sm transition hover:bg-white/30 hover:scale-102 active:scale-98 ring-1 ring-white/10"
             >
-              Link <ExternalLink className="h-3.5 w-3.5" />
+              Link <ExternalLink className="h-3 w-3" />
             </a>
           )}
         </div>
 
-        {/* Bottom: heading (title) only */}
         <div>
-          <h2 className="line-clamp-3 text-[1.2rem] font-black leading-snug text-white drop-shadow-md">
+          <h3 className="line-clamp-2 text-sm sm:text-base font-bold leading-snug !text-white drop-shadow-md">
             {post.title}
-          </h2>
+          </h3>
         </div>
       </div>
     </article>
@@ -204,27 +203,29 @@ function OfficialPostRow({
   const date = post.createdAt ? new Date(post.createdAt).toLocaleDateString("en-IN", { month: "short", day: "numeric" }) : "Recent";
 
   return (
-    <article ref={elementRef} className={`border-b py-6 ${post.isPinned ? "border-amber-100 bg-amber-50/40 -mx-4 px-4 sm:-mx-6 sm:px-6" : "border-slate-200"}`}>
-      <div className="flex gap-4">
+    <article ref={elementRef} className={`border-b py-4 sm:py-5 ${post.isPinned ? "border-amber-100 bg-amber-50/40 -mx-4 px-4 sm:-mx-6 sm:px-6" : "border-slate-200"}`}>
+      <div className="flex gap-3 sm:gap-4 items-start">
         <div className="hidden pt-1 sm:block">
           <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white ${post.isPinned ? "bg-amber-500" : "bg-slate-950"}`}>
             {post.isPinned ? <Pin className="h-5 w-5" /> : <Megaphone className="h-5 w-5" />}
           </div>
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-500">
             {post.isPinned && (
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
-                <Pin className="h-3 w-3 fill-amber-500" /> Pinned
+              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-700">
+                <Pin className="h-2.5 w-2.5 fill-amber-500" /> Pinned
               </span>
             )}
             <span className="font-semibold text-slate-800">{post.clubName}</span>
-            {post.badgeLabel && <BadgeCheck className="h-4 w-4 fill-sky-500 text-white" />}
+            {post.badgeLabel && <BadgeCheck className="h-3.5 w-3.5 fill-sky-500 text-white" />}
+            <span>•</span>
             <span>{post.collegeName}</span>
+            <span>•</span>
             <span>{date}</span>
           </div>
-          <h3 className="mt-2 text-xl font-bold leading-snug text-slate-950">{post.title}</h3>
-          <p className="mt-3 line-clamp-3 text-base leading-7 text-slate-600">
+          <h3 className="mt-1 text-base sm:text-lg lg:text-xl font-bold leading-snug text-slate-950">{post.title}</h3>
+          <p className="mt-2 line-clamp-3 text-xs sm:text-sm md:text-base leading-relaxed text-slate-600">
             {post.description.split(/(\[.*?\]\(.*?\))/g).map((part, i) => {
               const match = part.match(/\[(.*?)\]\((.*?)\)/);
               if (match) {
@@ -237,28 +238,28 @@ function OfficialPostRow({
               return <span key={i}>{part}</span>;
             })}
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-500">
             <button
               onClick={() => onVote(post._id)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 transition cursor-pointer hover:bg-slate-100 ${
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 transition cursor-pointer hover:bg-slate-100 ${
                 isVoted ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-500"
               }`}
             >
-              <ArrowUp className={`h-4 w-4 ${isVoted ? "stroke-[2.5px]" : ""}`} />
+              <ArrowUp className={`h-3.5 w-3.5 ${isVoted ? "stroke-[2.5px]" : ""}`} />
               {post.upvotes || 0}
             </button>
-            <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {viewsCount.toLocaleString("en-IN")}</span>
-            <span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> Official</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-bold uppercase tracking-[0.12em] text-slate-600">{post.type}</span>
+            <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {viewsCount.toLocaleString("en-IN")}</span>
+            <span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> Official</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">{post.type}</span>
           </div>
           {post.actionLink && (
-            <a href={post.actionLink} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-bold text-white transition hover:bg-slate-800">
-              Open link <LinkIcon className="h-4 w-4" />
+            <a href={post.actionLink} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-slate-800">
+              Open link <LinkIcon className="h-3 w-3" />
             </a>
           )}
         </div>
         {coverUrl && (
-          <a href={coverUrl} target="_blank" rel="noreferrer" className="hidden h-28 w-44 shrink-0 overflow-hidden rounded-xl bg-slate-100 md:block">
+          <a href={coverUrl} target="_blank" rel="noreferrer" className="h-16 w-16 sm:h-20 sm:w-28 md:h-28 md:w-44 shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={coverUrl} alt={post.title} className="h-full w-full object-cover transition hover:scale-105" />
           </a>
@@ -278,34 +279,36 @@ function QueryRow({
   onVote: (queryId: string) => void;
 }) {
   return (
-    <article className="border-b border-slate-200 py-6">
-      <div className="flex gap-4">
+    <article className="border-b border-slate-200 py-4 sm:py-5">
+      <div className="flex gap-3 sm:gap-4 items-start">
         <div className="hidden pt-1 sm:block">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-indigo-600 ring-1 ring-slate-200">
             <HelpCircle className="h-5 w-5" />
           </div>
         </div>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-500">
             <span className="font-semibold text-slate-800">{query.author}</span>
+            <span>•</span>
             <span>{query.college}</span>
+            <span>•</span>
             <span>{query.createdAt}</span>
           </div>
-          <h3 className="mt-2 text-xl font-bold leading-snug text-slate-950">{query.title}</h3>
-          <p className="mt-3 text-base leading-7 text-slate-600">{query.body}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+          <h3 className="mt-1 text-base sm:text-lg lg:text-xl font-bold leading-snug text-slate-950">{query.title}</h3>
+          <p className="mt-2 text-xs sm:text-sm md:text-base leading-relaxed text-slate-600">{query.body}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-500">
             <button
               onClick={() => onVote(query.id)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 transition cursor-pointer hover:bg-slate-100 ${
+              className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 transition cursor-pointer hover:bg-slate-100 ${
                 isVoted ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-500"
               }`}
             >
-              <ArrowUp className={`h-4 w-4 ${isVoted ? "stroke-[2.5px]" : ""}`} />
+              <ArrowUp className={`h-3.5 w-3.5 ${isVoted ? "stroke-[2.5px]" : ""}`} />
               {query.votes}
             </button>
-            <span className="inline-flex items-center gap-1.5"><Eye className="h-4 w-4" /> {query.views}</span>
-            <span className="inline-flex items-center gap-1.5"><MessageCircle className="h-4 w-4" /> {query.replies}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">#{query.category}</span>
+            <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {query.views}</span>
+            <span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> {query.replies}</span>
+            <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold text-indigo-700">#{query.category}</span>
           </div>
         </div>
       </div>
@@ -324,19 +327,19 @@ function DiscussSkeleton() {
           <div className="mt-2 h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
         </div>
       </div>
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
+      <div className="mx-auto grid max-w-7xl gap-6 px-0 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
         <main className="min-w-0 space-y-4">
           {/* Featured cards skeleton */}
-          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+          <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="break-inside-avoid mb-4 h-48 rounded-2xl bg-slate-200 animate-pulse" />
+              <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-200 animate-pulse" />
             ))}
           </div>
           {/* Feed rows skeleton */}
-          <div className="rounded-xl border border-slate-200 bg-white px-4 shadow-sm sm:px-6">
+          <div className="rounded-none sm:rounded-xl border-x-0 sm:border border-slate-200 bg-white px-4 sm:px-6 shadow-none sm:shadow-sm">
             {[...Array(4)].map((_, i) => (
-              <div key={i} className="border-b border-slate-100 py-6 last:border-0">
-                <div className="flex gap-4">
+              <div key={i} className="border-b border-slate-100 py-4 sm:py-5 last:border-0">
+                <div className="flex gap-3 sm:gap-4">
                   <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-200 animate-pulse sm:block" />
                   <div className="flex-1 space-y-2.5">
                     <div className="flex gap-2">
@@ -356,7 +359,7 @@ function DiscussSkeleton() {
             ))}
           </div>
         </main>
-        <aside className="space-y-5">
+        <aside className="space-y-5 px-4 sm:px-0">
           {/* Sidebar account skeleton */}
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center gap-3">
@@ -780,23 +783,74 @@ function DiscussPageClient() {
           onSearchChange={setSearch}
           searchPlaceholder="Search discussions..."
           className="mb-4 sm:mb-5"
+          filters={
+            <div className="w-full">
+              {/* Dropdown for mobile */}
+              <div className="block sm:hidden w-full relative">
+                <select
+                  value={activeTopic}
+                  onChange={(e) => setActiveTopic(e.target.value as typeof activeTopic)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm font-bold text-slate-800 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 cursor-pointer"
+                >
+                  {TOPIC_FILTERS.map((topic) => (
+                    <option key={topic} value={topic}>
+                      Category: {topic}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Chips for desktop */}
+              <div className="hidden sm:flex flex-wrap gap-2">
+                {TOPIC_FILTERS.map((topic) => {
+                  const isActive = activeTopic === topic;
+                  return (
+                    <button
+                      key={topic}
+                      type="button"
+                      onClick={() => setActiveTopic(topic)}
+                      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition duration-200 cursor-pointer ${
+                        isActive
+                          ? "bg-indigo-600 text-white shadow-sm shadow-indigo-600/15"
+                          : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                      }`}
+                    >
+                      {topic}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          }
         />
       </div>
 
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
+      <div className="mx-auto grid max-w-7xl gap-6 px-0 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
         <main className="min-w-0">
-          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [column-fill:balance]">
-            {featuredPosts.length > 0 ? featuredPosts.map((post, index) => <div key={post._id} className="break-inside-avoid mb-4"><FeaturedClubCard post={post} index={index} /></div>) : loading ? (
-              <>
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="break-inside-avoid mb-4 min-h-48 rounded-2xl bg-slate-200 animate-pulse" />
+          {featuredPosts.length > 0 ? (
+            <div className="mb-6">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-4 sm:px-0">Featured Updates</h2>
+              <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none snap-x snap-mandatory">
+                {featuredPosts.map((post, index) => (
+                  <div key={post._id} className="w-[75vw] shrink-0 snap-center sm:w-auto">
+                    <FeaturedClubCard post={post} index={index} />
+                  </div>
                 ))}
-              </>
-            ) : null}
-          </div>
+              </div>
+            </div>
+          ) : loading ? (
+            <div className="mb-6">
+              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-4 sm:px-0">Featured Updates</h2>
+              <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-200 animate-pulse" />
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {account && (
-            <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="mt-6 rounded-none sm:rounded-xl border-x-0 sm:border border-slate-200 bg-white p-4 shadow-none sm:shadow-sm">
               {!showQueryForm ? (
                 <button
                   type="button"
@@ -877,7 +931,7 @@ function DiscussPageClient() {
             </div>
           </div>
 
-          <section className="mt-3 rounded-xl sm:border sm:border-slate-200 bg-white px-3 shadow-sm sm:px-6">
+          <section className="mt-3 rounded-none sm:rounded-xl border-x-0 sm:border border-slate-200 bg-white px-4 sm:px-6 shadow-none sm:shadow-sm">
             {loading ? (
               <div>
                 {[...Array(5)].map((_, i) => (
@@ -953,7 +1007,7 @@ function DiscussPageClient() {
           </section>
         </main>
 
-        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
+        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start px-4 sm:px-0">
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             {accountLoading ? (
               <div className="space-y-3">
