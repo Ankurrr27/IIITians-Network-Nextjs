@@ -112,12 +112,13 @@ export default function TeamClient({ initialMembers }: Props) {
             searchValue={search}
             onSearchChange={setSearch}
             searchPlaceholder="Search by name, role or IIIT"
+            filtersClassName="!flex-row"
             filters={
               <>
                 <select
                   value={year}
                   onChange={(e) => setYear(e.target.value)}
-                  className={`${pageHeaderControlClass} w-full sm:w-44`}
+                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
                 >
                   {years.map((option) => (
                     <option key={option} value={option}>
@@ -129,7 +130,7 @@ export default function TeamClient({ initialMembers }: Props) {
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className={`${pageHeaderControlClass} w-full sm:w-44`}
+                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
                 >
                   {roleFilters.map((item) => (
                     <option key={item.value} value={item.value}>
