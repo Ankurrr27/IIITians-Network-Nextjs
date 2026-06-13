@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Newspaper, Trophy, Database, Award } from "lucide-react";
 
 const projects = [
@@ -36,13 +37,75 @@ const projects = [
 ];
 
 export default function Initiatives() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const router = useRouter();
+
+  // Auto-cycle effect on mobile
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % projects.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl lg:text-[1.85rem] lg:leading-tight">
+      <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
         Our Initiatives
       </h2>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {/* Mobile view: 1 active stretched, 3 collapsed icons */}
+      <div className="flex gap-2 w-full items-stretch sm:hidden min-h-[175px]">
+        {projects.map((project, index) => {
+          const isActive = activeIndex === index;
+          const IconComponent = project.icon;
+          return (
+            <div
+              key={index}
+              onClick={() => {
+                if (isActive) {
+                  router.push(project.route);
+                } else {
+                  setActiveIndex(index);
+                }
+              }}
+              className={`cursor-pointer transition-all duration-500 ease-in-out overflow-hidden rounded-2xl border flex ${
+                isActive
+                  ? "flex-[5] bg-white border-indigo-200 p-4 shadow-md shadow-indigo-100/50 ring-4 ring-indigo-50/50"
+                  : "flex-1 bg-indigo-50/30 border-slate-100 items-center justify-center p-2 text-indigo-600/70 hover:bg-indigo-50"
+              }`}
+            >
+              {isActive ? (
+                <div className="flex flex-col h-full justify-between w-full">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                        <IconComponent size={16} />
+                      </div>
+                      <h3 className="text-xs font-bold text-slate-900 line-clamp-1">
+                        {project.title}
+                      </h3>
+                    </div>
+                    <p className="mt-2 text-[11px] text-slate-500 leading-normal font-medium line-clamp-4">
+                      {project.description}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-bold text-indigo-600 mt-2 block">
+                    Learn more →
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full w-full">
+                  <IconComponent size={20} />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop view: original clean grid */}
+      <div className="hidden sm:grid grid-cols-1 gap-5 sm:grid-cols-2">
         {projects.map((project, index) => {
           const IconComponent = project.icon;
           return (

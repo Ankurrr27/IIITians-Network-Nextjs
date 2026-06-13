@@ -6,6 +6,7 @@ import DiscussPreviewSection from "@/components/home/DiscussPreviewSection";
 import FounderSection from "@/components/home/FounderSection";
 import CounsellingSection from "@/components/home/CounsellingSection";
 import ExploreYourIIITSection from "@/components/home/ExploreYourIIITSection";
+import NetworkReachSection from "@/components/home/NetworkReachSection";
 
 export const metadata: Metadata = {
   title: "IIITians Network Connect — Home",
@@ -33,7 +34,10 @@ export default function HomePage() {
       {/* 6. Team & Founders Section */}
       <FounderSection />
 
-      {/* 7. Counselling Section */}
+      {/* 7. Network Reach Section */}
+      <NetworkReachSection />
+
+      {/* 8. Counselling Section */}
       <CounsellingSection />
     </div>
   );
