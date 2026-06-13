@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { Instagram, Linkedin, Twitter, Mail } from "lucide-react";
 import api from "@/lib/apiClient";
 import type { ITeamMember } from "@/types";
 
@@ -106,65 +107,102 @@ export default function CurrentPresidentSection() {
   const hasPhoto = Boolean(currentPresident?.photo?.url);
 
   return (
-    <div className="mb-5 overflow-hidden rounded-[1.35rem] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-indigo-50 shadow-[0_20px_60px_rgba(79,70,229,0.08)] sm:mb-12 sm:rounded-[1.9rem]">
-      <div className="grid grid-cols-1 gap-0 sm:grid-cols-[150px_1fr] lg:grid-cols-[238px_1fr]">
-        {/* Photo — compact horizontal strip on mobile, sidebar on desktop */}
-        <div className="relative h-56 overflow-hidden bg-indigo-100 sm:h-auto sm:mx-0 sm:mt-0 sm:rounded-none">
-          {loading ? (
-            <div className="h-full w-full animate-pulse bg-indigo-100" />
-          ) : hasPhoto ? (
-            <img
-              src={currentPresident?.photo?.url}
-              alt={currentPresident?.name || fallbackName}
-              className="h-full w-full object-cover object-center"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-sky-100 p-6 text-center text-lg font-black text-indigo-700">
-              Notes from President
-            </div>
-          )}
-          <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
+    <div className="mb-5 sm:mb-12 overflow-hidden bg-white sm:rounded-[1.9rem] sm:border sm:border-slate-200 sm:bg-gradient-to-br sm:from-slate-50 sm:via-white sm:to-indigo-50 sm:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
+      <div className="flex flex-col sm:grid sm:grid-cols-[150px_1fr] lg:grid-cols-[238px_1fr]">
+        <div className="flex flex-row sm:flex-col gap-4 sm:gap-0 p-4 sm:p-0 items-center sm:items-stretch border-b border-slate-100 sm:border-none">
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full sm:h-auto sm:w-auto sm:rounded-none bg-indigo-100">
+            {loading ? (
+              <div className="h-full w-full animate-pulse bg-indigo-100" />
+            ) : hasPhoto ? (
+              <img
+                src={currentPresident?.photo?.url}
+                alt={currentPresident?.name || fallbackName}
+                className="h-full w-full object-cover object-center"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-100 via-white to-sky-100 p-6 text-center text-lg font-black text-indigo-700">
+                
+              </div>
+            )}
+            <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
+          </div>
+
+          <div className="sm:hidden flex-1 min-w-0">
+            <h3 className="text-base font-bold text-slate-900 truncate">
+              {currentPresident?.name || fallbackName}
+            </h3>
+            <p className="mt-0.5 text-[11px] font-medium text-indigo-600 truncate">
+              {currentPresident ? `${currentPresident.role} - ${currentPresident.iiit}` : fallbackRole}
+            </p>
+            {currentPresident && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {currentPresident.linkedin && (
+                  <a href={currentPresident.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#0077b5]" title="LinkedIn">
+                    <Linkedin size={12} />
+                  </a>
+                )}
+                {currentPresident.instagram && (
+                  <a href={currentPresident.instagram} target="_blank" rel="noreferrer" className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#E1306C]" title="Instagram">
+                    <Instagram size={12} />
+                  </a>
+                )}
+                {currentPresident.twitter && (
+                  <a href={currentPresident.twitter} target="_blank" rel="noreferrer" className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#1DA1F2]" title="Twitter">
+                    <Twitter size={12} />
+                  </a>
+                )}
+                {currentPresident.email && (
+                  <a href={currentPresident.email.startsWith("mailto:") ? currentPresident.email : `mailto:${currentPresident.email}`} target="_blank" rel="noreferrer" className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-indigo-600" title="Email">
+                    <Mail size={12} />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
-        <div className="p-3 sm:p-4 lg:p-5">
+        <div className="p-4 sm:p-4 lg:p-5">
           <div className="flex flex-col gap-2.5 sm:gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center rounded-full bg-indigo-600 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-white sm:px-3 sm:text-xs sm:tracking-[0.18em]">
-                Notes from President
-              </div>
-              {currentPresident?.year && (
-                <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">
-                  {currentPresident.year}
-                </div>
-              )}
-            </div>
-
-            <div>
+            <div className="hidden sm:block">
               <h3 className="text-base font-bold text-slate-900 sm:text-2xl">
                 {currentPresident?.name || fallbackName}
               </h3>
               <p className="mt-1 text-[11px] font-medium text-indigo-600 sm:text-sm">
                 {currentPresident ? `${currentPresident.role} - ${currentPresident.iiit}` : fallbackRole}
               </p>
+              {currentPresident && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {currentPresident.linkedin && (
+                    <a href={currentPresident.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#0077b5]" title="LinkedIn">
+                      <Linkedin size={14} />
+                    </a>
+                  )}
+                  {currentPresident.instagram && (
+                    <a href={currentPresident.instagram} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#E1306C]" title="Instagram">
+                      <Instagram size={14} />
+                    </a>
+                  )}
+                  {currentPresident.twitter && (
+                    <a href={currentPresident.twitter} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-[#1DA1F2]" title="Twitter">
+                      <Twitter size={14} />
+                    </a>
+                  )}
+                  {currentPresident.email && (
+                    <a href={currentPresident.email.startsWith("mailto:") ? currentPresident.email : `mailto:${currentPresident.email}`} target="_blank" rel="noreferrer" className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 text-indigo-600" title="Email">
+                      <Mail size={14} />
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* On mobile: flat text. On desktop: bordered cards side-by-side */}
             <div className="grid gap-2 sm:gap-3 lg:grid-cols-[0.9fr_1.1fr]">
-              <div className="sm:rounded-[1.2rem] sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs sm:tracking-[0.16em]">
-                  About
-                </p>
-                <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
-                  {about}
-                </p>
-              </div>
-
-              <div className="sm:rounded-[1.2rem] sm:border sm:border-indigo-100 sm:bg-indigo-50/60 sm:p-4 sm:shadow-sm">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs sm:tracking-[0.16em]">
+              <div className="rounded-xl sm:rounded-[1.2rem] border border-indigo-100 bg-indigo-50/60 p-3 sm:p-4 shadow-sm">
+                <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs sm:tracking-[0.16em]">
                   President’s Note
                 </p>
-                <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
-                  "{message}"
+                <p className="mt-1.5 text-[12px] leading-relaxed text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">
+                  {message}
                 </p>
               </div>
             </div>

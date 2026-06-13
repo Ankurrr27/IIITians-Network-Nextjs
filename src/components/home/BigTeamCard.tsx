@@ -56,16 +56,16 @@ interface BigTeamCardProps {
 }
 
 const socialItems = [
-  { key: "linkedin", icon: Linkedin, label: "LinkedIn" },
-  { key: "github", icon: Github, label: "GitHub" },
-  { key: "instagram", icon: Instagram, label: "Instagram" },
-  { key: "twitter", icon: Twitter, label: "Twitter" },
-  { key: "x", icon: Twitter, label: "X" },
-  { key: "youtube", icon: Youtube, label: "YouTube" },
-  { key: "discord", icon: DiscordIcon, label: "Discord" },
-  { key: "reddit", icon: RedditIcon, label: "Reddit" },
-  { key: "email", icon: Mail, label: "Email" },
-  { key: "website", icon: Globe, label: "Website" },
+  { key: "linkedin", icon: Linkedin, label: "LinkedIn", color: "text-[#0077b5]" },
+  { key: "github", icon: Github, label: "GitHub", color: "text-slate-800" },
+  { key: "instagram", icon: Instagram, label: "Instagram", color: "text-[#E1306C]" },
+  { key: "twitter", icon: Twitter, label: "Twitter", color: "text-[#1DA1F2]" },
+  { key: "x", icon: Twitter, label: "X", color: "text-slate-900" },
+  { key: "youtube", icon: Youtube, label: "YouTube", color: "text-[#FF0000]" },
+  { key: "discord", icon: DiscordIcon, label: "Discord", color: "text-[#5865F2]" },
+  { key: "reddit", icon: RedditIcon, label: "Reddit", color: "text-[#FF4500]" },
+  { key: "email", icon: Mail, label: "Email", color: "text-indigo-600" },
+  { key: "website", icon: Globe, label: "Website", color: "text-indigo-600" },
 ] as const;
 
 export default function BigTeamCard({
@@ -79,29 +79,35 @@ export default function BigTeamCard({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <article className="group overflow-hidden rounded-[1.45rem] border border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(79,70,229,0.12)] sm:rounded-[1.9rem]">
-      <div className="flex flex-col">
-        <div className="relative h-52 overflow-hidden bg-indigo-50 sm:h-64 lg:h-72">
+    <article className="group overflow-hidden bg-white sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:shadow-[0_8px_30px_rgba(15,23,42,0.04)] sm:transition sm:duration-300 sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
+      <div className="flex flex-row sm:flex-col p-4 sm:p-0 gap-4 sm:gap-0 items-start sm:items-stretch">
+        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full sm:h-64 sm:w-auto sm:rounded-none lg:h-72">
           <img
             src={image}
             alt={name}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+            className="h-full w-full object-cover transition duration-500 sm:group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950/75 via-slate-950/30 to-transparent sm:h-36" />
+          <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent sm:h-36" />
 
-          <div className="absolute inset-x-0 bottom-0 p-3.5 sm:p-5">
-            <h3 className="text-base font-semibold leading-tight !text-white sm:text-xl">{name}</h3>
-            <p className="mt-1 text-[11px] font-medium !text-white/85 sm:text-sm">
+          <div className="hidden sm:block absolute inset-x-0 bottom-0 p-5">
+            <h3 className="text-xl font-semibold leading-tight !text-white">{name}</h3>
+            <p className="mt-1 text-sm font-medium !text-white/85">
               {role} - {college}
             </p>
           </div>
         </div>
 
-        <div className="p-3.5 sm:p-5">
+        <div className="flex-1 sm:p-5 flex flex-col justify-center min-w-0">
+          <div className="sm:hidden mb-2">
+            <h3 className="text-base font-semibold leading-tight text-slate-900 truncate">{name}</h3>
+            <p className="mt-0.5 text-[11px] font-medium text-slate-500 truncate">
+              {role} - {college}
+            </p>
+          </div>
 
           <p
-            className={`text-[13px] leading-6 text-slate-600 sm:mt-4 sm:text-[15px] sm:leading-7 ${
-              expanded ? "" : "line-clamp-5"
+            className={`text-xs leading-relaxed text-slate-600 sm:text-[15px] sm:leading-7 ${
+              expanded ? "" : "line-clamp-3 sm:line-clamp-5"
             }`}
           >
             {desc}
@@ -110,13 +116,13 @@ export default function BigTeamCard({
           {desc && desc.length > 80 && (
             <button
               onClick={() => setExpanded((prev) => !prev)}
-              className="mt-2 text-sm font-medium text-indigo-600 transition hover:text-indigo-700"
+              className="mt-1 self-start text-[11px] font-semibold text-slate-900 transition hover:text-slate-700 sm:mt-2 sm:text-sm"
             >
               {expanded ? "See less" : "See more"}
             </button>
           )}
 
-          <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
+          <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-5 sm:gap-2">
             {socialItems.map((item) => {
               const url = links[item.key as keyof typeof links];
               const IconComponent = item.icon;
@@ -133,10 +139,10 @@ export default function BigTeamCard({
                   href={href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+                  className={`inline-flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 ${item.color || 'text-slate-600'}`}
                   title={item.label}
                 >
-                  <IconComponent size={15} />
+                  <IconComponent size={14} className="sm:w-[15px] sm:h-[15px]" />
                 </a>
               );
             })}

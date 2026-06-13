@@ -1,7 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Github, Globe, Instagram, Linkedin, Twitter } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Github, Globe, Instagram, Linkedin, Twitter, ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 import type { ITeamMember } from "@/types";
 
 type SocialMember = ITeamMember & {
@@ -21,17 +23,17 @@ const execPriority = [
 const leadPriority = ["head", "lead", "co-lead", "coordinator", "manager"];
 
 const execSocialLinks = [
-  { key: "linkedin", Icon: Linkedin },
-  { key: "github", Icon: Github },
-  { key: "instagram", Icon: Instagram },
-  { key: "twitter", Icon: Twitter },
-  { key: "website", Icon: Globe },
+  { key: "linkedin", Icon: Linkedin, color: "text-[#0077b5]" },
+  { key: "github", Icon: Github, color: "text-slate-800" },
+  { key: "instagram", Icon: Instagram, color: "text-[#E1306C]" },
+  { key: "twitter", Icon: Twitter, color: "text-[#1DA1F2]" },
+  { key: "website", Icon: Globe, color: "text-indigo-600" },
 ] as const;
 
 const socialLinks = [
-  { key: "linkedin", Icon: Linkedin },
-  { key: "instagram", Icon: Instagram },
-  { key: "twitter", Icon: Twitter },
+  { key: "linkedin", Icon: Linkedin, color: "text-[#0077b5]" },
+  { key: "instagram", Icon: Instagram, color: "text-[#E1306C]" },
+  { key: "twitter", Icon: Twitter, color: "text-[#1DA1F2]" },
 ] as const;
 
 function getPriorityIndex(role = "", priorityList: string[] = []) {
@@ -133,14 +135,14 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
           </div>
           <div className={leadGridClass}>
             {leads.map((member) => (
-              <LeadCard key={member._id} member={member as SocialMember} />
+              <LeadCard key={member._id} member={member as SocialMember} teamMembers={team.filter(m => m.team && m.team === member.team) as SocialMember[]} />
             ))}
           </div>
         </section>
       )}
 
       {team.length > 0 && (
-        <section>
+        <section className="hidden sm:block">
           <div className="mb-4">
             <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Members
@@ -174,57 +176,74 @@ function ExecCard({ member }: { member: SocialMember }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         whileHover={{ y: -4 }}
-        className="ui-card ui-card-hover overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50 lg:col-span-2"
+        className="ui-card ui-card-hover overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50 lg:col-span-2 mb-4 -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
       >
-        <div className="grid grid-cols-1 gap-0 sm:grid-cols-[170px_1fr] lg:grid-cols-[280px_1fr]">
-          <div className="relative mx-3 mt-3 overflow-hidden rounded-xl bg-indigo-100 sm:mx-0 sm:mt-0 sm:rounded-none">
-            <img src={photoUrl(member)} alt={member.name} className="aspect-square w-full object-cover object-center sm:h-full sm:aspect-auto" />
-            <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
+        <div className="flex flex-col sm:grid sm:grid-cols-[170px_1fr] lg:grid-cols-[280px_1fr]">
+          {/* Mobile: Row with small avatar. Desktop: Full column with large image */}
+          <div className="flex flex-row sm:flex-col items-center sm:items-stretch gap-4 sm:gap-0 p-4 sm:p-0 border-b border-slate-100 sm:border-none bg-white sm:bg-indigo-100">
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full sm:h-full sm:w-auto sm:rounded-none sm:bg-indigo-100 ring-2 ring-indigo-50 sm:ring-0">
+              <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover object-center" />
+              <div className="absolute inset-y-0 right-0 hidden w-8 bg-gradient-to-l from-white/18 to-transparent sm:block" />
+            </div>
+
+            <div className="sm:hidden flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-2 mb-1">
+                <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white">
+                  {getLeadershipLabel(member.role)}
+                </span>
+                {member.year && <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">{member.year}</span>}
+              </div>
+              <h3 className="text-base font-bold text-slate-900 truncate">{member.name}</h3>
+              <p className="mt-0.5 text-[11px] font-medium text-indigo-600 truncate">{member.role} {member.iiit ? `- ${member.iiit}` : ""}</p>
+            </div>
           </div>
 
           <div className="p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:gap-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-white sm:text-xs">
+              {/* Desktop Header */}
+              <div className="hidden sm:flex flex-wrap items-center gap-3">
+                <div className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
                   {getLeadershipLabel(member.role)}
                 </div>
                 {member.year && (
-                  <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500 sm:text-xs">
+                  <div className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
                     {member.year}
                   </div>
                 )}
               </div>
 
-              <div>
-                <h3 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">
-                  {member.name}
-                </h3>
+              <div className="hidden sm:block">
+                <h3 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{member.name}</h3>
                 <p className="mt-1 text-sm font-medium text-indigo-600 sm:text-base">
-                  {member.role}
-                  {member.iiit ? ` - ${member.iiit}` : ""}
+                  {member.role} {member.iiit ? `- ${member.iiit}` : ""}
                 </p>
               </div>
 
               <div className="grid gap-3 lg:grid-cols-[0.92fr_1.08fr]">
                 <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs">About</p>
-                  <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">{about}</p>
+                  <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">{about}</p>
                 </div>
 
                 <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs">Message</p>
-                  <p className="mt-2 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">"{message}"</p>
+                  <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">"{message}"</p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2">
-                {execSocialLinks.map(({ key, Icon }) =>
-                  member[key] ? (
-                    <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="ui-icon-button">
-                      <Icon size={18} />
+              <div className="flex flex-wrap gap-2 pt-1 sm:pt-0">
+                {execSocialLinks.map(({ key, Icon, color }) =>
+                  member[key as keyof SocialMember] ? (
+                    <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 ${color}`}>
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </a>
                   ) : null
                 )}
+              </div>
+              <div className="mt-2 border-t border-slate-100 pt-3">
+                <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">
+                  See Profile &rarr;
+                </Link>
               </div>
             </div>
           </div>
@@ -239,11 +258,11 @@ function ExecCard({ member }: { member: SocialMember }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="ui-card ui-card-hover group overflow-hidden"
+      className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
       <div className="h-1 bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400" />
       <div className="grid gap-0 md:grid-cols-[220px_1fr]">
-        <div className="relative h-56 overflow-hidden bg-slate-100 md:h-full">
+        <div className="relative h-48 overflow-hidden bg-slate-100 md:h-full">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
           <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/45 to-transparent md:hidden" />
         </div>
@@ -260,14 +279,19 @@ function ExecCard({ member }: { member: SocialMember }) {
             <p className="mt-1 text-sm text-slate-500">{member.iiit}</p>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            {execSocialLinks.map(({ key, Icon }) =>
-              member[key] ? (
-                <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-slate-600 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700">
-                  <Icon size={16} />
-                </a>
-              ) : null
-            )}
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-4">
+            <div className="flex flex-wrap gap-2">
+              {execSocialLinks.map(({ key, Icon, color }) =>
+                member[key as keyof SocialMember] ? (
+                  <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 ${color}`}>
+                    <Icon size={16} />
+                  </a>
+                ) : null
+              )}
+            </div>
+            <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">
+              See Profile &rarr;
+            </Link>
           </div>
         </div>
       </div>
@@ -275,27 +299,30 @@ function ExecCard({ member }: { member: SocialMember }) {
   );
 }
 
-function LeadCard({ member }: { member: SocialMember }) {
+function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMembers?: SocialMember[] }) {
+  const [expanded, setExpanded] = useState(false);
+
   return (
+    <div className="flex flex-col">
     <motion.article
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ y: -6 }}
-      className="ui-card ui-card-hover group overflow-hidden"
+      className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
-      <div className="flex flex-col">
-        <div className="relative h-64 w-full overflow-hidden bg-slate-100 sm:h-72">
+      <div className="flex flex-row sm:flex-col">
+        <div className="relative h-28 w-28 shrink-0 sm:h-52 sm:w-full overflow-hidden bg-slate-100 border-r border-slate-100 sm:border-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
           
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
           
-          <div className="absolute left-4 right-4 top-4 flex items-start justify-between gap-3">
+          <div className="hidden sm:flex absolute left-4 right-4 top-4 items-start justify-between gap-3">
             <span className="rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-700 shadow-sm backdrop-blur-md">Lead Team</span>
             <div className="flex flex-shrink-0 gap-2">
               {socialLinks.map(({ key, Icon }) =>
-                member[key] ? (
-                  <a key={key} href={member[key]} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white shadow-sm backdrop-blur-md ring-1 ring-white/20 transition-all hover:bg-white hover:text-indigo-600 hover:scale-110">
+                member[key as keyof SocialMember] ? (
+                  <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white shadow-sm backdrop-blur-md ring-1 ring-white/20 transition-all hover:bg-white hover:text-indigo-600 hover:scale-110">
                     <Icon size={14} />
                   </a>
                 ) : null
@@ -303,29 +330,92 @@ function LeadCard({ member }: { member: SocialMember }) {
             </div>
           </div>
 
-          <div className="absolute left-5 right-5 bottom-5">
-            <p className="line-clamp-2 text-xl font-bold leading-tight text-white sm:text-2xl">{member.name}</p>
-            <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.15em] text-indigo-300 sm:text-xs">{member.role}</p>
+          <div className="hidden sm:block absolute left-5 right-5 bottom-5">
+            <p className="line-clamp-2 text-xl font-bold leading-tight !text-white sm:text-2xl">{member.name}</p>
+            <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.15em] !text-indigo-300 sm:text-xs">{member.role}</p>
           </div>
         </div>
 
-        <div className="bg-white p-4">
-          <div className="rounded-xl bg-slate-50/80 px-4 py-3 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-400">Institute</p>
-            <p className="mt-1 text-sm font-bold text-slate-700 sm:text-base group-hover:text-indigo-900">{member.iiit}</p>
+        {/* Mobile Info View */}
+        <div className="flex sm:hidden flex-1 flex-col justify-center p-3 sm:p-4 min-w-0 bg-white">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 truncate">{member.name}</h3>
+            <p className="mt-0.5 text-[11px] font-semibold text-indigo-600 truncate">{member.role}</p>
+            <p className="mt-0.5 text-[10px] text-slate-500 truncate">{member.iiit}</p>
+          </div>
+          <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 pt-2.5">
+            <div className="flex flex-wrap gap-2.5">
+              {socialLinks.map(({ key, Icon, color }) =>
+                member[key as keyof SocialMember] ? (
+                  <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`${color} opacity-80 hover:opacity-100 transition`}>
+                    <Icon className="w-4 h-4" />
+                  </a>
+                ) : null
+              )}
+            </div>
+            <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600">
+              Profile &rarr;
+            </Link>
+          </div>
+        </div>
+
+        {/* Desktop Footer View */}
+        <div className="hidden sm:block bg-white p-4">
+          <div className="flex items-center justify-between">
+            <div className="rounded-xl bg-slate-50/80 px-4 py-3 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-400">Institute</p>
+              <p className="mt-1 text-sm font-bold text-slate-700 sm:text-base group-hover:text-indigo-900">{member.iiit}</p>
+            </div>
+            <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700">
+              See Profile &rarr;
+            </Link>
           </div>
         </div>
       </div>
     </motion.article>
+
+      {teamMembers && teamMembers.length > 0 && (
+        <div className="sm:hidden mt-2.5 mb-2 px-1">
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="flex w-full items-center justify-between rounded-xl bg-slate-50 border border-slate-100 px-4 py-3 text-xs font-bold text-slate-700 active:bg-slate-100 transition"
+          >
+            <span>Team Members ({teamMembers.length})</span>
+            <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${expanded ? "rotate-180" : ""}`} />
+          </button>
+          
+          <AnimatePresence>
+            {expanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="grid grid-cols-2 gap-3 pt-3 pb-1">
+                  {teamMembers.map((m) => (
+                    <MemberCard key={m._id} member={m} />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
   );
 }
 
 function MemberCard({ member }: { member: SocialMember }) {
   return (
     <article className="ui-card ui-card-hover group overflow-hidden">
-      <div className="relative overflow-hidden bg-slate-100">
-        <img src={photoUrl(member)} alt={member.name} className="aspect-[3/4] w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-2.5">
+      <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
+        <div className="relative h-16 w-16 sm:h-auto sm:w-full sm:aspect-[3/4] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
+          <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
+        </div>
+        
+        {/* Desktop Overlay */}
+        <div className="hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-2.5">
           <span className="truncate text-[10px] font-medium uppercase tracking-[0.14em] text-white/90">{member.role}</span>
           <div className="flex gap-1.5">
             {member.linkedin && (
@@ -342,9 +432,33 @@ function MemberCard({ member }: { member: SocialMember }) {
         </div>
       </div>
 
-      <div className="px-3 pb-3 pt-3 text-center sm:px-3.5 sm:pb-3.5">
+      <div className="px-3 pb-3 pt-2.5 text-center sm:px-3.5 sm:pb-3.5 sm:pt-3">
         <h4 className="line-clamp-2 text-xs font-semibold leading-tight text-slate-900 sm:text-sm">{member.name}</h4>
-        <p className="mt-1 text-[10px] leading-4 text-slate-500 sm:text-[11px]">{member.iiit}</p>
+        
+        {/* Mobile Role */}
+        <p className="mt-0.5 sm:hidden text-[9px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
+        
+        <p className="mt-0.5 sm:mt-1 text-[10px] leading-4 text-slate-500 sm:text-[11px] truncate">{member.iiit}</p>
+        
+        {/* Mobile Social Links */}
+        <div className="mt-2 flex sm:hidden justify-center gap-2">
+          {member.linkedin && (
+            <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-[#0077b5] opacity-80 hover:opacity-100 transition">
+              <Linkedin size={13} />
+            </a>
+          )}
+          {member.instagram && (
+            <a href={member.instagram} target="_blank" rel="noreferrer" className="text-[#E1306C] opacity-80 hover:opacity-100 transition">
+              <Instagram size={13} />
+            </a>
+          )}
+        </div>
+
+        <div className="mt-2.5 border-t border-slate-100 pt-2.5">
+          <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700">
+            See Profile &rarr;
+          </Link>
+        </div>
       </div>
     </article>
   );

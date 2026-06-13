@@ -808,20 +808,20 @@ function LegacyEntryCard({
 
   return (
     <article
-      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-t-2xl md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
+      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
         isDarkMode
           ? "border-slate-800 bg-transparent md:bg-slate-900/80 shadow-none md:shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-none md:backdrop-blur-md"
           : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
       }`}
     >
       <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)] ">
-        <div className="relative min-h-68 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem] rounded-t-2xl md:rounded-l-2xl">
+        <div className="relative min-h-68 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem] rounded-none md:rounded-l-2xl">
           {entry.photo?.url ? (
             <Image
               src={entry.photo.url}
               alt={entry.name}
               fill
-              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] group-hover:rounded-2xl z-0 rounded-t-2xl2xl"
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] md:group-hover:rounded-2xl z-0 rounded-none md:rounded-l-2xl"
               sizes="(max-width: 1024px) 100vw, 352px"
             />
           ) : (
@@ -886,11 +886,14 @@ function LegacyEntryCard({
           {/* ── Left: main content ── */}
           <div className="min-w-0">
             {/* Desktop-only: Name row with inline social icons */}
-            <div className="hidden lg:flex lg:items-start lg:justify-between lg:gap-2">
-              <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-2xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
-                {entry.name}
-              </h3>
-              <div className="flex shrink-0 items-center gap-1.5">
+            <div className="hidden lg:flex lg:flex-col gap-3">
+              <div>
+                <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-3xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
+                  {entry.name}
+                </h3>
+                <p className={`mt-1 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
+              </div>
+              <div className="flex flex-wrap shrink-0 items-center gap-1.5">
                 <button
                   type="button"
                   onClick={() => onSharePoster(entry)}
@@ -943,8 +946,6 @@ function LegacyEntryCard({
               </div>
             </div>
 
-            <p className={`hidden lg:block mt-2 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
-
             {contribution && (
               <div className={`mt-4 rounded-[1.35rem] border p-3 sm:p-4 ${isDarkMode ? "border-indigo-500/20 bg-indigo-900/10" : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"}`}>
                 <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isDarkMode ? "text-indigo-200" : "text-indigo-700"}`}>Contribution made</p>
@@ -970,14 +971,14 @@ function LegacyEntryCard({
                 <div className="mt-3 flex flex-wrap gap-2">
                   {dedupedRoleHistory.map((item, index) => (
                     <div key={`m-${item.year}-${item.team}-${item.role}-${index}`}
-                      className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                      className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold max-w-full ${
                         isDarkMode ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-indigo-500/20" : "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100"
                       }`}
                     >
                       <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isDarkMode ? "bg-indigo-400" : "bg-indigo-500"}`} />
-                      <span className="font-bold">{item.role || entry.networkPost || "Legacy Member"}</span>
+                      <span className="font-bold truncate">{item.role || entry.networkPost || "Legacy Member"}</span>
                       {(item.year || item.team) && (
-                        <span className={isDarkMode ? "text-slate-400" : "text-indigo-400"}>{[item.year, item.team].filter(Boolean).join(" · ")}</span>
+                        <span className={`truncate shrink-0 ${isDarkMode ? "text-slate-400" : "text-indigo-400"}`}>{[item.year, item.team].filter(Boolean).join(" · ")}</span>
                       )}
                     </div>
                   ))}
