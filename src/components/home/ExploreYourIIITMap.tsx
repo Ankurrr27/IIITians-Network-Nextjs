@@ -100,7 +100,7 @@ export default function ExploreYourIIITMap({
   const logoUrl = campusForActions ? (campusForActions.logo || getWebsiteFavicon(campusForActions.website)) : "";
 
   return (
-    <div className={`relative h-[22rem] overflow-hidden rounded-none border-x-0 border-y bg-slate-950 shadow-none ring-0 -mx-4 sm:mx-0 sm:rounded-[1.15rem] sm:border sm:border-white/80 sm:shadow-sm sm:ring-1 sm:ring-indigo-100/70 sm:h-[28rem] lg:h-[32rem] ${
+    <div className={`relative h-[28rem] overflow-hidden rounded-none border-x-0 border-y bg-slate-950 shadow-none ring-0 -mx-4 sm:mx-0 sm:rounded-[1.15rem] sm:border sm:border-white/80 sm:shadow-sm sm:ring-1 sm:ring-indigo-100/70 lg:h-[32rem] ${
       isDarkMode ? "border-slate-800" : "border-slate-200"
     }`}>
       <MapContainer
@@ -187,8 +187,9 @@ export default function ExploreYourIIITMap({
         })}
       </MapContainer>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(99,102,241,0.18),transparent_32%),linear-gradient(180deg,transparent,rgba(15,23,42,0.08))]" />
+
       {campusForActions ? (
-        <div className={`absolute bottom-0 left-0 right-0 z-[500] rounded-t-2xl border-t p-3 shadow-lg backdrop-blur sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border md:left-auto md:right-3 md:w-[22rem] ${
+        <div className={`absolute bottom-0 left-0 right-0 z-[500] rounded-t-2xl border-t p-3.5 shadow-lg backdrop-blur-md transition-all sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border sm:shadow-lg md:left-auto md:right-3 md:w-[22rem] ${
           isDarkMode
             ? "border-slate-800 bg-slate-950/95 text-slate-100"
             : "border-slate-200/80 bg-white/95 text-slate-900"
@@ -244,7 +245,7 @@ export default function ExploreYourIIITMap({
               href={`/colleges?search=${encodeURIComponent(campusForActions.name)}`}
               className={`inline-flex items-center justify-center gap-1 rounded-full border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
                 isDarkMode
-                  ? "border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
+                  ? "border-slate-800 bg-slate-950 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
                   : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
               }`}
             >
@@ -257,7 +258,7 @@ export default function ExploreYourIIITMap({
               rel="noreferrer"
               className={`inline-flex items-center justify-center gap-1 rounded-full border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
                 isDarkMode
-                  ? "border-slate-800 bg-slate-900 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
+                  ? "border-slate-800 bg-slate-950 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
                   : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
               }`}
             >

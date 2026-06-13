@@ -56,12 +56,12 @@ export default function CounsellingSection() {
               <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
                 JEE Counselling Guidance
               </h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-500 sm:text-base font-semibold">
+              <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg sm:leading-8 font-medium">
                 Practical, experience-backed support for JoSAA and CSAB counselling, designed to help aspirants make confident and informed choices.
               </p>
             </div>
 
-            <div className="space-y-5 text-base leading-7 text-slate-600 sm:text-[1.05rem] sm:leading-8">
+            <div className="space-y-5 text-sm leading-relaxed text-slate-600 sm:text-base sm:leading-7">
               <p>
                 IIITians Network simplifies the JEE counselling process by providing aspirants with clear, unbiased guidance based on real student experiences across IIITs.
               </p>
@@ -117,7 +117,7 @@ export default function CounsellingSection() {
 
           {/* Right Column (How We Help Accordion) */}
           <div className="space-y-6">
-            <h3 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl lg:text-[1.85rem] lg:leading-tight">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               How We Help
             </h3>
 

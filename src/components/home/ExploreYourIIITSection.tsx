@@ -14,7 +14,7 @@ import type { ICollege } from "@/types";
 
 function MapSkeleton() {
   return (
-    <div className="relative h-[22rem] overflow-hidden rounded-none border-x-0 border-y border-slate-200 -mx-4 bg-slate-100 sm:mx-0 sm:h-[28rem] sm:rounded-[1.15rem] sm:border lg:h-[32rem]">
+    <div className="relative h-[28rem] overflow-hidden rounded-none border-x-0 border-y border-slate-200 -mx-4 bg-slate-100 sm:mx-0 sm:rounded-[1.15rem] sm:border lg:h-[32rem]">
       {/* shimmer overlay */}
       <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
@@ -48,7 +48,7 @@ function MapSkeleton() {
       ))}
 
       {/* bottom info card skeleton */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 rounded-t-2xl border-t border-slate-200 bg-white/90 p-3 backdrop-blur sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border md:left-auto md:right-3 md:w-[22rem]">
+      <div className="absolute bottom-0 left-0 right-0 z-10 rounded-t-2xl border-t border-slate-200 bg-white/90 p-3 backdrop-blur-md sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border md:left-auto md:right-3 md:w-[22rem]">
         <div className="flex items-center gap-2.5">
           <div className="h-10 w-10 shrink-0 rounded-lg bg-slate-200" />
           <div className="flex-1 space-y-2">
@@ -155,8 +155,8 @@ export default function ExploreYourIIITSection() {
         >
           {/* Heading + stats — flat on mobile, panel on desktop */}
           <div className="sm:rounded-[1.25rem] sm:border sm:border-white/80 sm:bg-white/70 sm:p-5 sm:shadow-sm sm:backdrop-blur">
-            <h2 className="text-xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Explore Your IIIT</h2>
-            <p className="mt-2 max-w-xl text-sm font-medium leading-6 text-slate-600">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">Explore Your IIIT</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base sm:leading-7">
               Explore every IIIT across India, compare campuses, and discover the student communities connected through IIITians Network.
             </p>
 
@@ -185,14 +185,14 @@ export default function ExploreYourIIITSection() {
                   key={campus.id}
                   type="button"
                   onClick={() => handleSelect(campus)}
-                  className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition ${
+                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left transition cursor-pointer ${
                     selectedCampus.id === campus.id
                       ? "bg-slate-900 text-white"
                       : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-700"
                   }`}
                 >
-                  <span className="font-semibold">{campus.name}</span>
-                  <span className="text-xs opacity-75">{campus.state}</span>
+                  <span className="font-medium text-xs">{campus.name}</span>
+                  <span className="text-[10px] opacity-75 shrink-0 ml-2">{campus.state}</span>
                 </button>
               ))}
             </div>

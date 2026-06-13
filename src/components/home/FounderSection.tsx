@@ -12,7 +12,7 @@ export default function FounderSection() {
     <section className="bg-slate-50 sm:bg-white py-8 sm:py-20">
       <div className="mx-auto max-w-7xl px-0 sm:px-6">
         <div className="px-4 sm:px-0 mb-6 sm:mb-8">
-          <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             IIITians Network Team
           </h2>
         </div>
@@ -23,7 +23,7 @@ export default function FounderSection() {
 
         <div className="px-4 sm:px-0 mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
           <div>
-            <h2 className="text-lg font-semibold tracking-tight text-slate-900 sm:text-3xl">
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               Founding Team
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
@@ -35,7 +35,7 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start rounded-full px-5 py-2 text-xs sm:text-sm font-medium text-slate-700 bg-white border border-slate-200 shadow-sm transition hover:bg-slate-50 sm:mt-0 sm:self-auto shrink-0"
+            className="mt-4 self-start rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 shadow-xs transition hover:border-slate-300 hover:bg-slate-50 sm:mt-0 sm:self-auto sm:px-5 sm:py-2 shrink-0 cursor-pointer"
           >
             View current team
           </button>

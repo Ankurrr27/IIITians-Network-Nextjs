@@ -47,7 +47,7 @@ export default function AboutSection() {
             </h2>
           </div>
 
-          <div className="space-y-5 text-base leading-7 text-slate-600 sm:text-[1.05rem] sm:leading-8">
+          <div className="space-y-5 text-sm leading-relaxed text-slate-600 sm:text-base sm:leading-7">
             <p>
               IIITians Network is an autonomous, student-driven community that
               connects students and alumni across all Indian Institutes of

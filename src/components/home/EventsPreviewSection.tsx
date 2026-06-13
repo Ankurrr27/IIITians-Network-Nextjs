@@ -43,7 +43,7 @@ export default function EventsPreviewSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-6 flex items-end justify-between gap-4 sm:mb-10">
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Latest <span className="text-indigo-600">Events</span>
             </h2>
           </div>
