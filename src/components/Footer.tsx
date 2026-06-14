@@ -174,9 +174,9 @@ export default function Footer() {
               <SocialIcon href="https://x.com/iiitiansnetwork" color="#ffffff" title="X / Twitter">
                 <Twitter size={17} />
               </SocialIcon>
-              <SocialIcon href="https://www.youtube.com/@iiitiansnetwork" color="#ff0000" title="YouTube">
+              {/* <SocialIcon href="https://www.youtube.com/@iiitiansnetwork" color="#ff0000" title="YouTube">
                 <Youtube size={17} />
-              </SocialIcon>
+              </SocialIcon> */}
               <SocialIcon href="https://reddit.com/r/iiitiansnetwork" color="#ff4500" title="Reddit">
                 <RedditIcon size={17} />
               </SocialIcon>

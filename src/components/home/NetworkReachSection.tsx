@@ -38,9 +38,9 @@ function AnimatedCounter({ value, duration = 2000, trigger = false }: { value: n
 
 export default function NetworkReachSection() {
   const [stats, setStats] = useState({
-    instagramFollowers: 12400,
-    linkedinFollowers: 18500,
-    overallReach: 750000,
+    instagramFollowers: 20000,
+    linkedinFollowers: 15500,
+    overallReach: 950000,
     totalViews: 45000,
   });
   const [loading, setLoading] = useState(true);
@@ -53,9 +53,9 @@ export default function NetworkReachSection() {
       .then((res) => {
         if (res.data) {
           setStats({
-            instagramFollowers: res.data.instagramFollowers ?? 12400,
-            linkedinFollowers: res.data.linkedinFollowers ?? 18500,
-            overallReach: res.data.overallReach ?? 750000,
+            instagramFollowers: res.data.instagramFollowers ?? 20000,
+            linkedinFollowers: res.data.linkedinFollowers ?? 15500,
+            overallReach: res.data.overallReach ?? 950000,
             totalViews: res.data.totalViews ?? 0,
           });
         }

@@ -35,7 +35,7 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start rounded-full px-4 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 shadow-xs transition hover:border-slate-300 hover:bg-slate-50 sm:mt-0 sm:self-auto sm:px-5 sm:py-2 shrink-0 cursor-pointer"
+            className="mt-4 self-start  px-4 py-1.5 text-xs font-medium text-slate-600   transition hover:border-slate-300 hover:bg-slate-50 sm:mt-0 sm:self-auto sm:px-5 sm:py-2 shrink-0 cursor-pointer"
           >
             View current team
           </button>

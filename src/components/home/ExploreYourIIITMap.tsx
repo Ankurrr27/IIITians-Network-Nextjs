@@ -100,7 +100,7 @@ export default function ExploreYourIIITMap({
   const logoUrl = campusForActions ? (campusForActions.logo || getWebsiteFavicon(campusForActions.website)) : "";
 
   return (
-    <div className={`relative h-[28rem] overflow-hidden rounded-none border-x-0 border-y bg-slate-950 shadow-none ring-0 -mx-4 sm:mx-0 sm:rounded-[1.15rem] sm:border sm:border-white/80 sm:shadow-sm sm:ring-1 sm:ring-indigo-100/70 lg:h-[32rem] ${
+    <div className={`relative h-[28rem] overflow-hidden rounded-none border-x-0 border-y bg-slate-950 shadow-none ring-0 -mx-4 sm:mx-0 sm:rounded-lg lg:h-[32rem] ${
       isDarkMode ? "border-slate-800" : "border-slate-200"
     }`}>
       <MapContainer
@@ -189,7 +189,7 @@ export default function ExploreYourIIITMap({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(99,102,241,0.18),transparent_32%),linear-gradient(180deg,transparent,rgba(15,23,42,0.08))]" />
 
       {campusForActions ? (
-        <div className={`absolute bottom-0 left-0 right-0 z-[500] rounded-t-2xl border-t p-3.5 shadow-lg backdrop-blur-md transition-all sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-2xl sm:border sm:shadow-lg md:left-auto md:right-3 md:w-[22rem] ${
+        <div className={`absolute bottom-0 left-0 right-0 z-[500] rounded-t-lg border-t p-3.5 shadow-lg backdrop-blur-md transition-all sm:bottom-3 sm:left-3 sm:right-3 sm:rounded-lg sm:border sm:shadow-lg md:left-auto md:right-3 md:w-[22rem] ${
           isDarkMode
             ? "border-slate-800 bg-slate-950/95 text-slate-100"
             : "border-slate-200/80 bg-white/95 text-slate-900"

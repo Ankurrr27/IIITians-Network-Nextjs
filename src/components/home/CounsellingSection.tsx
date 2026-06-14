@@ -57,7 +57,7 @@ export default function CounsellingSection() {
                 JEE Counselling Guidance
               </h2>
               <p className="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg sm:leading-8 font-medium">
-                Practical, experience-backed support for JoSAA and CSAB counselling, designed to help aspirants make confident and informed choices.
+                Support for JoSAA and CSAB counselling, designed to help aspirants make confident and informed choices.
               </p>
             </div>
 
@@ -73,10 +73,8 @@ export default function CounsellingSection() {
 
                 <ul className="space-y-3 pt-2">
                   {[
-                    "Institute-wise and branch-wise counselling clarity",
-                    "Previous year cutoff trends and interpretation",
-                    "Academic workload and placement expectations",
-                    "Common mistakes to avoid during choice filling"
+                    
+                    
                   ].map((text, i) => (
                     <li key={i} className="flex items-start gap-3 text-slate-600 text-sm sm:text-base font-medium">
                         {/* badge removed */}
