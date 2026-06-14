@@ -341,8 +341,8 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
       <div className="ui-page-shell relative z-10">
         <PageHeader
-          title="Network Legacy"
-          description="Once a member of the network, always a part of its legacy."
+          title=""
+          description=""
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search by name, role, company, or institute..."

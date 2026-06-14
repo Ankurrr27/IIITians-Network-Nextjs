@@ -46,7 +46,7 @@ export default function DiscussPreviewSection() {
 
           <button
             onClick={() => router.push("/discuss")}
-            className="shrink-0 rounded-full border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-600 transition hover:bg-indigo-50"
+            className="shrink-0 text-xs font-semibold text-indigo-500 hover:text-indigo-700 hover:underline transition cursor-pointer"
           >
             View all posts
           </button>

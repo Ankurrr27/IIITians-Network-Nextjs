@@ -16,6 +16,7 @@ const adminLinks = [
   { label: "Notifications", href: "/admin/notifications" },
   { label: "Gallery", href: "/admin/gallery" },
   { label: "Guide", href: "/admin/guide" },
+  { label: "Network Stats", href: "/admin/stats" },
   { label: "Sitemap", href: "/admin/sitemap" },
   { label: "Audit Logs", href: "/admin/logs" },
 ];

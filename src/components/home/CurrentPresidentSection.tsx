@@ -107,7 +107,7 @@ export default function CurrentPresidentSection() {
   const hasPhoto = Boolean(currentPresident?.photo?.url);
 
   return (
-    <div className="mb-5 sm:mb-12 overflow-hidden bg-white sm:rounded-[1.9rem] sm:border sm:border-slate-200 sm:bg-gradient-to-br sm:from-slate-50 sm:via-white sm:to-indigo-50 sm:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
+    <div className="mb-5 sm:mb-12 overflow-hidden bg-white sm:rounded-[0.9rem] sm:border sm:border-slate-200 sm:bg-gradient-to-br sm:from-slate-50 sm:via-white sm:to-indigo-50 sm:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
       <div className="flex flex-col sm:grid sm:grid-cols-[150px_1fr] lg:grid-cols-[238px_1fr]">
         <div className="flex flex-row sm:flex-col gap-4 sm:gap-0 p-4 sm:p-0 items-center sm:items-stretch border-b border-slate-100 sm:border-none">
           <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full sm:h-auto sm:w-auto sm:rounded-none bg-indigo-100">

@@ -16,7 +16,8 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
 
   return (
     <article className="ui-card ui-card-hover group flex h-full flex-col overflow-hidden">
-      <div className="relative h-40 w-full flex-shrink-0 overflow-hidden border-b border-slate-100 bg-slate-50 sm:h-48">
+      {/* Banner */}
+      <div className="relative h-36 w-full flex-shrink-0 overflow-hidden border-b border-slate-100 bg-slate-50 sm:h-40">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={bannerUrl}
@@ -30,73 +31,78 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
             {event.type}
           </span>
         )}
-        <div className="absolute bottom-0 left-0 right-0 p-3.5">
-          <h3 className="max-w-[90%] text-lg font-semibold leading-tight !text-white line-clamp-2">{event.title}</h3>
+        <div className="absolute bottom-0 left-0 right-0 p-3">
+          <h3 className="max-w-[90%] text-base font-semibold leading-tight !text-white line-clamp-2">{event.title}</h3>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <div className="mb-2.5 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-600">
-          <Calendar className="h-3.5 w-3.5" />
-          {new Date(event.date).toLocaleDateString("en-IN", {
-            day: "numeric",
-            month: "short",
-          })}
-        </div>
-
-        <div className="mb-2 flex flex-wrap gap-2">
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-3">
+        {/* Date + chips on one row */}
+        <div className="mb-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-0.5">
+          <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-indigo-500">
+            <Calendar className="h-3 w-3" />
+            {new Date(event.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+          </span>
           {event.collegeName && (
-            <span className="ui-chip border-indigo-100 bg-indigo-50 text-indigo-700">
+            <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">·</span>
+          )}
+          {event.collegeName && (
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-500">
               {event.collegeName}
             </span>
           )}
           {event.clubName && (
-            <span className="ui-chip border-sky-100 bg-sky-50 text-sky-700">
+            <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">·</span>
+          )}
+          {event.clubName && (
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-sky-600">
               {event.clubName}
             </span>
           )}
         </div>
 
+        {/* Description */}
         {event.description && (
-          <p className="min-h-[3rem] text-sm leading-6 text-slate-600 line-clamp-2">
+          <p className="text-[12.5px] leading-5 text-slate-600 line-clamp-3">
             {event.description}
           </p>
         )}
 
         {/* Action Panel */}
-        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
+        <div className="mt-auto flex items-center justify-between pt-2.5">
           {event.link ? (
             <a
               href={event.link}
               target="_blank"
               rel="noreferrer"
-              className="ui-button ui-button-primary inline-flex min-h-9 items-center gap-1.5 px-3 text-xs"
+              className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
             >
-              Learn More <ExternalLink className="h-3 w-3" />
+              Open link <ExternalLink className="h-2.5 w-2.5" />
             </a>
           ) : (
-            <div className="h-4" />
+            <div />
           )}
 
           {/* Admin Tools */}
           {(onEdit || onDelete) && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {onEdit && (
                 <button
                   onClick={() => onEdit(event)}
-                  className="ui-icon-button h-9 w-9"
+                  className="ui-icon-button h-7 w-7"
                   title="Edit Event"
                 >
-                  <Pencil size={13} />
+                  <Pencil size={12} />
                 </button>
               )}
               {onDelete && (
                 <button
                   onClick={() => onDelete(event._id)}
-                  className="ui-icon-button h-9 w-9 border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100"
+                  className="ui-icon-button h-7 w-7 border-rose-100 bg-rose-50 text-rose-600 hover:bg-rose-100"
                   title="Delete Event"
                 >
-                  <Trash2 size={13} />
+                  <Trash2 size={12} />
                 </button>
               )}
             </div>
@@ -106,3 +112,4 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
     </article>
   );
 }
+

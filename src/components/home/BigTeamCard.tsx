@@ -79,7 +79,7 @@ export default function BigTeamCard({
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <article className="group overflow-hidden bg-white sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:shadow-[0_8px_30px_rgba(15,23,42,0.04)] sm:transition sm:duration-300 sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
+    <article className="group overflow-hidden bg-white sm:rounded-[0.5rem] sm:border sm:border-slate-200 sm:shadow-[0_8px_30px_rgba(15,23,42,0.04)] sm:transition sm:duration-300 sm:hover:-translate-y-1 sm:hover:shadow-[0_20px_60px_rgba(79,70,229,0.08)]">
       <div className="flex flex-row sm:flex-col p-4 sm:p-0 gap-4 sm:gap-0 items-start sm:items-stretch">
         <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full sm:h-64 sm:w-auto sm:rounded-none lg:h-72">
           <img
@@ -116,7 +116,7 @@ export default function BigTeamCard({
           {desc && desc.length > 80 && (
             <button
               onClick={() => setExpanded((prev) => !prev)}
-              className="mt-1.5 self-start text-xs font-medium text-indigo-600 hover:text-indigo-700 hover:underline transition cursor-pointer"
+              className="mt-0.5 self-start text-[10px] font-semibold leading-none text-indigo-400 hover:text-indigo-600 hover:underline transition cursor-pointer"
             >
               {expanded ? "See less" : "See more"}
             </button>

@@ -275,7 +275,7 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid var(--ui-line);
+  border: 1px solid transparent;
   border-radius: 9999px;
   background: #ffffff;
   color: var(--ui-muted);
