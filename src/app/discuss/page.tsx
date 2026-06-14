@@ -777,8 +777,8 @@ function DiscussPageClient() {
     <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] text-slate-950 pb-12">
       <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
         <PageHeader
-          title="Get all club updates."
-          description="Browse official club posts, student queries, collaborations, and announcements from the IIIT network."
+          title=""
+          description=""
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search discussions..."

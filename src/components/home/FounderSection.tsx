@@ -21,12 +21,12 @@ export default function FounderSection() {
           <CurrentPresidentSection />
         </div>
 
-        <div className="px-4 sm:px-0 mb-6 sm:mb-10 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:rounded-[1.5rem] sm:border sm:border-slate-200 sm:bg-slate-50/70 sm:p-7">
+        <div className="px-4 sm:px-0 mb-5 sm:mb-8 sm:flex sm:items-start sm:justify-between sm:gap-4">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               Founding Team
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
               Meet the people who started IIITians Network and laid the
               foundation for a unified, transparent, and student-first platform
               across IIIT campuses.
@@ -35,7 +35,7 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start  px-4 py-1.5 text-xs font-medium text-slate-600   transition hover:border-slate-300 hover:bg-slate-50 sm:mt-0 sm:self-auto sm:px-5 sm:py-2 shrink-0 cursor-pointer"
+            className="mt-2 sm:mt-1 shrink-0 text-xs font-semibold text-indigo-500 hover:text-indigo-700 hover:underline transition cursor-pointer block"
           >
             View current team
           </button>

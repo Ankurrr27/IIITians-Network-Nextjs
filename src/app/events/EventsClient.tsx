@@ -53,8 +53,8 @@ export default function EventsClient({ initialEvents }: Props) {
 
       <div className="ui-page-shell relative z-10">
         <PageHeader
-          title="Latest Events"
-          description="Discover cultural festivals, club launches, collaborations, and verified event pushes from IIIT communities across the network."
+          title=""
+          description=""
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search events, colleges, clubs..."

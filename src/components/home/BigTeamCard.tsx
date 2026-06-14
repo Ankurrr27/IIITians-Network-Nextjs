@@ -116,7 +116,7 @@ export default function BigTeamCard({
           {desc && desc.length > 80 && (
             <button
               onClick={() => setExpanded((prev) => !prev)}
-              className="mt-1.5 self-start text-xs font-medium text-indigo-600 hover:text-indigo-700 hover:underline transition cursor-pointer"
+              className="mt-0.5 self-start text-[10px] font-semibold leading-none text-indigo-400 hover:text-indigo-600 hover:underline transition cursor-pointer"
             >
               {expanded ? "See less" : "See more"}
             </button>

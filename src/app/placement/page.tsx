@@ -168,8 +168,8 @@ function PlacementPageClient() {
         
         {/* ─── HERO HEADER ─── */}
         <PageHeader
-          title={selectedCollegeName ? `${selectedCollegeName} Insights` : "Placement Insights"}
-          description="Detailed branch-wise packages, percentage statistics, placement ratings, and historical timelines across IIITs."
+          title=""
+          description=""
           searchControl={
             <div className="relative">
               <div className="ui-control flex h-11 items-center gap-3 px-3.5">
@@ -321,7 +321,7 @@ function PlacementPageClient() {
         {/* ─── DYNAMIC CONTENT DASHBOARD ─── */}
         {loading && <PlacementSkeleton />}
 
-        {!searched && !loading && (
+        {!data && !searched && !loading && (
           <PlacementPreview onSelectCollege={(name) => searchCollege(name, null)} />
         )}
 

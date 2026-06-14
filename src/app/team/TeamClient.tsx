@@ -107,8 +107,8 @@ export default function TeamClient({ initialMembers }: Props) {
       <section className="relative z-10 pb-2 pt-16 sm:pt-20">
         <div className="ui-page-shell">
           <PageHeader
-            title="Our Team"
-            description={hasDirectoryData ? `${uniqueVisibleCount} visible members across the IIITians Network team directory.` : "The team directory is being refreshed."}
+            title=""
+            description=""
             searchValue={search}
             onSearchChange={setSearch}
             searchPlaceholder="Search by name, role or IIIT"

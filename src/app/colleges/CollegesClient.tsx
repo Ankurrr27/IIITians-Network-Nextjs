@@ -112,8 +112,8 @@ export default function CollegesClient({
       <div className="ui-page-shell relative z-10">
 
         <PageHeader
-          title="Explore IIITs"
-          description="Explore official information about IIITs across India."
+          title=""
+          description=""
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search IIIT by name..."
@@ -387,7 +387,7 @@ function CollegeCard({
           <button
             type="button"
             onClick={() => setShowFullDescription((p) => !p)}
-            className="mb-3 w-fit text-sm font-bold text-indigo-600 transition hover:text-indigo-700"
+            className="mb-3 w-fit text-[10px] font-semibold text-indigo-400 transition hover:text-indigo-600 hover:underline leading-none"
           >
             {showFullDescription ? "See less" : "See more"}
           </button>
@@ -428,42 +428,42 @@ function CollegeCard({
 
         {/* Bottom action buttons */}
         <div className="mt-auto pt-3 border-t border-slate-100">
-          <div className="grid grid-cols-4 gap-1 sm:grid-cols-2 sm:gap-1.5">
+          <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-2 sm:gap-1.5">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
               style={{ minHeight: "auto" }}
               title="Gallery"
             >
-              <Images size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Gallery</span>
+              <Images size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Gallery</span>
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
               style={{ minHeight: "auto" }}
               title="Clubs"
             >
-              <Users size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Clubs</span>
+              <Users size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Clubs</span>
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
               style={{ minHeight: "auto" }}
               title="Legacy"
             >
-              <History size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Legacy</span>
+              <History size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Legacy</span>
             </Link>
             <Link
               href={`/placement?college=${encodeURIComponent(name)}`}
-              className="ui-button ui-button-ghost inline-flex min-w-0 items-center justify-center gap-1 whitespace-nowrap px-1.5 py-1.5 text-[9px] uppercase active:scale-95 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
               style={{ minHeight: "auto" }}
               title="Placement"
             >
-              <BriefcaseBusiness size={13} className="shrink-0" />
-              <span className="hidden sm:inline">Placement</span>
+              <BriefcaseBusiness size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Placement</span>
             </Link>
           </div>
         </div>
