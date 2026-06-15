@@ -58,7 +58,7 @@ const quickLinks = {
   Legacy: [
     { title: "Network Legacy", subtitle: "Browse legacy members", href: "/legacy", icon: Award },
     { title: "Register Your Account", subtitle: "Submit your legacy profile", href: "/legacy#legacy-form", icon: UserPlus },
-    { title: "Get Certificate", subtitle: "Open your legacy certificate", href: "/legacy/certificate", icon: FileText },
+    // { title: "Get Certificate", subtitle: "Open your legacy certificate", href: "/legacy/certificate", icon: FileText },
     { title: "Legacy Guide", subtitle: "How legacy approval works", href: "/guide?flow=legacy", icon: BookOpenText },
   ],
   Discuss: [
