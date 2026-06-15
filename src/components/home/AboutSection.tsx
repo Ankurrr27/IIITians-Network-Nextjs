@@ -41,10 +41,10 @@ export default function AboutSection() {
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 px-4 sm:px-6 sm:gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
         <div className="space-y-6">
           <div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
-              Built by students, <br></br>
-              shaped for the IIIT community.
-            </h2>
+            <h2 className="text-xl font-extrabold tracking-tight text-slate-900  sm:text-4xl leading-tight">
+  What is <span className="text-indigo-600">IIITians Network ?</span>
+  <br />
+</h2>
           </div>
 
           <div className="space-y-5 text-sm leading-relaxed text-slate-600 sm:text-base sm:leading-7">

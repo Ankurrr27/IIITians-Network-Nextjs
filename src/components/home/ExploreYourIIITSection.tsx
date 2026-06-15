@@ -155,7 +155,9 @@ export default function ExploreYourIIITSection() {
         >
           {/* Heading + stats — flat on mobile, panel on desktop */}
           <div className="sm:rounded-[1.25rem] sm:border sm:border-white/80 sm:bg-white/70 sm:p-5 sm:shadow-sm sm:backdrop-blur">
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">Explore Your IIIT</h2>
+            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
+  Explore <span className="text-indigo-600"> Your IIIT</span>
+</h2>
             <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base sm:leading-7">
               Explore every IIIT across India, compare campuses, and discover the student communities connected through IIITians Network.
             </p>
@@ -185,7 +187,7 @@ export default function ExploreYourIIITSection() {
                   key={campus.id}
                   type="button"
                   onClick={() => handleSelect(campus)}
-                  className={`flex w-full items-center justify-between rounded-lg px-2.5 py-1.5 text-left transition cursor-pointer ${
+                  className={`flex w-full items-center justify-between rounded-sm px-2.5 py-1.5 text-left transition cursor-pointer ${
                     selectedCampus.id === campus.id
                       ? "bg-slate-900 text-white"
                       : "text-slate-600 hover:bg-indigo-50 hover:text-indigo-700"

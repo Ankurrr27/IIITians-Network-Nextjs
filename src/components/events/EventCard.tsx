@@ -76,7 +76,7 @@ export default function EventCard({ event, onEdit, onDelete }: EventCardProps) {
               href={event.link}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
+              className="inline-flex items-center gap-1 rounded-sm bg-slate-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
             >
               Open link <ExternalLink className="h-2.5 w-2.5" />
             </a>

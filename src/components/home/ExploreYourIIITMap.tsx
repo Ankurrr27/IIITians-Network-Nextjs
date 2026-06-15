@@ -236,14 +236,14 @@ export default function ExploreYourIIITMap({
               href={`https://www.google.com/maps/dir/?api=1&destination=${campusForActions.latitude},${campusForActions.longitude}&travelmode=driving`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-1 rounded-full bg-indigo-600 py-1.5 text-[9px] font-black uppercase tracking-wide text-white transition hover:bg-indigo-700 sm:gap-1.5 sm:py-2 sm:text-[10px]"
+              className="inline-flex items-center justify-center gap-1 rounded-sm bg-indigo-600 py-1.5 text-[9px] font-black uppercase tracking-wide text-white transition hover:bg-indigo-700 sm:gap-1.5 sm:py-2 sm:text-[10px]"
             >
               <Navigation className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               Route
             </a>
             <a
               href={`/colleges?search=${encodeURIComponent(campusForActions.name)}`}
-              className={`inline-flex items-center justify-center gap-1 rounded-full border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
+              className={`inline-flex items-center justify-center gap-1 rounded-sm border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
                 isDarkMode
                   ? "border-slate-800 bg-slate-950 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
                   : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
@@ -256,7 +256,7 @@ export default function ExploreYourIIITMap({
               href={campusForActions.website}
               target="_blank"
               rel="noreferrer"
-              className={`inline-flex items-center justify-center gap-1 rounded-full border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
+              className={`inline-flex items-center justify-center gap-1 rounded-sm border py-1.5 text-[9px] font-black uppercase tracking-wide transition sm:gap-1.5 sm:py-2 sm:text-[10px] ${
                 isDarkMode
                   ? "border-slate-800 bg-slate-950 text-slate-300 hover:border-indigo-800 hover:bg-indigo-950/30 hover:text-indigo-300"
                   : "border-slate-200 bg-white text-slate-700 hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
