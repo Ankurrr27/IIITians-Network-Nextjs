@@ -120,19 +120,28 @@ body {
 }
 
 @media (max-width: 640px) {
-  html { font-size: 15.5px; }
+  html { font-size: 15px; }
 
   .ui-page-shell {
-    padding-inline: 0.75rem;
+    padding-inline: 0.875rem;
   }
 
   .ui-title {
-    font-size: clamp(2rem, 12vw, 2.65rem);
+    font-size: clamp(1.75rem, 10vw, 2.4rem);
   }
 
   .ui-section {
-    padding-block: 2rem;
+    padding-block: 1.75rem;
   }
+}
+
+/* Hide scrollbar but keep functionality */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Compact enterprise rhythm: keeps existing architecture while reducing visual weight. */
