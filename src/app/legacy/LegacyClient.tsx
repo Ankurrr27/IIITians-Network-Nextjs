@@ -27,7 +27,7 @@ import ImageCropModal from "@/components/ImageCropModal";
 import useThemeMode from "@/hooks/useThemeMode";
 import { notifyPromise } from "@/utils/appNotifications";
 import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
-import LegacyPosterModal from "./LegacyPosterModal";
+// import LegacyPosterModal from "./LegacyPosterModal";
 
 interface Props {
   initialAlumni: IAlumni[];
@@ -162,7 +162,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
   const { isDarkMode } = useThemeMode();
   const searchParams = useSearchParams();
   const [entries, setEntries] = useState<IAlumni[]>(initialAlumni);
-  const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
+  // const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
   const [collegeOptions, setCollegeOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiUnavailable, setApiUnavailable] = useState(false);
@@ -435,7 +435,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
             isDarkMode={isDarkMode}
             loading={loading}
             entries={entries}
-            onSharePoster={setSelectedPosterEntry}
+            // onSharePoster={setSelectedPosterEntry}
           />
 
           {totalPages > 1 && (
@@ -464,13 +464,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
         </div>
       </div>
 
-      {selectedPosterEntry && (
+      {/* {selectedPosterEntry && (
         <LegacyPosterModal
           entry={selectedPosterEntry}
           onClose={() => setSelectedPosterEntry(null)}
           isDarkMode={isDarkMode}
         />
-      )}
+      )} */}
 
       {rawPhoto && (
         <ImageCropModal
@@ -840,14 +840,14 @@ function LegacyEntryCard({
                 <p className="mt-1 text-xs font-semibold text-white/85 drop-shadow-sm" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>{serviceLine}</p>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <button
+                {/* <button
                   type="button"
                   onClick={() => onSharePoster(entry)}
                   title="Share Poster"
                   className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
-                </button>
+                </button> */}
                 <a
                   href={`mailto:${entry.email}`}
                   title="Email"
