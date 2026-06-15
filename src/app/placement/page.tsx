@@ -187,7 +187,7 @@ function PlacementPageClient() {
                 {college && (
                   <button
                     onClick={() => { setCollege(""); setData(null); setSearched(false); setIsComparing(false); setCompareData(null); }}
-                    className="ui-icon-button h-7 w-7 rounded-full"
+                    className="ui-icon-button h-7 w-7 "
                     aria-label="Clear search"
                   >
                     <X size={14} />
@@ -245,7 +245,7 @@ function PlacementPageClient() {
                   setCompareData(null);
                 }
               }}
-              className={`ui-button inline-flex min-h-10 items-center gap-2 px-4 text-xs font-black uppercase tracking-wider ${
+              className={`ui-button inline-flex min-h-10 items-center gap-2 px-4 text-xs font-black  tracking-wider ${
                 isComparing 
                   ? "bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100" 
                   : "bg-white border border-slate-200 text-indigo-600 hover:bg-indigo-50/50 shadow-sm"
@@ -273,20 +273,20 @@ function PlacementPageClient() {
               exit={{ opacity: 0, height: 0 }}
               className="overflow-hidden"
             >
-              <div className="ui-panel space-y-5 border-indigo-100 bg-indigo-50/20 p-4 sm:p-5">
+              <div className="space-y-4 sm:space-y-5 sm:ui-panel sm:border-indigo-100 sm:bg-indigo-50/20 sm:p-5">
                 <div>
-                  <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                    <Building2 className="h-5 w-5 text-indigo-600" />
-                    Campus Comparison Engine
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 sm:text-base sm:font-extrabold">
+                    <Building2 className="h-4 w-4 text-indigo-600" />
+                    Campus Comparison
                   </h3>
-                  <p className="text-xs font-semibold text-slate-500 mt-1">Select an institute to contrast stats side-by-side with {selectedCollegeName}.</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Comparing with {selectedCollegeName}.</p>
                 </div>
 
-                <div className="max-w-md">
+                <div className="sm:max-w-md">
                   <select
                     value={compareCollege}
                     onChange={(e) => handleCompareSelect(e.target.value)}
-                    className="ui-control w-full px-4 py-3 text-sm font-bold"
+                    className="ui-control w-full px-3 py-2.5 text-sm font-bold sm:px-4 sm:py-3"
                   >
                     <option value="">Choose campus to compare...</option>
                     {collegeOptions

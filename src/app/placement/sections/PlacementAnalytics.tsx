@@ -145,139 +145,137 @@ export default function PlacementAnalytics({
   if (!currentSummary) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* ─── METRICS STATS DASHBOARD ─── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        
-        {/* Placement Rate Circular Card */}
+
+      {/* Mobile: unified 2x2 panel with dividers */}
+      <div className="sm:hidden rounded-xl border border-slate-200 bg-white overflow-hidden shadow-[0_4px_16px_rgb(0,0,0,0.04)]">
+        <div className="grid grid-cols-2 divide-x divide-y divide-slate-100">
+
+          {hasPlacementRate && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-4">
+              <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                <Percent className="h-3 w-3 text-indigo-600" /> Placed
+              </span>
+              <div className="mt-1.5 flex items-center justify-between">
+                <p className="text-xl font-black tracking-tight text-slate-900">{currentSummary.placementRate.toFixed(1)}%</p>
+                <div className="relative flex h-10 w-10 shrink-0 items-center justify-center">
+                  <svg viewBox="0 0 56 56" className="absolute h-full w-full -rotate-90">
+                    <circle cx="28" cy="28" r="23" className="stroke-slate-100 fill-none" strokeWidth="4" />
+                    <circle cx="28" cy="28" r="23" className="stroke-indigo-600 fill-none" strokeWidth="4"
+                      strokeDasharray={2 * Math.PI * 23}
+                      strokeDashoffset={(2 * Math.PI * 23) * (1 - currentSummary.placementRate / 100)}
+                      strokeLinecap="round" />
+                  </svg>
+                  <span className="text-[9px] font-black text-indigo-700">{Math.round(currentSummary.placementRate)}%</span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {hasHighestPkg && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.04 }} className="p-4">
+              <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                <Award className="h-3 w-3 text-rose-500" /> Offer
+                <span className="ml-auto rounded-full bg-rose-50 px-1.5 py-0.5 text-[8px] font-black text-rose-700">MAX</span>
+              </span>
+              <p className="mt-1.5 text-xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.highestPackage)}</p>
+              <p className="mt-0.5 text-[9px] font-bold text-rose-600/70 truncate">{currentSummary.topBranch?.branch ?? "All branches"}</p>
+            </motion.div>
+          )}
+
+          {hasAvgPkg && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.08 }} className="p-4">
+              <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                <Briefcase className="h-3 w-3 text-emerald-500" /> Avg Pkg
+                <span className="ml-auto rounded-full bg-emerald-50 px-1.5 py-0.5 text-[8px] font-black text-emerald-700">MEAN</span>
+              </span>
+              <p className="mt-1.5 text-xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.averagePackage)}</p>
+              <p className="mt-0.5 text-[9px] font-bold text-emerald-600/70">{currentSummary.branchCount} branches</p>
+            </motion.div>
+          )}
+
+          {hasMedianPkg && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.12 }} className="p-4">
+              <span className="flex items-center gap-1 text-[9px] font-black uppercase tracking-wider text-slate-400">
+                <TrendingUp className="h-3 w-3 text-amber-500" /> Median
+                <span className="ml-auto rounded-full bg-amber-50 px-1.5 py-0.5 text-[8px] font-black text-amber-700">MED</span>
+              </span>
+              <p className="mt-1.5 text-xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.medianPackage)}</p>
+            </motion.div>
+          )}
+
+        </div>
+      </div>
+
+      {/* Desktop: individual hover cards */}
+      <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+
         {hasPlacementRate && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+            className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(99,102,241,0.06),_transparent_70%)]" />
             <div className="space-y-1 min-w-0 z-10">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                <Percent className="h-3.5 w-3.5 text-indigo-600" />
-                Placement Rate
-              </span>
-              <p className="text-2xl font-black tracking-tight text-slate-900">
-                {currentSummary.placementRate.toFixed(1)}%
-              </p>
-              <p className="text-[10px] font-bold text-indigo-600/70">
-                {currentSummary.studentsPlaced}/{currentSummary.totalStudents} students placed
-              </p>
+              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Percent className="h-3.5 w-3.5 text-indigo-600" />Placement Rate</span>
+              <p className="text-2xl font-black tracking-tight text-slate-900">{currentSummary.placementRate.toFixed(1)}%</p>
+              <p className="text-[10px] font-bold text-indigo-600/70">{currentSummary.studentsPlaced}/{currentSummary.totalStudents} students</p>
             </div>
-            
-            {/* Visual SVG Progress Ring */}
             <div className="relative flex h-14 w-14 shrink-0 items-center justify-center z-10">
-              <svg className="absolute h-full w-full -rotate-90">
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="23"
-                  className="stroke-slate-100 fill-none"
-                  strokeWidth="4"
-                />
-                <circle
-                  cx="28"
-                  cy="28"
-                  r="23"
-                  className="stroke-indigo-600 fill-none transition-all duration-1000 ease-out"
-                  strokeWidth="4"
-                  strokeDasharray={2 * Math.PI * 23}
-                  strokeDashoffset={2 * Math.PI * 23 * (1 - currentSummary.placementRate / 100)}
-                  strokeLinecap="round"
-                />
+              <svg viewBox="0 0 56 56" className="absolute h-full w-full -rotate-90">
+                <circle cx="28" cy="28" r="23" className="stroke-slate-100 fill-none" strokeWidth="4" />
+                <circle cx="28" cy="28" r="23" className="stroke-indigo-600 fill-none transition-all duration-1000 ease-out" strokeWidth="4"
+                  strokeDasharray={2 * Math.PI * 23} strokeDashoffset={(2 * Math.PI * 23) * (1 - currentSummary.placementRate / 100)} strokeLinecap="round" />
               </svg>
-              <span className="text-[10px] font-black text-indigo-700">
-                {Math.round(currentSummary.placementRate)}%
-              </span>
+              <span className="text-[10px] font-black text-indigo-700">{Math.round(currentSummary.placementRate)}%</span>
             </div>
           </motion.div>
         )}
 
-        {/* Highest Package */}
         {hasHighestPkg && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.04 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:shadow-xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(244,63,94,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                <Award className="h-3.5 w-3.5 text-rose-500" />
-                Highest Offer
-              </span>
-              <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-black text-rose-700 uppercase tracking-wider">Max</span>
+              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Award className="h-3.5 w-3.5 text-rose-500" />Highest Offer</span>
+              <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-black text-rose-700 uppercase">Max</span>
             </div>
             <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">
-                {formatLpa(currentSummary.highestPackage)}
-              </p>
-              <p className="mt-0.5 text-[10px] font-bold text-rose-600/70 truncate">
-                {currentSummary.topBranch ? `Lead: ${currentSummary.topBranch.branch}` : "All branches"}
-              </p>
+              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.highestPackage)}</p>
+              <p className="mt-0.5 text-[10px] font-bold text-rose-600/70 truncate">{currentSummary.topBranch ? `Lead: ${currentSummary.topBranch.branch}` : "All branches"}</p>
             </div>
           </motion.div>
         )}
 
-        {/* Average Package */}
         {hasAvgPkg && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(16,185,129,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                <Briefcase className="h-3.5 w-3.5 text-emerald-500" />
-                Avg Package
-              </span>
-              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-black text-emerald-700 uppercase tracking-wider">Mean</span>
+              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Briefcase className="h-3.5 w-3.5 text-emerald-500" />Avg Package</span>
+              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-black text-emerald-700 uppercase">Mean</span>
             </div>
             <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">
-                {formatLpa(currentSummary.averagePackage)}
-              </p>
-              <p className="mt-0.5 text-[10px] font-bold text-emerald-600/70">
-                Across {currentSummary.branchCount} branches
-              </p>
+              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.averagePackage)}</p>
+              <p className="mt-0.5 text-[10px] font-bold text-emerald-600/70">Across {currentSummary.branchCount} branches</p>
             </div>
           </motion.div>
         )}
 
-        {/* Median Package */}
         {hasMedianPkg && (
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl"
-          >
+          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(245,158,11,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                <TrendingUp className="h-3.5 w-3.5 text-amber-500" />
-                Median Pkg
-              </span>
-              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-700 uppercase tracking-wider">Median</span>
+              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><TrendingUp className="h-3.5 w-3.5 text-amber-500" />Median Pkg</span>
+              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-700 uppercase">Median</span>
             </div>
             <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">
-                {formatLpa(currentSummary.medianPackage)}
-              </p>
-              <p className="mt-0.5 text-[10px] font-bold text-amber-600/70">
-                Departmental median value
-              </p>
+              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.medianPackage)}</p>
+              <p className="mt-0.5 text-[10px] font-bold text-amber-600/70">Departmental median value</p>
             </div>
           </motion.div>
         )}
+
       </div>
 
       {/* ─── YEAR-BY-YEAR SNAPSHOTS ─── */}
@@ -285,42 +283,42 @@ export default function PlacementAnalytics({
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-[1.6rem] border border-slate-200/80 bg-white/70 p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] backdrop-blur-md"
+          className="sm:rounded-[1.6rem] sm:border sm:border-slate-200/80 sm:bg-white/70 sm:p-4 sm:shadow-[0_8px_30px_rgb(0,0,0,0.01)] sm:backdrop-blur-md"
         >
-          <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400">
-            <TrendingUp className="h-4 w-4 text-indigo-600" />
-            Year-over-Year Snapshot
+          <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">
+            <TrendingUp className="h-3.5 w-3.5 text-indigo-600" />
+            Year-by-Year
           </div>
-          <div className="mt-3 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar sm:grid sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
             {summaries.map((s) => (
               <div 
                 key={s.year} 
-                className={`rounded-2xl border p-3.5 transition-all duration-300 ${
+                className={`rounded-xl border p-2.5 shrink-0 w-[6.5rem] sm:w-auto transition-all duration-300 ${
                   s.year === year 
-                    ? "border-indigo-300 bg-indigo-50/50 shadow-md ring-2 ring-indigo-500/10 scale-102" 
-                    : "border-slate-100 bg-white hover:bg-slate-50/50 hover:border-slate-200 hover:scale-101"
+                    ? "border-indigo-300 bg-indigo-50/50 shadow-md ring-2 ring-indigo-500/10" 
+                    : "border-slate-100 bg-white hover:bg-slate-50/50 hover:border-slate-200"
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-extrabold text-slate-900">{s.year}</span>
-                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-400">{s.branchCount} br.</span>
+                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[9px] font-bold text-slate-400">{s.branchCount}br</span>
                 </div>
-                <div className="mt-2.5 space-y-1 text-xs font-bold">
+                <div className="mt-2 space-y-1 text-xs font-bold">
                   {s.averagePackage > 0 && (
-                    <div className="flex justify-between gap-1 text-slate-600">
+                    <div className="flex justify-between gap-1">
                       <span className="font-medium text-slate-400">Avg:</span>
-                      <span className="text-slate-800">{s.averagePackage.toFixed(1)} LPA</span>
+                      <span className="text-slate-800">{s.averagePackage.toFixed(1)}L</span>
                     </div>
                   )}
                   {s.highestPackage > 0 && (
-                    <div className="flex justify-between gap-1 text-slate-600">
+                    <div className="flex justify-between gap-1">
                       <span className="font-medium text-slate-400">Max:</span>
-                      <span className="text-slate-800">{s.highestPackage.toFixed(1)} LPA</span>
+                      <span className="text-slate-800">{s.highestPackage.toFixed(1)}L</span>
                     </div>
                   )}
                   {s.placementRate > 0 && (
-                    <div className="flex justify-between gap-1 text-slate-600">
-                      <span className="font-medium text-slate-400">Placed:</span>
+                    <div className="flex justify-between gap-1">
+                      <span className="font-medium text-slate-400">%:</span>
                       <span className="text-indigo-600">{s.placementRate.toFixed(0)}%</span>
                     </div>
                   )}
@@ -333,20 +331,31 @@ export default function PlacementAnalytics({
 
       {/* ─── CHARTS SECTION ─── */}
       {availableTabs.length > 0 && (
-        <div className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] sm:p-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4">
+        <div className="sm:rounded-[1.8rem] sm:border sm:border-slate-200 sm:bg-white sm:p-6 sm:shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4">
             <div>
-              <h3 className="text-lg font-bold text-slate-900">Analytics visualization</h3>
-              <p className="text-xs font-medium text-slate-500">Department metrics for {selectedCollegeName}</p>
+              <h3 className="text-sm font-bold text-slate-900 sm:text-lg">Analytics</h3>
+              <p className="text-xs font-medium text-slate-500 hidden sm:block">Department metrics for {selectedCollegeName}</p>
             </div>
 
-            {/* TAB SLIDING PILLS */}
-            <div className="flex flex-wrap gap-1 rounded-xl bg-slate-100 p-1.5 self-start">
+            {/* Mobile: native select dropdown */}
+            <select
+              className="sm:hidden ui-control px-2.5 py-1.5 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg"
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+            >
+              {availableTabs.map((t) => (
+                <option key={t.id} value={t.id}>{t.label}</option>
+              ))}
+            </select>
+
+            {/* Desktop: sliding pills */}
+            <div className="hidden sm:flex gap-1 rounded-xl bg-slate-100 p-1 self-start">
               {availableTabs.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => setActiveTab(t.id)}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-extrabold transition-all duration-300 ${
+                  className={`shrink-0 rounded-lg px-3.5 py-1.5 text-xs font-extrabold transition-all duration-300 ${
                     activeTab === t.id
                       ? "bg-slate-950 text-white shadow-md"
                       : "text-slate-500 hover:text-slate-900"
@@ -358,7 +367,7 @@ export default function PlacementAnalytics({
             </div>
           </div>
 
-          <div className="mt-6 min-h-[280px]">
+          <div className="mt-4 sm:mt-6 min-h-[260px]">
             <AnimatePresence mode="wait">
               {activeTab === "branch" && hasBranchComparison && (
                 <motion.div

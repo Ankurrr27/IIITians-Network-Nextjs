@@ -21,34 +21,34 @@ export default function PlacementFaqs({ data, yearData }: PlacementFaqsProps) {
   if (!faqs.length) return null;
 
   return (
-    <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] sm:p-8">
-      <div className="mb-6 space-y-2 border-b border-slate-100 pb-4">
+    <section className="sm:rounded-3xl sm:border sm:border-slate-200 sm:bg-white sm:p-8 sm:shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
+      <div className="mb-4 space-y-1 border-b border-slate-100 pb-3 sm:mb-6 sm:space-y-2 sm:pb-4">
         <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Common Queries</span>
-        <h3 className="text-xl font-bold text-slate-900 sm:text-2xl">Placement queries & answers</h3>
-        <p className="text-xs font-semibold leading-relaxed text-slate-500">
+        <h3 className="text-base font-bold text-slate-900 sm:text-2xl">Placement Q&amp;A</h3>
+        <p className="text-xs font-semibold leading-relaxed text-slate-500 sm:block hidden">
           Dynamic metrics context answers mapped to this campus output
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="divide-y divide-slate-100 sm:divide-y-0 sm:space-y-3">
         {faqs.map((faq, i) => {
           const isOpen = openIndex === i;
           return (
             <div 
               key={faq.question} 
-              className={`overflow-hidden rounded-2xl border transition-all duration-300 ${
+              className={`sm:overflow-hidden sm:rounded-2xl sm:border sm:transition-all sm:duration-300 ${
                 isOpen 
-                  ? "border-indigo-200 bg-indigo-50/10 shadow-sm" 
-                  : "border-slate-200/80 bg-white hover:bg-slate-50/30 hover:border-slate-300"
+                  ? "sm:border-indigo-200 sm:bg-indigo-50/10 sm:shadow-sm" 
+                  : "sm:border-slate-200/80 sm:bg-white sm:hover:bg-slate-50/30 sm:hover:border-slate-300"
               }`}
             >
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? -1 : i)}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4.5 text-left transition"
+                className="flex w-full items-center justify-between gap-3 py-3.5 px-0 sm:px-5 sm:py-4 text-left transition"
               >
-                <span className="text-sm font-bold text-slate-900 sm:text-base">{faq.question}</span>
-                <ChevronDown className={`h-4.5 w-4.5 shrink-0 text-indigo-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
+                <span className="text-sm font-semibold text-slate-800">{faq.question}</span>
+                <ChevronDown className={`h-4 w-4 shrink-0 text-indigo-500 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
               </button>
               <AnimatePresence initial={false}>
                 {isOpen && (
@@ -58,7 +58,7 @@ export default function PlacementFaqs({ data, yearData }: PlacementFaqsProps) {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="border-t border-slate-100 px-5 py-4 text-xs sm:text-sm font-semibold leading-relaxed text-slate-500">
+                    <div className="pb-3.5 px-0 sm:border-t sm:border-slate-100 sm:px-5 sm:py-4 text-xs font-medium leading-relaxed text-slate-500">
                       {faq.answer}
                     </div>
                   </motion.div>

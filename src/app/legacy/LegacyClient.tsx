@@ -894,7 +894,7 @@ function LegacyEntryCard({
                 <p className={`mt-1 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
               </div>
               <div className="flex flex-wrap shrink-0 items-center gap-1.5">
-                <button
+                {/* <button
                   type="button"
                   onClick={() => onSharePoster(entry)}
                   title="Share Poster"
@@ -906,7 +906,7 @@ function LegacyEntryCard({
                 >
                   <Sparkles className="h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
                   <span className="hidden text-xs font-semibold sm:inline">Share Poster</span>
-                </button>
+                </button> */}
                 <a
                   href={`mailto:${entry.email}`}
                   title="Email"

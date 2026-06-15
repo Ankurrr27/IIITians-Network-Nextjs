@@ -21,12 +21,10 @@ export default function PlacementPreview({ onSelectCollege }: PlacementPreviewPr
   }, []);
 
   return (
-    <section className="py-2">
+    <section className="py-4 px-2">
       {/* Header */}
       <div className="mb-5 space-y-1">
-        <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-500">
-          <Sparkles className="h-3 w-3" /> Quick Insights
-        </span>
+        
         <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
           Featured IIIT placement dashboards
         </h2>

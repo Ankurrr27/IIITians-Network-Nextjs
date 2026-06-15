@@ -83,7 +83,7 @@ export default function PlacementResults({
   if (!summary) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <PlacementAnalytics
         data={data}
         selectedCollegeName={selectedCollegeName}
@@ -92,14 +92,14 @@ export default function PlacementResults({
       />
 
       {rawPlacements.length > 0 && hasTableData && (
-        <section className="ui-panel overflow-hidden">
-          <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/50 p-5 sm:flex-row sm:items-center sm:justify-between">
+        <section className="sm:ui-panel sm:overflow-hidden">
+          <div className="flex flex-col gap-2 border-b border-slate-100 p-0 pb-3 sm:bg-slate-50/50 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:p-5">
             <div>
-              <h3 className="text-xl font-extrabold text-slate-900">Branch details</h3>
-              <p className="mt-1 text-xs font-bold text-slate-400">Ranked by placement rate</p>
+              <h3 className="text-base font-extrabold text-slate-900 sm:text-xl">Branch details</h3>
+              <p className="mt-0.5 text-xs font-bold text-slate-400">Ranked by placement rate</p>
             </div>
 
-            <div className="ui-control relative flex min-h-11 w-full items-center px-3.5 sm:w-64">
+            <div className="ui-control relative flex min-h-10 w-full items-center px-3 sm:min-h-11 sm:w-64 sm:px-3.5">
               <Filter className="mr-2 h-4 w-4 text-slate-400" />
               <input
                 value={filterQuery}
@@ -110,7 +110,54 @@ export default function PlacementResults({
             </div>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* ── Mobile: stacked list ── */}
+          <div className="sm:hidden divide-y divide-slate-100">
+            <AnimatePresence initial={false}>
+              {processedPlacements.map((placement: any, index: number) => {
+                const isTop = topBranch && placement.branch === topBranch.branch;
+                const pct = placement.placementPercentage;
+                const { barBg, pillBg, tier } = getPlacementTier(pct);
+                return (
+                  <motion.div
+                    key={placement.branch}
+                    layoutId={`row-m-${placement.branch}`}
+                    className={`flex items-center justify-between gap-3 px-4 py-3 ${isTop ? "bg-indigo-50/20" : ""}`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className="text-xs font-black text-slate-300 w-5 shrink-0 text-center">{index + 1}</span>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-sm font-bold text-slate-900 truncate">{placement.branch}</span>
+                          {isTop && (
+                            <span className="inline-flex items-center gap-0.5 rounded-full bg-indigo-100 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wide text-indigo-700 shrink-0">
+                              <Award className="h-2 w-2" /> Top
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] font-bold uppercase text-slate-400">{tier}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      {showPlacedCol && placement.placementPercentage > 0 && (
+                        <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-bold ${pillBg}`}>
+                          {placement.placementPercentage}%
+                        </span>
+                      )}
+                      {showHighestCol && placement.highestPackage > 0 && (
+                        <span className="text-[11px] font-semibold text-indigo-600">{placement.highestPackage.toFixed(1)} LPA</span>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+            {processedPlacements.length === 0 && (
+              <div className="py-8 text-center text-xs font-bold text-slate-400">No departments match your filter.</div>
+            )}
+          </div>
+
+          {/* ── Desktop: full table ── */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-left text-sm">
               <thead className="border-b border-slate-100 bg-slate-50/30 text-[11px] font-black uppercase tracking-wider text-slate-400">
                 <tr>
