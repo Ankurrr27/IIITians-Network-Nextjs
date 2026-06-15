@@ -30,13 +30,13 @@ export default function HeroSection() {
 
       <div
         className="
-          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-5
+          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center  sm:gap-5
           px-4 sm:gap-8 sm:px-6 md:grid-cols-2 md:gap-20
         "
       >
         {/* Blob — above text on mobile, left on desktop */}
         <div className="flex justify-center md:justify-start md:-ml-15">
-          <div className="animate-float scale-75 sm:scale-90 md:scale-100">
+          <div className="animate-float scale-90 sm:scale-110 md:scale-100">
             <BlobWithLogo />
           </div>
         </div>
@@ -45,16 +45,17 @@ export default function HeroSection() {
         <div className="text-left">
           <h1
             className="
-              text-[2rem] font-semibold leading-tight tracking-tight text-slate-900
-              sm:text-5xl md:text-6xl
-            "
+    text-[2rem] font-semibold leading-tight tracking-tight
+    sm:text-4xl md:text-5xl
+  "
           >
-            Empowering{" "}
-            <span className="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
-              Connections
+            <span className="text-slate-900">Empowering </span>
+
+            <span className="block mt-2 text-lg sm:text-4xl md:text-4xl font-medium">
+              <span className="bg-gradient-to-r font-bold from-indigo-700 to-indigo-500 bg-clip-text text-transparent">
+                Connections Across IIITs
+              </span>
             </span>
-            <br />
-            <span className="block text-indigo-600">Across IIITs</span>
           </h1>
 
           <p
