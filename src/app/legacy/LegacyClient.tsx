@@ -431,12 +431,12 @@ export default function LegacyClient({ initialAlumni }: Props) {
             </div>
           )}
 
-          <LegacyEntriesSection
+          {/* <LegacyEntriesSection
             isDarkMode={isDarkMode}
             loading={loading}
             entries={entries}
             // onSharePoster={setSelectedPosterEntry}
-          />
+          /> */}
 
           {totalPages > 1 && (
             <div className="mt-8 flex items-center justify-center gap-3">
