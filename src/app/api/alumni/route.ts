@@ -53,9 +53,12 @@ export async function GET(req: NextRequest) {
     const search = url.searchParams.get("search") || "";
     const generation = url.searchParams.get("generation") || "";
     const iiit = url.searchParams.get("iiit") || "";
-    const professionalStatus = url.searchParams.get("placed") || "";
+    const professionalStatus =
+      url.searchParams.get("professionalStatus") || url.searchParams.get("placed") || "";
     const legacyType = url.searchParams.get("legacyType") || "";
     const networkPost = url.searchParams.get("networkPost") || "";
+    const page = Math.max(1, Number(url.searchParams.get("page") || 1));
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 0)));
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = { $and: [{ $or: [{ status: "approved" }, { status: { $exists: false } }] }] };
@@ -69,6 +72,68 @@ export async function GET(req: NextRequest) {
     if (search.trim()) {
       const regex = new RegExp(escapeRegex(search.trim()), "i");
       query.$and.push({ $or: [{ name: regex }, { iiit: regex }, { branch: regex }, { networkPost: regex }, { currentRole: regex }, { currentCompany: regex }, { location: regex }, { "roleHistory.role": regex }, { "roleHistory.team": regex }] });
+    }
+
+    const baseQuery = { $or: [{ status: "approved" }, { status: { $exists: false } }] };
+    const statsPromise = Alumni.aggregate([
+      { $match: baseQuery },
+      {
+        $group: {
+          _id: null,
+          totalProfiles: { $sum: 1 },
+          networkPosts: {
+            $addToSet: {
+              $cond: [{ $ne: ["$networkPost", ""] }, "$networkPost", "$$REMOVE"],
+            },
+          },
+          companies: {
+            $addToSet: {
+              $cond: [{ $ne: ["$currentCompany", ""] }, "$currentCompany", "$$REMOVE"],
+            },
+          },
+          batches: {
+            $addToSet: {
+              $cond: [{ $ne: ["$generation", ""] }, "$generation", "$$REMOVE"],
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          totalProfiles: 1,
+          networkPosts: { $size: "$networkPosts" },
+          companies: { $size: "$companies" },
+          batches: { $size: "$batches" },
+        },
+      },
+    ]);
+
+    if (limit > 0) {
+      const [alumni, total, statsResult] = await Promise.all([
+        Alumni.find(query)
+          .sort({ graduationYear: -1, createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit),
+        Alumni.countDocuments(query),
+        statsPromise,
+      ]);
+
+      return NextResponse.json({
+        alumni,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.max(1, Math.ceil(total / limit)),
+        },
+        stats: statsResult[0] || {
+          totalProfiles: 0,
+          networkPosts: 0,
+          companies: 0,
+          batches: 0,
+        },
+      });
     }
 
     const alumni = await Alumni.find(query).sort({ graduationYear: -1, createdAt: -1 }).limit(200);

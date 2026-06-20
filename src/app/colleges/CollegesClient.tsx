@@ -1,16 +1,17 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
-  MapPin, Search, MoreVertical,
+  MapPin,
   ExternalLink, MoreHorizontal, Link2, ShieldCheck,
   Users, Images, ImagePlus, X, Plus,
   ChevronLeft, ChevronRight, Upload, Trash2, Globe,
+  BriefcaseBusiness, History,
 } from "lucide-react";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
+import PageHeader, { pageHeaderControlClass } from "@/components/PageHeader";
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
 interface Props {
@@ -106,37 +107,38 @@ export default function CollegesClient({
   };
 
   return (
-    <section className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)] pb-14 pt-20 sm:pb-16 sm:pt-24">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-14 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
+      <div className="ui-page-shell relative z-10">
 
-        {/* Header */}
-        <div className="mb-8 px-3 text-left sm:mb-12 sm:px-0 sm:text-center flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-700 shadow-sm">
-            <MapPin className="h-4 w-4" />
-            IIITs Directory
-          </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
-            Indian Institutes of Information Technology
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Explore official information about IIITs across India.
-          </p>
-        </div>
-
-        {/* Search */}
-        <CollegesSearch
-          search={search}
-          setSearch={setSearch}
-          setFilter={setFilter}
-          hasRecentSearches={recentSearches.length > 0}
+        <PageHeader
+          title=""
+          description=""
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search IIIT by name..."
+          filters={
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className={`${pageHeaderControlClass} w-full sm:w-56`}
+            >
+              <option value="NONE">Default order</option>
+              <option value="AZ">Sort A-Z</option>
+              <option value="ZA">Sort Z-A</option>
+              <option value="WEBSITE">Has website</option>
+              {recentSearches.length > 0 && <option value="RECENT">Recently searched</option>}
+            </select>
+          }
         />
 
         {/* Grid */}
         {filtered.length === 0 ? (
-          <p className="text-center text-gray-500">No colleges found.</p>
+          <div className="ui-empty">
+            <p className="text-sm font-semibold">No colleges found.</p>
+          </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {filtered.map((college) => (
               <CollegeCard
                 key={college._id}
@@ -157,77 +159,6 @@ export default function CollegesClient({
 }
 
 /* ─── CollegesSearch ─────────────────────────────────────────────────────── */
-function CollegesSearch({
-  search, setSearch, setFilter, hasRecentSearches = false,
-}: {
-  search: string;
-  setSearch: (v: string) => void;
-  setFilter: (v: string) => void;
-  hasRecentSearches?: boolean;
-}) {
-  const [openMenu, setOpenMenu] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setOpenMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
-
-  const sortOptions: [string, string][] = [
-    ["AZ", "Sort A-Z"],
-    ["ZA", "Sort Z-A"],
-    ["WEBSITE", "Has Website"],
-    ...(hasRecentSearches ? [["RECENT", "Recently Searched"] as [string, string]] : []),
-  ];
-
-  return (
-    <div className="relative mx-auto mb-6 max-w-full px-3 sm:mb-12 sm:max-w-md sm:px-0">
-      <div className="relative flex items-center">
-        <Search size={16} className="absolute left-3 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search IIIT by name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full rounded-xl border py-2.5 pl-9 pr-12 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:py-2 sm:text-base"
-        />
-        <div ref={menuRef} className="absolute right-2">
-          <button
-            onClick={() => setOpenMenu((p) => !p)}
-            className="rounded-lg p-2 hover:bg-gray-100 focus:outline-none sm:p-1.5"
-          >
-            <MoreVertical size={18} />
-          </button>
-          {openMenu && (
-            <div className="absolute right-0 z-10 mt-2 w-44 rounded-lg border bg-white text-sm shadow-lg sm:w-40">
-              {sortOptions.map(([value, label]) => (
-                <button
-                  key={value}
-                  onClick={() => { setFilter(value); setOpenMenu(false); }}
-                  className="w-full px-4 py-2 text-left hover:bg-gray-100"
-                >
-                  {label}
-                </button>
-              ))}
-              <button
-                onClick={() => { setFilter("NONE"); setOpenMenu(false); }}
-                className="w-full px-4 py-2 text-left text-red-500 hover:bg-gray-100"
-              >
-                Clear Filter
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
 /* ─── CollegeCard ────────────────────────────────────────────────────────── */
 function CollegeCard({
   college, teamCount = 0, discussClubs = [],
@@ -317,9 +248,9 @@ function CollegeCard({
     (description && description.length > 140) || mergedClubs.length > 0;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl sm:rounded-2xl">
+    <div className="ui-card ui-card-hover group flex flex-col">
       {/* Cover image */}
-      <div className="relative aspect-[16/8.2] overflow-hidden bg-slate-100">
+      <div className="relative aspect-[16/7.6] overflow-hidden bg-slate-100">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={coverSrc}
@@ -339,7 +270,7 @@ function CollegeCard({
         <div className="absolute right-3 top-3 z-10 flex flex-wrap justify-end gap-1.5 sm:gap-2">
           <Link
             href={`/college/${encodeURIComponent(name)}/gallery`}
-            className="flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white backdrop-blur-md shadow-lg transition-all hover:bg-slate-900/60 hover:scale-110 active:scale-95 sm:px-3 sm:text-[11px]"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-slate-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white shadow-lg backdrop-blur-md transition-all hover:bg-slate-900/60 active:scale-95 sm:px-3 sm:text-[11px]"
             title="View Gallery"
           >
             <Images className="h-3.5 w-3.5" />
@@ -347,7 +278,7 @@ function CollegeCard({
           </Link>
           <Link
             href={`/college/${encodeURIComponent(name)}/clubs`}
-            className="flex items-center gap-1.5 rounded-full border border-white/20 bg-emerald-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white backdrop-blur-md shadow-lg transition-all hover:bg-emerald-900/70 hover:scale-110 active:scale-95 sm:px-3 sm:text-[11px]"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-emerald-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white shadow-lg backdrop-blur-md transition-all hover:bg-emerald-900/70 active:scale-95 sm:px-3 sm:text-[11px]"
             title="Registered Clubs"
           >
             <Link2 className="h-3.5 w-3.5" />
@@ -355,7 +286,7 @@ function CollegeCard({
           </Link>
           <Link
             href={`/team?iiit=${encodeURIComponent(name)}`}
-            className="flex items-center gap-1.5 rounded-full border border-white/20 bg-indigo-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white backdrop-blur-md shadow-lg transition-all hover:bg-indigo-900/60 hover:scale-110 active:scale-95 sm:px-3 sm:text-[11px]"
+              className="flex items-center gap-1.5 rounded-full border border-white/20 bg-indigo-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white shadow-lg backdrop-blur-md transition-all hover:bg-indigo-900/60 active:scale-95 sm:px-3 sm:text-[11px]"
             title="Community Team"
           >
             <Users className="h-3.5 w-3.5" />
@@ -365,7 +296,7 @@ function CollegeCard({
       </div>
 
       {/* Card body */}
-      <div className="relative -mt-4 flex flex-1 flex-col rounded-t-[1.6rem] bg-white p-4 transition-all duration-300 ease-out group-hover:-translate-y-1 sm:p-6 sm:rounded-t-[2rem]">
+      <div className="relative -mt-3 flex flex-1 flex-col rounded-t-[1rem] bg-white p-4 transition-all duration-300 ease-out group-hover:-translate-y-0.5">
         <div className="mb-2 flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-md ring-1 ring-slate-200 transition-transform group-hover:-translate-y-1 group-hover:rotate-3">
@@ -378,7 +309,7 @@ function CollegeCard({
               />
             </div>
             <div className="flex flex-col">
-              <h3 className="text-sm font-bold text-gray-900 sm:text-lg">{name}</h3>
+              <h3 className="text-sm font-bold leading-tight text-gray-900 sm:text-base">{name}</h3>
               {website && (
                 <a
                   href={website}
@@ -407,7 +338,7 @@ function CollegeCard({
               <MoreHorizontal className="h-4 w-4" />
             </button>
             {showMenu && (
-              <div className="absolute right-0 top-11 z-20 w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl ring-1 ring-black/5">
+              <div className="ui-panel absolute right-0 top-11 z-20 w-56 p-2 ring-1 ring-black/5">
                 <button
                   type="button"
                   className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -446,7 +377,7 @@ function CollegeCard({
         {/* Description */}
         {description && (
           <div className="mb-3">
-            <p className={`text-sm font-medium text-gray-600 ${showFullDescription ? "" : "line-clamp-4"}`}>
+            <p className={`text-sm leading-6 text-gray-600 ${showFullDescription ? "" : "line-clamp-3"}`}>
               {description}
             </p>
           </div>
@@ -456,14 +387,14 @@ function CollegeCard({
           <button
             type="button"
             onClick={() => setShowFullDescription((p) => !p)}
-            className="mb-3 w-fit text-sm font-bold text-indigo-600 transition hover:text-indigo-700"
+            className="mb-3 w-fit text-[10px] font-semibold text-indigo-400 transition hover:text-indigo-600 hover:underline leading-none"
           >
             {showFullDescription ? "See less" : "See more"}
           </button>
         )}
 
         {showFullDescription && mergedClubs.length > 0 && (
-          <div className="mb-4 rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-200/80">
+          <div className="mb-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200/80">
             <div className="mb-3 flex items-center justify-between">
               <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                 Community Societies
@@ -496,25 +427,43 @@ function CollegeCard({
         )}
 
         {/* Bottom action buttons */}
-        <div className="mt-auto pt-4 border-t border-slate-100">
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="grid grid-cols-4 gap-1.5 sm:grid-cols-2 sm:gap-1.5">
             <Link
               href={`/college/${encodeURIComponent(name)}/gallery`}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none rounded-full bg-slate-900 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-slate-800 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
+              title="Gallery"
             >
-              <Images size={14} /> Gallery
+              <Images size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Gallery</span>
             </Link>
             <Link
               href={`/college/${encodeURIComponent(name)}/clubs`}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none rounded-full bg-indigo-600 px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-white transition hover:bg-indigo-700 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
+              title="Clubs"
             >
-              <Users size={14} /> Clubs
+              <Users size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Clubs</span>
             </Link>
             <Link
               href={`/legacy?iiit=${encodeURIComponent(name)}`}
-              className="inline-flex items-center gap-1.5 whitespace-nowrap leading-none rounded-full border border-slate-200 bg-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-700 transition hover:bg-slate-50 sm:text-[11px]"
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
+              title="Legacy"
             >
-              Legacy
+              <History size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Legacy</span>
+            </Link>
+            <Link
+              href={`/placement?college=${encodeURIComponent(name)}`}
+              className="ui-button ui-button-ghost inline-flex min-w-0 flex-col items-center justify-center gap-0.5 whitespace-nowrap py-2.5 text-[9px] uppercase active:scale-95 sm:flex-row sm:gap-1 sm:px-2.5 sm:py-2 sm:text-[10px]"
+              style={{ minHeight: "auto" }}
+              title="Placement"
+            >
+              <BriefcaseBusiness size={15} className="shrink-0" />
+              <span className="text-[8px] sm:text-[10px]">Placement</span>
             </Link>
           </div>
         </div>

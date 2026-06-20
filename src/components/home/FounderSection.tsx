@@ -9,28 +9,24 @@ export default function FounderSection() {
   const router = useRouter();
 
   return (
-    <section className="bg-white py-14 sm:py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="mb-6 sm:mb-8">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-            Team
-          </p>
-          <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+    <section className="bg-slate-50 sm:bg-white py-8 sm:py-20">
+      <div className="mx-auto max-w-7xl px-0 sm:px-6">
+        <div className="px-4 sm:px-0 mb-6 sm:mb-8">
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             IIITians Network Team
           </h2>
         </div>
 
-        <CurrentPresidentSection />
+        <div className="sm:px-0">
+          <CurrentPresidentSection />
+        </div>
 
-        <div className="mb-8 rounded-[1.5rem] border border-slate-200 bg-slate-50/70 p-5 sm:mb-12 sm:flex sm:items-end sm:justify-between sm:gap-6 sm:p-7">
+        <div className="px-4 sm:px-0 mb-5 sm:mb-8 sm:flex sm:items-start sm:justify-between sm:gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-              Leadership Story
-            </p>
-            <h2 className="mt-4 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               Founding Team
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base sm:leading-7">
               Meet the people who started IIITians Network and laid the
               foundation for a unified, transparent, and student-first platform
               across IIIT campuses.
@@ -39,13 +35,13 @@ export default function FounderSection() {
 
           <button
             onClick={() => router.push("/team")}
-            className="mt-4 self-start rounded-full bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 sm:mt-0 sm:self-auto shrink-0"
+            className="mt-2 sm:mt-1 shrink-0 text-xs font-semibold text-indigo-500 hover:text-indigo-700 hover:underline transition cursor-pointer block"
           >
             View current team
           </button>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-7">
+        <div className="grid grid-cols-1 gap-px bg-slate-200 sm:bg-transparent sm:gap-5 lg:grid-cols-3 lg:gap-7">
           <BigTeamCard
             name="Anant Mehra"
             role="Former President and CFO"
@@ -76,7 +72,7 @@ export default function FounderSection() {
             role="Former CEO"
             college="IIIT Guwahati"
             image="/Founders/3rd.jpeg"
-            desc="Contributed to strategy, operations, and scaling the initiative across multiple IIIT campuses."
+            desc="IIITians Network has been a key achievement in my career. Started with peers across IIITs, it aimed to unite students, learn new technologies, collaborate on freelancing, and support placements and startups. We organized hackathons, launched “Code Chronicles,” and built ventures like CometLabs. Now, I’m working to revive these initiatives with juniors."
             links={{
               linkedin: "https://www.linkedin.com/in/prashant-milan-katiyar/",
               instagram: "https://www.instagram.com/k.prashant__/?hl=en",

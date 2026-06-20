@@ -3,6 +3,7 @@ import connectDB from "@/lib/mongoose";
 import Discuss from "@/models/Discuss";
 import DiscussAccount from "@/models/DiscussAccount";
 import jwt from "jsonwebtoken";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 function getDiscussAccountId(req: NextRequest): string | null {
   const auth = req.headers.get("authorization");
@@ -18,6 +19,35 @@ function getDiscussAccountId(req: NextRequest): string | null {
   }
 }
 
+async function readDiscussPayload(req: NextRequest) {
+  const contentType = req.headers.get("content-type") || "";
+  if (!contentType.includes("multipart/form-data")) {
+    const body = await req.json();
+    return { body, photos: [] as { public_id: string; url: string }[] };
+  }
+
+  const formData = await req.formData();
+  const body: Record<string, string> = {};
+  const files = [
+    ...formData.getAll("photos"),
+    ...formData.getAll("banners"),
+  ].filter((value): value is File => value instanceof File && value.size > 0);
+
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === "string") body[key] = value;
+  }
+
+  const uploaded = await Promise.all(
+    files.slice(0, 6).map(async (file) => {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const result = await uploadToCloudinary(buffer, { folder: "iiitians/discuss" });
+      return { public_id: result.public_id, url: result.secure_url };
+    })
+  );
+
+  return { body, photos: uploaded };
+}
+
 // PATCH /api/discuss/mine/[id] — edit own post
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -29,7 +59,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     const post = await Discuss.findOne({ _id: id, account: accountId });
     if (!post) return NextResponse.json({ message: "Post not found" }, { status: 404 });
 
-    const body = await req.json();
+    const { body, photos } = await readDiscussPayload(req);
     const allowed = ["title", "description", "type", "actionLink", "eventDate"];
     allowed.forEach((f) => {
       if (body[f] !== undefined) {
@@ -37,6 +67,11 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         (post as any)[f] = body[f];
       }
     });
+
+    if (photos.length > 0) {
+      post.photos = photos;
+      post.banner = photos[0];
+    }
 
     // Re-evaluate auto-approve
     const account = await DiscussAccount.findById(accountId);

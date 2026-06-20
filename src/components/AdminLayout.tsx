@@ -7,15 +7,18 @@ import Image from "next/image";
 import RequireAdmin from "@/components/RequireAdmin";
 
 const adminLinks = [
-  { label: "Network Legacy", href: "/admin/legacy" },
-  { label: "Colleges", href: "/admin/colleges" },
-  { label: "Events", href: "/admin/events" },
-  { label: "Discuss", href: "/admin/discuss" },
-  { label: "Team", href: "/admin/team" },
-  { label: "Placements", href: "/admin/placement" },
+  { label: "Network Legacy", href: "/legacy/admin" },
+  { label: "Colleges", href: "/colleges/admin" },
+  { label: "Events", href: "/events/admin" },
+  { label: "Discuss", href: "/discuss/admin" },
+  { label: "Team", href: "/team/admin" },
+  { label: "Placements", href: "/placement/admin" },
   { label: "Notifications", href: "/admin/notifications" },
   { label: "Gallery", href: "/admin/gallery" },
   { label: "Guide", href: "/admin/guide" },
+  { label: "Network Stats", href: "/admin/stats" },
+  { label: "Sitemap", href: "/admin/sitemap" },
+  { label: "Audit Logs", href: "/admin/logs" },
 ];
 
 function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMenuOpen: (v: boolean) => void }) {
@@ -37,26 +40,26 @@ function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMen
 
       {/* Mobile Drawer */}
       <aside className={`fixed bottom-0 right-0 top-0 z-[70] w-72 transform bg-white shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
-            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-emerald-700">Admin Menu</span>
+          <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">Admin Menu</span>
             <button onClick={() => setIsMenuOpen(false)} className="rounded-full p-2 text-slate-400 hover:bg-slate-50">
               <X className="h-5 w-5" />
             </button>
           </div>
-          <nav className="flex-1 space-y-1 overflow-y-auto p-4 custom-scrollbar">
+          <nav className="flex-1 space-y-1 overflow-y-auto p-3 custom-scrollbar">
             {adminLinks.map((link) => (
               <Link key={link.href} href={link.href}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${pathname.startsWith(link.href) ? "bg-slate-900 text-white shadow-lg" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}>
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${pathname.startsWith(link.href) ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}>
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="border-t border-slate-100 p-4 space-y-2">
-            <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+          <div className="space-y-2 border-t border-slate-100 p-3">
+            <a href="/" target="_blank" rel="noreferrer" className="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
               <Globe className="h-4 w-4" /> Public Site
             </a>
-            <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-600 transition hover:bg-rose-100">
+            <button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-lg border border-rose-100 bg-rose-50 px-3 py-2.5 text-sm font-bold text-rose-600 transition hover:bg-rose-100">
               <LogOut className="h-4 w-4" /> Logout
             </button>
           </div>
@@ -65,15 +68,15 @@ function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMen
 
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-white/60 bg-white/80 shadow-[0_4px_20px_rgba(15,23,42,0.03)] backdrop-blur-md">
-        <div className="mx-auto flex max-w-7xl w-full items-center justify-between px-4 py-3 sm:px-6 lg:px-8 sm:py-3.5">
-          <div className="flex items-center gap-3.5 shrink-0">
+        <div className="mx-auto flex max-w-[100rem] items-center justify-between px-4 py-1.5 sm:px-5 sm:py-2">
+          <div className="flex items-center gap-3">
             <Image src="/IIITians-Network-Logo-Blue.png" alt="IIITians Network" width={180} height={50}
-              className="hidden h-11 w-auto sm:block mix-blend-multiply" style={{ filter: "hue-rotate(240deg) saturate(1.8) brightness(0.9)" }} />
+              className="hidden h-8 w-auto sm:block mix-blend-multiply" style={{ filter: "hue-rotate(240deg) saturate(1.8) brightness(0.9)" }} />
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-700 sm:text-xs">
+              <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] text-emerald-700 sm:text-[10px]">
                 <ShieldCheck className="h-3 w-3" /> Admin
               </div>
-              <h1 className="mt-0.5 text-sm font-semibold tracking-tight text-slate-900 sm:text-base whitespace-nowrap">IIITians Network Admin</h1>
+              <h1 className="mt-0.5 text-sm font-semibold tracking-tight text-slate-900 sm:text-base">IIITians Network Admin</h1>
             </div>
           </div>
 
@@ -82,7 +85,7 @@ function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMen
             <nav className="flex items-center gap-1">
               {adminLinks.map((link) => (
                 <Link key={link.href} href={link.href}
-                  className={`rounded-full px-3 py-1.5 text-[12px] font-medium transition ${pathname.startsWith(link.href) ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`}>
+                  className={`whitespace-nowrap rounded-full px-2.5 py-1.5 text-[11px] font-medium transition ${pathname.startsWith(link.href) ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"}`}>
                   {link.label}
                 </Link>
               ))}
@@ -122,10 +125,53 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="pointer-events-none fixed inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
         <div className="relative z-10 flex min-h-screen flex-col">
           <AdminNav isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
-          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-10">{children}</main>
-          <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-8">
+          <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5 sm:px-5 sm:py-7">{children}</main>
+          <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-5">
             <div className="mx-auto max-w-7xl px-4 sm:px-6">
-              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+              <div className="hidden grid-cols-3 gap-6 lg:grid">
+                <div className="max-w-xs">
+                  <div className="flex items-center gap-2 text-white">
+                    <ShieldCheck className="h-5 w-5 text-emerald-500" />
+                    <span className="font-semibold">Security & Session</span>
+                  </div>
+                  <p className="mt-2 text-[12px] leading-5 text-slate-400">
+                    Protected session active. Ensure verification before approving network members. Internal data is encrypted.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Quick Tools</h3>
+                  <ul className="mt-3 flex flex-col gap-2 text-sm text-slate-300">
+                    <li>
+                      <Link href="/admin/guide" className="transition hover:text-emerald-400">
+                        Admin Guide
+                      </Link>
+                    </li>
+                    <li>
+                      <Link href="/legacy" className="transition hover:text-emerald-400">
+                        Public Legacy Directory
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="text-right">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-slate-500">Support</h3>
+                  <p className="mt-3 text-[12px] text-slate-400">
+                    Internal Portal &bull; &copy; {new Date().getFullYear()}
+                  </p>
+                  <div className="mt-4 flex justify-end gap-4">
+                    <Link href="/" className="text-xs font-medium text-slate-500 hover:text-white">
+                      Main Site
+                    </Link>
+                    <Link href="/contact" className="text-xs font-medium text-slate-500 hover:text-white">
+                      Helpdesk
+                    </Link>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-5 sm:flex-row lg:mt-6">
                 <p className="text-[12px] font-medium text-slate-500">&copy; {new Date().getFullYear()} IIITians Network. Secure Internal Portal.</p>
                 <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-500/80">Authenticated Session</span>
               </div>

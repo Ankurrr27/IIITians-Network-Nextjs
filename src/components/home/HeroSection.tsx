@@ -12,9 +12,9 @@ export default function HeroSection() {
   return (
     <section
       className="
-        relative flex min-h-screen items-center justify-center overflow-hidden
+        relative flex min-h-[88dvh] items-center justify-center overflow-hidden
         bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)]
-        pt-24 sm:pt-36
+        pt-20 sm:min-h-screen sm:pt-36
       "
     >
       {/* Radial Gradient Overlay */}
@@ -30,33 +30,37 @@ export default function HeroSection() {
 
       <div
         className="
-          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center gap-8
-          px-4 sm:px-6 md:grid-cols-2 md:gap-20
+          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center  sm:gap-5
+          px-4 sm:gap-8 sm:px-6 md:grid-cols-2 md:gap-20
         "
       >
+        {/* Blob — above text on mobile, left on desktop */}
         <div className="flex justify-center md:justify-start md:-ml-15">
-          <div className="animate-float scale-90 sm:scale-100">
+          <div className="animate-float scale-90 sm:scale-110 md:scale-100">
             <BlobWithLogo />
           </div>
         </div>
 
+        {/* Text — below blob on mobile, right on desktop */}
         <div className="text-left">
           <h1
             className="
-              mt-4 text-4xl font-extrabold leading-tight tracking-tight text-slate-900
-              sm:text-5xl md:text-6xl
+              mt-4 text-[2rem] font-semibold leading-tight tracking-tight text-slate-900
+              sm:text-4xl md:text-5xl
             "
           >
-            One Network.
-            <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-indigo-400 bg-clip-text text-transparent">
-              All IIITs.
+            <span className="text-slate-900">Empowering </span>
+
+            <span className="block mt-2 text-lg sm:text-4xl md:text-4xl font-medium">
+              <span className="bg-gradient-to-r font-bold from-indigo-700 to-indigo-500 bg-clip-text text-transparent">
+                Connections Across IIITs
+              </span>
             </span>
           </h1>
 
           <p
             className="
-              mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base font-medium
+              mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:mt-4 sm:text-base sm:leading-7 font-medium
             "
           >
             Connecting students, alumni, startups, events, opportunities, and communities across India's IIIT ecosystem.

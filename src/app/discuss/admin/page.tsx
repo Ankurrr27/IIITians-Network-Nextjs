@@ -15,10 +15,13 @@ import {
   XCircle,
   AlertCircle,
   Sparkles,
+  Plus,
+  Pin,
 } from "lucide-react";
 import api from "@/lib/apiClient";
 import AdminLayout from "@/components/AdminLayout";
 import type { IDiscussPost, IDiscussAccount } from "@/types";
+import { AdminSectionTabs } from "@/components/admin/AdminSectionTabs";
 
 const statusOptions = ["pending", "approved", "rejected"];
 const roleOptions = ["club_member", "club_manager", "publisher"];
@@ -60,6 +63,7 @@ function StatusPill({ status }: { status: string }) {
 export default function DiscussAdminPage() {
   const [posts, setPosts] = useState<IDiscussPost[] | any[]>([]);
   const [accounts, setAccounts] = useState<IDiscussAccount[]>([]);
+  const [activeSection, setActiveSection] = useState<"clubs" | "posts">("clubs");
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState("");
   const [error, setError] = useState("");
@@ -98,6 +102,21 @@ export default function DiscussAdminPage() {
       setSuccess("Post status updated.");
     } catch (err: any) {
       setError("Could not update discuss post status.");
+    } finally {
+      setSavingId("");
+    }
+  };
+
+  const updatePostPin = async (id: string, isPinned: boolean) => {
+    setSavingId(id);
+    setError("");
+    setSuccess("");
+    try {
+      const response = await api.patch(`/discuss/${id}`, { isPinned });
+      setPosts((prev) => prev.map((post) => (post._id === id ? response.data : post)));
+      setSuccess(isPinned ? "Post pinned." : "Post unpinned.");
+    } catch (err: any) {
+      setError("Could not update discuss post pin status.");
     } finally {
       setSavingId("");
     }
@@ -170,33 +189,64 @@ export default function DiscussAdminPage() {
     authorised: accounts.filter((account) => account.isAuthorized).length,
     pendingAccounts: accounts.filter((account) => !account.isAuthorized).length,
     pendingPosts: posts.filter((post) => post.status === "pending").length,
+    pinnedPosts: posts.filter((post) => post.isPinned).length,
   };
+
+  const sortedPosts = [...posts].sort((a, b) => {
+    if (a.isPinned && !b.isPinned) return -1;
+    if (!a.isPinned && b.isPinned) return 1;
+    return 0;
+  });
+
+  const adminPinnedPosts = sortedPosts.filter((p) => p.isPinned);
+  const adminRegularPosts = sortedPosts.filter((p) => !p.isPinned);
 
   return (
     <AdminLayout>
       <div className="space-y-6">
         {/* Workspace Summary */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
                 Discuss Workspace
               </p>
-              <h1 className="mt-2 text-3xl font-bold text-slate-900">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Discuss Accounts & Moderation
               </h1>
               <p className="mt-2 text-sm text-slate-600 font-semibold leading-relaxed">
                 Manage verified club identities, review who is posting, and moderate what goes live on the network board.
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-4 shrink-0">
-              <StatCard label="Accounts" value={stats.accounts} />
-              <StatCard label="Verified" value={stats.authorised} />
-              <StatCard label="Pending Accounts" value={stats.pendingAccounts} />
-              <StatCard label="Pending Posts" value={stats.pendingPosts} />
+            <div className="flex flex-col gap-3 sm:items-end">
+              <a
+                href="/discuss?clubAccount=true"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-slate-800"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Club
+              </a>
+              <div className="grid shrink-0 gap-3 sm:grid-cols-5">
+                <StatCard label="Accounts" value={stats.accounts} />
+                <StatCard label="Verified" value={stats.authorised} />
+                <StatCard label="Pending Accounts" value={stats.pendingAccounts} />
+                <StatCard label="Pending Posts" value={stats.pendingPosts} />
+                <StatCard label="Pinned Posts" value={stats.pinnedPosts} />
+              </div>
             </div>
           </div>
         </section>
+
+        <AdminSectionTabs
+          active={activeSection}
+          onChange={setActiveSection}
+          tabs={[
+            { id: "clubs", label: "Club Identities", icon: ShieldCheck, count: accounts.length },
+            { id: "posts", label: "Discuss Posts", icon: Newspaper, count: posts.length },
+          ]}
+        />
 
         {(error || success) && (
           <div className="space-y-2">
@@ -216,7 +266,7 @@ export default function DiscussAdminPage() {
         )}
 
         {/* Discuss Accounts Section */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        {activeSection === "clubs" && <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white">
               <ShieldCheck className="h-5 w-5" />
@@ -228,176 +278,113 @@ export default function DiscussAdminPage() {
           </div>
 
           {loading ? (
-            <div className="grid gap-4 xl:grid-cols-2">
-              {Array.from({ length: 2 }).map((_, index) => (
-                <div
-                  key={index}
-                  className="animate-pulse rounded-[1.6rem] border border-slate-200 bg-slate-50 p-5 space-y-3"
-                >
-                  <div className="h-4 bg-slate-200 rounded w-1/3" />
-                  <div className="h-6 bg-slate-200 rounded w-2/3" />
-                  <div className="h-10 bg-slate-200 rounded" />
-                </div>
-              ))}
+            <div className="space-y-2">
+              <div className="h-12 animate-pulse rounded-xl bg-slate-100" />
+              <div className="h-12 animate-pulse rounded-xl bg-slate-100" />
             </div>
           ) : accounts.length === 0 ? (
-            <p className="text-sm font-semibold text-slate-400 py-4">No discuss accounts found.</p>
+            <p className="py-4 text-sm font-semibold text-slate-400">No discuss accounts found.</p>
           ) : (
-            <div className="grid gap-4 xl:grid-cols-2">
-              {accounts.map((account) => (
-                <article
-                  key={account._id}
-                  className="rounded-[1.6rem] border border-slate-200 bg-[linear-gradient(180deg,_#ffffff_0%,_#f8fafc_100%)] p-5 shadow-sm space-y-4"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className={`rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] ${
-                        account.isAuthorized
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-amber-50 text-amber-700"
-                      }`}
-                    >
-                      {account.badgeLabel || (account.isAuthorized ? "Verified by network" : "Pending verification")}
-                    </span>
-                    <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-600 ring-1 ring-slate-200">
-                      {account.role?.replace("_", " ")}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900">{account.clubName}</h3>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                        <Building2 className="h-3.5 w-3.5" />
-                        {account.collegeName}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                        <Newspaper className="h-3.5 w-3.5" />
-                        {getPostCount(account)} posts
-                      </span>
+            <div className="overflow-x-auto rounded-[1.15rem] border border-slate-200">
+              <div className="min-w-[1100px]">
+                <div className="grid grid-cols-[minmax(240px,1.2fr)_minmax(180px,0.85fr)_160px_170px_minmax(260px,1fr)] border-b border-slate-200 bg-slate-50/80 px-5 py-3 text-xs font-bold uppercase tracking-wide text-slate-500">
+                  <div>Club</div>
+                  <div>Contact</div>
+                  <div>Role</div>
+                  <div>Status</div>
+                  <div className="text-right">Actions</div>
+                </div>
+                {accounts.map((account) => (
+                  <div key={account._id} className="grid grid-cols-[minmax(240px,1.2fr)_minmax(180px,0.85fr)_160px_170px_minmax(260px,1fr)] items-center gap-4 border-b border-slate-100 px-5 py-4 last:border-b-0">
+                    <div className="min-w-0">
+                      <div className="font-bold text-slate-900">{account.clubName}</div>
+                      <div className="mt-1 flex flex-wrap gap-2 text-xs text-slate-500">
+                        <span className="inline-flex items-center gap-1">
+                          <Building2 className="h-3.5 w-3.5" />
+                          {account.collegeName}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <Newspaper className="h-3.5 w-3.5" />
+                          {getPostCount(account)} posts
+                        </span>
+                      </div>
                     </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200/80 text-xs">
-                      <p className="font-bold uppercase tracking-[0.16em] text-slate-400">Point of Contact</p>
-                      <p className="mt-1.5 font-bold text-slate-900">{account.contactName}</p>
-                      {account.contactPhone && (
-                        <p className="mt-1 inline-flex items-center gap-1 text-slate-600">
-                          <Phone className="h-3.5 w-3.5 text-slate-400" />
-                          {account.contactPhone}
-                        </p>
-                      )}
-                      {account.email && (
-                        <p className="mt-0.5 inline-flex items-center gap-1 text-slate-600 break-all">
-                          <Mail className="h-3.5 w-3.5 text-slate-400" />
-                          {account.email}
-                        </p>
-                      )}
-                      {account.website && (
-                        <a
-                          href={account.website}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-1.5 inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-500 font-bold"
-                        >
-                          <ExternalLink className="h-3.5 w-3.5" />
-                          Visit Website
-                        </a>
-                      )}
-                    </div>
-
-                    <div className="rounded-2xl bg-slate-50 p-3 ring-1 ring-slate-200/80 text-xs text-slate-600">
-                      <p className="font-bold uppercase tracking-[0.16em] text-slate-400">Activity Info</p>
-                      <p className="mt-1.5">
-                        Created: {account.createdAt ? new Date(account.createdAt).toLocaleDateString() : "N/A"}
-                      </p>
-                      <p className="mt-0.5">
-                        Last Active: {account.lastLogin ? new Date(account.lastLogin).toLocaleDateString() : "Never"}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-400">Website / Linktree</label>
-                      <input
-                        defaultValue={account.website || ""}
-                        onBlur={(e) => updateAccount(account._id, { website: e.target.value })}
-                        placeholder="Club website URL"
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600"
-                      />
+                    <div className="min-w-0 text-sm">
+                      <div className="font-semibold text-slate-900">{account.contactName}</div>
+                      <div className="truncate text-xs text-slate-500">{account.email || account.contactPhone || "No contact"}</div>
                     </div>
                     <div>
-                      <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-400">Authority Role</label>
                       <select
                         value={account.role}
                         onChange={(e) => updateAccount(account._id, { role: e.target.value as any })}
                         disabled={savingId === account._id}
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600"
+                        className="w-full rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-600"
                       >
                         {roleOptions.map((role) => (
-                          <option key={role} value={role}>
-                            {role.replace("_", " ")}
-                          </option>
+                          <option key={role} value={role}>{role.replace("_", " ")}</option>
                         ))}
                       </select>
                     </div>
-                    <div className="sm:col-span-2">
-                      <label className="mb-1 block text-[10px] font-bold uppercase tracking-wide text-slate-400">Custom Badge Label</label>
-                      <input
-                        defaultValue={account.badgeLabel || ""}
-                        onBlur={(e) => updateAccount(account._id, { badgeLabel: e.target.value })}
-                        placeholder="e.g. Verified Club, Tech Society"
-                        className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-600"
-                      />
+                    <div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold uppercase ring-1 ${
+                        account.isAuthorized ? "bg-emerald-50 text-emerald-700 ring-emerald-100" : "bg-amber-50 text-amber-700 ring-amber-100"
+                      }`}>
+                        {account.badgeLabel || (account.isAuthorized ? "Verified" : "Pending")}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap justify-end gap-2">
+                      {account.website && (
+                        <a href={account.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:text-indigo-700">
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          Link
+                        </a>
+                      )}
+                      <button
+                        type="button"
+                        disabled={savingId === account._id}
+                        onClick={() => updateAccount(account._id, {
+                          isAuthorized: !account.isAuthorized,
+                          badgeLabel: !account.isAuthorized ? account.badgeLabel || "Verified by network" : "Pending verification",
+                        })}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+                      >
+                        <UserCog className="h-3.5 w-3.5" />
+                        {account.isAuthorized ? "Deauthorize" : "Verify"}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={savingId === account._id}
+                        onClick={() => deleteAccount(account._id)}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
                   </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      type="button"
-                      disabled={savingId === account._id}
-                      onClick={() =>
-                        updateAccount(account._id, {
-                          isAuthorized: !account.isAuthorized,
-                          badgeLabel: !account.isAuthorized
-                            ? account.badgeLabel || "Verified by network"
-                            : "Pending verification",
-                        })
-                      }
-                      className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
-                    >
-                      <UserCog className="h-4 w-4" />
-                      {account.isAuthorized ? "Deauthorize" : "Verify Club"}
-                    </button>
-
-                    <button
-                      type="button"
-                      disabled={savingId === account._id}
-                      onClick={() => deleteAccount(account._id)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-4 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50 ml-auto"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                      Delete Account
-                    </button>
-                  </div>
-                </article>
-              ))}
+                ))}
+              </div>
             </div>
           )}
-        </section>
+        </section>}
 
         {/* Discuss Posts Section */}
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-5 flex items-center gap-3 border-b border-slate-100 pb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
-              <Sparkles className="h-5 w-5" />
+        {activeSection === "posts" && <section className="rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-5 flex items-center justify-between border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">Discuss Boards Moderation</h2>
+                <p className="text-xs text-slate-500 font-semibold">Review, approve, reject · Pin posts to highlight them at the top of the public feed</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900">Discuss Boards Moderation</h2>
-              <p className="text-xs text-slate-500 font-semibold">Review, approve, or reject user posts</p>
-            </div>
+            {stats.pinnedPosts > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1.5 text-xs font-bold text-amber-700 ring-1 ring-amber-300">
+                <Pin className="h-3.5 w-3.5 fill-amber-500" />
+                {stats.pinnedPosts} pinned
+              </span>
+            )}
           </div>
 
           {loading ? (
@@ -408,82 +395,142 @@ export default function DiscussAdminPage() {
           ) : posts.length === 0 ? (
             <p className="text-sm font-semibold text-slate-400 py-4">No discuss posts found.</p>
           ) : (
-            <div className="space-y-4">
-              {posts.map((post) => (
-                <article key={post._id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 space-y-4">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="max-w-3xl space-y-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <StatusPill status={post.status} />
-                        <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">
-                          {post.type}
-                        </span>
-                        <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">
-                          {post.collegeName}
-                        </span>
-                        <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">
-                          {post.clubName}
-                        </span>
-                        {post.isAuthorisedPost && (
-                          <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700">
-                            {post.badgeLabel || "Verified Post"}
-                          </span>
-                        )}
-                      </div>
+            <div className="space-y-6">
 
-                      <h3 className="text-xl font-bold text-slate-900">{post.title}</h3>
-                      <p className="text-sm leading-relaxed text-slate-600 font-semibold">{post.description}</p>
-                      
-                      {post.banner?.url && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={post.banner.url}
-                          alt={post.title}
-                          className="h-44 w-full rounded-2xl object-cover ring-1 ring-slate-200 shadow-sm"
-                        />
-                      )}
-
-                      <p className="text-xs text-slate-500 font-semibold">
-                        Submitted by: {post.contactName || "Unknown"} 
-                        {post.contactPhone ? ` · Contact: ${post.contactPhone}` : ""}
-                        {post.contactEmail ? ` · Email: ${post.contactEmail}` : ""}
-                        {post.createdAt && ` · Posted: ${new Date(post.createdAt).toLocaleDateString()}`}
-                      </p>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2 shrink-0">
-                      {statusOptions.map((status) => (
-                        <button
-                          key={status}
-                          type="button"
-                          disabled={savingId === post._id}
-                          onClick={() => updateStatus(post._id, status)}
-                          className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition ${
-                            post.status === status
-                              ? "bg-slate-900 text-white"
-                              : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
-                          }`}
-                        >
-                          {status}
-                        </button>
-                      ))}
-
-                      <button
-                        type="button"
-                        disabled={savingId === post._id}
-                        onClick={() => deletePost(post._id)}
-                        className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </button>
-                    </div>
+              {/* ── PINNED SECTION ── */}
+              {adminPinnedPosts.length > 0 && (
+                <div>
+                  <div className="mb-3 flex items-center gap-2 rounded-xl bg-amber-50 px-4 py-2.5 ring-1 ring-amber-200">
+                    <Pin className="h-4 w-4 fill-amber-500 text-amber-500" />
+                    <span className="text-sm font-bold text-amber-700">Pinned Posts — visible at the top of the public discuss feed</span>
+                    <span className="ml-auto rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-bold text-amber-800">{adminPinnedPosts.length}</span>
                   </div>
-                </article>
-              ))}
+                  <div className="space-y-3">
+                    {adminPinnedPosts.map((post) => (
+                      <article key={post._id} className="rounded-2xl border-2 border-amber-300 bg-amber-50/60 p-5 space-y-4 shadow-sm">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                          <div className="max-w-3xl space-y-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white">
+                                <Pin className="h-3.5 w-3.5 fill-white" /> Pinned
+                              </span>
+                              <StatusPill status={post.status} />
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.type}</span>
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.collegeName}</span>
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.clubName}</span>
+                              {post.isAuthorisedPost && (
+                                <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700">{post.badgeLabel || "Verified Post"}</span>
+                              )}
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">{post.title}</h3>
+                            <p className="text-sm leading-relaxed text-slate-600 font-semibold">{post.description}</p>
+                            {post.banner?.url && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={post.banner.url} alt={post.title} className="h-44 w-full rounded-2xl object-cover ring-1 ring-amber-200 shadow-sm" />
+                            )}
+                            <p className="text-xs text-slate-500 font-semibold">
+                              Submitted by: {post.contactName || "Unknown"}
+                              {post.contactPhone ? ` · Contact: ${post.contactPhone}` : ""}
+                              {post.contactEmail ? ` · Email: ${post.contactEmail}` : ""}
+                              {post.createdAt && ` · Posted: ${new Date(post.createdAt).toLocaleDateString()}`}
+                            </p>
+                          </div>
+                          <div className="flex flex-col gap-2 shrink-0">
+                            <div className="flex flex-wrap gap-2">
+                              {statusOptions.map((status) => (
+                                <button key={status} type="button" disabled={savingId === post._id} onClick={() => updateStatus(post._id, status)}
+                                  className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition cursor-pointer ${
+                                    post.status === status ? "bg-slate-900 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                                  }`}>{status}</button>
+                              ))}
+                            </div>
+                            <div className="flex gap-2">
+                              <button type="button" disabled={savingId === post._id}
+                                onClick={() => updatePostPin(post._id, false)}
+                                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-amber-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-amber-600 cursor-pointer disabled:opacity-50">
+                                <Pin className="h-4 w-4 fill-white" /> Unpin Post
+                              </button>
+                              <button type="button" disabled={savingId === post._id} onClick={() => deletePost(post._id)}
+                                className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50 cursor-pointer">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ── ALL OTHER POSTS ── */}
+              {adminRegularPosts.length > 0 && (
+                <div>
+                  {adminPinnedPosts.length > 0 && (
+                    <div className="mb-3 flex items-center gap-2 rounded-xl bg-slate-50 px-4 py-2.5 ring-1 ring-slate-200">
+                      <Sparkles className="h-4 w-4 text-slate-400" />
+                      <span className="text-sm font-bold text-slate-500">Unpinned Posts — shown in the regular feed</span>
+                      <span className="ml-auto rounded-full bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-600">{adminRegularPosts.length}</span>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    {adminRegularPosts.map((post) => (
+                      <article key={post._id} className="rounded-2xl border border-slate-200 bg-slate-50 p-5 space-y-4">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                          <div className="max-w-3xl space-y-3">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <StatusPill status={post.status} />
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.type}</span>
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.collegeName}</span>
+                              <span className="rounded-full bg-white px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 ring-1 ring-slate-200">{post.clubName}</span>
+                              {post.isAuthorisedPost && (
+                                <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-700">{post.badgeLabel || "Verified Post"}</span>
+                              )}
+                            </div>
+                            <h3 className="text-xl font-bold text-slate-900">{post.title}</h3>
+                            <p className="text-sm leading-relaxed text-slate-600 font-semibold">{post.description}</p>
+                            {post.banner?.url && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={post.banner.url} alt={post.title} className="h-44 w-full rounded-2xl object-cover ring-1 ring-slate-200 shadow-sm" />
+                            )}
+                            <p className="text-xs text-slate-500 font-semibold">
+                              Submitted by: {post.contactName || "Unknown"}
+                              {post.contactPhone ? ` · Contact: ${post.contactPhone}` : ""}
+                              {post.contactEmail ? ` · Email: ${post.contactEmail}` : ""}
+                              {post.createdAt && ` · Posted: ${new Date(post.createdAt).toLocaleDateString()}`}
+                            </p>
+                          </div>
+                          <div className="flex flex-col gap-2 shrink-0">
+                            <div className="flex flex-wrap gap-2">
+                              {statusOptions.map((status) => (
+                                <button key={status} type="button" disabled={savingId === post._id} onClick={() => updateStatus(post._id, status)}
+                                  className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition cursor-pointer ${
+                                    post.status === status ? "bg-slate-900 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-100"
+                                  }`}>{status}</button>
+                              ))}
+                            </div>
+                            <div className="flex gap-2">
+                              <button type="button" disabled={savingId === post._id}
+                                onClick={() => updatePostPin(post._id, true)}
+                                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-300 transition hover:bg-amber-50 hover:text-amber-700 hover:ring-amber-300 cursor-pointer disabled:opacity-50">
+                                <Pin className="h-4 w-4" /> Pin to Top
+                              </button>
+                              <button type="button" disabled={savingId === post._id} onClick={() => deletePost(post._id)}
+                                className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50 cursor-pointer">
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              )}
+
             </div>
           )}
-        </section>
+        </section>}
       </div>
     </AdminLayout>
   );

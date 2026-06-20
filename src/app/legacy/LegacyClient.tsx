@@ -1,145 +1,1026 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useMemo, useState } from "react";
+import type React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Link2, Globe, Search } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import {
+  Briefcase,
+  Building2,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronUp,
+  GraduationCap,
+  Instagram,
+  Linkedin,
+  Mail,
+  Milestone,
+  ShieldCheck,
+  Sparkles,
+  Users,
+} from "lucide-react";
+import api from "@/lib/apiClient";
+import type { IAlumni, ICollege, ITeamMember } from "@/types";
+import ImageCropModal from "@/components/ImageCropModal";
+import useThemeMode from "@/hooks/useThemeMode";
+import { notifyPromise } from "@/utils/appNotifications";
+import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
+// import LegacyPosterModal from "./LegacyPosterModal";
 
-import type { IAlumni } from "@/types";
-import { notifyPageEntry } from "@/utils/appNotifications";
+interface Props {
+  initialAlumni: IAlumni[];
+}
 
-interface Props { initialAlumni: IAlumni[]; }
+type LegacyForm = {
+  name: string;
+  email: string;
+  iiit: string;
+  graduationYear: string;
+  generation: string;
+  branch: string;
+  networkPost: string;
+  currentRole: string;
+  currentCompany: string;
+  location: string;
+  linkedin: string;
+  instagram: string;
+  bio: string;
+};
 
-type LegacyTypeFilter = "all" | "alumni" | "team_member";
+type LegacyStatsData = {
+  totalProfiles: number;
+  networkPosts: number;
+  companies: number;
+  batches: number;
+};
+
+const initialForm: LegacyForm = {
+  name: "",
+  email: "",
+  iiit: "",
+  graduationYear: "",
+  generation: "",
+  branch: "",
+  networkPost: "",
+  currentRole: "",
+  currentCompany: "",
+  location: "",
+  linkedin: "",
+  instagram: "",
+  bio: "",
+};
+
+const legacyFormFields: Array<
+  [keyof LegacyForm, string, string, string, boolean, string]
+> = [
+  ["name", "Full name", "e.g. Ankur Singh", "text", true, ""],
+  ["email", "Email address", "e.g. ankur@email.com", "email", true, ""],
+  ["generation", "Team term or batch", "e.g. 2024-28 or 2021-25", "text", true, ""],
+  ["graduationYear", "Graduation year", "e.g. 2028", "number", true, ""],
+  ["branch", "Branch", "e.g. CSE", "text", true, ""],
+  ["networkPost", "Latest network post", "e.g. Vice President", "text", false, ""],
+  ["currentRole", "Current role / designation", "e.g. Product Designer Intern", "text", false, ""],
+  ["currentCompany", "Current company / organization", "e.g. Adobe / Freelance", "text", false, ""],
+  ["location", "Current location", "e.g. Bengaluru, India", "text", false, ""],
+  ["linkedin", "LinkedIn profile URL", "e.g. https://linkedin.com/in/ankur-singh", "text", false, "sm:col-span-2"],
+  ["instagram", "Instagram profile URL", "e.g. https://instagram.com/ankurwrites", "text", false, "sm:col-span-2"],
+];
+
+const cardShell = {
+  light: "border-slate-200 bg-white shadow-[0_18px_50px_rgba(15,23,42,0.06)]",
+  dark: "border-slate-800 bg-slate-900 shadow-[0_18px_50px_rgba(15,23,42,0.26)]",
+};
+
+const itemsPerPage = 12;
+
+const normalizeText = (value = "") => value.trim().toLowerCase();
+
+function normalizeCollegeName(name = "") {
+  const normalized = name.trim().toLowerCase();
+  if (
+    normalized.includes("sricity") ||
+    normalized.includes("sri city") ||
+    normalized === "chittoor" ||
+    (normalized.includes("iiit") && normalized.includes("chittoor"))
+  ) {
+    return "iiit sricity_chittoor_canonical";
+  }
+  return normalized;
+}
+
+function getLegacyStats(statsData: LegacyStatsData) {
+  return [
+    { label: "Legacy profiles", value: statsData.totalProfiles || 0, icon: Users },
+    { label: "Network posts", value: statsData.networkPosts || 0, icon: ShieldCheck },
+    { label: "Companies listed", value: statsData.companies || 0, icon: Building2 },
+    { label: "Batches visible", value: statsData.batches || 0, icon: GraduationCap },
+  ];
+}
+
+function dedupeRoleHistory(roleHistory: IAlumni["roleHistory"] = []) {
+  return roleHistory.filter((item, index, list) => {
+    const signature = `${normalizeText(item.year || "")}|${normalizeText(item.team || "")}|${normalizeText(item.role || "")}`;
+    return (
+      index ===
+      list.findIndex((candidate) => {
+        const candidateSignature = `${normalizeText(candidate.year || "")}|${normalizeText(candidate.team || "")}|${normalizeText(candidate.role || "")}`;
+        return candidateSignature === signature;
+      })
+    );
+  });
+}
+
+function getLegacyEntryViewModel(entry: IAlumni) {
+  const companyValue = entry.currentCompany || "";
+  const normalizedNetworkPost = normalizeText(entry.networkPost);
+  const normalizedCurrentRole = normalizeText(entry.currentRole);
+  const normalizedCurrentCompany = normalizeText(companyValue);
+  const normalizedIiit = normalizeText(entry.iiit);
+  const dedupedRoleHistory = dedupeRoleHistory(entry.roleHistory || []);
+
+  return {
+    companyValue,
+    showRoleChip: !!entry.currentRole && normalizedCurrentRole !== normalizedNetworkPost,
+    showCompanyChip: !!companyValue && normalizedCurrentCompany !== normalizedIiit,
+    dedupedRoleHistory,
+    totalTerms: dedupedRoleHistory.length,
+  };
+}
+
+function deriveStats(entries: IAlumni[]): LegacyStatsData {
+  return {
+    totalProfiles: entries.length,
+    networkPosts: new Set(entries.map((entry) => entry.networkPost).filter(Boolean)).size,
+    companies: new Set(entries.map((entry) => entry.currentCompany).filter(Boolean)).size,
+    batches: new Set(entries.map((entry) => entry.generation).filter(Boolean)).size,
+  };
+}
 
 export default function LegacyClient({ initialAlumni }: Props) {
-  const [search, setSearch] = useState("");
-  const [iiitFilter, setIiitFilter] = useState("");
-  const [legacyTypeFilter, setLegacyTypeFilter] = useState<LegacyTypeFilter>("all");
-  const [showForm, setShowForm] = useState(false);
+  const { isDarkMode } = useThemeMode();
+  const searchParams = useSearchParams();
+  const [entries, setEntries] = useState<IAlumni[]>(initialAlumni);
+  // const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
+  const [collegeOptions, setCollegeOptions] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [apiUnavailable, setApiUnavailable] = useState(false);
+  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [iiitFilter, setIiitFilter] = useState(searchParams.get("iiit") || "");
+  const [networkPostFilter, setNetworkPostFilter] = useState(searchParams.get("networkPost") || "");
+  const [areFiltersOpen, setAreFiltersOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [submitState, setSubmitState] = useState({ loading: false, error: "", success: "" });
+  const [form, setForm] = useState<LegacyForm>(initialForm);
+  const [teamMembers, setTeamMembers] = useState<ITeamMember[]>([]);
+  const [photo, setPhoto] = useState<File | null>(null);
+  const [rawPhoto, setRawPhoto] = useState<File | null>(null);
+  const [useTeamPhoto, setUseTeamPhoto] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({ totalPages: 1 });
+  const [statsData, setStatsData] = useState<LegacyStatsData>(deriveStats(initialAlumni));
+
+  const fetchEntries = async (filters = {}, page = currentPage) => {
+    setLoading(true);
+
+    const promise = api.get("/alumni", {
+      params: {
+        search,
+        iiit: iiitFilter,
+        networkPost: networkPostFilter,
+        page,
+        limit: itemsPerPage,
+        ...filters,
+      },
+    });
+
+    try {
+      const response = await promise;
+      const data = response.data;
+      const nextEntries = data?.alumni ?? data ?? [];
+      setEntries(nextEntries);
+      if (data?.pagination) setPagination(data.pagination);
+      if (data?.stats) setStatsData(data.stats);
+      setApiUnavailable(false);
+    } catch (error: any) {
+      if (error.response?.status === 404) setApiUnavailable(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    notifyPageEntry("Network Legacy loaded", "Explore IIITians who shaped the network.", "page-legacy-loaded");
+    const loadSupportingData = async () => {
+      const [teamRes, collegeRes] = await Promise.allSettled([
+        api.get<ITeamMember[]>("/team"),
+        api.get<ICollege[]>("/colleges"),
+      ]);
+
+      if (teamRes.status === "fulfilled") setTeamMembers(teamRes.value.data || []);
+      if (collegeRes.status === "fulfilled") {
+        setCollegeOptions((collegeRes.value.data || []).map((college) => college.name).filter(Boolean));
+      }
+    };
+
+    loadSupportingData();
   }, []);
 
-  const iiiTs = Array.from(new Set(initialAlumni.map((a) => a.iiit))).sort();
+  useEffect(() => {
+    setSearch(searchParams.get("search") || "");
+    setIiitFilter(searchParams.get("iiit") || "");
+    setNetworkPostFilter(searchParams.get("networkPost") || "");
+  }, [searchParams]);
 
-  const filtered = initialAlumni.filter((a) => {
-    if (legacyTypeFilter !== "all" && a.legacyType !== legacyTypeFilter) return false;
-    if (iiitFilter && a.iiit !== iiitFilter) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (
-        a.name.toLowerCase().includes(q) ||
-        a.iiit.toLowerCase().includes(q) ||
-        a.branch?.toLowerCase().includes(q) ||
-        a.currentRole?.toLowerCase().includes(q) ||
-        a.currentCompany?.toLowerCase().includes(q)
-      );
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCurrentPage(1);
+      fetchEntries({}, 1);
+    }, 250);
+
+    return () => clearTimeout(timeout);
+  }, [search, iiitFilter, networkPostFilter]);
+
+  useEffect(() => {
+    fetchEntries({}, currentPage);
+  }, [currentPage]);
+
+  const matchedTeamMember = useMemo(() => {
+    const normalizedEmail = form.email.trim().toLowerCase();
+    if (!normalizedEmail) return null;
+
+    return (
+      [...teamMembers]
+        .filter((member) => (member.email || "").trim().toLowerCase() === normalizedEmail)
+        .sort((a, b) => String(b.year || "").localeCompare(String(a.year || ""), undefined, { numeric: true }))[0] || null
+    );
+  }, [form.email, teamMembers]);
+
+  const iiitOptions = useMemo(() => {
+    const values = [
+      ...entries.map((entry) => entry.iiit).filter((value): value is string => Boolean(value)),
+      ...collegeOptions,
+    ];
+    return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+  }, [entries, collegeOptions]);
+
+  const networkPostOptions = useMemo(() => {
+    const values = entries.map((entry) => entry.networkPost).filter((value): value is string => Boolean(value));
+    return [...new Set(values)].sort((a, b) => a.localeCompare(b));
+  }, [entries]);
+
+  const stats = useMemo(() => getLegacyStats(statsData), [statsData]);
+  const totalPages = pagination.totalPages ?? 1;
+
+  const filterSelectClass = `w-full appearance-none rounded-2xl border px-4 py-3 pr-12 text-sm outline-none transition duration-300 truncate sm:text-base ${
+    isDarkMode
+      ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+      : "border-slate-200 bg-white/90 text-slate-900 shadow-sm focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+  }`;
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm((prev) => ({ ...prev, [event.target.name]: event.target.value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (submitState.loading) return;
+
+    setSubmitState({ loading: true, error: "", success: "" });
+
+    try {
+      const formData = new FormData();
+      Object.entries(form).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      if (photo) formData.append("photo", photo);
+
+      const promise = api.post("/alumni", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      await notifyPromise(promise, {
+        loading: "Submitting your legacy profile request...",
+        success: "Request submitted successfully!",
+      });
+
+      setForm(initialForm);
+      setPhoto(null);
+      setRawPhoto(null);
+      setUseTeamPhoto(true);
+      setIsFormOpen(false);
+      setSubmitState({
+        loading: false,
+        error: "",
+        success: "Your Network Legacy request has been submitted. It will appear after admin approval.",
+      });
+      setApiUnavailable(false);
+      fetchEntries();
+    } catch (error: any) {
+      const notDeployed = error.response?.status === 404;
+      if (notDeployed) setApiUnavailable(true);
+
+      setSubmitState({
+        loading: false,
+        success: "",
+        error: notDeployed
+          ? "The Network Legacy API is not live on the backend yet. Redeploy the backend service first."
+          : error.response?.data?.message || "Could not save your details right now.",
+      });
     }
-    return true;
-  });
+  };
 
   return (
-    <main className="relative min-h-screen bg-[linear-gradient(180deg,_#f0fdf4_0%,_#f9fcff_60%,_#f9fcff_100%)] pb-20 pt-24">
-      <div className="pointer-events-none absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_15%_10%,rgba(52,211,153,0.12),transparent_22%),radial-gradient(circle_at_85%_80%,rgba(99,102,241,0.10),transparent_22%)]" />
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Header */}
-        <header className="mb-10">
-          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-emerald-600">Network Legacy</p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-            Those Who <span className="text-emerald-600">Built the Network</span>
-          </h1>
-          <p className="mt-3 text-base text-slate-500">
-            {initialAlumni.length} profiles · Alumni, team members, and student leaders.
-          </p>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button onClick={() => setShowForm(true)}
-              className="rounded-full bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-700">
-              Add Your Profile →
-            </button>
-          </div>
-        </header>
+    <div
+      className={`ui-page-bg relative min-h-screen pb-10 pt-16 text-slate-900 sm:pb-12 sm:pt-20 ${
+        isDarkMode ? "bg-slate-950" : ""
+      }`}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-        {/* Filters */}
-        <div className="mb-8 flex flex-col gap-3 sm:flex-row">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input type="text" placeholder="Search by name, college, role…" value={search} onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white/90 py-2.5 pl-9 pr-4 text-sm text-slate-900 shadow-sm outline-none focus:ring-2 focus:ring-emerald-400" />
+      <div className="ui-page-shell relative z-10">
+        <PageHeader
+          title=""
+          description=""
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search by name, role, company, or institute..."
+          controlsClassName="xl:grid xl:grid-cols-[minmax(36rem,1fr)_13rem_14rem_auto_auto] xl:items-center xl:gap-3"
+          filtersClassName="flex-row flex-nowrap items-center xl:contents"
+          filters={
+            <>
+              <select
+                value={iiitFilter}
+                onChange={(e) => setIiitFilter(e.target.value)}
+                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
+              >
+                <option value="">All institutes</option>
+                {iiitOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              <select
+                value={networkPostFilter}
+                onChange={(e) => setNetworkPostFilter(e.target.value)}
+                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
+              >
+                <option value="">All posts</option>
+                {networkPostOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setIsFormOpen((prev) => !prev)}
+                title="Submit your legacy profile"
+                className="ui-button ui-button-primary inline-flex h-9 shrink-0 items-center justify-center gap-1.5 px-3 text-xs"
+              >
+                {isFormOpen ? "Close" : "Form"}
+                {isFormOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              </button>
+             
+            </>
+          }
+        />
+
+        <div className="space-y-3 pb-8 sm:space-y-4 sm:pb-10">
+          {apiUnavailable && (
+            <div
+              className={`rounded-xl border px-4 py-3 text-sm leading-7 ${
+                isDarkMode ? "border-amber-900 bg-amber-950/40 text-amber-200" : "border-amber-200 bg-amber-50 text-amber-800"
+              }`}
+            >
+              The deployed backend does not have `/api/alumni` live yet. Redeploy the backend before testing the Network Legacy page fully.
+            </div>
+          )}
+
+          {submitState.error && (
+            <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              {submitState.error}
+            </div>
+          )}
+
+          {submitState.success && (
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              {submitState.success}
+            </div>
+          )}
+
+          {isFormOpen && (
+            <div
+              className={`ui-panel overflow-hidden p-4 sm:p-5 ${
+                isDarkMode ? cardShell.dark : "border-indigo-100 bg-[linear-gradient(135deg,rgba(239,246,255,0.9),rgba(255,255,255,0.95))]"
+              }`}
+            >
+              <LegacySubmissionSection
+                isDarkMode={isDarkMode}
+                isFormOpen={isFormOpen}
+                setIsFormOpen={setIsFormOpen}
+                handleSubmit={handleSubmit}
+                submitState={submitState}
+                form={form}
+                handleChange={handleChange}
+                iiitOptions={iiitOptions}
+                matchedTeamMember={matchedTeamMember}
+                photo={photo}
+                setRawPhoto={setRawPhoto}
+                useTeamPhoto={useTeamPhoto}
+                setUseTeamPhoto={setUseTeamPhoto}
+              />
+            </div>
+          )}
+
+          {/* <LegacyEntriesSection
+            isDarkMode={isDarkMode}
+            loading={loading}
+            entries={entries}
+            // onSharePoster={setSelectedPosterEntry}
+          /> */}
+
+          {totalPages > 1 && (
+            <div className="mt-8 flex items-center justify-center gap-3">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="ui-button ui-button-ghost inline-flex min-h-10 items-center gap-2 px-4 text-sm disabled:opacity-40"
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </button>
+              <div className="ui-chip">
+                Page <span className="font-bold text-slate-900">{currentPage}</span> of {totalPages}
+              </div>
+              <button
+                onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="ui-button ui-button-ghost inline-flex min-h-10 items-center gap-2 px-4 text-sm disabled:opacity-40"
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* {selectedPosterEntry && (
+        <LegacyPosterModal
+          entry={selectedPosterEntry}
+          onClose={() => setSelectedPosterEntry(null)}
+          isDarkMode={isDarkMode}
+        />
+      )} */}
+
+      {rawPhoto && (
+        <ImageCropModal
+          file={rawPhoto}
+          aspect={1}
+          onClose={() => setRawPhoto(null)}
+          onCrop={(croppedFile) => {
+            setPhoto(croppedFile);
+            setRawPhoto(null);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function LegacyHeroSection({ isDarkMode, stats }: { isDarkMode: boolean; stats: ReturnType<typeof getLegacyStats> }) {
+  return (
+    <div className="relative pb-8 sm:pb-12 lg:pb-14">
+      <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div className="max-w-3xl lg:pr-8">
+          <div
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.24em] ${
+              isDarkMode ? "border-indigo-500/20 bg-indigo-500/10 text-indigo-400" : "border-indigo-100 bg-white/90 text-indigo-700 shadow-sm"
+            }`}
+          >
+            <Sparkles className="h-4 w-4" />
+            Network Legacy
           </div>
-          <select value={iiitFilter} onChange={(e) => setIiitFilter(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white/90 px-4 py-2.5 text-sm text-slate-700 shadow-sm focus:ring-2 focus:ring-emerald-400">
-            <option value="">All IIITs</option>
-            {iiiTs.map((i) => <option key={i} value={i}>{i}</option>)}
-          </select>
-          <select value={legacyTypeFilter} onChange={(e) => setLegacyTypeFilter(e.target.value as LegacyTypeFilter)}
-            className="rounded-xl border border-slate-200 bg-white/90 px-4 py-2.5 text-sm text-slate-700 shadow-sm focus:ring-2 focus:ring-emerald-400">
-            <option value="all">All Types</option>
-            <option value="alumni">Alumni</option>
-            <option value="team_member">Team Members</option>
-          </select>
+
+          <h1 className={`mt-4 text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
+            Network Legacy
+          </h1>
+
+          <p className={`mt-4 max-w-3xl text-sm leading-7 sm:text-base ${isDarkMode ? "text-slate-300" : "text-slate-600"}`}>
+            "Once a member of the network, always a part of its legacy."
+          </p>
         </div>
 
-        {/* Grid */}
-        {filtered.length === 0 ? (
-          <p className="py-20 text-center text-slate-400">No profiles found.</p>
-        ) : (
-          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {filtered.map((person) => (
-              <article key={person._id} className="group flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
-                <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full ring-2 ring-emerald-100">
-                    {person.photo?.url ? (
-                      <Image src={person.photo.url} alt={person.name} fill className="object-cover" sizes="48px" />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-gradient-to-br from-emerald-400 to-teal-500 text-xl font-bold text-white">{person.name[0]}</div>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="truncate text-sm font-bold text-slate-900">{person.name}</h3>
-                    <p className="truncate text-[11px] text-slate-400">{person.iiit} · {person.graduationYear}</p>
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-4 lg:flex-shrink-0 lg:items-end lg:justify-end">
+          {stats.map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.label} className="flex items-center gap-4 transition-transform hover:translate-y-[-1px]">
+                <div className={`flex h-10 w-10 items-center justify-center rounded-2xl ${isDarkMode ? "bg-indigo-500/10" : "bg-indigo-50"}`}>
+                  <Icon className="h-5 w-5 text-indigo-600" />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold leading-none ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>{item.value}</div>
+                  <div className={`mt-1.5 text-[10px] font-bold uppercase tracking-[0.15em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                    {item.label}
                   </div>
                 </div>
-                {(person.currentRole || person.currentCompany) && (
-                  <p className="mt-3 text-xs text-emerald-700 font-medium">
-                    {person.currentRole}{person.currentCompany ? ` @ ${person.currentCompany}` : ""}
-                  </p>
-                )}
-                {person.bio && <p className="mt-2 text-[11px] text-slate-400 line-clamp-2">{person.bio}</p>}
-                <div className="mt-3 flex gap-2">
-                  {person.linkedin && (
-                    <a href={person.linkedin} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-indigo-600 transition" title="LinkedIn"><Link2 className="h-3.5 w-3.5" /></a>
-                  )}
-                  {person.instagram && (
-                    <a href={person.instagram} target="_blank" rel="noreferrer" className="text-slate-400 hover:text-rose-500 transition" title="Instagram"><Globe className="h-3.5 w-3.5" /></a>
-                  )}
-                </div>
-                <div className="mt-3 flex flex-wrap gap-1">
-                  <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider ${person.legacyType === "team_member" ? "bg-indigo-50 text-indigo-600" : "bg-emerald-50 text-emerald-600"}`}>
-                    {person.legacyType === "team_member" ? "Team" : "Alumni"}
-                  </span>
-                  {person.generation && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-500">{person.generation}</span>}
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-        {/* Add Profile Modal placeholder */}
-        {showForm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowForm(false)}>
-            <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-              <h2 className="mb-1 text-lg font-bold text-slate-900">Add Your Profile</h2>
-              <p className="mb-4 text-sm text-slate-500">Contact us or fill the form to be added to Legacy.</p>
-              <Link href="/contact" onClick={() => setShowForm(false)}
-                className="block w-full rounded-xl bg-emerald-600 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-700">
-                Go to Contact Page →
-              </Link>
-              <button onClick={() => setShowForm(false)} className="mt-3 block w-full text-center text-xs text-slate-400 hover:text-slate-600">Cancel</button>
+      <div
+        className={`mt-10 h-px w-full ${
+          isDarkMode ? "bg-gradient-to-r from-transparent via-slate-700 to-transparent" : "bg-gradient-to-r from-transparent via-indigo-100 to-transparent"
+        }`}
+      />
+    </div>
+  );
+}
+
+function LegacySubmissionSection({
+  isDarkMode,
+  isFormOpen,
+  setIsFormOpen,
+  handleSubmit,
+  submitState,
+  form,
+  handleChange,
+  iiitOptions,
+  matchedTeamMember,
+  photo,
+  setRawPhoto,
+  useTeamPhoto,
+  setUseTeamPhoto,
+}: {
+  isDarkMode: boolean;
+  isFormOpen: boolean;
+  setIsFormOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleSubmit: (event: React.FormEvent) => void;
+  submitState: { loading: boolean };
+  form: LegacyForm;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  iiitOptions: string[];
+  matchedTeamMember: ITeamMember | null;
+  photo: File | null;
+  setRawPhoto: (file: File) => void;
+  useTeamPhoto: boolean;
+  setUseTeamPhoto: (value: boolean) => void;
+}) {
+  return (
+    <div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+            {legacyFormFields.map(([name, label, placeholder, type, required, span]) => (
+              <label key={name} className={`flex flex-col gap-2 ${span}`}>
+                <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                  {label}
+                  {required ? " *" : ""}
+                </span>
+                <input
+                  name={name}
+                  type={type}
+                  value={form[name]}
+                  onChange={handleChange}
+                  placeholder={placeholder}
+                  required={required}
+              className={`ui-control px-4 py-3 text-sm sm:text-base ${
+                    isDarkMode
+                      ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                      : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                  }`}
+                />
+              </label>
+            ))}
+
+            <label className="flex flex-col gap-2 sm:col-span-2">
+              <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                Institute *
+              </span>
+              <input
+                name="iiit"
+                list="legacy-iiit-options"
+                type="text"
+                value={form.iiit}
+                onChange={handleChange}
+                placeholder="Choose or type an IIIT, e.g. IIIT Kota"
+                required
+                className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
+                  isDarkMode
+                    ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                    : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                }`}
+              />
+              <datalist id="legacy-iiit-options">
+                {iiitOptions.map((option) => (
+                  <option key={option} value={option} />
+                ))}
+              </datalist>
+              <p className="mt-2 text-xs text-slate-500">Pick from the existing IIIT list if available so your profile is easier to group correctly.</p>
+            </label>
+
+            <label className="flex flex-col gap-2 sm:col-span-2">
+              <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                Legacy message / bio
+              </span>
+              <textarea
+                name="bio"
+                value={form.bio}
+                onChange={handleChange}
+                placeholder="e.g. I worked across social media and leadership in IIITians Network, and now I am focused on building stronger student communities."
+                rows={4}
+                className={`ui-control px-4 py-3 text-sm sm:text-base ${
+                  isDarkMode
+                    ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                    : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                }`}
+              />
+            </label>
+          </div>
+
+          <div
+            className={`rounded-2xl border p-4 max-sm:border-transparent max-sm:bg-transparent max-sm:px-0 max-sm:py-1 ${
+              isDarkMode ? "border-slate-700 bg-slate-950" : "border-slate-200 bg-slate-50"
+            }`}
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <p className={`text-sm font-semibold ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>Legacy photo</p>
+                <p className={`mt-1 text-sm ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                  Upload a photo, or reuse your team photo if you already appear on the team page.
+                </p>
+              </div>
+
+              <label
+                htmlFor="legacy-photo-upload"
+                className="inline-flex cursor-pointer items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 transition hover:bg-slate-100"
+              >
+                {photo ? "Replace photo" : "Upload photo"}
+              </label>
+            </div>
+
+            <input
+              id="legacy-photo-upload"
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const nextFile = event.target.files?.[0];
+                if (nextFile) {
+                  setRawPhoto(nextFile);
+                  setUseTeamPhoto(false);
+                }
+                event.target.value = "";
+              }}
+            />
+
+            {matchedTeamMember?.photo?.url && (
+              <label className={`mt-4 flex items-center gap-3 rounded-xl px-3 py-3 text-sm ${isDarkMode ? "bg-slate-900 text-slate-300" : "bg-white text-slate-700"}`}>
+                <input
+                  type="checkbox"
+                  checked={useTeamPhoto && !photo}
+                  onChange={(event) => setUseTeamPhoto(event.target.checked)}
+                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                />
+                Use same photo as your team profile
+                <span className="font-medium text-indigo-600">{matchedTeamMember.name}</span>
+              </label>
+            )}
+
+            {(photo || (useTeamPhoto && matchedTeamMember?.photo?.url)) && (
+              <div className="mt-4 flex items-center gap-3">
+                <Image
+                  src={photo ? URL.createObjectURL(photo) : matchedTeamMember?.photo?.url || ""}
+                  alt="Legacy profile preview"
+                  width={80}
+                  height={80}
+                  className="h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200"
+                />
+                <div className="text-sm text-slate-600">{photo ? "Cropped photo ready for upload" : "Using existing team photo"}</div>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitState.loading}
+            className="ui-button ui-button-primary w-full px-4 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-60 sm:text-base"
+          >
+            {submitState.loading ? "Submitting..." : "Send legacy request"}
+          </button>
+      </form>
+    </div>
+  );
+}
+
+function LegacyEntriesSection({
+  isDarkMode,
+  loading,
+  entries,
+  onSharePoster,
+}: {
+  isDarkMode: boolean;
+  loading: boolean;
+  entries: IAlumni[];
+  onSharePoster: (entry: IAlumni) => void;
+}) {
+  if (loading) {
+    return (
+      <div className="grid gap-4 sm:gap-5">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <LegacyEntrySkeleton key={index} isDarkMode={isDarkMode} />
+        ))}
+      </div>
+    );
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div
+        className={`rounded-[1.25rem] border border-dashed p-5 text-center sm:p-6 ${
+          isDarkMode ? "border-slate-700 bg-slate-900 shadow-[0_20px_60px_rgba(15,23,42,0.25)]" : "border-slate-300 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.05)]"
+        }`}
+      >
+        <h3 className={`text-lg font-semibold sm:text-xl ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>No legacy profiles match this search yet</h3>
+        <p className={`mt-2 text-sm leading-7 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+          Try another search term or open the form above to submit a new profile request.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid gap-0 md:gap-4">
+      {entries.map((entry) => (
+        <LegacyEntryCard
+          key={entry._id}
+          entry={entry}
+          isDarkMode={isDarkMode}
+          onSharePoster={onSharePoster}
+        />
+      ))}
+    </div>
+  );
+}
+
+function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
+  return (
+    <div className={`animate-pulse overflow-hidden rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
+      isDarkMode 
+        ? "border-slate-800 bg-transparent md:bg-slate-900" 
+        : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
+    }`}>
+      <div className="flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
+        <div className="h-64 bg-slate-200 sm:h-72 lg:h-[22rem]" />
+        <div className="space-y-5 p-4 sm:p-6 lg:p-7">
+          <div className="h-10 w-2/3 rounded-2xl bg-slate-200" />
+          <div className="h-24 rounded-[1.4rem] bg-slate-100" />
+          <div className="h-20 rounded-[1.5rem] bg-slate-50" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LegacyEntryCard({
+  entry,
+  isDarkMode,
+  onSharePoster,
+}: {
+  entry: IAlumni;
+  isDarkMode: boolean;
+  onSharePoster: (entry: IAlumni) => void;
+}) {
+  const { dedupedRoleHistory, totalTerms } = getLegacyEntryViewModel(entry);
+  const contribution = entry.contribution?.trim();
+  const message = entry.bio?.trim();
+  const hasJourney = dedupedRoleHistory.length > 0;
+  const serviceLine = entry.iiit;
+  const uniqueRoles = [entry.networkPost];
+  if (entry.currentRole && normalizeText(entry.currentRole) !== normalizeText(entry.networkPost)) {
+    uniqueRoles.push(entry.currentRole);
+  }
+  const roleLine = [...uniqueRoles, entry.currentCompany].filter(Boolean).join(" / ");
+  const displayMessage =
+    message ||
+    `${entry.name} is part of the IIITians Network legacy and has contributed to the community through their journey.`;
+
+  return (
+    <article
+      className={`group relative overflow-hidden transition-all duration-500 md:hover:-translate-y-0.5 rounded-none md:rounded-[1.25rem] border-x-0 border-t-0 border-b md:border ${
+        isDarkMode
+          ? "border-slate-800 bg-transparent md:bg-slate-900/80 shadow-none md:shadow-[0_20px_50px_rgba(2,6,23,0.32)] backdrop-blur-none md:backdrop-blur-md"
+          : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_8px_24px_rgba(15,23,42,0.06)]"
+      }`}
+    >
+      <div className="grid lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[18rem_minmax(0,1fr)] ">
+        <div className="relative min-h-68 overflow-hidden bg-slate-50 sm:min-h-72 lg:min-h-[21rem] rounded-none md:rounded-l-2xl">
+          {entry.photo?.url ? (
+            <Image
+              src={entry.photo.url}
+              alt={entry.name}
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-[1.03] md:group-hover:rounded-2xl z-0 rounded-none md:rounded-l-2xl"
+              sizes="(max-width: 1024px) 100vw, 352px"
+            />
+          ) : (
+            <div className="flex h-full min-h-72 items-center justify-center bg-gradient-to-br from-indigo-50 to-violet-50 text-7xl font-extrabold text-indigo-200">
+              {entry.name?.[0]}
+            </div>
+          )}
+
+          {/* Mobile-only overlay inside the image container */}
+          <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black via-black/75 to-transparent p-4 pt-12 flex flex-col justify-end lg:hidden">
+            <div className="flex items-end justify-between gap-2">
+              <div>
+                <h3 className="text-lg leading-tight font-black tracking-tight text-white drop-shadow-sm" style={{ color: '#ffffff' }}>
+                  {entry.name}
+                </h3>
+                <p className="mt-1 text-xs font-semibold text-white/85 drop-shadow-sm" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>{serviceLine}</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-1">
+                {/* <button
+                  type="button"
+                  onClick={() => onSharePoster(entry)}
+                  title="Share Poster"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
+                </button> */}
+                <a
+                  href={`mailto:${entry.email}`}
+                  title="Email"
+                  className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                </a>
+                {entry.linkedin && (
+                  <a
+                    href={entry.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="LinkedIn"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                  >
+                    <Linkedin className="h-3.5 w-3.5 text-sky-300" />
+                  </a>
+                )}
+                {entry.instagram && (
+                  <a
+                    href={entry.instagram}
+                    target="_blank"
+                    rel="noreferrer"
+                    title="Instagram"
+                    className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
+                  >
+                    <Instagram className="h-3.5 w-3.5 text-pink-400" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
-        )}
+        </div>
+
+        <div className={`grid gap-0 p-4 sm:p-5 ${hasJourney ? "md:grid-cols-[minmax(0,1fr)_15rem] md:gap-5 xl:grid-cols-[minmax(0,1fr)_17rem]" : ""}`}>
+          {/* ── Left: main content ── */}
+          <div className="min-w-0">
+            {/* Desktop-only: Name row with inline social icons */}
+            <div className="hidden lg:flex lg:flex-col gap-3">
+              <div>
+                <h3 className={`text-xl leading-tight font-bold tracking-tight sm:text-3xl ${isDarkMode ? "text-slate-50" : "text-indigo-900"}`}>
+                  {entry.name}
+                </h3>
+                <p className={`mt-1 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
+              </div>
+              <div className="flex flex-wrap shrink-0 items-center gap-1.5">
+                {/* <button
+                  type="button"
+                  onClick={() => onSharePoster(entry)}
+                  title="Share Poster"
+                  className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                    isDarkMode
+                      ? "border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20"
+                      : "border-indigo-100 bg-indigo-50 text-indigo-700 hover:bg-indigo-100/80"
+                  }`}
+                >
+                  <Sparkles className="h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
+                  <span className="hidden text-xs font-semibold sm:inline">Share Poster</span>
+                </button> */}
+                <a
+                  href={`mailto:${entry.email}`}
+                  title="Email"
+                  className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                    isDarkMode
+                      ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                      : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                  }`}
+                >
+                  <Mail className="h-4 w-4 shrink-0 text-slate-500 dark:text-slate-400" />
+                  <span className="hidden text-xs font-semibold sm:inline">Email</span>
+                </a>
+                {entry.linkedin && (
+                  <a href={entry.linkedin} target="_blank" rel="noreferrer" title="LinkedIn"
+                    className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                      isDarkMode
+                        ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                    }`}
+                  >
+                    <Linkedin className="h-4 w-4 shrink-0 text-indigo-600 dark:text-sky-400" />
+                    <span className="hidden text-xs font-semibold sm:inline">LinkedIn</span>
+                  </a>
+                )}
+                {entry.instagram && (
+                  <a href={entry.instagram} target="_blank" rel="noreferrer" title="Instagram"
+                    className={`inline-flex items-center gap-1.5 rounded-full border p-1.5 transition hover:-translate-y-0.5 sm:px-3 sm:py-1.5 ${
+                      isDarkMode
+                        ? "border-slate-800 bg-slate-900/60 text-slate-300 hover:bg-slate-800 hover:text-indigo-300"
+                        : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                    }`}
+                  >
+                    <Instagram className="h-4 w-4 shrink-0 text-pink-500 dark:text-pink-400" />
+                    <span className="hidden text-xs font-semibold sm:inline">Instagram</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {contribution && (
+              <div className={`mt-4 rounded-[1.35rem] border p-3 sm:p-4 ${isDarkMode ? "border-indigo-500/20 bg-indigo-900/10" : "border-indigo-100 bg-gradient-to-br from-indigo-50 to-violet-50"}`}>
+                <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isDarkMode ? "text-indigo-200" : "text-indigo-700"}`}>Contribution made</p>
+                <p className={`mt-2 line-clamp-4 text-sm leading-6 ${isDarkMode ? "text-slate-300" : "text-slate-800"}`}>{contribution}</p>
+              </div>
+            )}
+
+            {roleLine && (
+              <p className={`mt-3 line-clamp-2 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>{roleLine}</p>
+            )}
+
+            {displayMessage && (
+              <p className={`mt-2 line-clamp-3 text-sm leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>{displayMessage}</p>
+            )}
+
+            {/* Mobile-only: inline chips below bio */}
+            {hasJourney && (
+              <div className="mt-5 md:hidden">
+                <div className="flex items-center gap-3">
+                  <span className={`text-[10px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-400" : "text-indigo-500"}`}>Network Journey</span>
+                  <div className={`h-px flex-1 ${isDarkMode ? "bg-gradient-to-r from-indigo-500/30 to-transparent" : "bg-gradient-to-r from-indigo-200 to-transparent"}`} />
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {dedupedRoleHistory.map((item, index) => (
+                    <div key={`m-${item.year}-${item.team}-${item.role}-${index}`}
+                      className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold max-w-full ${
+                        isDarkMode ? "bg-indigo-500/10 text-indigo-300 ring-1 ring-indigo-500/20" : "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100"
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${isDarkMode ? "bg-indigo-400" : "bg-indigo-500"}`} />
+                      <span className="font-bold truncate">{item.role || entry.networkPost || "Legacy Member"}</span>
+                      {(item.year || item.team) && (
+                        <span className={`truncate shrink-0 ${isDarkMode ? "text-slate-400" : "text-indigo-400"}`}>{[item.year, item.team].filter(Boolean).join(" · ")}</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* ── Right: LinkedIn-style aside — desktop only ── */}
+          {hasJourney && (
+            <aside className={`hidden md:flex md:flex-col ${
+              isDarkMode
+                ? "border-l border-slate-800 pl-5"
+                : "border-l border-indigo-100 pl-5"
+            }`}>
+              <p className={`mb-4 text-[10px] font-bold uppercase tracking-[0.18em] ${isDarkMode ? "text-indigo-400" : "text-indigo-500"}`}>
+                Network Journey
+              </p>
+              <div className="relative space-y-4 pl-4">
+                {/* Vertical timeline line */}
+                <div className={`absolute bottom-1 left-[0.3rem] top-1 w-px ${isDarkMode ? "bg-indigo-500/20" : "bg-indigo-100"}`} />
+                {dedupedRoleHistory.map((item, index) => (
+                  <div key={`d-${item.year}-${item.team}-${item.role}-${index}`} className="relative">
+                    <span className={`absolute -left-[1.15rem] top-[5px] h-2.5 w-2.5 rounded-full ring-2 ${
+                      isDarkMode ? "bg-indigo-400 ring-slate-900" : "bg-indigo-600 ring-white"
+                    }`} />
+                    <p className={`text-sm font-bold leading-snug ${isDarkMode ? "text-slate-100" : "text-slate-900"}`}>
+                      {item.role || entry.networkPost || "Legacy Member"}
+                    </p>
+                    {item.team && (
+                      <p className={`mt-0.5 text-xs font-medium ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>{item.team}</p>
+                    )}
+                    {item.year && (
+                      <p className={`mt-0.5 text-[11px] font-semibold ${isDarkMode ? "text-indigo-400" : "text-indigo-400"}`}>{item.year}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </aside>
+          )}
+        </div>
       </div>
-    </main>
+    </article>
   );
 }

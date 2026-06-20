@@ -19,7 +19,7 @@ export default function BlobWithLogo({ logoSrc = "/iiitians-logo.png" }: BlobWit
     >
       <svg
         viewBox="0 0 200 200"
-        className="absolute inset-0 w-full h-full drop-shadow-2xl z-0"
+        className="absolute inset-0 w-full h-full z-0"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>

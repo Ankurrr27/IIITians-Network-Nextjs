@@ -11,6 +11,8 @@ import OpportunitiesSection from "@/components/home/OpportunitiesSection";
 import EventCoverageSection from "@/components/home/EventCoverageSection";
 import CollaborateSection from "@/components/home/CollaborateSection";
 import DevelopersSection from "@/components/home/DevelopersSection";
+import ExploreYourIIITSection from "@/components/home/ExploreYourIIITSection";
+import NetworkReachSection from "@/components/home/NetworkReachSection";
 
 export const metadata: Metadata = {
   title: "IIITians Network Connect — Home",
@@ -31,21 +33,35 @@ export default function HomePage() {
 
       {/* 4. Community Highlights & About */}
       <AboutSection />
-      <CounsellingSection />
+
+      {/* 5. Explore Your IIIT */}
+      <ExploreYourIIITSection />
+
+      {/* 6. Events Preview Section */}
       <EventsPreviewSection />
+
+      {/* 7. Discuss Preview Section */}
       <DiscussPreviewSection />
 
-      {/* 5. Opportunities Section */}
+      {/* 8. Opportunities Section */}
       <OpportunitiesSection />
 
-      {/* 6. Event Coverage Section */}
+      {/* 9. Event Coverage Section */}
       <EventCoverageSection />
 
-      {/* 7. Collaborate With Us */}
+      {/* 10. Collaborate With Us */}
       <CollaborateSection />
 
-      {/* 8. Founders & Contact Developers */}
+      {/* 11. Founders & Team Section */}
       <FounderSection />
+
+      {/* 12. Network Reach Section */}
+      <NetworkReachSection />
+
+      {/* 13. Counselling Section */}
+      <CounsellingSection />
+
+      {/* 14. Contact Developers Section */}
       <DevelopersSection />
     </div>
   );

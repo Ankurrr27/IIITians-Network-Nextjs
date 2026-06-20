@@ -65,7 +65,7 @@ export default function CollegesAdmin() {
                   Colleges Workspace
                 </div>
               </div>
-              <h1 className="mt-3 text-3xl font-extrabold text-slate-900 tracking-tight">
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                 Manage Colleges
               </h1>
               <p className="mt-2 max-w-2xl text-sm text-slate-600 font-semibold leading-relaxed">

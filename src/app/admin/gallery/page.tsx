@@ -204,16 +204,16 @@ export default function AdminGalleryPage() {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
-        <section className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.14),_transparent_30%),linear-gradient(180deg,_#f8fbff_0%,_#ffffff_100%)] p-6 shadow-[0_24px_70px_-40px_rgba(79,70,229,0.35)] sm:p-8">
+      <div className="space-y-5">
+        <section className="relative overflow-hidden rounded-[1.25rem] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.10),_transparent_30%),linear-gradient(180deg,_#f8fbff_0%,_#ffffff_100%)] p-4 shadow-[0_24px_70px_-40px_rgba(79,70,229,0.35)] sm:p-5">
           <div className="absolute inset-y-0 right-0 w-1/3 bg-[radial-gradient(circle_at_center,_rgba(129,140,248,0.12),_transparent_60%)] pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-4">
+          <div className="relative z-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => router.back()}
-                  className="group flex h-11 w-11 items-center justify-center rounded-full border border-indigo-100 bg-white text-indigo-600 shadow-sm transition-all hover:-translate-x-0.5 hover:text-indigo-700 hover:shadow-md active:scale-95"
+                  className="group flex h-9 w-9 items-center justify-center rounded-full border border-indigo-100 bg-white text-indigo-600 shadow-sm transition-all hover:-translate-x-0.5 hover:text-indigo-700 hover:shadow-md active:scale-95"
                 >
                   <ArrowLeft
                     size={18}
@@ -225,16 +225,16 @@ export default function AdminGalleryPage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-5xl">
+                <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
                   Manage <span className="text-indigo-600">Gallery</span>
                 </h1>
-                <p className="max-w-2xl text-sm leading-7 text-slate-600 sm:text-base font-semibold">
+                <p className="max-w-2xl text-sm font-medium leading-6 text-slate-600">
                   Review community uploads, organize categories, and publish official visuals in the same design language as the public website.
                 </p>
               </div>
             </div>
 
-            <div className="w-full max-w-md rounded-[1.75rem] border border-white/80 bg-white/85 p-4 shadow-sm backdrop-blur">
+            <div className="w-full max-w-sm rounded-xl border border-white/80 bg-white/85 p-3 shadow-sm backdrop-blur">
               <div className="mb-2 flex items-center justify-between px-1">
                 <label className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
                   Total Network Items
@@ -278,7 +278,7 @@ export default function AdminGalleryPage() {
 
         {/* Compact Gallery Contributor */}
         <section className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.35)] space-y-6">
+          <div className="space-y-4 rounded-[1.25rem] border border-slate-200 bg-white p-4 shadow-[0_20px_60px_-45px_rgba(15,23,42,0.35)]">
             <div className="flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
                 <ImagePlus size={20} />

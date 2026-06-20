@@ -199,6 +199,18 @@ export default function ContactPage() {
 
   const socialLinks = [
     {
+      name: "Email",
+      icon: <Mail size={18} />,
+      link: "mailto:iiitiansnetwork@gmail.com",
+      tone: "hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700",
+    },
+    {
+      name: "Instagram",
+      icon: <Instagram size={18} />,
+      link: "https://www.instagram.com/iiitiansnetwork",
+      tone: "hover:border-pink-200 hover:bg-pink-50 hover:text-pink-600",
+    },
+    {
       name: "Telegram",
       icon: <Send size={18} />,
       link: "#",
@@ -329,10 +341,10 @@ export default function ContactPage() {
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6"
+        className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6"
       >
-        <div className="mb-8">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] backdrop-blur-md transition-colors duration-300 ${
+        <div className="mb-6">
+          <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md transition-colors duration-300 ${
             isDarkMode
               ? "border-indigo-900/30 bg-slate-900/80 text-indigo-400"
               : "border-indigo-100 bg-white/80 text-indigo-700"
@@ -341,19 +353,19 @@ export default function ContactPage() {
             Official Channels
           </div>
 
-          <div className="mt-5 grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div className="mt-4 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-              <h1 className={`mt-4 text-3xl font-semibold tracking-tight sm:text-5xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`mt-3 text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                 Contact The <span className={isDarkMode ? "text-indigo-400 font-semibold" : "text-indigo-600 font-semibold"}>IIITians Network</span>
               </h1>
-              <p className={`mt-4 max-w-2xl text-sm leading-7 sm:text-base font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+              <p className={`mt-3 max-w-2xl text-sm font-medium leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"}`}>
                 Reach the network through verified public channels for updates,
                 collaboration, and community coordination across IIIT campuses.
               </p>
             </div>
 
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-              <div className={`rounded-[1.35rem] border px-4 py-4 shadow-sm backdrop-blur-md transition-all duration-300 ${
+              <div className={`rounded-xl border px-4 py-3 shadow-sm backdrop-blur-md transition-all duration-300 ${
                 isDarkMode
                   ? "border-slate-800 bg-slate-900/40 text-slate-100"
                   : "border-slate-200 bg-white/70 text-slate-800"
@@ -365,7 +377,7 @@ export default function ContactPage() {
                   Official outreach, student queries, and updates
                 </p>
               </div>
-              <div className={`rounded-[1.35rem] border px-4 py-4 shadow-sm backdrop-blur-md transition-all duration-300 ${
+              <div className={`rounded-xl border px-4 py-3 shadow-sm backdrop-blur-md transition-all duration-300 ${
                 isDarkMode
                   ? "border-slate-800 bg-slate-900/40 text-slate-100"
                   : "border-slate-200 bg-white/70 text-slate-800"
@@ -387,7 +399,7 @@ export default function ContactPage() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="relative z-10 mx-auto mt-8 max-w-7xl px-4 sm:px-6 space-y-10"
+        className="relative z-10 mx-auto mt-6 max-w-7xl px-4 sm:px-5 lg:px-6 space-y-10"
       >
         {/* Core Contact Cards */}
         <div className="grid gap-4 md:grid-cols-3">
@@ -396,7 +408,7 @@ export default function ContactPage() {
               <motion.div
                 key={card.title}
                 variants={item}
-                className={`rounded-[1.6rem] border p-5 shadow-sm sm:p-6 transition-all duration-300 ${
+                className={`rounded-[1.15rem] border p-4 shadow-sm sm:p-5 transition-all duration-300 ${
                   isDarkMode
                     ? "border-emerald-950/30 bg-emerald-950/20 text-emerald-100"
                     : "border-emerald-100 bg-emerald-50/70 text-slate-900"
@@ -417,7 +429,7 @@ export default function ContactPage() {
                 href={card.href || "#"}
                 target={card.href?.startsWith("http") ? "_blank" : undefined}
                 rel={card.href?.startsWith("http") ? "noreferrer" : undefined}
-                className={`group rounded-[1.6rem] border p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 sm:p-6 ${
+                className={`group rounded-[1.15rem] border p-4 shadow-sm transition hover:-translate-y-0.5 sm:p-5 ${
                   isDarkMode
                     ? "border-slate-800 bg-slate-900/60 hover:border-indigo-500/40 hover:shadow-[0_20px_50px_rgba(99,102,241,0.15)] text-slate-100"
                     : "border-slate-200 bg-white hover:border-indigo-200 hover:shadow-[0_20px_50px_rgba(79,70,229,0.08)] text-slate-900"
@@ -487,7 +499,7 @@ export default function ContactPage() {
         {/* Follow the Network (Social Links) */}
         <motion.div
           variants={item}
-          className={`rounded-[1.8rem] border p-5 shadow-sm sm:p-6 transition-all duration-300 ${
+          className={`mt-5 rounded-[1.25rem] border p-4 shadow-sm sm:p-5 transition-all duration-300 ${
             isDarkMode
               ? "border-slate-800 bg-slate-900/40"
               : "border-slate-200 bg-white"
@@ -498,7 +510,7 @@ export default function ContactPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600 dark:text-indigo-400">
                 Social Presence
               </p>
-              <h2 className={`mt-2 text-2xl font-bold sm:text-3xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+              <h2 className={`mt-2 text-xl font-bold sm:text-2xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                 Follow the network across platforms
               </h2>
             </div>
@@ -507,14 +519,14 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
             {socialLinks.map((social) => (
               <a
                 key={social.name}
                 href={social.link}
                 target="_blank"
                 rel="noreferrer"
-                className={`flex items-center justify-center gap-2 rounded-2xl border px-4 py-4 text-sm font-bold transition duration-200 ${
+                className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-bold transition duration-200 ${
                   isDarkMode
                     ? "border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white"
                     : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"

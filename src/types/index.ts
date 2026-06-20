@@ -83,6 +83,7 @@ export interface IAlumni {
   instagram?: string;
   twitter?: string;
   bio?: string;
+  contribution?: string;
   photo?: CloudinaryAsset;
   status: "pending" | "approved" | "rejected";
   legacyType: "alumni" | "team_member";
@@ -166,6 +167,9 @@ export interface IDiscussPost {
   isAuthorisedPost?: boolean;
   badgeLabel?: string;
   status: "pending" | "approved" | "rejected";
+  upvotes?: number;
+  views?: number;
+  isPinned?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

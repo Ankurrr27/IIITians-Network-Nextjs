@@ -1,3 +1,5 @@
-"use client";
 import LegacyAdminPage from "@/app/legacy/admin/page";
-export default LegacyAdminPage;
+
+export default function AdminLegacyWrapper() {
+	return <LegacyAdminPage />;
+}
