@@ -26,16 +26,14 @@ import {
 } from "lucide-react";
 import useThemeMode from "@/hooks/useThemeMode";
 
-const navItems = [
+const navItems: Array<{ name: string; href: string; highlight?: boolean }> = [
   { name: "Home", href: "/#home" },
-  { name: "Institutes", href: "/colleges" },
+  { name: "IIITs", href: "/colleges" },
+  { name: "Community", href: "/discuss" },
   { name: "Events", href: "/events" },
-  { name: "Placements", href: "/placement" },
-  { name: "Legacy", href: "/legacy" },
-  { name: "Discuss", href: "/discuss" },
-  { name: "Team", href: "/team" },
+  { name: "Opportunities", href: "/opportunities" },
+  { name: "Merchandise", href: "/merchandise" },
   { name: "Contact", href: "/contact" },
-  { name: "Guide", href: "/guide", highlight: true },
 ];
 
 const quickLinks = {

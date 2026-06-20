@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import HeroSection from "@/components/home/HeroSection";
+import NetworkVisualization from "@/components/home/NetworkVisualization";
+import StakeholdersSection from "@/components/home/StakeholdersSection";
 import AboutSection from "@/components/home/AboutSection";
 import EventsPreviewSection from "@/components/home/EventsPreviewSection";
 import DiscussPreviewSection from "@/components/home/DiscussPreviewSection";
 import FounderSection from "@/components/home/FounderSection";
 import CounsellingSection from "@/components/home/CounsellingSection";
+import OpportunitiesSection from "@/components/home/OpportunitiesSection";
+import EventCoverageSection from "@/components/home/EventCoverageSection";
+import CollaborateSection from "@/components/home/CollaborateSection";
+import DevelopersSection from "@/components/home/DevelopersSection";
 import ExploreYourIIITSection from "@/components/home/ExploreYourIIITSection";
 import NetworkReachSection from "@/components/home/NetworkReachSection";
 
@@ -19,26 +25,44 @@ export default function HomePage() {
       {/* 1. Hero Section */}
       <HeroSection />
 
-      {/* 2. About & Initiatives Section */}
+      {/* 2. IIIT Network Visualization */}
+      <NetworkVisualization />
+
+      {/* 3. What Makes IIITians Network Different (Stakeholders) */}
+      <StakeholdersSection />
+
+      {/* 4. Community Highlights & About */}
       <AboutSection />
 
-      {/* 3. Explore Your IIIT */}
+      {/* 5. Explore Your IIIT */}
       <ExploreYourIIITSection />
 
-      {/* 4. Events Preview Section */}
+      {/* 6. Events Preview Section */}
       <EventsPreviewSection />
 
-      {/* 5. Discuss Preview Section */}
+      {/* 7. Discuss Preview Section */}
       <DiscussPreviewSection />
 
-      {/* 6. Team & Founders Section */}
+      {/* 8. Opportunities Section */}
+      <OpportunitiesSection />
+
+      {/* 9. Event Coverage Section */}
+      <EventCoverageSection />
+
+      {/* 10. Collaborate With Us */}
+      <CollaborateSection />
+
+      {/* 11. Founders & Team Section */}
       <FounderSection />
 
-      {/* 7. Network Reach Section */}
+      {/* 12. Network Reach Section */}
       <NetworkReachSection />
 
-      {/* 8. Counselling Section */}
+      {/* 13. Counselling Section */}
       <CounsellingSection />
+
+      {/* 14. Contact Developers Section */}
+      <DevelopersSection />
     </div>
   );
 }

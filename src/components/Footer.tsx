@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Globe,
   Users2,
@@ -12,7 +13,6 @@ import {
   Linkedin,
   Instagram,
   Twitter,
-  Youtube,
   Mail,
 } from "lucide-react";
 
@@ -33,6 +33,7 @@ const RedditIcon = ({ size = 18 }: { size?: number }) => (
 const BASE_VIEW_COUNT = 27385;
 
 export default function Footer() {
+  const pathname = usePathname();
   const [stats, setStats] = useState({
     views: BASE_VIEW_COUNT,
     members: 0,
@@ -101,7 +102,7 @@ export default function Footer() {
           let photos = 0;
           if (collegesRes.status === "fulfilled" && Array.isArray(collegesRes.value.data)) {
             photos = collegesRes.value.data.reduce(
-              (sum: number, c: any) => sum + (Array.isArray(c.gallery) ? c.gallery.length : 0),
+              (sum: number, c: { gallery?: unknown[] }) => sum + (Array.isArray(c.gallery) ? c.gallery.length : 0),
               0
             );
           }
@@ -124,6 +125,8 @@ export default function Footer() {
     trackView();
     loadStats();
   }, []);
+
+  if (pathname.includes("/admin")) return null;
 
   return (
     <footer className="bg-[#0b1329] pb-6 pt-8 text-slate-400">
@@ -193,19 +196,19 @@ export default function Footer() {
             <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Ecosystem</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
               <li><Link href="/colleges" className="transition hover:text-white">IIIT Directory</Link></li>
-              <li><Link href="/placement" className="transition hover:text-white">Placements</Link></li>
               <li><Link href="/events" className="transition hover:text-white">Events Desk</Link></li>
               <li><Link href="/discuss" className="transition hover:text-white">Student Discuss</Link></li>
+              <li><Link href="/opportunities" className="transition hover:text-white">Opportunities</Link></li>
             </ul>
           </div>
 
           <div>
             <p className="mb-3 text-[11px] font-bold uppercase tracking-widest" style={{ color: "#ffffff" }}>Community</p>
             <ul className="space-y-2 text-[13px] font-medium text-slate-400">
-              <li><Link href="/legacy" className="transition hover:text-white">Network Legacy</Link></li>
+              <li><Link href="/merchandise" className="transition hover:text-white">Merchandise Store</Link></li>
               <li><Link href="/team" className="transition hover:text-white">Our Team</Link></li>
-              <li><Link href="/team/join" className="transition hover:text-white">Join the Team</Link></li>
-              <li><Link href="/guide" className="transition hover:text-white">User Guide</Link></li>
+              <li><Link href="/legacy" className="transition hover:text-white">Network Legacy</Link></li>
+              <li><Link href="/contact" className="transition hover:text-white">Contact Us</Link></li>
             </ul>
           </div>
 
@@ -235,9 +238,9 @@ export default function Footer() {
         <div className="mt-6 flex flex-col items-center justify-between gap-3 sm:flex-row">
           <div className="flex flex-wrap gap-1.5 items-center text-[10px] sm:text-[11px] font-bold text-slate-500 tracking-wider">
             <span>Created by</span>
-            <a href="https://www.linkedin.com/in/varun-rajss?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Varun</a>
+            <a href="https://www.linkedin.com/in/varun-raj-85592b324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Varun</a>
             <span className="text-slate-700 font-black">·</span>
-            <a href="https://www.linkedin.com/in/yash-kapoor-a17026251?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Yash</a>
+            <a href="https://www.linkedin.com/in/yash-kapoor-a17026251?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Yash</a>
             <span className="text-slate-700 font-black">·</span>
             <a href="https://ankurdev.vercel.app" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-white transition">Ankur</a>
             <span className="text-slate-700 font-black">·</span>

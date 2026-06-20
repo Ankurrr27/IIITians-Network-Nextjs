@@ -12,6 +12,20 @@ const nextConfig: NextConfig = {
   },
   serverExternalPackages: ["mongoose"],
   outputFileTracingRoot: path.join(__dirname),
+  async redirects() {
+    return [
+      {
+        source: "/iiits",
+        destination: "/colleges",
+        permanent: true,
+      },
+      {
+        source: "/community",
+        destination: "/discuss",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -45,9 +45,9 @@ export default function HeroSection() {
         <div className="text-left">
           <h1
             className="
-    text-[2rem] font-semibold leading-tight tracking-tight
-    sm:text-4xl md:text-5xl
-  "
+              mt-4 text-[2rem] font-semibold leading-tight tracking-tight text-slate-900
+              sm:text-4xl md:text-5xl
+            "
           >
             <span className="text-slate-900">Empowering </span>
 
@@ -60,34 +60,31 @@ export default function HeroSection() {
 
           <p
             className="
-              mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:mt-4 sm:text-base sm:leading-7
+              mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:mt-4 sm:text-base sm:leading-7 font-medium
             "
           >
-            IIITians Network is an autonomous student-led community connecting
-            all IIITs across India. We aim to exchange information, boost
-            outreach, and connect students with alumni while promoting the brand
-            <span className="font-semibold"> "IIITians"</span>.
+            Connecting students, alumni, startups, events, opportunities, and communities across India&apos;s IIIT ecosystem.
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-3 sm:mt-8 sm:gap-5">
-            <button
-              onClick={() => router.push("/events")}
-              className="
-                rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white
-                transition hover:bg-indigo-700 sm:px-6 sm:py-3 sm:text-lg
-              "
-            >
-              Explore
-            </button>
-
+          <div className="mt-6 flex flex-wrap gap-3 sm:mt-8 sm:gap-5">
             <button
               onClick={() => router.push("/colleges")}
               className="
-                rounded-xl border border-indigo-600 px-5 py-2.5 text-sm font-semibold text-indigo-600
-                transition hover:bg-indigo-50 sm:px-6 sm:py-3 sm:text-lg
+                rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20
+                transition hover:bg-indigo-700 active:scale-95 sm:px-8 sm:text-base
               "
             >
-              Colleges
+              Explore IIITs
+            </button>
+
+            <button
+              onClick={() => router.push("/discuss")}
+              className="
+                rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm
+                transition hover:bg-slate-50 hover:border-slate-300 active:scale-95 sm:px-8 sm:text-base
+              "
+            >
+              Join Community
             </button>
           </div>
         </div>
