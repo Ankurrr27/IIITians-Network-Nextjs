@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { divIcon, LatLngExpression } from "leaflet";
+import { divIcon, LatLngExpression, LeafletKeyboardEvent } from "leaflet";
 import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { ArrowUpRight, Building2, MapPin, Navigation } from "lucide-react";
 import type { IIITCampus } from "@/data/iiitCampuses";
@@ -178,8 +178,8 @@ export default function ExploreYourIIITMap({
                   onSelect(campus);
                 },
                 mouseover: () => setActiveCampus(campus),
-                keydown: (event) => {
-                  if ((event.originalEvent as KeyboardEvent).key === "Enter") onSelect(campus);
+                keydown: (event: LeafletKeyboardEvent) => {
+                  if (event.originalEvent.key === "Enter") onSelect(campus);
                 },
               }}
             />

@@ -63,7 +63,7 @@ export default function HeroSection() {
               mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:mt-4 sm:text-base sm:leading-7 font-medium
             "
           >
-            Connecting students, alumni, startups, events, opportunities, and communities across India's IIIT ecosystem.
+            Connecting students, alumni, startups, events, opportunities, and communities across India&apos;s IIIT ecosystem.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3 sm:mt-8 sm:gap-5">

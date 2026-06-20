@@ -19,7 +19,7 @@ export default function EventCoverageSection() {
               Want Your Event Featured?
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base font-medium">
-              If you are organizing a hackathon, fest, workshop, webinar, conference, or community event across any IIIT, we would love to feature it and promote it through the IIITians Network platforms. Let's showcase your campus innovation nationwide.
+              If you are organizing a hackathon, fest, workshop, webinar, conference, or community event across any IIIT, we would love to feature it and promote it through the IIITians Network platforms. Let&apos;s showcase your campus innovation nationwide.
             </p>
             <div className="mt-8 flex justify-center">
               <a

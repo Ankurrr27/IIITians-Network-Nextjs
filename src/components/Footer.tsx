@@ -13,7 +13,6 @@ import {
   Linkedin,
   Instagram,
   Twitter,
-  Youtube,
   Mail,
 } from "lucide-react";
 
@@ -103,7 +102,7 @@ export default function Footer() {
           let photos = 0;
           if (collegesRes.status === "fulfilled" && Array.isArray(collegesRes.value.data)) {
             photos = collegesRes.value.data.reduce(
-              (sum: number, c: any) => sum + (Array.isArray(c.gallery) ? c.gallery.length : 0),
+              (sum: number, c: { gallery?: unknown[] }) => sum + (Array.isArray(c.gallery) ? c.gallery.length : 0),
               0
             );
           }

@@ -25,7 +25,7 @@ const container = {
 
 const item = {
   hidden: { y: 20, opacity: 0 },
-  show: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" as any } },
+  show: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" as const } },
 };
 
 // Custom Reusable Collaboration / Event Coverage Card Component
