@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   MapPin,
   ExternalLink, MoreHorizontal, Link2, ShieldCheck,
@@ -31,7 +32,8 @@ export default function CollegesClient({
   initialAlumni,
   initialDiscussClubs,
 }: Props) {
-  const [search, setSearch] = useState("");
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filter, setFilter] = useState("NONE");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
 
@@ -44,6 +46,18 @@ export default function CollegesClient({
       setRecentSearches([]);
     }
   }, []);
+
+  // Sync search state to URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (search) {
+      params.set("search", search);
+    } else {
+      params.delete("search");
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [search]);
 
   // Track recent searches when a college is matched
   useEffect(() => {

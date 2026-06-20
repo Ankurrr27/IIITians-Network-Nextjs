@@ -20,7 +20,7 @@ type PageHeaderProps = {
 };
 
 export const pageHeaderControlClass =
-  "ui-control h-11 px-3.5 text-slate-700 placeholder:text-slate-400";
+  "ui-control h-11 px-3.5 py-0 text-slate-700 placeholder:text-slate-400";
 
 export const pageHeaderButtonClass =
   "ui-button ui-button-ghost inline-flex h-11 items-center justify-center gap-2 px-3.5";
@@ -73,7 +73,7 @@ export default function PageHeader({
   const hasTitle = Boolean(title || description);
 
   return (
-    <header className={`${hasTitle ? "mb-6 sm:mb-8" : "mb-4"} text-left ${className}`}>
+    <header className={`${hasTitle ? "mb-6 sm:mb-8" : "mb-2 sm:mb-4"} text-left ${className}`}>
       {(title || description) && (
         <div className="max-w-3xl">
           <h1 className="ui-title">{renderTitle(title)}</h1>
@@ -91,14 +91,14 @@ export default function PageHeader({
                 {/* Search */}
                 <div className="min-w-0 flex-1">
                   {searchControl || (
-                    <label className="ui-control flex h-11 items-center gap-3 px-3.5">
+                    <label className="ui-control flex h-11 items-center gap-3 px-3.5 py-0">
                       <Search className="h-4 w-4 shrink-0 text-slate-400" />
                       <input
                         type="text"
                         value={searchValue || ""}
                         onChange={(e) => onSearchChange?.(e.target.value)}
                         placeholder={searchPlaceholder}
-                        className="h-full w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400"
+                        className="h-full w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 py-0"
                       />
                     </label>
                   )}
@@ -108,7 +108,7 @@ export default function PageHeader({
                 {filters && (
                   <button
                     onClick={() => setFiltersOpen((v) => !v)}
-                    className={`ui-control flex h-11 w-11 shrink-0 items-center justify-center transition ${
+                    className={`ui-control flex h-11 w-11 shrink-0 items-center justify-center p-0 transition ${
                       filtersOpen
                         ? "border-indigo-300 bg-indigo-50 text-indigo-600"
                         : "text-slate-500 hover:text-slate-700"
@@ -138,14 +138,14 @@ export default function PageHeader({
             {shouldRenderSearch && (
               <div className={`min-w-0 ${searchWrapperClassName}`}>
                 {searchControl || (
-                  <label className="ui-control flex h-11 items-center gap-3 px-3.5">
+                  <label className="ui-control flex h-11 items-center gap-3 px-3.5 py-0">
                     <Search className="h-4 w-4 shrink-0 text-slate-400" />
                     <input
                       type="text"
                       value={searchValue || ""}
                       onChange={(e) => onSearchChange?.(e.target.value)}
                       placeholder={searchPlaceholder}
-                      className="h-full w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400"
+                      className="h-full w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 py-0"
                     />
                   </label>
                 )}

@@ -16,7 +16,7 @@ export default function PlacementPreview({ onSelectCollege }: PlacementPreviewPr
 
   useEffect(() => {
     api.get("/placements").then((res) => {
-      setItems(summarizePlacementCollection(res.data || []).slice(0, 6));
+      setItems(summarizePlacementCollection(res.data || []).slice(0, 9));
     }).catch(() => setItems([])).finally(() => setLoading(false));
   }, []);
 
@@ -35,7 +35,7 @@ export default function PlacementPreview({ onSelectCollege }: PlacementPreviewPr
 
       {loading ? (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 -mx-4 sm:mx-0">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} className="animate-pulse space-y-3 border-b border-slate-100 px-4 py-4 sm:rounded-xl sm:border sm:px-4">
               <div className="h-4 w-2/3 rounded bg-slate-200" />
               <div className="h-3 w-1/3 rounded bg-slate-100" />

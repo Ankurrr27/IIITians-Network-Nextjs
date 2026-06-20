@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useMemo, useState, Suspense } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -18,7 +19,7 @@ import {
 } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
 import api from "@/lib/apiClient";
-import PageHeader, { pageHeaderButtonClass } from "@/components/PageHeader";
+import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
 
 const categories = [
   { id: "all", label: "All Photos", icon: <Images size={16} /> },
@@ -236,119 +237,146 @@ function GalleryPageClient() {
   if (loading) return <GallerySkeleton />;
 
   return (
-    <div className="min-h-screen bg-white pb-16 pt-20 sm:pb-20 sm:pt-32">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-14 sm:pb-12 sm:pt-20">
+      <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
+      <div className="ui-page-shell relative z-10">
         <PageHeader
-          title={collegeName ? `${decodeURIComponent(collegeName)} Gallery` : "IIIT Gallery"}
-          description={collegeName ? `Explore photos from ${decodeURIComponent(collegeName)}.` : "Explore photos from across the IIIT network."}
+          title=""
+          description=""
           searchValue={searchQuery}
           onSearchChange={setSearchQuery}
-          searchPlaceholder="Search photos..."
+          searchPlaceholder="Search campus memories..."
           filters={
-            <div className="flex max-w-full gap-2 overflow-x-auto pb-1">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`${pageHeaderButtonClass} shrink-0 ${
-                    selectedCategory === cat.id
-                      ? "border-indigo-600 bg-indigo-600 text-white hover:bg-indigo-700 hover:text-white"
-                      : ""
-                  }`}
-                >
-                  {cat.icon}
-                  {cat.label}
-                  <span className={`ml-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
-                    selectedCategory === cat.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"
-                  }`}>
-                    {categoryCounts[cat.id] || 0}
-                  </span>
-                </button>
-              ))}
-            </div>
+            <>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className={`${pageHeaderControlClass} w-full sm:w-48 text-xs sm:text-sm`}
+              >
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.label} ({categoryCounts[cat.id] || 0})
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={() => setShowUploadForm((v) => !v)}
+                className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-1.5 px-3.5 text-xs sm:text-sm w-full sm:w-auto"
+              >
+                <Upload className="h-4 w-4" /> Add Image
+              </button>
+            </>
           }
         />
 
         {/* Upload Section */}
-        <section className="mb-8 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.1),_transparent_32%),linear-gradient(180deg,_#f8faff_0%,_#ffffff_100%)] p-4 shadow-[0_20px_60px_-35px_rgba(99,102,241,0.35)] sm:mb-10 sm:rounded-[2rem] sm:p-6">
-          {!showUploadForm ? (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 sm:h-11 sm:w-11">
-                  <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-slate-900">Add image</div>
-                  <p className="mt-1 max-w-[15rem] text-sm leading-6 text-slate-600 sm:max-w-none">
-                    Share a campus photo with category and caption.
-                  </p>
-                </div>
-              </div>
-              <button type="button" onClick={() => setShowUploadForm(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,_#4f46e5,_#4338ca)] px-4 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(79,70,229,0.9)] transition hover:translate-y-[-1px] sm:px-5">
-                <Upload className="h-4 w-4" /> Add Image
-              </button>
-            </div>
-          ) : (
+        {showUploadForm && (
+          <section className="mb-6 sm:mb-8 overflow-hidden border-y sm:border border-slate-200 bg-white p-4 shadow-sm rounded-none sm:rounded-2xl">
             <form onSubmit={handleUploadSubmit} className="space-y-4">
               <div className="grid gap-3 md:grid-cols-2">
-                <select value={uploadCollegeId} onChange={(e) => setUploadCollegeId(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100">
+                <select
+                  value={uploadCollegeId}
+                  onChange={(e) => setUploadCollegeId(e.target.value)}
+                  className="w-full rounded-none sm:rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                >
                   <option value="">Select college</option>
-                  {colleges.map((c) => <option key={c._id} value={c._id}>{c.name}</option>)}
+                  {colleges.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.name}
+                    </option>
+                  ))}
                 </select>
-                <select value={uploadCategory} onChange={(e) => setUploadCategory(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100">
+                <select
+                  value={uploadCategory}
+                  onChange={(e) => setUploadCategory(e.target.value)}
+                  className="w-full rounded-none sm:rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50"
+                >
                   <option value="infrastructure">Infrastructure</option>
                   <option value="clubs">Clubs</option>
                   <option value="events">Events</option>
                   <option value="others">Others</option>
                 </select>
-                <input type="text" value={uploadCaption} onChange={(e) => setUploadCaption(e.target.value)}
+                <input
+                  type="text"
+                  value={uploadCaption}
+                  onChange={(e) => setUploadCaption(e.target.value)}
                   placeholder="Add a caption for these photos"
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 md:col-span-2" />
-                <label className="flex min-h-[68px] cursor-pointer items-center justify-between gap-3 rounded-2xl border border-dashed border-slate-300 bg-slate-50/70 px-4 py-3 text-sm text-slate-700 transition hover:border-indigo-300 hover:bg-white md:col-span-2">
-                  <span className="pr-3">{uploadFiles.length ? `${uploadFiles.length} image${uploadFiles.length > 1 ? "s" : ""} selected` : "Choose one or more images"}</span>
-                  <span className="shrink-0 rounded-full bg-slate-900 px-3 py-1 text-xs font-semibold text-white">Browse</span>
-                  <input type="file" accept="image/*" multiple className="hidden"
-                    onChange={(e) => { setUploadFiles(Array.from(e.target.files || [])); e.target.value = ""; }} />
+                  className="w-full rounded-none sm:rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-50 md:col-span-2"
+                />
+                <label className="flex min-h-[58px] cursor-pointer items-center justify-between gap-3 rounded-none sm:rounded-xl border border-dashed border-slate-300 bg-slate-50/70 px-4 py-2.5 text-sm text-slate-700 transition hover:border-indigo-300 hover:bg-white md:col-span-2">
+                  <span className="pr-3">
+                    {uploadFiles.length
+                      ? `${uploadFiles.length} image${uploadFiles.length > 1 ? "s" : ""} selected`
+                      : "Choose one or more images"}
+                  </span>
+                  <span className="shrink-0 rounded-none sm:rounded-xl bg-slate-900 px-3 py-1 text-xs font-semibold text-white">
+                    Browse
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      setUploadFiles(Array.from(e.target.files || []));
+                      e.target.value = "";
+                    }}
+                  />
                 </label>
               </div>
               <div className="flex flex-col gap-3 sm:flex-row">
-                <button type="button" onClick={() => setShowUploadForm(false)}
-                  className="inline-flex w-full items-center justify-center rounded-2xl border border-slate-200 px-5 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto">Close</button>
-                <button type="submit" disabled={uploading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[linear-gradient(135deg,_#4f46e5,_#4338ca)] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_-20px_rgba(79,70,229,0.9)] transition hover:translate-y-[-1px] disabled:opacity-60 sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => setShowUploadForm(false)}
+                  className="inline-flex w-full items-center justify-center rounded-none sm:rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 sm:w-auto"
+                >
+                  Close
+                </button>
+                <button
+                  type="submit"
+                  disabled={uploading}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-none sm:rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60 sm:w-auto"
+                >
                   <Send className="h-4 w-4" /> {uploading ? "Uploading..." : "Submit Photos"}
                 </button>
               </div>
             </form>
-          )}
-          {uploadMessage.text && (
-            <div className={`mt-4 rounded-2xl px-4 py-3 text-sm font-medium ${
-              uploadMessage.type === "success" ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200" : "bg-rose-50 text-rose-700 ring-1 ring-rose-200"
-            }`}>{uploadMessage.text}</div>
-          )}
-        </section>
+            {uploadMessage.text && (
+              <div
+                className={`mt-4 rounded-none sm:rounded-xl px-4 py-2.5 text-sm font-medium ${
+                  uploadMessage.type === "success"
+                    ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                    : "bg-rose-50 text-rose-700 ring-1 ring-rose-200"
+                }`}
+              >
+                {uploadMessage.text}
+              </div>
+            )}
+          </section>
+        )}
 
         {/* Photo Grid */}
-        <div className="columns-1 gap-5 sm:columns-2 lg:columns-3 xl:columns-4">
+        <div className="columns-2 gap-3 sm:columns-2 sm:gap-4 md:columns-3 lg:columns-3 xl:columns-4">
           {paginatedPhotos.map((photo) => (
-            <div key={photo.url} onClick={() => openPhoto(photo, filteredPhotos.indexOf(photo))}
-              className="group relative mb-5 inline-block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-[1.6rem] border border-slate-100 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-xl">
-              <div className="relative overflow-hidden bg-slate-100">
-                <img src={optimizeCloudinaryImage(photo.url, "f_auto,q_auto,w_900")} alt={photo.caption || "Gallery photo"}
-                  className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" decoding="async"
-                  sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw" />
-              </div>
-              <div className="space-y-2 px-4 py-3.5">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-700">{photo.category || "uncategorized"}</span>
-                  {!collegeName && <span className="inline-flex items-center gap-1 text-[11px] text-slate-500"><MapPin size={11} />{photo.collegeName}</span>}
+            <div
+              key={photo.url}
+              onClick={() => openPhoto(photo, filteredPhotos.indexOf(photo))}
+              className="group relative mb-3 sm:mb-4 inline-block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-xl bg-transparent transition-all duration-300"
+            >
+              <div className="relative overflow-hidden bg-slate-100/50 rounded-xl">
+                <img
+                  src={optimizeCloudinaryImage(photo.url, "f_auto,q_auto,w_900")}
+                  alt={photo.caption || "Gallery photo"}
+                  className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20 flex items-end p-2 sm:p-3 opacity-0 group-hover:opacity-100">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-white uppercase tracking-wider bg-white/20 backdrop-blur-md px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
+                    {photo.category || "uncategorized"}
+                  </span>
                 </div>
-                <p className="text-sm font-semibold leading-6 text-slate-900">{photo.caption || "Untitled memory"}</p>
-                <p className="text-xs text-slate-500">Click to view full photo</p>
               </div>
             </div>
           ))}
@@ -360,7 +388,7 @@ function GalleryPageClient() {
             <button
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               disabled={currentPage === 1}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-none sm:rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             >
               <ChevronLeft size={16} />
             </button>
@@ -370,7 +398,7 @@ function GalleryPageClient() {
                 <button
                   key={p}
                   onClick={() => setCurrentPage(p)}
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl text-sm font-semibold transition ${
+                  className={`inline-flex h-10 w-10 items-center justify-center rounded-none sm:rounded-xl text-sm font-semibold transition ${
                     currentPage === p
                       ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/20"
                       : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -383,7 +411,7 @@ function GalleryPageClient() {
             <button
               onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
               disabled={currentPage === totalPages}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-none sm:rounded-xl border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white"
             >
               <ChevronRight size={16} />
             </button>
@@ -406,19 +434,19 @@ function GalleryPageClient() {
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-xl bg-slate-100/85"
             onClick={closePhoto}>
             <motion.div initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.9, y: 20 }}
-              className="relative max-w-5xl w-full overflow-hidden rounded-3xl shadow-2xl border border-slate-200 bg-white"
+              className="relative max-w-5xl w-full overflow-hidden rounded-none sm:rounded-2xl shadow-2xl border border-slate-200 bg-white"
               onClick={(e) => e.stopPropagation()}>
-              <button onClick={closePhoto} className="absolute right-6 top-6 z-10 rounded-full p-2 bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+              <button onClick={closePhoto} className="absolute right-6 top-6 z-10 rounded-none sm:rounded-xl p-2 bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
                 <X size={24} />
               </button>
               {filteredPhotos.length > 1 && (
                 <>
                   <button onClick={() => { const p = (selectedImage.index - 1 + filteredPhotos.length) % filteredPhotos.length; openPhoto(filteredPhotos[p], p); }}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 rounded-full p-3 bg-white/90 text-slate-700 shadow-md hover:bg-white transition md:left-6">
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 rounded-none sm:rounded-xl p-3 bg-white/90 text-slate-700 shadow-md hover:bg-white transition md:left-6">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="15 18 9 12 15 6"/></svg>
                   </button>
                   <button onClick={() => { const n = (selectedImage.index + 1) % filteredPhotos.length; openPhoto(filteredPhotos[n], n); }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 rounded-full p-3 bg-white/90 text-slate-700 shadow-md hover:bg-white transition md:right-[34%]">
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 rounded-none sm:rounded-xl p-3 bg-white/90 text-slate-700 shadow-md hover:bg-white transition md:right-[34%]">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="9 18 15 12 9 6"/></svg>
                   </button>
                 </>
@@ -434,7 +462,7 @@ function GalleryPageClient() {
                 <div className="w-full md:w-1/3 flex flex-col justify-between overflow-y-auto bg-white text-slate-900">
                   <div className="px-4 py-3 md:p-8">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ring-1 bg-indigo-50 text-indigo-700 ring-indigo-100">
+                      <span className="inline-flex items-center rounded-none sm:rounded-lg px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ring-1 bg-indigo-50 text-indigo-700 ring-indigo-100">
                         {selectedImage.category || "uncategorized"}
                       </span>
                       <span className="text-[11px] text-slate-500 md:hidden">{selectedImage.collegeName}</span>
@@ -463,13 +491,13 @@ function GalleryPageClient() {
                   </div>
                   <div className="border-t border-slate-100 px-4 py-3 space-y-2 md:border-0 md:px-8 md:pb-8 md:pt-0 md:mt-10 md:space-y-3">
                     <button onClick={copyShareUrl}
-                      className={`flex w-full items-center justify-center gap-2 rounded-xl md:rounded-2xl border py-2.5 md:py-3.5 text-sm font-semibold md:font-extrabold transition ${
+                      className={`flex w-full items-center justify-center gap-2 rounded-none sm:rounded-xl border py-2.5 md:py-3.5 text-sm font-semibold md:font-extrabold transition ${
                         copied ? "border-emerald-500/40 bg-emerald-500/20 text-emerald-600" : "border-slate-200 bg-slate-100 text-slate-800 hover:bg-slate-200"
                       }`}>
                       {copied ? "✓ Link Copied!" : "Share Photo URL"}
                     </button>
                     <button onClick={() => window.open(selectedImage.url, "_blank")}
-                      className="group flex w-full items-center justify-center gap-2 rounded-xl md:rounded-2xl py-2.5 md:py-3.5 text-sm font-semibold md:font-extrabold transition bg-slate-900 text-white hover:bg-slate-800">
+                      className="group flex w-full items-center justify-center gap-2 rounded-none sm:rounded-xl py-2.5 md:py-3.5 text-sm font-semibold md:font-extrabold transition bg-slate-900 text-white hover:bg-slate-800">
                       Full Resolution <ExternalLink size={16} />
                     </button>
                   </div>
@@ -479,7 +507,7 @@ function GalleryPageClient() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </section>
   );
 }
 

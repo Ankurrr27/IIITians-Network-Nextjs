@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { Linkedin } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function DevelopersSection() {
   const devs = [
@@ -26,55 +27,143 @@ export default function DevelopersSection() {
     }
   ];
 
+  const [activeIndex, setActiveIndex] = useState(1); // Default to Ankur Singh in the middle
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Auto rotation
+  useEffect(() => {
+    if (isHovered) return;
+    const timer = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % devs.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [isHovered, devs.length]);
+
+  const getPosition = (index: number) => {
+    const diff = (index - activeIndex + devs.length) % devs.length;
+    if (diff === 0) return "center";
+    if (diff === 1) return "right";
+    return "left";
+  };
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const cardWidth = isMobile ? 220 : 260;
+
+  const cardVariants = {
+    center: {
+      x: 0,
+      scale: 1.05,
+      opacity: 1,
+      zIndex: 10,
+      rotate: 0,
+      transition: { type: "spring", stiffness: 220, damping: 25 }
+    },
+    right: {
+      x: isMobile ? 110 : 260,
+      scale: 0.95,
+      opacity: 1,
+      zIndex: 5,
+      rotate: 0,
+      transition: { type: "spring", stiffness: 220, damping: 25 }
+    },
+    left: {
+      x: isMobile ? -110 : -260,
+      scale: 0.95,
+      opacity: 1,
+      zIndex: 5,
+      rotate: 0,
+      transition: { type: "spring", stiffness: 220, damping: 25 }
+    }
+  } as const;
+
   return (
-    <section className="bg-white py-16 sm:py-20 border-t border-slate-100">
+    <section className="bg-white py-8 sm:py-10 border-t border-slate-100 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-indigo-600">
             Contributors
           </p>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <h2 className="mt-1.5 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
             Contact the Developers
           </h2>
-          <p className="mx-auto mt-2 max-w-2xl text-xs leading-relaxed text-slate-500 font-semibold uppercase tracking-wide">
+          <p className="mx-auto mt-1 max-w-2xl text-[10px] leading-relaxed text-slate-400 font-bold uppercase tracking-wider">
             Autonomous & student-driven team behind the platform
           </p>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-3 max-w-3xl mx-auto">
-          {devs.map((dev) => (
-            <div
-              key={dev.name}
-              className="group flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow hover:border-slate-300 duration-200"
-            >
-              <div className="flex items-center gap-3">
-                <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-2 ring-indigo-50 group-hover:ring-indigo-100 transition-all duration-300">
-                  <Image
-                    src={dev.photoUrl}
-                    alt={dev.name}
-                    fill
-                    className="object-cover"
-                    sizes="44px"
-                    loading="lazy"
-                  />
-                </div>
-                <div>
-                  <h4 className="text-xs font-extrabold text-slate-950 truncate">{dev.name}</h4>
-                  <p className="text-[10px] font-semibold text-slate-400 mt-0.5">{dev.college}</p>
-                </div>
-              </div>
+        {/* Carousel Area */}
+        <div 
+          className="relative max-w-4xl mx-auto flex items-center justify-center h-[110px] sm:h-[130px]"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Cards container */}
+          <div className="relative w-full h-full flex items-center justify-center">
+            {devs.map((dev, index) => {
+              const position = getPosition(index);
+              const isActive = position === "center";
+              return (
+                <motion.div
+                  key={dev.name}
+                  animate={position}
+                  variants={cardVariants}
+                  onClick={() => {
+                    if (!isActive) setActiveIndex(index);
+                  }}
+                  style={{
+                    width: `${cardWidth}px`
+                  }}
+                  className={`absolute flex items-center justify-between rounded-xl border p-3 sm:p-4 transition-colors duration-300 shrink-0 ${
+                    isActive 
+                      ? "border-indigo-150 bg-gradient-to-br from-white via-white to-indigo-50/15 shadow-[0_15px_40px_rgba(79,70,229,0.05)] cursor-default" 
+                      : "border-slate-200 bg-white shadow-sm cursor-pointer hover:border-slate-300"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    {/* Avatar: h-11 w-11 sm:h-13 sm:w-13 */}
+                    <div className={`relative h-11 w-11 sm:h-13 sm:w-13 shrink-0 overflow-hidden rounded-full transition-all duration-300 ring-2 ${
+                      isActive ? "ring-indigo-100" : "ring-slate-50"
+                    }`}>
+                      <Image
+                        src={dev.photoUrl}
+                        alt={dev.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 44px, 52px"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-xs sm:text-sm font-extrabold text-slate-955 truncate">
+                        {dev.name}
+                      </h4>
+                      <p className="text-[10px] sm:text-xs font-semibold text-slate-400 mt-0.5 truncate">
+                        {dev.college}
+                      </p>
+                    </div>
+                  </div>
 
-              <a
-                href={dev.linkedin}
-                target="_blank"
-                rel="noreferrer"
-                title={`LinkedIn Profile`}
-                className="text-slate-400 hover:text-indigo-600 p-1.5 rounded-lg hover:bg-slate-500/5 transition-colors"
-              >
-                <Linkedin className="h-4 w-4" />
-              </a>
-            </div>
-          ))}
+                  {/* LinkedIn icon in brand color */}
+                  <a
+                    href={dev.linkedin}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`${dev.name}'s LinkedIn Profile`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="text-[#0077b5] hover:text-[#005582] transition-colors p-1.5 hover:bg-slate-50 rounded-full shrink-0"
+                  >
+                    <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </a>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
