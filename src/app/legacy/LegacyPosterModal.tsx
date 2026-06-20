@@ -8,6 +8,12 @@ import {
   Sparkles,
   Quote,
   Briefcase,
+  Shield,
+  Code,
+  Palette,
+  MessageCircle,
+  Star,
+  Trophy,
 } from "lucide-react";
 import { toPng } from "html-to-image";
 import type { IAlumni } from "@/types";
@@ -18,26 +24,7 @@ interface LegacyPosterModalProps {
   isDarkMode: boolean;
 }
 
-const appTheme = {
-  id: "app-theme",
-  bgClass: "bg-indigo-950",
-  cardClass: "bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl",
-  textClass: "text-white/80",
-  nameClass: "text-white text-6xl font-black tracking-tight",
-  badgeClass: "bg-indigo-600 text-white border border-indigo-500",
-  roleClass: "text-indigo-300 font-bold",
-  quoteClass: "border-l-4 border-indigo-400 bg-white/5 text-white/95",
-  accentColor: "#4f46e5",
-  dotClass: "bg-indigo-400 ring-indigo-400/40",
-  decor: (
-    <>
-      <div className="absolute top-[10%] left-[5%] w-[500px] h-[500px] rounded-full bg-indigo-500/20 blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[10%] right-[5%] w-[500px] h-[500px] rounded-full bg-violet-500/20 blur-[120px] pointer-events-none" />
-    </>
-  )
-};
-
-export default function LegacyPosterModal({ entry, onClose }: LegacyPosterModalProps) {
+export default function LegacyPosterModal({ entry, onClose, isDarkMode }: LegacyPosterModalProps) {
   const posterRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
   const [previewScale, setPreviewScale] = useState(0.35);
@@ -48,10 +35,21 @@ export default function LegacyPosterModal({ entry, onClose }: LegacyPosterModalP
   const showJourney = entry.roleHistory && entry.roleHistory.length > 0;
   const showCurrentJob = !!entry.currentRole;
 
+  const getRoleIcon = (roleName?: string) => {
+    if (!roleName) return <Star className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    const r = roleName.toLowerCase();
+    if (r.includes('president')) return <Trophy className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    if (r.includes('social') || r.includes('media') || r.includes('instagram') || r.includes('pr ')) return <MessageCircle className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    if (r.includes('dev') || r.includes('tech') || r.includes('app') || r.includes('web')) return <Code className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    if (r.includes('design') || r.includes('video') || r.includes('edit')) return <Palette className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    if (r.includes('admin') || r.includes('manage') || r.includes('lead')) return <Shield className="h-6 w-6 text-white" strokeWidth={2.5} />;
+    return <Briefcase className="h-6 w-6 text-white" strokeWidth={2.5} />;
+  };
+
   // Auto-fit poster preview inside the viewport
   useEffect(() => {
     const handleResize = () => {
-      const availableHeight = window.innerHeight - 100; // height minus controls padding
+      const availableHeight = window.innerHeight - 100;
       const scale = Math.min(Math.max(availableHeight / 1920, 0.15), 0.45);
       setPreviewScale(scale);
     };
@@ -128,7 +126,7 @@ export default function LegacyPosterModal({ entry, onClose }: LegacyPosterModalP
   };
 
   const serviceLine = entry.graduationYear 
-    ? `${entry.iiit} · Class of ${entry.graduationYear}`
+    ? `${entry.iiit} · Team of ${entry.graduationYear}`
     : `${entry.iiit} · ${entry.generation || "Legacy Member"}`;
 
   const currentJobLine = [entry.currentRole, entry.currentCompany].filter(Boolean).join(" @ ");
@@ -175,96 +173,143 @@ export default function LegacyPosterModal({ entry, onClose }: LegacyPosterModalP
             margin: `calc(-960px * (1 - ${previewScale})) calc(-540px * (1 - ${previewScale}))`
           }}
         >
-          {/* The Actual Poster (Fixed 1080x1920 dimensions) */}
+          {/* THE POSTER */}
           <div
             ref={posterRef}
             id="legacy-instagram-poster"
-            className={`relative flex h-[1920px] w-[1080px] flex-col justify-between p-16 select-none ${appTheme.bgClass}`}
+            className={`relative flex h-[1920px] w-[1080px] flex-col items-center justify-center select-none overflow-hidden ${
+              isDarkMode
+                ? "bg-[linear-gradient(180deg,_#0a0a1a_0%,_#0d0d2b_100%)]"
+                : "bg-[linear-gradient(180deg,_#eef2ff_0%,_#f5f3ff_100%)]"
+            }`}
           >
-            {appTheme.decor}
+            {/* Top Wave */}
+            <div className="absolute top-0 left-0 w-full leading-[0] pointer-events-none z-0">
+              <svg className="relative block w-full h-[320px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 320" preserveAspectRatio="none">
+                <path d="M0,0V120C120,180,240,220,360,200C480,180,540,120,660,100C780,80,900,120,1080,160V0Z" opacity={isDarkMode ? "0.35" : "0.15"} fill="#4f46e5" />
+                <path d="M0,0V80C100,140,220,180,360,160C500,140,580,80,720,60C860,40,980,100,1080,120V0Z" opacity={isDarkMode ? "0.55" : "0.3"} fill="#4f46e5" />
+                <path d="M0,0V40C80,80,200,120,340,110C480,100,580,50,720,30C860,10,980,60,1080,80V0Z" fill="#4f46e5" />
+              </svg>
+            </div>
 
-            {/* ── Poster Top: Header ── */}
-            <div className="flex items-center justify-between z-10">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-indigo-600 shadow-md">
-                  <Sparkles className="h-7 w-7" />
-                </div>
-                <div>
-                  <h4 className="text-xl font-black uppercase tracking-[0.25em] text-white">
-                    IIITians Network
-                  </h4>
-                  <p className="text-xs font-semibold tracking-[0.3em] text-white/60">
-                    EST. 2021
-                  </p>
-                </div>
-              </div>
-              <div className={`rounded-full px-5 py-2 text-xs font-black tracking-widest uppercase ${appTheme.badgeClass}`}>
-                LEGACY REC
+            {/* Bottom Wave (flipped) */}
+            <div className="absolute bottom-0 left-0 w-full leading-[0] pointer-events-none z-0 rotate-180">
+              <svg className="relative block w-full h-[220px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 220" preserveAspectRatio="none">
+                <path d="M0,0V60C120,110,280,140,440,120C600,100,700,50,860,40C980,30,1060,60,1080,80V0Z" opacity={isDarkMode ? "0.3" : "0.12"} fill="#4f46e5" />
+                <path d="M0,0V30C100,70,240,100,400,90C560,80,680,40,840,20C960,5,1040,30,1080,50V0Z" opacity={isDarkMode ? "0.5" : "0.25"} fill="#4f46e5" />
+                <path d="M0,0V10C80,40,200,70,360,60C520,50,640,20,800,10C920,2,1020,20,1080,30V0Z" fill="#4f46e5" opacity={isDarkMode ? "0.7" : "0.5"} />
+              </svg>
+            </div>
+            
+            {/* Logo — top left over the wave */}
+            <div className="absolute top-12 left-14 z-20 flex items-center gap-6">
+              <img
+                src="/iiitians-logo.png"
+                alt="IIITians Network"
+                crossOrigin="anonymous"
+                className="h-28 w-28 object-contain drop-shadow-lg"
+              />
+              <div>
+                <p className="text-[2rem] font-black tracking-[0.2em] text-white uppercase leading-none drop-shadow">
+                  IIITians Network
+                </p>
+                <p className="text-[1.3rem] font-semibold tracking-[0.12em] text-white/70 mt-1">
+                  EST. 2021
+                </p>
               </div>
             </div>
 
-            {/* ── Poster Middle: Main Frosted Card ── */}
-            <div className={`flex flex-col items-center p-12 text-center rounded-[3rem] z-10 ${appTheme.cardClass}`}>
-              {/* Profile Photo */}
-              <div className="relative mb-8 h-60 w-60 overflow-hidden rounded-full ring-8 ring-white/10">
-                {entry.photo?.url ? (
-                  <img
-                    src={entry.photo.url}
-                    alt={entry.name}
-                    crossOrigin="anonymous"
-                    referrerPolicy="no-referrer"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-50 to-violet-50 text-8xl font-black text-indigo-600">
-                    {entry.name[0]}
-                  </div>
-                )}
-                <div className="absolute inset-0 ring-4 ring-inset ring-white/20 rounded-full" />
+            {/* Main Content — fits inside waves top(~260px) and bottom(~180px) */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-20 pt-[260px] pb-[220px] z-10">
+
+              {/* Image Avatar */}
+              <div className="relative mb-10 flex items-center justify-center">
+                <div className="absolute inset-[-8px] rounded-full bg-gradient-to-tr from-[#4f46e5] via-[#6366f1] to-[#818cf8] opacity-90" />
+                <div className={`h-[360px] w-[360px] overflow-hidden rounded-full ring-[14px] relative z-10 ${
+                  isDarkMode ? "ring-[#0a0a1a] bg-[#0a0a1a] shadow-[0_30px_80px_rgba(0,0,0,0.6)]" : "ring-white bg-white shadow-[0_40px_80px_rgba(79,70,229,0.25)]"
+                }`}>
+                  {entry.photo?.url ? (
+                    <img
+                      src={entry.photo.url}
+                      alt={entry.name}
+                      crossOrigin="anonymous"
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-[8rem] font-black text-white">
+                      {entry.name[0]}
+                    </div>
+                  )}
+                </div>
+                <div className={`absolute bottom-2 right-2 z-20 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#4f46e5] to-[#4338ca] ring-[10px] shadow-2xl ${
+                  isDarkMode ? "ring-[#0a0a1a]" : "ring-white"
+                }`}>
+                  <Sparkles className="h-12 w-12 text-white" />
+                </div>
               </div>
 
-              {/* Name & Title */}
-              <h2 className={appTheme.nameClass}>{entry.name}</h2>
-              
-              <div className={`mt-4 inline-flex rounded-full px-5 py-1.5 text-sm font-extrabold uppercase tracking-widest ${appTheme.badgeClass}`}>
-                {tagText}
+              {/* Name */}
+              <h2 className={`text-[5.5rem] font-black tracking-tight mb-6 text-center leading-none ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                {entry.name}
+              </h2>
+
+              {/* Role Badge */}
+              <div className="flex items-center gap-6 mb-6">
+                <Sparkles className="h-9 w-9 text-[#6366f1]" />
+                <div className="rounded-full bg-gradient-to-r from-[#4f46e5] to-[#4338ca] px-12 py-4 text-[2rem] font-black tracking-widest text-white uppercase shadow-xl shadow-indigo-500/30">
+                  {tagText}
+                </div>
+                <Sparkles className="h-9 w-9 text-[#6366f1]" />
               </div>
 
-              <p className="mt-6 text-xl font-bold text-white tracking-wide">{serviceLine}</p>
+              {/* Service Line */}
+              <p className={`text-[2.2rem] font-extrabold tracking-wide mb-3 text-center ${isDarkMode ? "text-slate-200" : "text-slate-800"}`}>
+                {serviceLine}
+              </p>
 
+              {/* Current Job */}
               {showCurrentJob && currentJobLine && (
-                <div className="mt-3 flex items-center justify-center gap-2 text-base text-white/70">
-                  <Briefcase className="h-4 w-4 shrink-0 text-white/50" />
+                <div className={`flex items-center gap-4 text-[1.8rem] font-bold mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                  <Briefcase className={`h-9 w-9 shrink-0 ${isDarkMode ? "text-slate-500" : "text-slate-400"}`} />
                   <span>{currentJobLine}</span>
                 </div>
               )}
 
-              {/* Legacy Message / Quote */}
+              {/* Quote Box */}
               {showQuote && quoteText && (
-                <div className={`mt-8 max-w-2xl rounded-2xl p-6 text-left ${appTheme.quoteClass}`}>
-                  <Quote className="h-8 w-8 text-white/30 mb-2 rotate-180" />
-                  <p className="text-xl font-medium leading-relaxed italic">
+                <div className={`relative mt-8 mb-10 w-full rounded-[1.8rem] px-14 py-14 border-2 ${
+                  isDarkMode ? "bg-[#0d0d2b]/80 border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)]" : "bg-white border-[#e0e7ff]/60 shadow-[0_20px_50px_rgba(79,70,229,0.07)]"
+                }`}>
+                  <Quote className={`absolute -top-9 left-10 h-20 w-20 text-[#4f46e5] rounded-full rotate-180 ${isDarkMode ? "bg-[#0a0a1a]" : "bg-white"}`} />
+                  <p className={`text-[1.9rem] font-semibold leading-[1.65] italic text-center ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
                     "{quoteText}"
                   </p>
                 </div>
               )}
 
-              {/* Journey Timeline */}
+              {/* Network Journey */}
               {showJourney && entry.roleHistory && entry.roleHistory.length > 0 && (
-                <div className="mt-10 w-full text-left">
-                  <div className="flex items-center gap-4 mb-5">
-                    <span className="text-xs font-black uppercase tracking-[0.2em] text-white/60">Network Journey</span>
-                    <div className="h-px flex-1 bg-white/15" />
+                <div className="w-full mt-2">
+                  <div className="flex items-center gap-6 mb-10">
+                    <div className={`h-[2px] flex-1 ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
+                    <span className={`text-[1.7rem] font-black uppercase tracking-[0.3em] ${isDarkMode ? "text-[#818cf8]" : "text-[#4f46e5]"}`}>
+                      Network Journey
+                    </span>
+                    <div className={`h-[2px] flex-1 ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
                   </div>
-                  <div className="relative space-y-5 pl-8">
-                    <div className="absolute bottom-2 left-[0.4rem] top-2 w-0.5 bg-white/10" />
+
+                  <div className="relative space-y-12 pl-[5rem]">
+                    <div className={`absolute bottom-4 left-[1.7rem] top-4 w-[3px] rounded-full ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
                     {entry.roleHistory.slice(0, 3).map((item, index) => (
                       <div key={index} className="relative">
-                        <span className={`absolute -left-[1.95rem] top-1.5 h-3.5 w-3.5 rounded-full ring-4 ring-neutral-900 ${appTheme.dotClass}`} />
-                        <p className="text-base font-black text-white leading-snug">
+                        <div className={`absolute -left-[5rem] top-1 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#4f46e5] to-[#4338ca] ring-[8px] shadow-lg z-10 ${isDarkMode ? "ring-[#0a0a1a]" : "ring-[#eef2ff]"}`}>
+                          {getRoleIcon(item.role)}
+                        </div>
+                        <p className={`text-[2rem] font-black mb-1 uppercase tracking-wide ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                           {item.role || "Legacy Member"}
                         </p>
-                        <p className="text-sm text-white/50 font-medium">
+                        <p className={`text-[1.5rem] font-bold tracking-wide ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
                           {[item.team, item.year].filter(Boolean).join(" · ")}
                         </p>
                       </div>
@@ -274,42 +319,18 @@ export default function LegacyPosterModal({ entry, onClose }: LegacyPosterModalP
               )}
             </div>
 
-            {/* ── Poster Bottom: Footer Card ── */}
-            <div className={`flex items-center justify-between p-8 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md z-10`}>
-              <div className="text-left">
-                <p className="text-xs font-bold text-white/40 uppercase tracking-widest">
-                  Profile Verification
-                </p>
-                <p className="mt-1 text-sm font-semibold text-white/95">
-                  iiitiansnetwork.com/legacy
-                </p>
-                <p className="mt-2 text-[10px] font-medium text-white/30">
-                  Legacy ID: IIN-LEGACY-{entry._id.slice(-6).toUpperCase()}
-                </p>
-              </div>
-              {/* Stylized Mock QR Code */}
-              <div className="h-20 w-20 rounded-xl bg-white p-2 flex items-center justify-center shadow-lg">
-                <svg viewBox="0 0 100 100" className="h-full w-full text-indigo-950" fill="currentColor">
-                  {/* Corners */}
-                  <path d="M 0 0 h 30 v 10 h -20 v 20 h -10 Z" />
-                  <path d="M 5 5 h 20 v 20 h -20 Z" fill="none" stroke="currentColor" strokeWidth="5" />
-                  <path d="M 70 0 h 30 v 30 h -10 v -20 h -20 Z" />
-                  <path d="M 75 5 h 20 v 20 h -20 Z" fill="none" stroke="currentColor" strokeWidth="5" />
-                  <path d="M 0 70 h 10 v 20 h 20 v 10 h -30 Z" />
-                  <path d="M 5 75 h 20 v 20 h -20 Z" fill="none" stroke="currentColor" strokeWidth="5" />
-                  {/* Mock QR modules */}
-                  <rect x="40" y="10" width="10" height="10" />
-                  <rect x="50" y="20" width="10" height="10" />
-                  <rect x="40" y="40" width="20" height="20" />
-                  <rect x="10" y="40" width="10" height="10" />
-                  <rect x="20" y="50" width="10" height="10" />
-                  <rect x="80" y="40" width="10" height="10" />
-                  <rect x="70" y="50" width="10" height="10" />
-                  <rect x="40" y="70" width="10" height="10" />
-                  <rect x="50" y="80" width="10" height="10" />
-                  <rect x="80" y="80" width="15" height="15" />
-                </svg>
-              </div>
+            {/* Bottom-right: tagline */}
+            <div className="absolute bottom-[4rem] right-[4rem] z-20 text-right">
+              <p className={`text-[1.8rem] font-bold italic tracking-wide ${
+                isDarkMode ? "text-white/40" : "text-[#4f46e5]/55"
+              }`}>
+                A never-ending connection...
+              </p>
+              <p className={`text-[1.2rem] font-semibold tracking-[0.18em] uppercase mt-1 ${
+                isDarkMode ? "text-white/25" : "text-[#4f46e5]/40"
+              }`}>
+                iiitiansnetwork.com/legacy
+              </p>
             </div>
           </div>
         </div>
