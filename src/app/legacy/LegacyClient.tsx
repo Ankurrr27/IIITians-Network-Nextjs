@@ -27,7 +27,7 @@ import ImageCropModal from "@/components/ImageCropModal";
 import useThemeMode from "@/hooks/useThemeMode";
 import { notifyPromise } from "@/utils/appNotifications";
 import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
-// import LegacyPosterModal from "./LegacyPosterModal";
+import LegacyPosterModal from "./LegacyPosterModal";
 
 interface Props {
   initialAlumni: IAlumni[];
@@ -162,7 +162,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
   const { isDarkMode } = useThemeMode();
   const searchParams = useSearchParams();
   const [entries, setEntries] = useState<IAlumni[]>(initialAlumni);
-  // const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
+  const [selectedPosterEntry, setSelectedPosterEntry] = useState<IAlumni | null>(null);
   const [collegeOptions, setCollegeOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [apiUnavailable, setApiUnavailable] = useState(false);
@@ -231,6 +231,28 @@ export default function LegacyClient({ initialAlumni }: Props) {
     setIiitFilter(searchParams.get("iiit") || "");
     setNetworkPostFilter(searchParams.get("networkPost") || "");
   }, [searchParams]);
+
+  // Sync state back to URL query parameters
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (search) {
+      params.set("search", search);
+    } else {
+      params.delete("search");
+    }
+    if (iiitFilter) {
+      params.set("iiit", iiitFilter);
+    } else {
+      params.delete("iiit");
+    }
+    if (networkPostFilter) {
+      params.set("networkPost", networkPostFilter);
+    } else {
+      params.delete("networkPost");
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [search, iiitFilter, networkPostFilter]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -374,7 +396,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
                 type="button"
                 onClick={() => setIsFormOpen((prev) => !prev)}
                 title="Submit your legacy profile"
-                className="ui-button ui-button-primary inline-flex h-9 shrink-0 items-center justify-center gap-1.5 px-3 text-xs"
+                className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-1.5 px-3.5 text-sm"
               >
                 {isFormOpen ? "Close" : "Form"}
                 {isFormOpen ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -431,12 +453,12 @@ export default function LegacyClient({ initialAlumni }: Props) {
             </div>
           )}
 
-          {/* <LegacyEntriesSection
+          <LegacyEntriesSection
             isDarkMode={isDarkMode}
             loading={loading}
             entries={entries}
-            // onSharePoster={setSelectedPosterEntry}
-          /> */}
+            onSharePoster={setSelectedPosterEntry}
+          />
 
           {totalPages > 1 && (
             <div className="mt-8 flex items-center justify-center gap-3">
@@ -464,13 +486,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
         </div>
       </div>
 
-      {/* {selectedPosterEntry && (
+      {selectedPosterEntry && (
         <LegacyPosterModal
           entry={selectedPosterEntry}
           onClose={() => setSelectedPosterEntry(null)}
           isDarkMode={isDarkMode}
         />
-      )} */}
+      )}
 
       {rawPhoto && (
         <ImageCropModal
@@ -840,14 +862,14 @@ function LegacyEntryCard({
                 <p className="mt-1 text-xs font-semibold text-white/85 drop-shadow-sm" style={{ color: 'rgba(255, 255, 255, 0.85)' }}>{serviceLine}</p>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                {/* <button
+                <button
                   type="button"
                   onClick={() => onSharePoster(entry)}
                   title="Share Poster"
                   className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-1.5 text-white transition hover:bg-white/20 hover:scale-105"
                 >
                   <Sparkles className="h-3.5 w-3.5 text-indigo-300" />
-                </button> */}
+                </button>
                 <a
                   href={`mailto:${entry.email}`}
                   title="Email"
@@ -894,7 +916,7 @@ function LegacyEntryCard({
                 <p className={`mt-1 text-sm font-medium ${isDarkMode ? "text-slate-300" : "text-indigo-700"}`}>{serviceLine}</p>
               </div>
               <div className="flex flex-wrap shrink-0 items-center gap-1.5">
-                {/* <button
+                <button
                   type="button"
                   onClick={() => onSharePoster(entry)}
                   title="Share Poster"
@@ -906,7 +928,7 @@ function LegacyEntryCard({
                 >
                   <Sparkles className="h-4 w-4 shrink-0 text-indigo-500 dark:text-indigo-400" />
                   <span className="hidden text-xs font-semibold sm:inline">Share Poster</span>
-                </button> */}
+                </button>
                 <a
                   href={`mailto:${entry.email}`}
                   title="Email"

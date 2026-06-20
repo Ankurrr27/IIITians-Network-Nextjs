@@ -28,11 +28,14 @@ import useThemeMode from "@/hooks/useThemeMode";
 
 const navItems: Array<{ name: string; href: string; highlight?: boolean }> = [
   { name: "Home", href: "/#home" },
-  { name: "IIITs", href: "/colleges" },
-  { name: "Community", href: "/discuss" },
-  { name: "Events", href: "/events" },
-  { name: "Opportunities", href: "/opportunities" },
-  { name: "Merchandise", href: "/merchandise" },
+  { name: "Institutes", href: "/colleges" },
+  { name: "Event", href: "/events" },
+  { name: "Placement", href: "/placement" },
+  { name: "Legacy", href: "/legacy" },
+  { name: "Discuss", href: "/discuss" },
+  { name: "Opportunity", href: "/opportunities" },
+  { name: "Merch", href: "/merchandise" },
+  { name: "Team", href: "/team" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -44,12 +47,12 @@ const quickLinks = {
     { title: "Register your Club", subtitle: "Create a student club account", href: "/discuss?clubAccount=true", icon: PlusCircle },
     { title: "Club Register Guide", subtitle: "Steps for club verification", href: "/guide?flow=club-register", icon: HelpCircle },
   ],
-  Events: [
+  Event: [
     { title: "Explore Events", subtitle: "See public events and updates", href: "/events", icon: CalendarPlus },
     { title: "Register Your Event", subtitle: "Post through a club account", href: "/discuss?clubAccount=true", icon: Megaphone },
     { title: "Event Guide", subtitle: "Learn how event posting works", href: "/guide?flow=events", icon: BookOpenText },
   ],
-  Placements: [
+  Placement: [
     { title: "Placement Explorer", subtitle: "Compare college placement data", href: "/placement", icon: BriefcaseBusiness },
     { title: "How to Read Placements", subtitle: "Understand branches and stats", href: "/guide?flow=placement", icon: HelpCircle },
   ],

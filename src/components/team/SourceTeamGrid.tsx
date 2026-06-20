@@ -76,15 +76,21 @@ function compareMembers(a: ITeamMember, b: ITeamMember, priorityList: string[] =
   return (a.name || "").localeCompare(b.name || "");
 }
 
-function getLeadershipLabel(role = "") {
-  const normalizedRole = role.toLowerCase();
-  if (normalizedRole.includes("vice president")) return "Vice President";
-  if (normalizedRole.includes("president")) return "President";
-  return "Executive Team";
-}
 
 function photoUrl(member: ITeamMember) {
   return member.photo?.url || "/placeholder.svg";
+}
+
+function getNormalizedTeam(member: { role?: string; team?: string }) {
+  const r = (member.role || "").toLowerCase();
+  const t = (member.team || "").toLowerCase();
+
+  if (r.includes("design") || t.includes("design")) return "Design";
+  if (r.includes("content") || t.includes("content")) return "Content";
+  if (r.includes("social") || r.includes("media") || t.includes("social") || t.includes("media")) return "Social Media";
+  if (r.includes("developer") || r.includes("tech") || r.includes("development") || t.includes("tech") || t.includes("dev")) return "Tech";
+
+  return member.team || "";
 }
 
 export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[] }) {
@@ -135,7 +141,7 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
           </div>
           <div className={leadGridClass}>
             {leads.map((member) => (
-              <LeadCard key={member._id} member={member as SocialMember} teamMembers={team.filter(m => m.team && m.team === member.team) as SocialMember[]} />
+              <LeadCard key={member._id} member={member as SocialMember} teamMembers={team.filter(m => getNormalizedTeam(m) === getNormalizedTeam(member)) as SocialMember[]} />
             ))}
           </div>
         </section>
@@ -187,12 +193,7 @@ function ExecCard({ member }: { member: SocialMember }) {
             </div>
 
             <div className="sm:hidden flex-1 min-w-0">
-              <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="rounded-full bg-indigo-600 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white">
-                  {getLeadershipLabel(member.role)}
-                </span>
-                {member.year && <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-slate-500">{member.year}</span>}
-              </div>
+
               <h3 className="text-base font-bold text-slate-900 truncate">{member.name}</h3>
               <p className="mt-0.5 text-[11px] font-medium text-indigo-600 truncate">{member.role} {member.iiit ? `- ${member.iiit}` : ""}</p>
             </div>
@@ -201,16 +202,7 @@ function ExecCard({ member }: { member: SocialMember }) {
           <div className="p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:gap-4">
               {/* Desktop Header */}
-              <div className="hidden sm:flex flex-wrap items-center gap-3">
-                <div className="inline-flex items-center rounded-full bg-indigo-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-white">
-                  {getLeadershipLabel(member.role)}
-                </div>
-                {member.year && (
-                  <div className="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">
-                    {member.year}
-                  </div>
-                )}
-              </div>
+
 
               <div className="hidden sm:block">
                 <h3 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{member.name}</h3>
@@ -220,27 +212,27 @@ function ExecCard({ member }: { member: SocialMember }) {
               </div>
 
               <div className="grid gap-3 lg:grid-cols-[0.92fr_1.08fr]">
-                <div className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                <div className="bg-transparent sm:bg-white p-0 sm:p-3 sm:rounded-xl sm:border sm:border-slate-200 sm:shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs">About</p>
                   <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">{about}</p>
                 </div>
 
-                <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm">
+                <div className="hidden sm:block rounded-xl border border-indigo-100 bg-indigo-50/60 p-3 shadow-sm">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-indigo-600 sm:text-xs">Message</p>
                   <p className="mt-1.5 text-[12px] leading-5 text-slate-700 sm:mt-3 sm:text-sm sm:leading-6">"{message}"</p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-2 pt-1 sm:pt-0">
-                {execSocialLinks.map(({ key, Icon, color }) =>
-                  member[key as keyof SocialMember] ? (
-                    <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 ${color}`}>
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    </a>
-                  ) : null
-                )}
-              </div>
-              <div className="mt-2 border-t border-slate-100 pt-3">
+              <div className="flex items-center justify-between gap-3 border-t border-slate-100 pt-3 mt-2 sm:border-none sm:pt-0 sm:mt-0">
+                <div className="flex flex-wrap gap-2">
+                  {execSocialLinks.map(({ key, Icon, color }) =>
+                    member[key as keyof SocialMember] ? (
+                      <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`inline-flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-slate-200 bg-slate-50 transition hover:border-slate-300 hover:bg-slate-100 ${color}`}>
+                        <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                      </a>
+                    ) : null
+                  )}
+                </div>
                 <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">
                   See Profile &rarr;
                 </Link>
@@ -311,39 +303,37 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
       whileHover={{ y: -6 }}
       className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
-      <div className="flex flex-row sm:flex-col">
-        <div className="relative h-28 w-28 shrink-0 sm:h-52 sm:w-full overflow-hidden bg-slate-100 border-r border-slate-100 sm:border-none">
+      <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
+        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-[3/4] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
-          
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-900/20 to-transparent opacity-80 transition-opacity duration-300 group-hover:opacity-95" />
-          
-          <div className="hidden sm:flex absolute left-4 right-4 top-4 items-start justify-between gap-3">
-            <span className="rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-indigo-700 shadow-sm backdrop-blur-md">Lead Team</span>
-            <div className="flex flex-shrink-0 gap-2">
-              {socialLinks.map(({ key, Icon }) =>
-                member[key as keyof SocialMember] ? (
-                  <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white shadow-sm backdrop-blur-md ring-1 ring-white/20 transition-all hover:bg-white hover:text-indigo-600 hover:scale-110">
-                    <Icon size={14} />
-                  </a>
-                ) : null
-              )}
-            </div>
-          </div>
-
-          <div className="hidden sm:block absolute left-5 right-5 bottom-5">
-            <p className="line-clamp-2 text-xl font-bold leading-tight !text-white sm:text-2xl">{member.name}</p>
-            <p className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.15em] !text-indigo-300 sm:text-xs">{member.role}</p>
+        </div>
+        
+        {/* Desktop Overlay */}
+        <div className="hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-3.5">
+          <span className="truncate text-xs font-semibold uppercase tracking-[0.14em] text-white/95">{member.role}</span>
+          <div className="flex gap-2">
+            {socialLinks.map(({ key, Icon, color }) =>
+              member[key as keyof SocialMember] ? (
+                <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`${color} transition hover:scale-110 opacity-90 hover:opacity-100 flex items-center justify-center p-1`}>
+                  <Icon size={16} />
+                </a>
+              ) : null
+            )}
           </div>
         </div>
+      </div>
 
-        {/* Mobile Info View */}
-        <div className="flex sm:hidden flex-1 flex-col justify-center p-3 sm:p-4 min-w-0 bg-white">
-          <div>
-            <h3 className="text-sm font-bold text-slate-900 truncate">{member.name}</h3>
-            <p className="mt-0.5 text-[11px] font-semibold text-indigo-600 truncate">{member.role}</p>
-            <p className="mt-0.5 text-[10px] text-slate-500 truncate">{member.iiit}</p>
-          </div>
-          <div className="mt-2.5 flex items-center justify-between border-t border-slate-100 pt-2.5">
+      <div className="px-4 pb-4 pt-3 text-center sm:px-5 sm:pb-5 sm:pt-4 bg-white">
+        <h4 className="line-clamp-2 text-sm font-extrabold leading-tight text-slate-900 sm:text-base">{member.name}</h4>
+        
+        {/* Mobile Role */}
+        <p className="mt-0.5 sm:hidden text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
+        
+        <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs truncate">{member.iiit}</p>
+        
+        {/* Mobile Social Links & Chevron Toggle */}
+        <div className="mt-3 flex sm:hidden items-center justify-between border-t border-slate-100 pt-3">
+          <div className="flex items-center gap-3">
             <div className="flex flex-wrap gap-2.5">
               {socialLinks.map(({ key, Icon, color }) =>
                 member[key as keyof SocialMember] ? (
@@ -353,37 +343,35 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
                 ) : null
               )}
             </div>
-            <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600">
-              Profile &rarr;
-            </Link>
+            {teamMembers && teamMembers.length > 0 && (
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setExpanded(!expanded);
+                }}
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-slate-500 transition hover:bg-slate-100 active:bg-slate-200 cursor-pointer"
+                title="Toggle Team Members"
+              >
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
+              </button>
+            )}
           </div>
+          <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600">
+            Profile &rarr;
+          </Link>
         </div>
 
-        {/* Desktop Footer View */}
-        <div className="hidden sm:block bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div className="rounded-xl bg-slate-50/80 px-4 py-3 ring-1 ring-slate-100 transition-colors group-hover:bg-indigo-50/50 group-hover:ring-indigo-100">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-indigo-400">Institute</p>
-              <p className="mt-1 text-sm font-bold text-slate-700 sm:text-base group-hover:text-indigo-900">{member.iiit}</p>
-            </div>
-            <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700">
-              See Profile &rarr;
-            </Link>
-          </div>
+        {/* Desktop Profile Link */}
+        <div className="hidden sm:block mt-3 border-t border-slate-100 pt-3 text-right">
+          <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-xs font-bold text-indigo-600 hover:text-indigo-700">
+            See Profile &rarr;
+          </Link>
         </div>
       </div>
     </motion.article>
-
+ 
       {teamMembers && teamMembers.length > 0 && (
-        <div className="sm:hidden mt-2.5 mb-2 px-1">
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="flex w-full items-center justify-between rounded-xl bg-slate-50 border border-slate-100 px-4 py-3 text-xs font-bold text-slate-700 active:bg-slate-100 transition"
-          >
-            <span>Team Members ({teamMembers.length})</span>
-            <ChevronDown className={`w-4 h-4 text-slate-500 transition-transform ${expanded ? "rotate-180" : ""}`} />
-          </button>
-          
+        <div className="sm:hidden mt-1 mb-2 px-1">
           <AnimatePresence>
             {expanded && (
               <motion.div
@@ -392,7 +380,7 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <div className="grid grid-cols-2 gap-3 pt-3 pb-1">
+                <div className="grid grid-cols-2 gap-3 pt-2 pb-1">
                   {teamMembers.map((m) => (
                     <MemberCard key={m._id} member={m} />
                   ))}
@@ -419,13 +407,13 @@ function MemberCard({ member }: { member: SocialMember }) {
           <span className="truncate text-[10px] font-medium uppercase tracking-[0.14em] text-white/90">{member.role}</span>
           <div className="flex gap-1.5">
             {member.linkedin && (
-              <a href={member.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-indigo-600 transition hover:bg-white">
-                <Linkedin size={13} />
+              <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-[#0077b5] transition hover:scale-110 opacity-90 hover:opacity-100 flex items-center justify-center p-1">
+                <Linkedin size={15} />
               </a>
             )}
             {member.instagram && (
-              <a href={member.instagram} target="_blank" rel="noreferrer" className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/90 text-pink-500 transition hover:bg-white">
-                <Instagram size={13} />
+              <a href={member.instagram} target="_blank" rel="noreferrer" className="text-[#E1306C] transition hover:scale-110 opacity-90 hover:opacity-100 flex items-center justify-center p-1">
+                <Instagram size={15} />
               </a>
             )}
           </div>

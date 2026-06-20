@@ -1,5 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import api from "@/lib/apiClient";
+import type { ITeamMember } from "@/types";
+
 import { motion } from "framer-motion";
 import Image from "next/image";
 import useThemeMode from "@/hooks/useThemeMode";
@@ -41,24 +45,24 @@ function CollaborateCard({ title, description, ctaText, mailSubject, isDarkMode 
   const emailHref = `mailto:iiitiansnetwork@gmail.com?subject=${encodeURIComponent(mailSubject)}`;
   return (
     <div
-      className={`rounded-[1.8rem] border p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 ${
+      className={`rounded-2xl p-5 sm:p-6 flex flex-col justify-between transition-all duration-300 ${
         isDarkMode
-          ? "border-slate-800 bg-slate-900/40 text-slate-100 hover:border-slate-700 hover:shadow-[0_20px_50px_rgba(99,102,241,0.05)]"
-          : "border-slate-200 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-[0_20px_50px_rgba(79,70,229,0.04)] shadow-sm"
+          ? "bg-slate-900/30 text-slate-100 hover:bg-slate-900/50"
+          : "bg-slate-50 text-slate-900 hover:bg-slate-100"
       }`}
     >
       <div>
-        <h3 className={`text-xl font-bold tracking-tight ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h3 className={`text-lg sm:text-xl font-bold tracking-tight ${isDarkMode ? "text-white" : "text-slate-900"}`}>
           {title}
         </h3>
-        <p className={`mt-2.5 text-sm leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"}`}>
+        <p className={`mt-2 text-sm leading-relaxed ${isDarkMode ? "text-slate-400" : "text-slate-600 font-medium"}`}>
           {description}
         </p>
       </div>
-      <div className="mt-6">
+      <div className="mt-5">
         <a
           href={emailHref}
-          className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95 shadow-md shadow-indigo-500/20"
+          className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95"
         >
           {ctaText}
           <ArrowRight size={14} />
@@ -80,36 +84,34 @@ interface SocialLeadCardProps {
 function SocialLeadCard({ name, platform, linkedin, photoUrl, isDarkMode }: SocialLeadCardProps) {
   return (
     <div
-      className={`group flex items-center gap-3.5 rounded-2xl border p-3.5 transition-all duration-300 hover:-translate-y-0.5 ${
+      className={`group flex items-center gap-3 rounded-xl p-3 transition-all duration-300 ${
         isDarkMode
-          ? "border-slate-800 bg-slate-900/30 text-slate-100 hover:border-slate-700 hover:shadow-[0_10px_30px_rgba(99,102,241,0.04)]"
-          : "border-slate-200 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-[0_10px_30px_rgba(79,70,229,0.03)] shadow-sm"
+          ? "bg-slate-900/30 text-slate-100 hover:bg-slate-900/50"
+          : "bg-slate-50 text-slate-900 hover:bg-slate-100"
       }`}
     >
-      <div className={`relative h-11 w-11 shrink-0 overflow-hidden rounded-full ring-2 transition-all duration-300 ${
-        isDarkMode ? "ring-slate-800 group-hover:ring-slate-700" : "ring-indigo-50 group-hover:ring-indigo-100"
-      }`}>
+      <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full">
         {photoUrl ? (
           <Image
             src={photoUrl}
             alt={name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
-            sizes="44px"
+            sizes="40px"
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-sm font-black text-white uppercase tracking-wider">
+          <div className="flex h-full items-center justify-center bg-indigo-100 text-xs font-bold text-indigo-700 uppercase">
             {name[0]}
           </div>
         )}
       </div>
 
       <div className="flex-1 min-w-0">
-        <h4 className={`text-xs font-extrabold truncate ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+        <h4 className={`text-xs font-bold truncate ${isDarkMode ? "text-white" : "text-slate-900"}`}>
           {name}
         </h4>
-        <p className={`text-[10px] font-semibold mt-0.5 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
+        <p className={`text-[10px] font-medium mt-0.5 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
           {platform}
         </p>
       </div>
@@ -119,7 +121,7 @@ function SocialLeadCard({ name, platform, linkedin, photoUrl, isDarkMode }: Soci
         target="_blank"
         rel="noreferrer"
         title={`${name} on LinkedIn`}
-        className="text-slate-400 hover:text-indigo-500 transition-colors duration-200 p-1.5 rounded-lg hover:bg-slate-500/5"
+        className="text-slate-400 hover:text-indigo-500 transition-colors p-1"
       >
         <Linkedin className="h-4 w-4" />
       </a>
@@ -140,52 +142,48 @@ interface ProfileCardProps {
 function ProfileCard({ name, role, iiit, linkedin, photoUrl, isDarkMode }: ProfileCardProps) {
   return (
     <article
-      className={`group flex flex-col items-center rounded-2xl border p-5 text-center transition-all duration-300 hover:-translate-y-1 ${
+      className={`group flex flex-col items-center rounded-2xl p-4 sm:p-5 text-center transition-all duration-300 ${
         isDarkMode
-          ? "border-slate-800 bg-slate-900/40 text-slate-100 hover:border-slate-700 hover:shadow-[0_20px_50px_rgba(99,102,241,0.05)]"
-          : "border-slate-200 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-[0_20px_50px_rgba(79,70,229,0.04)] shadow-sm"
+          ? "bg-slate-900/30 text-slate-100 hover:bg-slate-900/50"
+          : "bg-slate-50 text-slate-900 hover:bg-slate-100"
       }`}
     >
-      <div className={`relative h-20 w-20 overflow-hidden rounded-full ring-4 transition-all duration-300 shadow-inner ${
-        isDarkMode ? "ring-slate-800 group-hover:ring-slate-700" : "ring-indigo-50 group-hover:ring-indigo-100"
-      }`}>
+      <div className="relative h-16 w-16 overflow-hidden rounded-full">
         {photoUrl ? (
           <Image
             src={photoUrl}
             alt={name}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
-            sizes="80px"
+            sizes="64px"
             loading="lazy"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-2xl font-black text-white uppercase tracking-wider">
+          <div className="flex h-full items-center justify-center bg-indigo-100 text-xl font-bold text-indigo-700 uppercase">
             {name[0]}
           </div>
         )}
       </div>
 
-      <h3 className={`mt-4 text-sm font-extrabold transition-colors ${
-        isDarkMode ? "text-white group-hover:text-indigo-400" : "text-slate-900 group-hover:text-indigo-600"
+      <h3 className={`mt-3 text-sm font-bold ${
+        isDarkMode ? "text-white" : "text-slate-900"
       }`}>
         {name}
       </h3>
-      <p className={`mt-0.5 text-xs font-semibold ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
+      <p className={`mt-0.5 text-xs font-medium ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
         {role}
       </p>
-      <p className="mt-1 text-[10px] text-slate-400 font-semibold tracking-wide uppercase">
+      <p className="mt-1 text-[10px] text-slate-500 uppercase tracking-wide">
         {iiit}
       </p>
 
-      <div className={`mt-4 flex w-full justify-center border-t pt-3 ${
-        isDarkMode ? "border-slate-800" : "border-slate-100"
-      }`}>
+      <div className="mt-3">
         <a
           href={linkedin}
           target="_blank"
           rel="noreferrer"
           title={`${name} on LinkedIn`}
-          className="text-slate-400 hover:text-indigo-500 transition-colors duration-200"
+          className="text-slate-400 hover:text-indigo-500 transition-colors"
         >
           <Linkedin className="h-4 w-4" />
         </a>
@@ -196,6 +194,24 @@ function ProfileCard({ name, role, iiit, linkedin, photoUrl, isDarkMode }: Profi
 
 export default function ContactPage() {
   const { isDarkMode } = useThemeMode();
+  
+  const [dbSocialLeads, setDbSocialLeads] = useState<ITeamMember[]>([]);
+  const [loadingTeam, setLoadingTeam] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    api.get("/team")
+      .then((res) => {
+        if (!mounted) return;
+        const allMembers: ITeamMember[] = res.data || [];
+        setDbSocialLeads(allMembers.filter(m => m.team === "Social Media" && m.isActive));
+        setLoadingTeam(false);
+      })
+      .catch(() => {
+        if (mounted) setLoadingTeam(false);
+      });
+    return () => { mounted = false; };
+  }, []);
 
   const socialLinks = [
     {
@@ -289,7 +305,7 @@ export default function ContactPage() {
     }
   ];
 
-  const socialLeads = [
+  const fallbackSocialLeads = [
     {
       name: "Shikhar Asthana",
       platform: "Overall Lead",
@@ -328,8 +344,17 @@ export default function ContactPage() {
     }
   ];
 
+  const socialLeads = !loadingTeam && dbSocialLeads.length > 0
+    ? dbSocialLeads.map(s => ({
+        name: s.name,
+        platform: s.role,
+        linkedin: s.linkedin || "#",
+        photoUrl: s.photo?.url
+      }))
+    : fallbackSocialLeads;
+
   return (
-    <div className={`relative min-h-screen pb-14 pt-24 transition-colors duration-300 sm:pb-20 sm:pt-28 ${
+    <div className={`relative min-h-screen pb-14 pt-20 transition-colors duration-300 sm:pb-20 sm:pt-24 ${
       isDarkMode
         ? "bg-[linear-gradient(180deg,_#090d16_0%,_#0d1424_40%,_#0a0a0a_100%)] text-slate-100"
         : "bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] text-slate-900"
@@ -344,18 +369,9 @@ export default function ContactPage() {
         className="relative z-10 mx-auto max-w-7xl px-4 sm:px-5 lg:px-6"
       >
         <div className="mb-6">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] backdrop-blur-md transition-colors duration-300 ${
-            isDarkMode
-              ? "border-indigo-900/30 bg-slate-900/80 text-indigo-400"
-              : "border-indigo-100 bg-white/80 text-indigo-700"
-          }`}>
-            <span className="h-2 w-2 rounded-full bg-indigo-500" />
-            Official Channels
-          </div>
-
-          <div className="mt-4 grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
             <div>
-              <h1 className={`mt-3 text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+              <h1 className={`text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                 Contact The <span className={isDarkMode ? "text-indigo-400 font-semibold" : "text-indigo-600 font-semibold"}>IIITians Network</span>
               </h1>
               <p className={`mt-3 max-w-2xl text-sm font-medium leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"}`}>
@@ -408,17 +424,17 @@ export default function ContactPage() {
               <motion.div
                 key={card.title}
                 variants={item}
-                className={`rounded-[1.15rem] border p-4 shadow-sm sm:p-5 transition-all duration-300 ${
+                className={`rounded-2xl p-4 sm:p-5 transition-all duration-300 ${
                   isDarkMode
-                    ? "border-emerald-950/30 bg-emerald-950/20 text-emerald-100"
-                    : "border-emerald-100 bg-emerald-50/70 text-slate-900"
+                    ? "bg-emerald-900/20 text-emerald-100"
+                    : "bg-emerald-50 text-slate-900"
                 }`}
               >
                 {card.icon}
-                <h2 className={`mt-4 text-xl font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                <h2 className={`mt-3 text-lg font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                   {card.title}
                 </h2>
-                <p className={`mt-2 text-sm leading-7 font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`mt-1 text-sm leading-relaxed font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                   {card.subtitle}
                 </p>
               </motion.div>
@@ -429,20 +445,20 @@ export default function ContactPage() {
                 href={card.href || "#"}
                 target={card.href?.startsWith("http") ? "_blank" : undefined}
                 rel={card.href?.startsWith("http") ? "noreferrer" : undefined}
-                className={`group rounded-[1.15rem] border p-4 shadow-sm transition hover:-translate-y-0.5 sm:p-5 ${
+                className={`group rounded-2xl p-4 sm:p-5 transition ${
                   isDarkMode
-                    ? "border-slate-800 bg-slate-900/60 hover:border-indigo-500/40 hover:shadow-[0_20px_50px_rgba(99,102,241,0.15)] text-slate-100"
-                    : "border-slate-200 bg-white hover:border-indigo-200 hover:shadow-[0_20px_50px_rgba(79,70,229,0.08)] text-slate-900"
+                    ? "bg-slate-900/30 hover:bg-slate-900/50 text-slate-100"
+                    : "bg-slate-50 hover:bg-slate-100 text-slate-900"
                 }`}
               >
                 {card.icon}
-                <h2 className={`mt-4 text-xl font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                <h2 className={`mt-3 text-lg font-bold ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                   {card.title}
                 </h2>
-                <p className={`mt-2 text-sm leading-7 font-semibold ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
+                <p className={`mt-1 text-sm leading-relaxed font-medium ${isDarkMode ? "text-slate-400" : "text-slate-600"}`}>
                   {card.subtitle}
                 </p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-indigo-600 dark:text-indigo-400">
                   {card.cta}
                   <ArrowRight
                     size={16}
@@ -483,9 +499,9 @@ export default function ContactPage() {
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-            {socialLeads.map((lead) => (
+            {socialLeads.map((lead, idx) => (
               <SocialLeadCard
-                key={lead.name}
+                key={`${lead.name}-${idx}`}
                 name={lead.name}
                 platform={lead.platform}
                 linkedin={lead.linkedin}
@@ -499,10 +515,10 @@ export default function ContactPage() {
         {/* Follow the Network (Social Links) */}
         <motion.div
           variants={item}
-          className={`mt-5 rounded-[1.25rem] border p-4 shadow-sm sm:p-5 transition-all duration-300 ${
+          className={`mt-4 rounded-2xl p-5 sm:p-6 transition-all duration-300 ${
             isDarkMode
-              ? "border-slate-800 bg-slate-900/40"
-              : "border-slate-200 bg-white"
+              ? "bg-slate-900/30"
+              : "bg-slate-50"
           }`}
         >
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -526,10 +542,10 @@ export default function ContactPage() {
                 href={social.link}
                 target="_blank"
                 rel="noreferrer"
-                className={`flex items-center justify-center gap-2 rounded-xl border px-3 py-3 text-sm font-bold transition duration-200 ${
+                className={`flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-bold transition duration-200 ${
                   isDarkMode
-                    ? "border-slate-800 bg-slate-900 text-slate-300 hover:border-slate-700 hover:text-white"
-                    : "border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100"
+                    ? "bg-slate-900 text-slate-300 hover:text-white"
+                    : "bg-white text-slate-700 hover:bg-slate-100"
                 } ${social.tone}`}
               >
                 <span>{social.icon}</span>
@@ -550,9 +566,9 @@ export default function ContactPage() {
             </p>
           </div>
           <div className="grid gap-6 sm:grid-cols-3 max-w-4xl mx-auto mt-6">
-            {developers.map((dev) => (
+            {developers.map((dev, idx) => (
               <ProfileCard
-                key={dev.name}
+                key={`${dev.name}-${idx}`}
                 name={dev.name}
                 role={dev.role}
                 iiit={dev.iiit}

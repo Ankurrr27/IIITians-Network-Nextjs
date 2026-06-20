@@ -782,7 +782,7 @@ function DiscussPageClient() {
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search discussions..."
-          className="mb-4 sm:mb-5"
+          className="mb-2 sm:mb-5"
           filters={
             <div className="w-full">
               {/* Dropdown for mobile */}

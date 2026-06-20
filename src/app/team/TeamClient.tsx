@@ -46,6 +46,18 @@ export default function TeamClient({ initialMembers }: Props) {
     notifyPageEntry("Team page loaded", "Meet the people behind IIITians Network.", "page-team-loaded");
   }, []);
 
+  // Sync search state to URL
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (search) {
+      params.set("search", search);
+    } else {
+      params.delete("search");
+    }
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, "", newUrl);
+  }, [search]);
+
   const uniqueVisibleCount = useMemo(() => {
     const emails = new Set(
       initialMembers.map((m) => (m.email || "").trim().toLowerCase()).filter(Boolean)
@@ -112,45 +124,49 @@ export default function TeamClient({ initialMembers }: Props) {
             searchValue={search}
             onSearchChange={setSearch}
             searchPlaceholder="Search by name, role or IIIT"
-            filtersClassName="!flex-row"
             filters={
               <>
-                <select
-                  value={year}
-                  onChange={(e) => setYear(e.target.value)}
-                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
-                >
-                  {years.map((option) => (
-                    <option key={option} value={option}>
-                      {option === "ALL" ? "All years" : option}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <select
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
+                  >
+                    {years.map((option) => (
+                      <option key={option} value={option}>
+                        {option === "ALL" ? "All years" : option}
+                      </option>
+                    ))}
+                  </select>
 
-                <select
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
+                  <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
+                  >
+                    {roleFilters.map((item) => (
+                      <option key={item.value} value={item.value}>
+                        {item.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <Link
+                  href="/team/join"
+                  className="sm:hidden ui-button ui-button-primary inline-flex h-11 items-center justify-center gap-1.5 px-3.5 text-xs w-full mt-1"
                 >
-                  {roleFilters.map((item) => (
-                    <option key={item.value} value={item.value}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
+                  <UserPlus className="h-3.5 w-3.5" />
+                  Join
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
               </>
             }
             actions={
               <>
-                <span className="ui-chip">
-                  {hasDirectoryData ? years.length - 1 : "Live"} batches
-                </span>
-                <span className="ui-chip">
-                  {hasDirectoryData ? filteredMembers.length : "Fresh"} matching
-                </span>
                 <Link
                   href="/team/join"
-                  className="ui-button ui-button-primary inline-flex h-10 min-h-10 items-center gap-1.5 px-3.5 text-xs"
+                  className="ui-button ui-button-primary hidden sm:inline-flex h-10 min-h-10 items-center gap-1.5 px-3.5 text-xs"
                 >
                   <UserPlus className="h-3.5 w-3.5" />
                   Join
