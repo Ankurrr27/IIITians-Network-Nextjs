@@ -292,7 +292,6 @@ function ExecCard({ member }: { member: SocialMember }) {
 }
 
 function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMembers?: SocialMember[] }) {
-  const [expanded, setExpanded] = useState(false);
 
   return (
     <div className="flex flex-col">
@@ -343,18 +342,6 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
                 ) : null
               )}
             </div>
-            {teamMembers && teamMembers.length > 0 && (
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setExpanded(!expanded);
-                }}
-                className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-slate-500 transition hover:bg-slate-100 active:bg-slate-200 cursor-pointer"
-                title="Toggle Team Members"
-              >
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${expanded ? "rotate-180" : ""}`} />
-              </button>
-            )}
           </div>
           <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600">
             Profile &rarr;
@@ -372,22 +359,11 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
  
       {teamMembers && teamMembers.length > 0 && (
         <div className="sm:hidden mt-1 mb-2 px-1">
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: "auto", opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="grid grid-cols-2 gap-3 pt-2 pb-1">
-                  {teamMembers.map((m) => (
-                    <MemberCard key={m._id} member={m} />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="grid grid-cols-2 gap-3 pt-2 pb-1">
+            {teamMembers.map((m) => (
+              <MemberCard key={m._id} member={m} />
+            ))}
+          </div>
         </div>
       )}
     </div>
