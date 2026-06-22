@@ -19,6 +19,7 @@ import {
   Megaphone,
   Menu,
   PlusCircle,
+  Rocket,
   Search,
   UserPlus,
   Users,
@@ -28,14 +29,11 @@ import useThemeMode from "@/hooks/useThemeMode";
 
 const navItems: Array<{ name: string; href: string; highlight?: boolean }> = [
   { name: "Home", href: "/#home" },
-  { name: "Institutes", href: "/colleges" },
-  { name: "Event", href: "/events" },
-  { name: "Placement", href: "/placement" },
-  { name: "Legacy", href: "/legacy" },
-  { name: "Discuss", href: "/discuss" },
-  { name: "Opportunity", href: "/opportunities" },
-  { name: "Merch", href: "/merchandise" },
-  { name: "Team", href: "/team" },
+  { name: "IIITs", href: "/colleges" },
+  { name: "Community", href: "/discuss" },
+  { name: "Events", href: "/events" },
+  { name: "Opportunities", href: "/opportunities" },
+  { name: "Merchandise", href: "/merchandise" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -47,12 +45,12 @@ const quickLinks = {
     { title: "Register your Club", subtitle: "Create a student club account", href: "/discuss?clubAccount=true", icon: PlusCircle },
     { title: "Club Register Guide", subtitle: "Steps for club verification", href: "/guide?flow=club-register", icon: HelpCircle },
   ],
-  Event: [
+  Events: [
     { title: "Explore Events", subtitle: "See public events and updates", href: "/events", icon: CalendarPlus },
     { title: "Register Your Event", subtitle: "Post through a club account", href: "/discuss?clubAccount=true", icon: Megaphone },
     { title: "Event Guide", subtitle: "Learn how event posting works", href: "/guide?flow=events", icon: BookOpenText },
   ],
-  Placement: [
+  Placements: [
     { title: "Placement Explorer", subtitle: "Compare college placement data", href: "/placement", icon: BriefcaseBusiness },
     { title: "How to Read Placements", subtitle: "Understand branches and stats", href: "/guide?flow=placement", icon: HelpCircle },
   ],
@@ -61,6 +59,12 @@ const quickLinks = {
     { title: "Register Your Account", subtitle: "Submit your legacy profile", href: "/legacy#legacy-form", icon: UserPlus },
     // { title: "Get Certificate", subtitle: "Open your legacy certificate", href: "/legacy/certificate", icon: FileText },
     { title: "Legacy Guide", subtitle: "How legacy approval works", href: "/guide?flow=legacy", icon: BookOpenText },
+  ],
+  Opportunities: [
+    { title: "Browse Opportunities", subtitle: "Explore all verified listings", href: "/opportunities", icon: BriefcaseBusiness },
+    { title: "Post Opportunity", subtitle: "Recruiters: submit a listing", href: "/opportunities?post=true", icon: PlusCircle },
+    { title: "For Recruiters", subtitle: "Hire across all IIITs", href: "/opportunities#recruiters", icon: Building2 },
+    { title: "Startup Roles", subtitle: "Founding & early-stage roles", href: "/opportunities#startups", icon: Rocket },
   ],
   Discuss: [
     { title: "Make Announcement", subtitle: "Post an update as a club", href: "/discuss?clubAccount=true", icon: Megaphone },
