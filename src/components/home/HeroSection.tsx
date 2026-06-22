@@ -5,17 +5,23 @@ import { useRouter } from "next/navigation";
 import BlobWithLogo from "./BlobWithLogo";
 import TopWaves from "./TopWaves";
 import TopWavesMobile from "./TopWavesMobile";
+import useThemeMode from "@/hooks/useThemeMode";
 
 export default function HeroSection() {
   const router = useRouter();
+  const { isDarkMode } = useThemeMode();
 
   return (
     <section
-      className="
+      className={`
         relative flex min-h-[88dvh] items-center justify-center overflow-hidden
-        bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)]
-        pt-20 sm:min-h-screen sm:pt-36
-      "
+        pt-20 sm:min-h-screen sm:pt-36 transition-colors duration-300
+        ${
+          isDarkMode
+            ? "bg-[linear-gradient(180deg,_#090d16_0%,_#0d1424_40%,_#0a0a0a_100%)] text-slate-100"
+            : "bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] text-slate-900"
+        }
+      `}
     >
       {/* Radial Gradient Overlay */}
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
@@ -30,7 +36,7 @@ export default function HeroSection() {
 
       <div
         className="
-          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center  sm:gap-5
+          relative z-10 grid w-full max-w-7xl grid-cols-1 items-center sm:gap-5
           px-4 sm:gap-8 sm:px-6 md:grid-cols-2 md:gap-20
         "
       >
@@ -45,22 +51,23 @@ export default function HeroSection() {
         <div className="text-left">
           <h1
             className="
-              mt-4 text-[2rem] font-semibold leading-tight tracking-tight text-slate-900
+              mt-4 text-[2rem] font-semibold leading-tight tracking-tight
               sm:text-4xl md:text-5xl lg:text-6xl
             "
           >
-            <span className="text-slate-900 block">Empowering</span>
+            <span className={`${isDarkMode ? "text-white" : "text-slate-900"} block`}>Empowering</span>
             <span className="block mt-2">
-              <span className="text-indigo-600 font-bold">
+              <span className="text-indigo-600 dark:text-indigo-400 font-bold">
                 Connections Across IIITs
               </span>
             </span>
           </h1>
 
           <p
-            className="
-              mt-4 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base
-            "
+            className={`
+              mt-4 max-w-2xl text-sm leading-7 sm:text-base
+              ${isDarkMode ? "text-slate-350" : "text-slate-650"}
+            `}
           >
             IIITians Network is an autonomous student-led community connecting all
             IIITs across India. We aim to exchange information, boost outreach, and
@@ -72,7 +79,7 @@ export default function HeroSection() {
               onClick={() => router.push("/events")}
               className="
                 rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20
-                transition hover:bg-indigo-700 active:scale-95 sm:px-8 sm:text-base
+                transition hover:bg-indigo-700 active:scale-95 sm:px-8 sm:text-base cursor-pointer
               "
             >
               Explore
@@ -80,13 +87,40 @@ export default function HeroSection() {
 
             <button
               onClick={() => router.push("/colleges")}
-              className="
-                rounded-xl border border-indigo-600 bg-white px-6 py-3 text-sm font-semibold text-indigo-600
-                transition hover:bg-indigo-50 active:scale-95 sm:px-8 sm:text-base
-              "
+              className={`
+                rounded-xl border px-6 py-3 text-sm font-semibold
+                transition active:scale-95 sm:px-8 sm:text-base cursor-pointer
+                ${
+                  isDarkMode
+                    ? "border-slate-800 bg-slate-900/40 text-slate-200 hover:bg-slate-900"
+                    : "border-indigo-600 bg-white text-indigo-600 hover:bg-indigo-50"
+                }
+              `}
             >
               Colleges
             </button>
+          </div>
+
+          {/* Trust Banner / Stats Row */}
+          <div className={`mt-10 border-t pt-6 flex flex-wrap gap-x-8 gap-y-4 text-xs font-semibold ${
+            isDarkMode ? "border-slate-800/80 text-slate-400" : "border-slate-200/50"
+          }`}>
+            <div className="flex flex-col">
+              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>25+</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">IIITs Connected</span>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>5,000+</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Members</span>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>950K+</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Network Reach</span>
+            </div>
+            <div className="flex flex-col">
+              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>1,200+</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Verified Alumni</span>
+            </div>
           </div>
         </div>
       </div>

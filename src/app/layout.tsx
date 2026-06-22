@@ -10,7 +10,22 @@ export const metadata: Metadata = {
   title: { default: "IIITians Network Connect", template: "%s | IIITians Network" },
   description:
     "A student-led community connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.",
-  keywords: ["IIIT", "IIITians", "network", "alumni", "placements", "events", "colleges"],
+  keywords: [
+    "IIIT alumni network",
+    "IIIT student community",
+    "IIIT internships",
+    "IIIT opportunities",
+    "IIIT events",
+    "IIIT startup ecosystem",
+    "IIIT clubs",
+    "IIIT",
+    "IIITians",
+    "placements",
+    "colleges"
+  ],
+  alternates: {
+    canonical: "https://iiitiansnetwork.com",
+  },
   icons: {
     icon: [
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
