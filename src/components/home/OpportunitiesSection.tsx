@@ -2,7 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Briefcase, GraduationCap, Github, Trophy, ChevronRight, Calendar, MapPin } from "lucide-react";
+import {
+  Briefcase,
+  GraduationCap,
+  Github,
+  Trophy,
+  Building2,
+  Rocket,
+  ChevronRight,
+  MapPin,
+  ShieldCheck,
+} from "lucide-react";
+
+type Category = "Internships" | "Full-Time" | "Research" | "Open Source" | "Hackathons" | "Startups";
 
 type Opportunity = {
   title: string;
@@ -10,34 +22,45 @@ type Opportunity = {
   location: string;
   details: string;
   linkText: string;
+  verified?: boolean;
 };
 
 export default function OpportunitiesSection() {
-  const [activeTab, setActiveTab] = useState<"Internships" | "Research" | "Open Source" | "Hackathons">("Internships");
+  const [activeTab, setActiveTab] = useState<Category>("Internships");
 
-  const tabs = [
+  const tabs: { name: Category; icon: React.ElementType }[] = [
     { name: "Internships", icon: Briefcase },
+    { name: "Full-Time", icon: Building2 },
     { name: "Research", icon: GraduationCap },
     { name: "Open Source", icon: Github },
     { name: "Hackathons", icon: Trophy },
-  ] as const;
+    { name: "Startups", icon: Rocket },
+  ];
 
-  const data: Record<typeof activeTab, Opportunity[]> = {
+  const data: Record<Category, Opportunity[]> = {
     Internships: [
-      { title: "Frontend Engineering Intern", provider: "Fintech Startup (Alumni Led)", location: "Remote / Bengaluru", details: "Build reactive dashboards using Next.js, Tailwind CSS, and state management. Work directly under a Senior Architect (IIIT Gwalior alumnus).", linkText: "Learn more" },
-      { title: "Product Design Intern", provider: "IIITians Network Web Team", location: "Remote", details: "Iterate on user flows, design official merchandising mockups, and run accessibility compliance checks for the centralized network portal.", linkText: "Apply now" },
+      { title: "Frontend Engineering Intern", provider: "Fintech Startup (Alumni Led)", location: "Remote / Bengaluru", details: "Build reactive dashboards using Next.js, Tailwind CSS, and state management. Work directly under a Senior Architect (IIIT Gwalior alumnus).", linkText: "Learn more", verified: true },
+      { title: "Product Design Intern", provider: "IIITians Network Web Team", location: "Remote", details: "Iterate on user flows, design official merchandising mockups, and run accessibility compliance checks for the centralized network portal.", linkText: "Apply now", verified: true },
+    ],
+    "Full-Time": [
+      { title: "Software Development Engineer", provider: "TechCorp India", location: "Hyderabad", details: "Join our platform engineering team to build distributed systems at scale. Strong DSA, system design, and backend fundamentals required.", linkText: "View details", verified: true },
+      { title: "ML Engineer", provider: "DataMinds AI", location: "Bengaluru / Hybrid", details: "Design and deploy production ML pipelines for recommendation systems. Experience with PyTorch and large-scale data processing preferred.", linkText: "View details", verified: true },
     ],
     Research: [
-      { title: "Machine Learning Research Assistant", provider: "AI Lab, IIIT Delhi", location: "New Delhi / Hybrid", details: "Work on computer vision and multimodal model alignment. Ideal for third/fourth-year undergraduate students aiming for research papers.", linkText: "View details" },
-      { title: "Natural Language Processing Intern", provider: "LTRC, IIIT Hyderabad", location: "Hyderabad", details: "Contribute to Indian language translation models. Requires proficiency in Python and deep learning frameworks.", linkText: "View details" },
+      { title: "Machine Learning Research Assistant", provider: "AI Lab, IIIT Delhi", location: "New Delhi / Hybrid", details: "Work on computer vision and multimodal model alignment. Ideal for third/fourth-year undergraduate students aiming for research papers.", linkText: "View details", verified: true },
+      { title: "Natural Language Processing Intern", provider: "LTRC, IIIT Hyderabad", location: "Hyderabad", details: "Contribute to Indian language translation models. Requires proficiency in Python and deep learning frameworks.", linkText: "View details", verified: true },
     ],
     "Open Source": [
-      { title: "Next.js Central Portal Contribution", provider: "IIITians Network", location: "GitHub", details: "Help optimize placement search index filters, build the merchandise custom store canvas, and resolve responsiveness bug tickets.", linkText: "GitHub repo" },
-      { title: "Discuss Forums Auth Integration", provider: "Student Discuss Team", location: "GitHub", details: "Implement secure OAuth flows for official club manager profiles using NextAuth and MongoDB adapter patterns.", linkText: "GitHub repo" },
+      { title: "Next.js Central Portal Contribution", provider: "IIITians Network", location: "GitHub", details: "Help optimize placement search index filters, build the merchandise custom store canvas, and resolve responsiveness bug tickets.", linkText: "GitHub repo", verified: true },
+      { title: "Discuss Forums Auth Integration", provider: "Student Discuss Team", location: "GitHub", details: "Implement secure OAuth flows for official club manager profiles using NextAuth and MongoDB adapter patterns.", linkText: "GitHub repo", verified: true },
     ],
     Hackathons: [
-      { title: "Inter-IIIT Hackathon 2026", provider: "IIITians Network Community", location: "Online / Hybrid", details: "24-hour development sprint bringing teams from all 25+ IIITs to solve structural challenges in education, tech, and college outreach.", linkText: "Register" },
+      { title: "Inter-IIIT Hackathon 2026", provider: "IIITians Network Community", location: "Online / Hybrid", details: "24-hour development sprint bringing teams from all 25+ IIITs to solve structural challenges in education, tech, and college outreach.", linkText: "Register", verified: true },
       { title: "Smart India Hackathon Prep-Sprint", provider: "Coding Clubs Joint Alliance", location: "Host Campuses", details: "A preparatory mock hackathon featuring review panels of senior alumni who previously won SIH to critique problem statements.", linkText: "Join sprint" },
+    ],
+    Startups: [
+      { title: "Founding Engineer", provider: "NexEd (IIIT Hyderabad Alumni)", location: "Bengaluru", details: "Join as the first engineer at an EdTech startup building AI-powered personalized learning paths. Founded by IIIT Hyderabad alumni.", linkText: "Apply now", verified: true },
+      { title: "Growth Intern", provider: "HealthStack (Seed Stage)", location: "Remote", details: "Drive user acquisition and retention for a HealthTech startup building remote diagnostics tools for Tier-2/3 cities.", linkText: "Apply now", verified: true },
     ],
   };
 
@@ -46,13 +69,13 @@ export default function OpportunitiesSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-            Opportunities
+            Talent Marketplace
           </p>
           <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             Explore Community Opportunities
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-medium">
-            Find roles, hackathons, research assistants, and open source projects curated specifically for IIITians.
+            Find roles, hackathons, research positions, startup opportunities, and open source projects curated specifically for IIITians.
           </p>
         </div>
 
@@ -94,6 +117,12 @@ export default function OpportunitiesSection() {
                     <MapPin size={10} />
                     {opp.location}
                   </span>
+                  {opp.verified && (
+                    <span className="ml-auto inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600">
+                      <ShieldCheck size={10} />
+                      Verified
+                    </span>
+                  )}
                 </div>
                 <h3 className="mt-4 text-base font-extrabold text-slate-950 tracking-tight">{opp.title}</h3>
                 <p className="text-xs text-slate-400 font-bold uppercase tracking-wide mt-0.5">{opp.provider}</p>
@@ -116,14 +145,21 @@ export default function OpportunitiesSection() {
         </div>
 
         {/* Global CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 flex flex-col items-center gap-3">
           <Link
             href="/opportunities"
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
           >
-            Explore All Opportunities
+            Explore the Talent Marketplace
             <ChevronRight size={16} className="text-slate-400" />
           </Link>
+          <p className="text-[11px] text-slate-400 font-semibold">
+            Are you a recruiter?{" "}
+            <Link href="/opportunities?post=true" className="text-indigo-600 hover:text-indigo-700 transition">
+              Post opportunities
+            </Link>{" "}
+            to reach all IIITs.
+          </p>
         </div>
       </div>
     </section>

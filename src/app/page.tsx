@@ -7,6 +7,7 @@ import EventsPreviewSection from "@/components/home/EventsPreviewSection";
 import DiscussPreviewSection from "@/components/home/DiscussPreviewSection";
 import FounderSection from "@/components/home/FounderSection";
 import CounsellingSection from "@/components/home/CounsellingSection";
+import FAQSection from "@/components/home/FAQSection";
 import OpportunitiesSection from "@/components/home/OpportunitiesSection";
 import EventCoverageSection from "@/components/home/EventCoverageSection";
 import CollaborateSection from "@/components/home/CollaborateSection";
@@ -20,8 +21,45 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "IIITians Network",
+    "url": "https://iiitiansnetwork.com",
+    "logo": "https://iiitiansnetwork.com/favicon-32x32.png",
+    "description": "An autonomous student-led community connecting all 25+ Indian Institutes of Information Technology (IIITs) across India.",
+    "sameAs": [
+      "https://linkedin.com/company/iiitians-network",
+      "https://instagram.com/iiitiansnetwork",
+      "https://x.com/iiitiansnetwork",
+      "https://www.youtube.com/@iiitiansnetwork"
+    ]
+  };
+
+  const webSiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "IIITians Network Connect",
+    "url": "https://iiitiansnetwork.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://iiitiansnetwork.com/colleges?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
+      {/* Global JSON-LD Schema Markup */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteSchema) }}
+      />
+
       {/* 1. Hero Section */}
       <HeroSection />
 
@@ -60,6 +98,9 @@ export default function HomePage() {
 
       {/* 13. Counselling Section */}
       <CounsellingSection />
+
+      {/* 13.5 FAQ Section */}
+      <FAQSection />
 
       {/* 14. Contact Developers Section */}
       <DevelopersSection />
