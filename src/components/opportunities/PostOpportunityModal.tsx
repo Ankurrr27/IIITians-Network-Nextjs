@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, AlertCircle, CheckCircle2 } from "lucide-react";
 import { isBlockedRecruiterEmail } from "@/data/iiitDomains";
+import api from "@/lib/apiClient";
 
 interface PostOpportunityModalProps {
   open: boolean;
@@ -18,6 +19,9 @@ export default function PostOpportunityModal({ open, onClose, isDarkMode }: Post
   const [companyName, setCompanyName] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [emailError, setEmailError] = useState("");
+
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   // Form fields
   const [title, setTitle] = useState("");
@@ -35,6 +39,8 @@ export default function PostOpportunityModal({ open, onClose, isDarkMode }: Post
     setCompanyName("");
     setLinkedinUrl("");
     setEmailError("");
+    setSubmitError("");
+    setSubmitting(false);
     setTitle("");
     setCategory("Internships");
     setLocation("");
@@ -62,9 +68,34 @@ export default function PostOpportunityModal({ open, onClose, isDarkMode }: Post
     setStep("form");
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("success");
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await api.post("/opportunities", {
+        title,
+        company: companyName,
+        category,
+        location,
+        workMode: location.toLowerCase().includes("remote") ? "Remote" : "Onsite",
+        compensation,
+        deadline,
+        description,
+        skills,
+        applicationLink,
+        recruiterEmail: workEmail,
+        recruiterLinkedIn: linkedinUrl,
+      });
+      setStep("success");
+    } catch (err: any) {
+      console.error(err);
+      setSubmitError(
+        err.response?.data?.message || err.message || "Failed to submit opportunity. Please check details."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (!open) return null;
@@ -288,11 +319,19 @@ export default function PostOpportunityModal({ open, onClose, isDarkMode }: Post
                 />
               </div>
 
+              {submitError && (
+                <div className="flex items-start gap-2 rounded-xl bg-rose-50 dark:bg-rose-950/20 p-3 text-[11px] font-bold text-rose-600 dark:text-rose-450 border border-rose-100 dark:border-rose-900/40">
+                  <AlertCircle size={14} className="mt-0.5 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
+
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setStep("verify")}
-                  className={`flex-1 rounded-xl border py-2.5 text-xs font-bold transition active:scale-95 ${
+                  disabled={submitting}
+                  className={`flex-1 rounded-xl border py-2.5 text-xs font-bold transition active:scale-95 disabled:opacity-50 ${
                     isDarkMode
                       ? "border-slate-800 text-slate-300 hover:bg-slate-800"
                       : "border-slate-200 text-slate-700 hover:bg-slate-50"
@@ -302,9 +341,17 @@ export default function PostOpportunityModal({ open, onClose, isDarkMode }: Post
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95"
+                  disabled={submitting}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95 disabled:opacity-50"
                 >
-                  Submit for Review
+                  {submitting ? (
+                    <>
+                      <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    "Submit for Review"
+                  )}
                 </button>
               </div>
             </form>

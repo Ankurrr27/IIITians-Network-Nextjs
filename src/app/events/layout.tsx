@@ -12,12 +12,12 @@ export const metadata: Metadata = {
     "college fests India"
   ],
   alternates: {
-    canonical: "https://iiitiansnetwork.com/events",
+    canonical: "https://iiitiansnetwork.in/events",
   },
   openGraph: {
     title: "IIIT Campus Events & Hackathons | IIITians Network",
     description: "Browse and discover fests, hackathons, and technical events across all IIIT campuses.",
-    url: "https://iiitiansnetwork.com/events",
+    url: "https://iiitiansnetwork.in/events",
     type: "website",
   },
 };
@@ -31,13 +31,13 @@ export default function EventsLayout({ children }: { children: React.ReactNode }
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://iiitiansnetwork.com"
+        "item": "https://iiitiansnetwork.in"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Events",
-        "item": "https://iiitiansnetwork.com/events"
+        "item": "https://iiitiansnetwork.in/events"
       }
     ]
   };

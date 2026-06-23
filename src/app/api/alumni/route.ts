@@ -3,6 +3,7 @@ import connectDB from "@/lib/mongoose";
 import Alumni from "@/models/Alumni";
 import TeamMember from "@/models/TeamMember";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
+import { handleServerError, handleClientError } from "@/lib/errorHelper";
 
 const escapeRegex = (v = "") => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -110,14 +111,27 @@ export async function GET(req: NextRequest) {
     ]);
 
     if (limit > 0) {
-      const [alumni, total, statsResult] = await Promise.all([
-        Alumni.find(query)
-          .sort({ graduationYear: -1, createdAt: -1 })
-          .skip((page - 1) * limit)
-          .limit(limit),
-        Alumni.countDocuments(query),
+      const [alumniRaw, statsResult] = await Promise.all([
+        Alumni.find(query).lean(),
         statsPromise,
       ]);
+
+      const sortedAlumni = [...alumniRaw].sort((a, b) => {
+        const termsA = Array.isArray(a.roleHistory) ? a.roleHistory.length : 0;
+        const termsB = Array.isArray(b.roleHistory) ? b.roleHistory.length : 0;
+        if (termsB !== termsA) return termsB - termsA;
+        
+        const gradA = a.graduationYear || 0;
+        const gradB = b.graduationYear || 0;
+        if (gradB !== gradA) return gradB - gradA;
+
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateB - dateA;
+      });
+
+      const total = sortedAlumni.length;
+      const alumni = sortedAlumni.slice((page - 1) * limit, page * limit);
 
       return NextResponse.json({
         alumni,
@@ -136,10 +150,23 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const alumni = await Alumni.find(query).sort({ graduationYear: -1, createdAt: -1 }).limit(200);
+    const alumniRaw = await Alumni.find(query).lean();
+    const alumni = [...alumniRaw].sort((a, b) => {
+      const termsA = Array.isArray(a.roleHistory) ? a.roleHistory.length : 0;
+      const termsB = Array.isArray(b.roleHistory) ? b.roleHistory.length : 0;
+      if (termsB !== termsA) return termsB - termsA;
+
+      const gradA = a.graduationYear || 0;
+      const gradB = b.graduationYear || 0;
+      if (gradB !== gradA) return gradB - gradA;
+
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
     return NextResponse.json(alumni);
-  } catch {
-    return NextResponse.json({ message: "Failed to fetch alumni" }, { status: 500 });
+  } catch (err) {
+    return handleServerError(err);
   }
 }
 
@@ -161,8 +188,7 @@ export async function POST(req: NextRequest) {
     const photo = await resolvePhoto(file, rawBody);
     const alumni = await Alumni.create({ ...payload, photo, status: "pending", reviewedAt: null });
     return NextResponse.json({ message: "Alumni request submitted and pending admin approval.", alumni }, { status: 201 });
-  } catch (err: unknown) {
-    if ((err as { code?: number }).code === 11000) return NextResponse.json({ message: "An alumni profile with this email already exists" }, { status: 409 });
-    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });
+  } catch (err) {
+    return handleClientError(err);
   }
 }

@@ -6,7 +6,7 @@ import AppShell from "@/components/AppShell";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://iiitiansnetwork.com"),
+  metadataBase: new URL("https://iiitiansnetwork.in"),
   title: { default: "IIITians Network Connect", template: "%s | IIITians Network" },
   description:
     "A student-led community connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     "colleges"
   ],
   alternates: {
-    canonical: "https://iiitiansnetwork.com",
+    canonical: "https://iiitiansnetwork.in",
   },
   icons: {
     icon: [

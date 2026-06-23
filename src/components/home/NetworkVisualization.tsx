@@ -28,7 +28,7 @@ type CampusDetails = {
   established: number;
   programs: string[];
   studentStrength: string;
-  members: string;
+  intake: string;
   alumni: string;
   eventsCount: string;
   oppsCount: string;
@@ -43,8 +43,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 1999,
     programs: ["B.Tech", "M.Tech", "MBA", "Ph.D"],
     studentStrength: "3,000+",
-    members: "1,200+",
-    alumni: "450+",
+    intake: "500+",
+    alumni: "7,500+",
     eventsCount: "45+",
     oppsCount: "80+",
     clubs: ["GeekHaven (Coding)", "Tesla (Electronics)", "Acoustica (Music)", "Prayaas (Social Wing)", "Virtuosi (Dance)"],
@@ -56,8 +56,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2008,
     programs: ["B.Tech", "M.Tech", "Ph.D"],
     studentStrength: "2,500+",
-    members: "1,100+",
-    alumni: "380+",
+    intake: "600+",
+    alumni: "4,500+",
     eventsCount: "38+",
     oppsCount: "75+",
     clubs: ["Foobar (Coding)", "Byld (Software Dev)", "AudioBytes (Music)", "MadToes (Dance)"],
@@ -69,8 +69,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 1997,
     programs: ["B.Tech", "IPG", "M.Tech", "MBA", "Ph.D"],
     studentStrength: "2,200+",
-    members: "950+",
-    alumni: "520+",
+    intake: "400+",
+    alumni: "6,500+",
     eventsCount: "35+",
     oppsCount: "60+",
     clubs: ["AASF (Technical)", "Rotaract Club", "Music Club", "E-Cell (Entrepreneurship)"],
@@ -82,8 +82,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 1998,
     programs: ["B.Tech", "MS", "M.Tech", "Ph.D"],
     studentStrength: "2,000+",
-    members: "1,800+",
-    alumni: "800+",
+    intake: "400+",
+    alumni: "8,500+",
     eventsCount: "60+",
     oppsCount: "120+",
     clubs: ["Programming Club", "Robotics Club", "Literary Club", "Astronomy Club"],
@@ -95,8 +95,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2013,
     programs: ["B.Tech", "Ph.D"],
     studentStrength: "900+",
-    members: "600+",
-    alumni: "180+",
+    intake: "200+",
+    alumni: "1,400+",
     eventsCount: "20+",
     oppsCount: "35+",
     clubs: ["Cerebro (Coding)", "Inspiral (Literary)", "Beatles (Music)", "E-Cell"],
@@ -108,8 +108,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2015,
     programs: ["B.Tech", "M.Tech", "MBA", "Ph.D"],
     studentStrength: "1,100+",
-    members: "750+",
-    alumni: "240+",
+    intake: "300+",
+    alumni: "1,200+",
     eventsCount: "25+",
     oppsCount: "50+",
     clubs: ["Axon (Coding)", "Crochet (Design)", "Ignis (Dance)", "Zephyr (Music)"],
@@ -121,8 +121,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2016,
     programs: ["B.Tech", "Ph.D"],
     studentStrength: "1,200+",
-    members: "700+",
-    alumni: "200+",
+    intake: "400+",
+    alumni: "1,600+",
     eventsCount: "22+",
     oppsCount: "40+",
     clubs: ["Probe (Coding)", "Velocity (Dance)", "Crispr (Technical)", "Orator (Literary)"],
@@ -134,8 +134,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2016,
     programs: ["B.Tech", "Ph.D"],
     studentStrength: "900+",
-    members: "680+",
-    alumni: "210+",
+    intake: "250+",
+    alumni: "1,100+",
     eventsCount: "24+",
     oppsCount: "45+",
     clubs: ["Byte Syndicate (Coding)", "Bit Legion (Cybersecurity)", "Aarohan (Cultural)"],
@@ -147,8 +147,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2016,
     programs: ["B.Tech", "Ph.D"],
     studentStrength: "800+",
-    members: "550+",
-    alumni: "150+",
+    intake: "200+",
+    alumni: "1,100+",
     eventsCount: "18+",
     oppsCount: "30+",
     clubs: ["Coders Club", "Bit-by-Bit (Tech)", "Symphony (Music)", "Grooves (Dance)"],
@@ -160,8 +160,8 @@ const campusExtraDetails: Record<string, CampusDetails> = {
     established: 2013,
     programs: ["B.Tech", "M.Tech", "Ph.D"],
     studentStrength: "1,200+",
-    members: "800+",
-    alumni: "280+",
+    intake: "300+",
+    alumni: "2,000+",
     eventsCount: "28+",
     oppsCount: "55+",
     clubs: ["DotSlash (Coding)", "Astronomy Club", "In-Sync (Dance)", "Octaves (Music)"],
@@ -176,8 +176,8 @@ const getFallbackDetails = (name: string): CampusDetails => {
     established: 2015,
     programs: ["B.Tech", "Ph.D"],
     studentStrength: "800+",
-    members: "350+",
-    alumni: "100+",
+    intake: "250+",
+    alumni: "1,000+",
     eventsCount: "15+",
     oppsCount: "25+",
     clubs: ["Coding Club", "Cultural Club", "E-Cell"],
@@ -254,7 +254,7 @@ export default function NetworkVisualization() {
       established: campusObj?.established || extra.established,
       programs: campusObj?.programs || extra.programs,
       studentStrength: campusObj?.studentStrength || extra.studentStrength,
-      members: extra.members,
+      intake: extra.intake,
       alumni: extra.alumni,
       eventsCount: extra.eventsCount,
       oppsCount: extra.oppsCount,
@@ -457,9 +457,9 @@ export default function NetworkVisualization() {
                         }`}>
                           <div className="flex items-center gap-2 text-slate-400">
                             <Users className="h-4 w-4 text-emerald-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Members</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Intake</span>
                           </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.members}</p>
+                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.intake}</p>
                         </div>
                         <div className={`rounded-xl border p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
@@ -493,7 +493,7 @@ export default function NetworkVisualization() {
                         }`}>
                           <div className="flex items-center gap-2 text-slate-400">
                             <BookOpen className="h-4 w-4 text-indigo-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Size</span>
+                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate" title="Student Capacity">Student Capacity</span>
                           </div>
                           <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.studentStrength}</p>
                         </div>

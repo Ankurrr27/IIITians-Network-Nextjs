@@ -129,7 +129,11 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
     ? `${entry.iiit} · Team of ${entry.graduationYear}`
     : `${entry.iiit} · ${entry.generation || "Legacy Member"}`;
 
-  const currentJobLine = [entry.currentRole, entry.currentCompany].filter(Boolean).join(" @ ");
+  const currentJobLine = entry.name === "Hiteshwar Kaushik"
+    ? "@Meesho"
+    : entry.name === "Srishti Singh"
+    ? "Google SWE Intern"
+    : [entry.currentRole, entry.currentCompany].filter(Boolean).join(" @ ");
 
   return (
     <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950/95 p-4 backdrop-blur-md">
@@ -329,7 +333,7 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
               <p className={`text-[1.2rem] font-semibold tracking-[0.18em] uppercase mt-1 ${
                 isDarkMode ? "text-white/25" : "text-[#4f46e5]/40"
               }`}>
-                iiitiansnetwork.com/legacy
+                iiitiansnetwork.in/legacy
               </p>
             </div>
           </div>

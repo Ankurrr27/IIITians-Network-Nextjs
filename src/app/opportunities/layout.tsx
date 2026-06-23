@@ -13,12 +13,12 @@ export const metadata: Metadata = {
     "tech jobs"
   ],
   alternates: {
-    canonical: "https://iiitiansnetwork.com/opportunities",
+    canonical: "https://iiitiansnetwork.in/opportunities",
   },
   openGraph: {
     title: "IIIT Internships & Opportunities | IIITians Network",
     description: "Discover verified internships, research roles, and startup positions across the IIIT network. Apply today with your IIIT email.",
-    url: "https://iiitiansnetwork.com/opportunities",
+    url: "https://iiitiansnetwork.in/opportunities",
     type: "website",
   },
 };
@@ -32,13 +32,13 @@ export default function OpportunitiesLayout({ children }: { children: React.Reac
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://iiitiansnetwork.com"
+        "item": "https://iiitiansnetwork.in"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Opportunities",
-        "item": "https://iiitiansnetwork.com/opportunities"
+        "item": "https://iiitiansnetwork.in/opportunities"
       }
     ]
   };

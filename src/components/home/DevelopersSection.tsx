@@ -12,21 +12,21 @@ export default function DevelopersSection() {
     {
       name: "Varun Raj",
       college: "IIIT Ranchi",
-      role: "Co-Founder & Tech Lead",
+      role: "Lead Software Developer",
       linkedin: "https://www.linkedin.com/in/varun-raj-85592b324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       photoUrl: "https://res.cloudinary.com/iiitians-network/image/upload/v1776864098/colleges/dfyj49a97tb8naiolnts.jpg"
     },
     {
       name: "Ankur Singh",
       college: "IIIT Kota",
-      role: "Founder & Product Lead",
+      role: "Vice President",
       linkedin: "https://www.linkedin.com/in/ankurrr27/",
       photoUrl: "https://res.cloudinary.com/iiitians-network/image/upload/v1775170056/colleges/gmhe0vo8mj9tvyg3halt.jpg"
     },
     {
       name: "Yash Kapoor",
       college: "IIIT Ranchi",
-      role: "Core Developer",
+      role: "Development Team",
       linkedin: "https://www.linkedin.com/in/yash-kapoor-a17026251?utm_source=share_via&utm_content=profile&utm_medium=member_android",
       photoUrl: "https://res.cloudinary.com/iiitians-network/image/upload/v1775327750/colleges/deyeldaslh5rbqhxddfq.jpg"
     }

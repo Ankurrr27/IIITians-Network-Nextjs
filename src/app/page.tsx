@@ -25,8 +25,8 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "IIITians Network",
-    "url": "https://iiitiansnetwork.com",
-    "logo": "https://iiitiansnetwork.com/favicon-32x32.png",
+    "url": "https://iiitiansnetwork.in",
+    "logo": "https://iiitiansnetwork.in/favicon-32x32.png",
     "description": "An autonomous student-led community connecting all 25+ Indian Institutes of Information Technology (IIITs) across India.",
     "sameAs": [
       "https://linkedin.com/company/iiitians-network",
@@ -40,10 +40,10 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "IIITians Network Connect",
-    "url": "https://iiitiansnetwork.com",
+    "url": "https://iiitiansnetwork.in",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://iiitiansnetwork.com/colleges?search={search_term_string}",
+      "target": "https://iiitiansnetwork.in/colleges?search={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   };

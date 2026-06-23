@@ -18,24 +18,33 @@ export const metadata: Metadata = {
   description: "Explore all IIITs in the network — photos, clubs, placement data and more.",
 };
 
-// Revalidate every 60s (ISR) — fresh but cached
-export const revalidate = 60;
-
 function serialize<T>(data: T): T {
   return JSON.parse(JSON.stringify(data));
 }
 
 export default async function CollegesPage() {
-  await connectDB();
+  let colleges: any[] = [];
+  let teamMembers: any[] = [];
+  let alumni: any[] = [];
+  let discussAccounts: any[] = [];
 
-  const [colleges, teamMembers, alumni, discussAccounts] = await Promise.all([
-    College.find().sort({ name: 1 }).lean(),
-    TeamMember.find({ isActive: true }).select("name email iiit photo year").lean(),
-    Alumni.find({ $or: [{ status: "approved" }, { status: { $exists: false } }] })
-      .select("name email iiit photo generation branch").limit(300).lean(),
-    DiscussAccount.find({ isAuthorized: true })
-      .select("collegeName clubName badgeLabel role isAuthorized").lean(),
-  ]);
+  try {
+    await connectDB();
+    const [c, t, a, d] = await Promise.all([
+      College.find().sort({ name: 1 }).lean(),
+      TeamMember.find({ isActive: true }).select("name email iiit photo year").lean(),
+      Alumni.find({ $or: [{ status: "approved" }, { status: { $exists: false } }] })
+        .select("name email iiit photo generation branch").limit(300).lean(),
+      DiscussAccount.find({ isAuthorized: true })
+        .select("collegeName clubName badgeLabel role isAuthorized").lean(),
+    ]);
+    colleges = c;
+    teamMembers = t;
+    alumni = a;
+    discussAccounts = d;
+  } catch (error) {
+    console.error("Failed to fetch colleges data from DB:", error);
+  }
 
   return (
     <Suspense fallback={

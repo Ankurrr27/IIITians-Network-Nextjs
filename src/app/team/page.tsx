@@ -14,15 +14,18 @@ export const metadata: Metadata = {
   description: "Meet the passionate students behind IIITians Network — the team building India's premier IIIT community.",
 };
 
-export const revalidate = 60;
-
 function serialize<T>(data: T): T {
   return JSON.parse(JSON.stringify(data));
 }
 
 export default async function TeamPage() {
-  await connectDB();
-  const members = await TeamMember.find().sort({ order: 1, createdAt: 1 }).lean();
+  let members: any[] = [];
+  try {
+    await connectDB();
+    members = await TeamMember.find().sort({ order: 1, createdAt: 1 }).lean();
+  } catch (error) {
+    console.error("Failed to fetch team members from DB:", error);
+  }
   return (
     <Suspense fallback={
       <div className="flex h-screen items-center justify-center bg-white">

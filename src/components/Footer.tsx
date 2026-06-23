@@ -186,7 +186,7 @@ export default function Footer() {
               <SocialIcon href="mailto:iiitiansnetwork@gmail.com" color="#6366f1" title="Email">
                 <Mail size={17} />
               </SocialIcon>
-              <SocialIcon href="https://iiitiansnetwork.com" color="#10b981" title="Website">
+              <SocialIcon href="https://iiitiansnetwork.in" color="#10b981" title="Website">
                 <Globe size={17} />
               </SocialIcon>
             </div>

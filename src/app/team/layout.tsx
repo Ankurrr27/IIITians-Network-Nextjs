@@ -10,12 +10,12 @@ export const metadata: Metadata = {
     "student community leaders"
   ],
   alternates: {
-    canonical: "https://iiitiansnetwork.com/team",
+    canonical: "https://iiitiansnetwork.in/team",
   },
   openGraph: {
     title: "Our Team & Contributors | IIITians Network",
     description: "Meet the coordinators, developers, and designers building the nationwide IIIT network.",
-    url: "https://iiitiansnetwork.com/team",
+    url: "https://iiitiansnetwork.in/team",
     type: "website",
   },
 };
@@ -29,13 +29,13 @@ export default function TeamLayout({ children }: { children: React.ReactNode }) 
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://iiitiansnetwork.com"
+        "item": "https://iiitiansnetwork.in"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Team",
-        "item": "https://iiitiansnetwork.com/team"
+        "item": "https://iiitiansnetwork.in/team"
       }
     ]
   };

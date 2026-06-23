@@ -12,12 +12,12 @@ export const metadata: Metadata = {
     "list of IIITs"
   ],
   alternates: {
-    canonical: "https://iiitiansnetwork.com/colleges",
+    canonical: "https://iiitiansnetwork.in/colleges",
   },
   openGraph: {
     title: "IIIT Directory & Campus Hubs | IIITians Network",
     description: "Search, compare, and explore fests, clubs, and student hubs across all 25+ IIITs.",
-    url: "https://iiitiansnetwork.com/colleges",
+    url: "https://iiitiansnetwork.in/colleges",
     type: "website",
   },
 };
@@ -31,13 +31,13 @@ export default function CollegesLayout({ children }: { children: React.ReactNode
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://iiitiansnetwork.com"
+        "item": "https://iiitiansnetwork.in"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Colleges",
-        "item": "https://iiitiansnetwork.com/colleges"
+        "item": "https://iiitiansnetwork.in/colleges"
       }
     ]
   };

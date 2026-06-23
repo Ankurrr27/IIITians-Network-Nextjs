@@ -295,7 +295,7 @@ export const iiitCampuses: IIITCampus[] = [
     established: 2016,
     website: "https://iiitranchi.ac.in/",
     image: "/placeholder.svg",
-    logo: "https://upload.wikimedia.org/wikipedia/en/3/3d/IIIT_Ranchi_logo.png",
+    logo: "/iiit-ranchi-logo.jpg",
     description: "A Jharkhand IIIT focused on computer science, electronics, and a growing student innovation community.",
     studentStrength: "800+",
     programs: ["B.Tech", "Ph.D"],
