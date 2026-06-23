@@ -13,15 +13,17 @@ export const metadata: Metadata = {
   description: "Upcoming and past events across IIIT campuses — hackathons, tech talks, cultural fests, and more.",
 };
 
-export const revalidate = 30;
-
 function serialize<T>(data: T): T {
   return JSON.parse(JSON.stringify(data));
 }
 
 export default async function EventsPage() {
-  await connectDB();
-  const events = await Event.find().sort({ date: -1 }).lean();
+  let events: any[] = [];
+  try {
+    await connectDB();
+    events = await Event.find().sort({ date: -1 }).lean();
+  } catch (error) {
+    console.error("Failed to fetch events from DB:", error);
+  }
   return <EventsClient initialEvents={serialize(events) as unknown as IEvent[]} />;
-
 }

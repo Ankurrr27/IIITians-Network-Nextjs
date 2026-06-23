@@ -284,7 +284,7 @@ export default function ContactPage() {
   const developers = [
     {
       name: "Varun Raj",
-      role: "Senior Developer",
+      role: "Lead Software Developer",
       iiit: "IIIT Ranchi",
       linkedin: "https://www.linkedin.com/in/varun-raj-85592b324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       photoUrl: "https://res.cloudinary.com/iiitians-network/image/upload/v1776864098/colleges/dfyj49a97tb8naiolnts.jpg"
@@ -320,7 +320,7 @@ export default function ContactPage() {
     },
     {
       name: "Sarthak Yash Kumar",
-      platform: "LinkedIn Admin",
+      platform: "LinkedIn Admin | Social Team",
       linkedin: "https://www.linkedin.com/in/sarthak-yash-kumar-915608360?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
       photoUrl: "https://res.cloudinary.com/iiitians-network/image/upload/v1766066744/team-members/diy9zvzyet9y0ujhkqww.jpg"
     },

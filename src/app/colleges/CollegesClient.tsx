@@ -181,7 +181,7 @@ function CollegeCard({
   teamCount?: number;
   discussClubs?: IDiscussAccount[];
 }) {
-  const [showFullDescription, setShowFullDescription] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [galleryImages, setGalleryImages] = useState<{ url: string; caption?: string }[]>(
     college.gallery || []
@@ -391,7 +391,7 @@ function CollegeCard({
         {/* Description */}
         {description && (
           <div className="mb-3">
-            <p className={`text-sm leading-6 text-gray-600 ${showFullDescription ? "" : "line-clamp-3"}`}>
+            <p className="text-sm leading-6 text-gray-600 line-clamp-3">
               {description}
             </p>
           </div>
@@ -400,44 +400,11 @@ function CollegeCard({
         {hasExpandableDetails && (
           <button
             type="button"
-            onClick={() => setShowFullDescription((p) => !p)}
+            onClick={() => setShowModal(true)}
             className="mb-3 w-fit text-[10px] font-semibold text-indigo-400 transition hover:text-indigo-600 hover:underline leading-none"
           >
-            {showFullDescription ? "See less" : "See more"}
+            See more
           </button>
-        )}
-
-        {showFullDescription && mergedClubs.length > 0 && (
-          <div className="mb-4 rounded-xl bg-slate-50 p-4 ring-1 ring-slate-200/80">
-            <div className="mb-3 flex items-center justify-between">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                Community Societies
-              </div>
-              <Link
-                href={`/college/${encodeURIComponent(name)}/clubs`}
-                className="text-[10px] font-bold text-indigo-600 hover:underline uppercase tracking-tight"
-              >
-                View All
-              </Link>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {mergedClubs.map((club) => (
-                <Link
-                  key={club.id}
-                  href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all shadow-sm ${
-                    club.source === "discuss"
-                      ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-100"
-                      : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-                  }`}
-                >
-                  {club.name}
-                  {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
-                  <ChevronLeft size={12} className="opacity-40 rotate-180" />
-                </Link>
-              ))}
-            </div>
-          </div>
         )}
 
         {/* Bottom action buttons */}
@@ -482,6 +449,132 @@ function CollegeCard({
           </div>
         </div>
       </div>
+
+      {/* Modal Dialog for Expanded View */}
+      {showModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300 animate-in fade-in"
+          onClick={() => setShowModal(false)}
+        >
+          <div 
+            className="relative w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-950 border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 p-5">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
+                  <img
+                    src={logoSrc}
+                    alt={`${name} logo`}
+                    className="h-7 w-7 object-contain"
+                    onError={() => setLogoSrc(COLLEGE_PLACEHOLDER)}
+                  />
+                </div>
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-slate-100">{name}</h3>
+                  {website && (
+                    <a
+                      href={formatExternalLink(website)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-455 flex items-center gap-1 mt-0.5"
+                    >
+                      <Globe size={11} />
+                      <span className="truncate max-w-[250px]">{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
+                      <ExternalLink size={9} />
+                    </a>
+                  )}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-350 transition"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div>
+                <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500 mb-2">About College</h4>
+                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 whitespace-pre-line font-medium">
+                  {description}
+                </p>
+              </div>
+
+              {mergedClubs.length > 0 && (
+                <div className="border-t border-slate-100 dark:border-slate-800 pt-5">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
+                      Community Societies
+                    </h4>
+                    <Link
+                      href={`/college/${encodeURIComponent(name)}/clubs`}
+                      className="text-[10px] font-bold text-indigo-600 hover:underline uppercase tracking-tight"
+                    >
+                      View All
+                    </Link>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {mergedClubs.map((club) => (
+                      <Link
+                        key={club.id}
+                        href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all shadow-sm ${
+                          club.source === "discuss"
+                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:ring-emerald-900/30"
+                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-800 dark:hover:bg-slate-800"
+                        }`}
+                      >
+                        {club.name}
+                        {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
+                        <ChevronLeft size={12} className="opacity-40 rotate-180" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer / Shortcuts */}
+            <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-4">
+              <div className="grid grid-cols-4 gap-2">
+                <Link
+                  href={`/college/${encodeURIComponent(name)}/gallery`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
+                >
+                  <Images size={14} className="text-indigo-500 shrink-0" />
+                  <span>Gallery</span>
+                </Link>
+                <Link
+                  href={`/college/${encodeURIComponent(name)}/clubs`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
+                >
+                  <Users size={14} className="text-emerald-500 shrink-0" />
+                  <span>Clubs</span>
+                </Link>
+                <Link
+                  href={`/legacy?iiit=${encodeURIComponent(name)}`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
+                >
+                  <History size={14} className="text-amber-500 shrink-0" />
+                  <span>Legacy</span>
+                </Link>
+                <Link
+                  href={`/placement?college=${encodeURIComponent(name)}`}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
+                >
+                  <BriefcaseBusiness size={14} className="text-rose-500 shrink-0" />
+                  <span>Placement</span>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

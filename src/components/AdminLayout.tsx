@@ -13,6 +13,7 @@ const adminLinks = [
   { label: "Discuss", href: "/discuss/admin" },
   { label: "Team", href: "/team/admin" },
   { label: "Placements", href: "/placement/admin" },
+  { label: "Opportunities", href: "/admin/opportunities" },
   { label: "Notifications", href: "/admin/notifications" },
   { label: "Gallery", href: "/admin/gallery" },
   { label: "Guide", href: "/admin/guide" },

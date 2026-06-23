@@ -976,7 +976,23 @@ function LegacyEntryCard({
             )}
 
             {roleLine && (
-              <p className={`mt-3 line-clamp-2 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>{roleLine}</p>
+              <div className={`mt-3 flex flex-wrap items-center gap-1.5 text-sm font-medium leading-6 ${isDarkMode ? "text-slate-300" : "text-indigo-800"}`}>
+                {entry.name === "Hiteshwar Kaushik" ? (
+                  <>
+                    <Briefcase className="h-4 w-4 text-indigo-650 dark:text-indigo-400" />
+                    <span>@Meesho</span>
+                  </>
+                ) : entry.name === "Srishti Singh" ? (
+                  <>
+                    <span>Google SWE Intern</span>
+                    <span className="text-slate-350 dark:text-slate-650 mx-1">|</span>
+                    <Briefcase className="h-4 w-4 text-indigo-650 dark:text-indigo-400" />
+                    <span>@Google</span>
+                  </>
+                ) : (
+                  <span>{roleLine}</span>
+                )}
+              </div>
             )}
 
             {displayMessage && (

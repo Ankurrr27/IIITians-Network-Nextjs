@@ -19,6 +19,7 @@ import {
   Megaphone,
   Menu,
   PlusCircle,
+  Rocket,
   Search,
   UserPlus,
   Users,
@@ -47,12 +48,12 @@ const quickLinks = {
     { title: "Register your Club", subtitle: "Create a student club account", href: "/discuss?clubAccount=true", icon: PlusCircle },
     { title: "Club Register Guide", subtitle: "Steps for club verification", href: "/guide?flow=club-register", icon: HelpCircle },
   ],
-  Event: [
+  Events: [
     { title: "Explore Events", subtitle: "See public events and updates", href: "/events", icon: CalendarPlus },
     { title: "Register Your Event", subtitle: "Post through a club account", href: "/discuss?clubAccount=true", icon: Megaphone },
     { title: "Event Guide", subtitle: "Learn how event posting works", href: "/guide?flow=events", icon: BookOpenText },
   ],
-  Placement: [
+  Placements: [
     { title: "Placement Explorer", subtitle: "Compare college placement data", href: "/placement", icon: BriefcaseBusiness },
     { title: "How to Read Placements", subtitle: "Understand branches and stats", href: "/guide?flow=placement", icon: HelpCircle },
   ],
@@ -61,6 +62,12 @@ const quickLinks = {
     { title: "Register Your Account", subtitle: "Submit your legacy profile", href: "/legacy#legacy-form", icon: UserPlus },
     // { title: "Get Certificate", subtitle: "Open your legacy certificate", href: "/legacy/certificate", icon: FileText },
     { title: "Legacy Guide", subtitle: "How legacy approval works", href: "/guide?flow=legacy", icon: BookOpenText },
+  ],
+  Opportunities: [
+    { title: "Browse Opportunities", subtitle: "Explore all verified listings", href: "/opportunities", icon: BriefcaseBusiness },
+    { title: "Post Opportunity", subtitle: "Recruiters: submit a listing", href: "/opportunities?post=true", icon: PlusCircle },
+    { title: "For Recruiters", subtitle: "Hire across all IIITs", href: "/opportunities#recruiters", icon: Building2 },
+    { title: "Startup Roles", subtitle: "Founding & early-stage roles", href: "/opportunities#startups", icon: Rocket },
   ],
   Discuss: [
     { title: "Make Announcement", subtitle: "Post an update as a club", href: "/discuss?clubAccount=true", icon: Megaphone },
@@ -153,12 +160,15 @@ export default function Navigation() {
 
   const isNavActive = (item: { name: string; href: string }) => {
     if (item.href === "/#home") return pathname === "/";
-    if (item.name === "Institutes") {
+    if (item.name === "IIITs" || item.name === "Institutes") {
       return (
         pathname.startsWith("/colleges") ||
         pathname.startsWith("/gallery") ||
         (pathname.startsWith("/discuss") && searchParams?.get("clubAccount") === "true")
       );
+    }
+    if (item.name === "Community" || item.name === "Discuss") {
+      return pathname.startsWith("/discuss") && searchParams?.get("clubAccount") !== "true";
     }
     return item.href.startsWith("/") && !item.href.startsWith("/#") && pathname.startsWith(item.href);
   };
@@ -190,9 +200,9 @@ export default function Navigation() {
         className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
           isSolidNav
             ? isDarkMode
-              ? "border-b border-slate-800 bg-slate-950/92 py-1.5 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
-              : "border-b border-slate-200 bg-white/90 py-1.5 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
-            : "bg-indigo-600 py-2"
+              ? "border-b border-slate-800 bg-slate-950/92 py-2.5 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
+              : "border-b border-slate-200 bg-white/90 py-2.5 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
+            : "bg-indigo-600 py-3"
         }`}
       >
         <div className="ui-page-shell flex items-center justify-between gap-3">
@@ -207,7 +217,7 @@ export default function Navigation() {
               }
               width={56}
               height={56}
-              className="h-auto w-10 shrink-0 object-contain"
+              className="h-auto w-12 shrink-0 object-contain"
               alt="IIITians Network"
             />
             <span
@@ -222,7 +232,15 @@ export default function Navigation() {
           <div className="hidden items-center gap-2.5 md:flex">
             {navItems.map((item) => {
               const active = isNavActive(item);
-              const links = quickLinks[item.name as QuickLinkGroup];
+              const quickLinkKey =
+                item.name === "Event"
+                  ? "Events"
+                  : item.name === "Opportunity"
+                    ? "Opportunities"
+                    : item.name === "Placement"
+                      ? "Placements"
+                      : (item.name as QuickLinkGroup);
+              const links = quickLinkKey in quickLinks ? quickLinks[quickLinkKey as keyof typeof quickLinks] : undefined;
 
               if (item.highlight) {
                 return (
@@ -293,7 +311,15 @@ export default function Navigation() {
         <div className={`flex flex-col gap-1 p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]`}>
           {navItems.map((item) => {
             const active = isNavActive(item);
-            const links = quickLinks[item.name as QuickLinkGroup];
+            const quickLinkKey =
+              item.name === "Event"
+                ? "Events"
+                : item.name === "Opportunity"
+                  ? "Opportunities"
+                  : item.name === "Placement"
+                    ? "Placements"
+                    : (item.name as QuickLinkGroup);
+            const links = quickLinkKey in quickLinks ? quickLinks[quickLinkKey as keyof typeof quickLinks] : undefined;
             const isExpanded = mobileQuickOpen === item.name;
 
             if (links) {

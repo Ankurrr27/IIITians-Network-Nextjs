@@ -7,6 +7,7 @@ import Committee from "@/models/Committee";
 import Role from "@/models/Role";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
+import { handleServerError, handleClientError } from "@/lib/errorHelper";
 
 export async function GET() {
   try {
@@ -80,8 +81,8 @@ export async function GET() {
     formattedMembers.sort((a: any, b: any) => a.order - b.order || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
     return NextResponse.json(formattedMembers);
-  } catch (err: unknown) {
-    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
+  } catch (err) {
+    return handleServerError(err);
   }
 }
 
@@ -147,7 +148,7 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(tenure, { status: 201 });
-  } catch (err: unknown) {
-    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 400 });
+  } catch (err) {
+    return handleClientError(err);
   }
 }
