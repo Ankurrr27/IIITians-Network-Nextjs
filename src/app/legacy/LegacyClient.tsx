@@ -158,6 +158,36 @@ function deriveStats(entries: IAlumni[]): LegacyStatsData {
   };
 }
 
+function getEarliestYear(alumni: any) {
+  let earliest = Infinity;
+
+  if (Array.isArray(alumni.roleHistory)) {
+    for (const role of alumni.roleHistory) {
+      if (role.year) {
+        const match = role.year.match(/\d{4}/);
+        if (match) {
+          const y = parseInt(match[0], 10);
+          if (y < earliest) earliest = y;
+        }
+      }
+    }
+  }
+
+  if (alumni.generation) {
+    const match = alumni.generation.match(/\d{4}/);
+    if (match) {
+      const y = parseInt(match[0], 10);
+      if (y < earliest) earliest = y;
+    }
+  }
+
+  if (earliest === Infinity && alumni.graduationYear) {
+    earliest = alumni.graduationYear - 4;
+  }
+
+  return earliest === Infinity ? 9999 : earliest;
+}
+
 export default function LegacyClient({ initialAlumni }: Props) {
   const { isDarkMode } = useThemeMode();
   const searchParams = useSearchParams();
@@ -199,7 +229,20 @@ export default function LegacyClient({ initialAlumni }: Props) {
       const response = await promise;
       const data = response.data;
       const nextEntries = data?.alumni ?? data ?? [];
-      setEntries(nextEntries);
+      const sortedNextEntries = [...nextEntries].sort((a: any, b: any) => {
+        const yearA = getEarliestYear(a);
+        const yearB = getEarliestYear(b);
+        if (yearA !== yearB) return yearA - yearB;
+
+        const gradA = a.graduationYear || 9999;
+        const gradB = b.graduationYear || 9999;
+        if (gradA !== gradB) return gradA - gradB;
+
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 9999999999999;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 9999999999999;
+        return dateA - dateB;
+      });
+      setEntries(sortedNextEntries);
       if (data?.pagination) setPagination(data.pagination);
       if (data?.stats) setStatsData(data.stats);
       setApiUnavailable(false);
@@ -355,7 +398,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
   return (
     <div
-      className={`ui-page-bg relative min-h-screen pb-10 pt-16 text-slate-900 sm:pb-12 sm:pt-20 ${
+      className={`ui-page-bg relative min-h-screen pb-10 pt-24 text-slate-900 sm:pb-12 sm:pt-20 ${
         isDarkMode ? "bg-slate-950" : ""
       }`}
     >
@@ -794,9 +837,9 @@ function LegacyEntrySkeleton({ isDarkMode }: { isDarkMode: boolean }) {
         : "border-slate-200 bg-transparent md:bg-white shadow-none md:shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
     }`}>
       <div className="flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <div className="h-64 bg-slate-200 sm:h-72 lg:h-[22rem]" />
+        <div className="h-64 bg-slate-100 sm:h-72 lg:h-[22rem]" />
         <div className="space-y-5 p-4 sm:p-6 lg:p-7">
-          <div className="h-10 w-2/3 rounded-2xl bg-slate-200" />
+          <div className="h-10 w-2/3 rounded-2xl bg-slate-100" />
           <div className="h-24 rounded-[1.4rem] bg-slate-100" />
           <div className="h-20 rounded-[1.5rem] bg-slate-50" />
         </div>

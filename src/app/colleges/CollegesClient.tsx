@@ -5,10 +5,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import {
   MapPin,
-  ExternalLink, MoreHorizontal, Link2, ShieldCheck,
-  Users, Images, ImagePlus, X, Plus,
-  ChevronLeft, ChevronRight, Upload, Trash2, Globe,
-  BriefcaseBusiness, History,
+  MoreHorizontal, Link2, ShieldCheck,
+  Users, Images, ImagePlus,
+  BriefcaseBusiness, History, Globe, ExternalLink,
 } from "lucide-react";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
@@ -36,6 +35,7 @@ export default function CollegesClient({
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filter, setFilter] = useState("NONE");
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [selectedCollege, setSelectedCollege] = useState<ICollege | null>(null);
 
   useEffect(() => {
     notifyPageEntry("Colleges page loaded", "The IIIT directory is ready to explore.", "page-colleges-loaded");
@@ -121,7 +121,7 @@ export default function CollegesClient({
   };
 
   return (
-    <section className="ui-page-bg relative min-h-screen pb-10 pt-14 sm:pb-12 sm:pt-20">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-24 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
       <div className="ui-page-shell relative z-10">
 
@@ -163,11 +163,26 @@ export default function CollegesClient({
                     (club.collegeName || "").trim().toLowerCase() ===
                     (college.name || "").trim().toLowerCase()
                 )}
+                onSelect={() => setSelectedCollege(college)}
               />
             ))}
           </div>
         )}
       </div>
+
+      {/* Detail Drawer */}
+      {selectedCollege && (
+        <CollegeDetailDrawer
+          college={selectedCollege}
+          teamCount={getUniqueCollegeMemberCount(selectedCollege.name)}
+          discussClubs={initialDiscussClubs.filter(
+            (club) =>
+              (club.collegeName || "").trim().toLowerCase() ===
+              (selectedCollege.name || "").trim().toLowerCase()
+          )}
+          onClose={() => setSelectedCollege(null)}
+        />
+      )}
     </section>
   );
 }
@@ -175,13 +190,13 @@ export default function CollegesClient({
 /* ─── CollegesSearch ─────────────────────────────────────────────────────── */
 /* ─── CollegeCard ────────────────────────────────────────────────────────── */
 function CollegeCard({
-  college, teamCount = 0, discussClubs = [],
+  college, teamCount = 0, discussClubs = [], onSelect,
 }: {
   college: ICollege;
   teamCount?: number;
   discussClubs?: IDiscussAccount[];
+  onSelect: () => void;
 }) {
-  const [showModal, setShowModal] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [galleryImages, setGalleryImages] = useState<{ url: string; caption?: string }[]>(
     college.gallery || []
@@ -390,7 +405,7 @@ function CollegeCard({
 
         {/* Description */}
         {description && (
-          <div className="mb-3">
+          <div className="mb-2">
             <p className="text-sm leading-6 text-gray-600 line-clamp-3">
               {description}
             </p>
@@ -400,10 +415,10 @@ function CollegeCard({
         {hasExpandableDetails && (
           <button
             type="button"
-            onClick={() => setShowModal(true)}
-            className="mb-3 w-fit text-[10px] font-semibold text-indigo-400 transition hover:text-indigo-600 hover:underline leading-none"
+            onClick={onSelect}
+            className="mb-3 inline-flex w-fit items-center gap-1 text-[11px] font-bold text-indigo-500 transition hover:text-indigo-700 leading-none"
           >
-            See more
+            See more →
           </button>
         )}
 
@@ -449,73 +464,252 @@ function CollegeCard({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      {/* Modal Dialog for Expanded View */}
-      {showModal && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300 animate-in fade-in"
-          onClick={() => setShowModal(false)}
-        >
-          <div 
-            className="relative w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-slate-950 border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 p-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-800">
-                  <img
-                    src={logoSrc}
-                    alt={`${name} logo`}
-                    className="h-7 w-7 object-contain"
-                    onError={() => setLogoSrc(COLLEGE_PLACEHOLDER)}
-                  />
-                </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-slate-100">{name}</h3>
-                  {website && (
-                    <a
-                      href={formatExternalLink(website)}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-455 flex items-center gap-1 mt-0.5"
-                    >
-                      <Globe size={11} />
-                      <span className="truncate max-w-[250px]">{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
-                      <ExternalLink size={9} />
-                    </a>
-                  )}
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 hover:bg-slate-50 hover:text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-500 dark:hover:bg-slate-800 dark:hover:text-slate-350 transition"
+/* ─── Detail Drawer (Notion/Linear-style peek panel) ──────────────────── */
+function CollegeDetailDrawer({
+  college,
+  teamCount,
+  discussClubs,
+  onClose,
+}: {
+  college: ICollege;
+  teamCount: number;
+  discussClubs: IDiscussAccount[];
+  onClose: () => void;
+}) {
+  const { name, description, website, clubLinks = [] } = college;
+  const logoSrc = college.logo?.url || COLLEGE_PLACEHOLDER;
+
+  const formatExternalLink = (url: string) =>
+    url.startsWith("http") ? url : `https://${url}`;
+
+  const visibleClubLinks = (clubLinks as { name: string; url: string }[]).filter(
+    (item) => item?.name && item?.url
+  );
+  const displayClubLinks =
+    visibleClubLinks.length > 0
+      ? visibleClubLinks
+      : college.clubLink
+      ? [{ name: "Club / Community", url: college.clubLink }]
+      : [];
+
+  const mergedClubs = useMemo(() => {
+    const clubsMap = new Map<string, {
+      id: string; name: string; url: string;
+      source: string; isAuthorized: boolean;
+    }>();
+    displayClubLinks.forEach((item, index) => {
+      const k = item.name.trim().toLowerCase();
+      if (!clubsMap.has(k)) {
+        clubsMap.set(k, {
+          id: `college-${item.name}-${index}`, name: item.name,
+          url: formatExternalLink(item.url), source: "college", isAuthorized: false,
+        });
+      }
+    });
+    discussClubs.forEach((club, index) => {
+      const k = (club.clubName || "").trim().toLowerCase();
+      if (!clubsMap.has(k) || !clubsMap.get(k)!.isAuthorized) {
+        clubsMap.set(k, {
+          id: club._id || `discuss-${club.clubName}-${index}`,
+          name: club.clubName || "", url: formatExternalLink(club.website || ""),
+          source: "discuss", isAuthorized: Boolean(club.isAuthorized),
+        });
+      }
+    });
+    return Array.from(clubsMap.values());
+  }, [displayClubLinks, discussClubs]);
+
+  const [activeTab, setActiveTab] = useState<"overview" | "gallery" | "clubs" | "legacy" | "placement">("overview");
+
+  const galleryCount = college.gallery?.length ?? 0;
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [onClose]);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  const tabs = [
+    { key: "overview" as const, label: "Overview" },
+    { key: "gallery" as const, label: "Gallery", count: galleryCount },
+    { key: "clubs" as const, label: "Clubs", count: mergedClubs.length },
+    { key: "legacy" as const, label: "Legacy" },
+    { key: "placement" as const, label: "Placement" },
+  ];
+
+  return (
+    <>
+      {/* Light backdrop */}
+      <div
+        className="fixed inset-0 z-40 bg-slate-950/10 transition-opacity duration-300"
+        onClick={onClose}
+      />
+
+      {/* Drawer */}
+      <aside
+        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-[-8px_0_30px_rgba(0,0,0,0.08)] sm:w-[26rem]"
+        style={{ animation: "slideInRight 0.25s cubic-bezier(0.16,1,0.3,1)" }}
+      >
+        {/* Header */}
+        <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white shadow-sm ring-1 ring-slate-200">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={logoSrc} alt={`${name} logo`} className="h-8 w-8 object-contain" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h2 className="truncate text-base font-extrabold text-slate-900">{name}</h2>
+            {website && (
+              <a
+                href={formatExternalLink(website)}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-700"
               >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
+                <Globe size={11} />
+                <span className="truncate">{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}</span>
+                <ExternalLink size={9} className="shrink-0" />
+              </a>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-400 transition hover:bg-slate-50 hover:text-slate-700"
+            aria-label="Close"
+          >
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
 
-            {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
-              <div>
-                <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500 mb-2">About College</h4>
-                <p className="text-sm leading-relaxed text-slate-600 dark:text-slate-300 whitespace-pre-line font-medium">
-                  {description}
-                </p>
+        {/* Tab Bar */}
+        <div className="flex border-b border-slate-100 bg-white px-4 overflow-x-auto scrollbar-none">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className={`relative shrink-0 px-3 py-2.5 text-xs font-bold transition ${
+                activeTab === tab.key
+                  ? "text-indigo-600"
+                  : "text-slate-400 hover:text-slate-600"
+              }`}
+            >
+              {tab.label}
+              {tab.count !== undefined && tab.count > 0 && (
+                <span className={`ml-1 text-[10px] font-semibold ${activeTab === tab.key ? "text-indigo-400" : "text-slate-300"}`}>
+                  {tab.count}
+                </span>
+              )}
+              {activeTab === tab.key && (
+                <span className="absolute bottom-0 left-3 right-3 h-[2px] rounded-full bg-indigo-500" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab Content — Scrollable */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Overview Tab */}
+          {activeTab === "overview" && (
+            <>
+              {/* Quick Stats */}
+              <div className="flex items-center gap-5 border-b border-slate-100 bg-slate-50/70 px-5 py-3">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <Images size={13} className="text-indigo-500" /> {galleryCount} <span className="text-slate-400 font-medium">photos</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <Link2 size={13} className="text-emerald-500" /> {mergedClubs.length} <span className="text-slate-400 font-medium">clubs</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600">
+                  <Users size={13} className="text-indigo-500" /> {teamCount} <span className="text-slate-400 font-medium">members</span>
+                </div>
               </div>
 
+              {/* About */}
+              {description && (
+                <div className="border-b border-slate-100 px-5 py-4">
+                  <h3 className="mb-2 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">About</h3>
+                  <p className="text-sm leading-relaxed text-slate-600 font-medium whitespace-pre-line">{description}</p>
+                </div>
+              )}
+
+              {/* Clubs preview */}
               {mergedClubs.length > 0 && (
-                <div className="border-t border-slate-100 dark:border-slate-800 pt-5">
+                <div className="border-b border-slate-100 px-5 py-4">
                   <div className="mb-3 flex items-center justify-between">
-                    <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                      Community Societies
-                    </h4>
-                    <Link
-                      href={`/college/${encodeURIComponent(name)}/clubs`}
-                      className="text-[10px] font-bold text-indigo-600 hover:underline uppercase tracking-tight"
-                    >
-                      View All
+                    <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Registered Clubs</h3>
+                    <button type="button" onClick={() => setActiveTab("clubs")} className="text-[10px] font-bold text-indigo-600 hover:underline">
+                      View All →
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {mergedClubs.slice(0, 6).map((club) => (
+                      <Link
+                        key={club.id}
+                        href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
+                          club.source === "discuss"
+                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
+                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                        }`}
+                      >
+                        {club.name}
+                        {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
+                      </Link>
+                    ))}
+                    {mergedClubs.length > 6 && (
+                      <button type="button" onClick={() => setActiveTab("clubs")} className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold text-indigo-500 ring-1 ring-indigo-200 hover:bg-indigo-50">
+                        +{mergedClubs.length - 6} more
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Gallery Tab */}
+          {activeTab === "gallery" && (
+            <div className="px-5 py-8">
+              {galleryCount > 0 ? (
+                <div className="text-center">
+                  <Images size={32} className="mx-auto mb-3 text-indigo-300" />
+                  <p className="text-sm font-semibold text-slate-700 mb-1">{galleryCount} photos available</p>
+                  <p className="text-xs text-slate-400 mb-4">Browse the full campus gallery</p>
+                  <Link
+                    href={`/college/${encodeURIComponent(name)}/gallery`}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95"
+                  >
+                    Open Gallery <ExternalLink size={12} />
+                  </Link>
+                </div>
+              ) : (
+                <div className="text-center py-6">
+                  <Images size={32} className="mx-auto mb-3 text-slate-200" />
+                  <p className="text-sm font-medium text-slate-400">No gallery photos yet</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Clubs Tab */}
+          {activeTab === "clubs" && (
+            <div className="px-5 py-4">
+              {mergedClubs.length > 0 ? (
+                <>
+                  <div className="mb-3 flex items-center justify-between">
+                    <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">All Clubs · {mergedClubs.length}</h3>
+                    <Link href={`/college/${encodeURIComponent(name)}/clubs`} className="text-[10px] font-bold text-indigo-600 hover:underline">
+                      Full Page →
                     </Link>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -523,58 +717,65 @@ function CollegeCard({
                       <Link
                         key={club.id}
                         href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all shadow-sm ${
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
                           club.source === "discuss"
-                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400 dark:ring-emerald-900/30"
-                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50 dark:bg-slate-900 dark:text-slate-300 dark:ring-slate-800 dark:hover:bg-slate-800"
+                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
+                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
                         }`}
                       >
                         {club.name}
                         {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
-                        <ChevronLeft size={12} className="opacity-40 rotate-180" />
                       </Link>
                     ))}
                   </div>
+                </>
+              ) : (
+                <div className="text-center py-6">
+                  <Users size={32} className="mx-auto mb-3 text-slate-200" />
+                  <p className="text-sm font-medium text-slate-400">No registered clubs yet</p>
                 </div>
               )}
             </div>
+          )}
 
-            {/* Modal Footer / Shortcuts */}
-            <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 p-4">
-              <div className="grid grid-cols-4 gap-2">
-                <Link
-                  href={`/college/${encodeURIComponent(name)}/gallery`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
-                >
-                  <Images size={14} className="text-indigo-500 shrink-0" />
-                  <span>Gallery</span>
-                </Link>
-                <Link
-                  href={`/college/${encodeURIComponent(name)}/clubs`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
-                >
-                  <Users size={14} className="text-emerald-500 shrink-0" />
-                  <span>Clubs</span>
-                </Link>
-                <Link
-                  href={`/legacy?iiit=${encodeURIComponent(name)}`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
-                >
-                  <History size={14} className="text-amber-500 shrink-0" />
-                  <span>Legacy</span>
-                </Link>
-                <Link
-                  href={`/placement?college=${encodeURIComponent(name)}`}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-205 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2.5 text-[10px] uppercase font-bold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm"
-                >
-                  <BriefcaseBusiness size={14} className="text-rose-500 shrink-0" />
-                  <span>Placement</span>
-                </Link>
-              </div>
+          {/* Legacy Tab */}
+          {activeTab === "legacy" && (
+            <div className="px-5 py-8 text-center">
+              <History size={32} className="mx-auto mb-3 text-amber-300" />
+              <p className="text-sm font-semibold text-slate-700 mb-1">Alumni & Legacy</p>
+              <p className="text-xs text-slate-400 mb-4">Explore notable alumni from {name}</p>
+              <Link
+                href={`/legacy?iiit=${encodeURIComponent(name)}`}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-amber-600 active:scale-95"
+              >
+                View Legacy <ExternalLink size={12} />
+              </Link>
             </div>
-          </div>
+          )}
+
+          {/* Placement Tab */}
+          {activeTab === "placement" && (
+            <div className="px-5 py-8 text-center">
+              <BriefcaseBusiness size={32} className="mx-auto mb-3 text-rose-300" />
+              <p className="text-sm font-semibold text-slate-700 mb-1">Placement Data</p>
+              <p className="text-xs text-slate-400 mb-4">View placement statistics for {name}</p>
+              <Link
+                href={`/placement?college=${encodeURIComponent(name)}`}
+                className="inline-flex items-center gap-1.5 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-rose-600 active:scale-95"
+              >
+                View Placements <ExternalLink size={12} />
+              </Link>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      </aside>
+
+      <style jsx>{`
+        @keyframes slideInRight {
+          from { transform: translateX(100%); }
+          to   { transform: translateX(0); }
+        }
+      `}</style>
+    </>
   );
 }

@@ -322,9 +322,9 @@ function DiscussSkeleton() {
       <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
         {/* Header skeleton */}
         <div className="mb-5 space-y-3">
-          <div className="h-8 w-2/3 rounded-xl bg-slate-200 animate-pulse" />
+          <div className="h-8 w-2/3 rounded-xl bg-slate-100 animate-pulse" />
           <div className="h-4 w-1/2 rounded-lg bg-slate-100 animate-pulse" />
-          <div className="mt-2 h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+          <div className="mt-2 h-10 w-full rounded-xl bg-slate-100 animate-pulse" />
         </div>
       </div>
       <div className="mx-auto grid max-w-7xl gap-6 px-0 pb-6 pt-1 sm:px-5 lg:grid-cols-[minmax(0,1fr)_21rem] lg:px-6">
@@ -332,7 +332,7 @@ function DiscussSkeleton() {
           {/* Featured cards skeleton */}
           <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-200 animate-pulse" />
+              <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-100 animate-pulse" />
             ))}
           </div>
           {/* Feed rows skeleton */}
@@ -340,17 +340,17 @@ function DiscussSkeleton() {
             {[...Array(4)].map((_, i) => (
               <div key={i} className="border-b border-slate-100 py-4 sm:py-5 last:border-0">
                 <div className="flex gap-3 sm:gap-4">
-                  <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-200 animate-pulse sm:block" />
+                  <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-100 animate-pulse sm:block" />
                   <div className="flex-1 space-y-2.5">
                     <div className="flex gap-2">
-                      <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
+                      <div className="h-3 w-24 rounded bg-slate-100 animate-pulse" />
                       <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
                     </div>
-                    <div className="h-5 w-3/4 rounded-lg bg-slate-200 animate-pulse" />
+                    <div className="h-5 w-3/4 rounded-lg bg-slate-100 animate-pulse" />
                     <div className="h-3 w-full rounded bg-slate-100 animate-pulse" />
                     <div className="h-3 w-5/6 rounded bg-slate-100 animate-pulse" />
                     <div className="flex gap-3 pt-1">
-                      <div className="h-6 w-14 rounded-full bg-slate-200 animate-pulse" />
+                      <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
                       <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
                     </div>
                   </div>
@@ -363,22 +363,22 @@ function DiscussSkeleton() {
           {/* Sidebar account skeleton */}
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="h-11 w-11 rounded-xl bg-slate-200 animate-pulse" />
+              <div className="h-11 w-11 rounded-xl bg-slate-100 animate-pulse" />
               <div className="flex-1 space-y-2">
-                <div className="h-3.5 w-3/4 rounded bg-slate-200 animate-pulse" />
+                <div className="h-3.5 w-3/4 rounded bg-slate-100 animate-pulse" />
                 <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
               </div>
             </div>
             <div className="mt-3 h-8 w-24 rounded-full bg-slate-100 animate-pulse" />
-            <div className="mt-3 h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+            <div className="mt-3 h-10 w-full rounded-xl bg-slate-100 animate-pulse" />
           </div>
           {/* Sidebar explore skeleton */}
           <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-            <div className="h-5 w-24 rounded bg-slate-200 animate-pulse" />
+            <div className="h-5 w-24 rounded bg-slate-100 animate-pulse" />
             {[...Array(4)].map((_, i) => (
               <div key={i} className="space-y-1.5 border-b border-slate-100 pb-3 last:border-0">
                 <div className="h-2.5 w-12 rounded bg-slate-100 animate-pulse" />
-                <div className="h-3.5 w-4/5 rounded bg-slate-200 animate-pulse" />
+                <div className="h-3.5 w-4/5 rounded bg-slate-100 animate-pulse" />
                 <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
               </div>
             ))}
@@ -843,7 +843,7 @@ function DiscussPageClient() {
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-4 sm:px-0">Featured Updates</h2>
               <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-200 animate-pulse" />
+                  <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-100 animate-pulse" />
                 ))}
               </div>
             </div>
@@ -937,17 +937,17 @@ function DiscussPageClient() {
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="border-b border-slate-100 py-6 last:border-0">
                     <div className="flex gap-4">
-                      <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-200 animate-pulse sm:block" />
+                      <div className="hidden h-10 w-10 shrink-0 rounded-full bg-slate-100 animate-pulse sm:block" />
                       <div className="flex-1 space-y-2.5">
                         <div className="flex gap-2">
-                          <div className="h-3 w-24 rounded bg-slate-200 animate-pulse" />
+                          <div className="h-3 w-24 rounded bg-slate-100 animate-pulse" />
                           <div className="h-3 w-16 rounded bg-slate-100 animate-pulse" />
                         </div>
-                        <div className="h-5 w-3/4 rounded-lg bg-slate-200 animate-pulse" />
+                        <div className="h-5 w-3/4 rounded-lg bg-slate-100 animate-pulse" />
                         <div className="h-3 w-full rounded bg-slate-100 animate-pulse" />
                         <div className="h-3 w-5/6 rounded bg-slate-100 animate-pulse" />
                         <div className="flex gap-3 pt-1">
-                          <div className="h-6 w-14 rounded-full bg-slate-200 animate-pulse" />
+                          <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
                           <div className="h-6 w-14 rounded-full bg-slate-100 animate-pulse" />
                         </div>
                       </div>
@@ -1012,14 +1012,14 @@ function DiscussPageClient() {
             {accountLoading ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-xl bg-slate-200 animate-pulse" />
+                  <div className="h-11 w-11 rounded-xl bg-slate-100 animate-pulse" />
                   <div className="flex-1 space-y-2">
-                    <div className="h-3.5 w-3/4 rounded bg-slate-200 animate-pulse" />
+                    <div className="h-3.5 w-3/4 rounded bg-slate-100 animate-pulse" />
                     <div className="h-3 w-1/2 rounded bg-slate-100 animate-pulse" />
                   </div>
                 </div>
                 <div className="h-7 w-20 rounded-full bg-slate-100 animate-pulse" />
-                <div className="h-10 w-full rounded-xl bg-slate-200 animate-pulse" />
+                <div className="h-10 w-full rounded-xl bg-slate-100 animate-pulse" />
               </div>
             ) : account ? (
               <div className="space-y-3">

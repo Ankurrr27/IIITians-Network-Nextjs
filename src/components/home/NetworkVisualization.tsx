@@ -205,14 +205,6 @@ export default function NetworkVisualization() {
       });
   }, []);
 
-  const metrics = [
-    { label: "IIIT Campuses", value: "25+", icon: Network, color: "text-indigo-600 bg-indigo-50 border-indigo-100 dark:text-indigo-400 dark:bg-indigo-950/30 dark:border-indigo-900/40" },
-    { label: "Community Members", value: "5,000+", icon: Users, color: "text-emerald-600 bg-emerald-50 border-emerald-100 dark:text-emerald-400 dark:bg-emerald-950/30 dark:border-emerald-900/40" },
-    { label: "Connected Alumni", value: "1,200+", icon: Award, color: "text-sky-600 bg-sky-50 border-sky-100 dark:text-sky-400 dark:bg-sky-950/30 dark:border-sky-900/40" },
-    { label: "Opportunities Shared", value: "450+", icon: Briefcase, color: "text-amber-600 bg-amber-50 border-amber-100 dark:text-amber-400 dark:bg-amber-950/30 dark:border-amber-900/40" },
-    { label: "Events Covered", value: "180+", icon: Calendar, color: "text-rose-600 bg-rose-50 border-rose-100 dark:text-rose-400 dark:bg-rose-950/30 dark:border-rose-900/40" },
-  ];
-
   const topCampuses = [
     "IIIT Allahabad",
     "IIIT Delhi",
@@ -255,9 +247,6 @@ export default function NetworkVisualization() {
       programs: campusObj?.programs || extra.programs,
       studentStrength: campusObj?.studentStrength || extra.studentStrength,
       intake: extra.intake,
-      alumni: extra.alumni,
-      eventsCount: extra.eventsCount,
-      oppsCount: extra.oppsCount,
       clubs,
       events,
       description: matchedDbCollege?.description || campusObj?.description || "Connecting students, alumni, and recruiters across the Indian Institute of Information Technology network.",
@@ -272,7 +261,7 @@ export default function NetworkVisualization() {
   };
 
   return (
-    <section className={`py-16 sm:py-24 border-y transition-colors duration-300 ${
+    <section className={`py-16 sm:py-16 border-y transition-colors duration-300 ${
       isDarkMode
         ? "bg-slate-950/40 border-slate-900 text-slate-100"
         : "bg-slate-50/50 border-slate-100 text-slate-900"
@@ -288,29 +277,6 @@ export default function NetworkVisualization() {
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-400 sm:text-base font-medium">
             Discover a transparent student-led directory, alumni networks, and opportunities bridging IIIT campuses across India.
           </p>
-        </div>
-
-        {/* Metrics Grid */}
-        <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-          {metrics.map((metric) => {
-            const Icon = metric.icon;
-            return (
-              <div
-                key={metric.label}
-                className={`rounded-2xl border p-5 shadow-sm transition hover:shadow-md hover:-translate-y-0.5 duration-300 ${
-                  isDarkMode
-                    ? "bg-slate-900/50 border-slate-800"
-                    : "bg-white border-slate-200/80"
-                }`}
-              >
-                <div className={`inline-flex rounded-xl border p-2.5 ${metric.color}`}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <h3 className="mt-4 text-2xl font-black tracking-tight">{metric.value}</h3>
-                <p className="mt-1 text-xs font-bold text-slate-500 uppercase tracking-wider">{metric.label}</p>
-              </div>
-            );
-          })}
         </div>
 
         {/* Campuses Grid Visualization */}
@@ -442,60 +408,33 @@ export default function NetworkVisualization() {
                       </div>
 
                       {/* Info Cards */}
-                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                        <div className={`rounded-xl border p-3.5 transition ${
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <Clock className="h-4 w-4 text-indigo-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Established</span>
+                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
+                            <Clock className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-500 shrink-0" />
+                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate">Estd</span>
                           </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.established}</p>
+                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.established}</p>
                         </div>
-                        <div className={`rounded-xl border p-3.5 transition ${
+                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <Users className="h-4 w-4 text-emerald-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Intake</span>
+                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
+                            <Users className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 shrink-0" />
+                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate">Intake</span>
                           </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.intake}</p>
+                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.intake}</p>
                         </div>
-                        <div className={`rounded-xl border p-3.5 transition ${
+                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <Award className="h-4 w-4 text-sky-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Alumni</span>
+                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
+                            <BookOpen className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-500 shrink-0" />
+                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate" title="Students">Students</span>
                           </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.alumni}</p>
-                        </div>
-                        <div className={`rounded-xl border p-3.5 transition ${
-                          isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
-                        }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <Briefcase className="h-4 w-4 text-amber-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Opps Shared</span>
-                          </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.oppsCount}</p>
-                        </div>
-                        <div className={`rounded-xl border p-3.5 transition ${
-                          isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
-                        }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <Calendar className="h-4 w-4 text-rose-500" />
-                            <span className="text-[10px] font-bold uppercase tracking-wider">Events</span>
-                          </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.eventsCount}</p>
-                        </div>
-                        <div className={`rounded-xl border p-3.5 transition ${
-                          isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
-                        }`}>
-                          <div className="flex items-center gap-2 text-slate-400">
-                            <BookOpen className="h-4 w-4 text-indigo-500" />
-                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate" title="Student Capacity">Student Capacity</span>
-                          </div>
-                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.studentStrength}</p>
+                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.studentStrength}</p>
                         </div>
                       </div>
 

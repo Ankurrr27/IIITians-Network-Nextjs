@@ -150,7 +150,7 @@ function OpportunitiesPageInner() {
           <div className="max-w-3xl">
             <h1 className={`text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Opportunities Across The{" "}
-              <span className="text-indigo-600 dark:text-indigo-400 font-semibold">IIIT Network</span>
+              <span className="text-violet-600 dark:text-violet-400 font-semibold">IIIT Network</span>
             </h1>
             <p className={`mt-3 text-sm leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"}`}>
               Discover internships, research positions, open source programs, startup roles, hackathons, and full-time opportunities from recruiters hiring across India's IIIT ecosystem.
@@ -238,30 +238,30 @@ function OpportunitiesPageInner() {
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div
                       key={i}
-                      className={`animate-pulse rounded-2xl border p-5 space-y-4 ${
+                      className={`animate-pulse rounded-xl border p-5 space-y-4 ${
                         isDarkMode
                           ? "border-slate-800/80 bg-slate-900/10"
-                          : "border-slate-150 bg-slate-50/50"
+                          : "border-slate-150 bg-white/60"
                       }`}
                     >
                       <div className="flex justify-between items-start">
                         <div className="space-y-2 flex-1">
-                          <div className="h-4 bg-slate-200 dark:bg-slate-800 rounded w-2/3" />
-                          <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/3" />
+                          <div className="h-4 bg-slate-100/40 dark:bg-slate-800/40 rounded w-2/3" />
+                          <div className="h-3 bg-slate-100/40 dark:bg-slate-800/40 rounded w-1/3" />
                         </div>
-                        <div className="h-6 w-16 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                        <div className="h-6 w-16 bg-slate-100/40 dark:bg-slate-800/40 rounded-full" />
                       </div>
                       <div className="space-y-2">
-                        <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-full" />
-                        <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-5/6" />
+                        <div className="h-3 bg-slate-100/40 dark:bg-slate-800/40 rounded w-full" />
+                        <div className="h-3 bg-slate-100/40 dark:bg-slate-800/40 rounded w-5/6" />
                       </div>
                       <div className="flex gap-2.5 pt-2">
-                        <div className="h-5 w-12 bg-slate-200 dark:bg-slate-800 rounded-full" />
-                        <div className="h-5 w-12 bg-slate-200 dark:bg-slate-800 rounded-full" />
+                        <div className="h-5 w-12 bg-slate-100/40 dark:bg-slate-800/40 rounded-full" />
+                        <div className="h-5 w-12 bg-slate-100/40 dark:bg-slate-800/40 rounded-full" />
                       </div>
-                      <div className="pt-4 border-t border-slate-150 dark:border-slate-800/60 flex justify-between items-center">
-                        <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded w-1/4" />
-                        <div className="h-8 w-20 bg-indigo-100 dark:bg-indigo-900/30 rounded-xl" />
+                      <div className="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex justify-between items-center">
+                        <div className="h-3 bg-slate-100/40 dark:bg-slate-800/40 rounded w-1/4" />
+                        <div className="h-8 w-20 bg-indigo-50/50 dark:bg-indigo-900/30 rounded-xl" />
                       </div>
                     </div>
                   ))}
@@ -298,21 +298,24 @@ function OpportunitiesPageInner() {
               )}
             </motion.div>
 
-            {/* Recruiter CTA */}
-            <motion.div variants={item}>
-              <RecruiterCTA
-                isDarkMode={isDarkMode}
-                onPostClick={() => setShowPostModal(true)}
-              />
-            </motion.div>
+            {/* Bottom Sections Grid */}
+            <div className="grid gap-6 lg:grid-cols-2">
+              {/* Recruiter CTA */}
+              <motion.div variants={item} className="h-full">
+                <RecruiterCTA
+                  isDarkMode={isDarkMode}
+                  onPostClick={() => setShowPostModal(true)}
+                />
+              </motion.div>
 
-            {/* Startup Showcase */}
-            <motion.div variants={item}>
-              <StartupShowcase
-                isDarkMode={isDarkMode}
-                onPostClick={() => setShowPostModal(true)}
-              />
-            </motion.div>
+              {/* Startup Showcase */}
+              <motion.div variants={item} className="h-full">
+                <StartupShowcase
+                  isDarkMode={isDarkMode}
+                  onPostClick={() => setShowPostModal(true)}
+                />
+              </motion.div>
+            </div>
           </motion.div>
         </div>
       </motion.div>

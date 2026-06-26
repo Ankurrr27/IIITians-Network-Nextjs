@@ -48,7 +48,7 @@ export default function EventsClient({ initialEvents }: Props) {
   const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (
-    <section className="ui-page-bg relative min-h-screen pb-10 pt-16 sm:pb-12 sm:pt-20">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-24 sm:pb-12 sm:pt-20">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
       <div className="ui-page-shell relative z-10">
@@ -69,6 +69,14 @@ export default function EventsClient({ initialEvents }: Props) {
               <option value="az">Title A-Z</option>
               <option value="za">Title Z-A</option>
             </select>
+          }
+          actions={
+            <a
+              href="/discuss?clubAccount=true"
+              className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-1.5 px-4 text-sm font-bold tracking-wide w-full sm:w-auto"
+            >
+              Add Your Event
+            </a>
           }
         />
 

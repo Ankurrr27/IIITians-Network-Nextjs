@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "IIIT Directory & Campus Hubs",
-  description: "Explore all 25+ Indian Institutes of Information Technology (IIITs). Search and compare campuses, locations, fests, clubs, and official web directories.",
+  description: "Explore all 31 Indian Institutes of Information Technology (IIITs). Search and compare campuses, locations, fests, clubs, and official web directories.",
   keywords: [
     "IIIT directory",
     "IIIT campuses",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "IIIT Directory & Campus Hubs | IIITians Network",
-    description: "Search, compare, and explore fests, clubs, and student hubs across all 25+ IIITs.",
+    description: "Search, compare, and explore fests, clubs, and student hubs across all 31 IIITs.",
     url: "https://iiitiansnetwork.in/colleges",
     type: "website",
   },

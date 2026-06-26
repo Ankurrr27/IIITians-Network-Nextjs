@@ -37,7 +37,7 @@ const RedditIcon = ({ size = 16, className = "" }: { size?: number; className?: 
 
 export default function AboutSection() {
   return (
-    <section className="bg-white py-10 sm:py-24 border-b border-slate-100">
+    <section className="bg-white py-10 sm:py-16 border-b border-slate-100">
       <div className="mx-auto grid max-w-7xl grid-cols-1 items-start gap-8 px-4 sm:px-6 sm:gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
         <div className="space-y-6">
           <div>
