@@ -31,7 +31,7 @@ export default function OpportunityCard({ opportunity, isDarkMode, onApply }: Op
 
   return (
     <div
-      className={`group flex flex-col justify-between rounded-2xl border p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${
+      className={`group flex flex-col justify-between rounded-xl border p-5 shadow-sm transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 ${
         isDarkMode
           ? "border-slate-800 bg-slate-900/40 text-slate-100 hover:border-slate-700"
           : "border-slate-200 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-[0_20px_50px_rgba(79,70,229,0.04)]"

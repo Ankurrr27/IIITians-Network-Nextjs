@@ -73,7 +73,7 @@ export default function PageHeader({
   const hasTitle = Boolean(title || description);
 
   return (
-    <header className={`${hasTitle ? "mb-6 sm:mb-8" : "mb-2 sm:mb-4"} text-left ${className}`}>
+    <header className={`${hasTitle ? "mb-6 sm:mb-8" : "mb-6 sm:mb-8"} text-left ${className}`}>
       {(title || description) && (
         <div className="max-w-3xl">
           <h1 className="ui-title">{renderTitle(title)}</h1>

@@ -27,7 +27,7 @@ export default function HomePage() {
     "name": "IIITians Network",
     "url": "https://iiitiansnetwork.in",
     "logo": "https://iiitiansnetwork.in/favicon-32x32.png",
-    "description": "An autonomous student-led community connecting all 25+ Indian Institutes of Information Technology (IIITs) across India.",
+    "description": "An autonomous student-led community connecting all 31 Indian Institutes of Information Technology (IIITs) across India.",
     "sameAs": [
       "https://linkedin.com/company/iiitians-network",
       "https://instagram.com/iiitiansnetwork",

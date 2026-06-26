@@ -55,7 +55,7 @@ export default function OpportunitiesSection() {
       { title: "Discuss Forums Auth Integration", provider: "Student Discuss Team", location: "GitHub", details: "Implement secure OAuth flows for official club manager profiles using NextAuth and MongoDB adapter patterns.", linkText: "GitHub repo", verified: true },
     ],
     Hackathons: [
-      { title: "Inter-IIIT Hackathon 2026", provider: "IIITians Network Community", location: "Online / Hybrid", details: "24-hour development sprint bringing teams from all 25+ IIITs to solve structural challenges in education, tech, and college outreach.", linkText: "Register", verified: true },
+      { title: "Inter-IIIT Hackathon 2026", provider: "IIITians Network Community", location: "Online / Hybrid", details: "24-hour development sprint bringing teams from all 31 IIITs to solve structural challenges in education, tech, and college outreach.", linkText: "Register", verified: true },
       { title: "Smart India Hackathon Prep-Sprint", provider: "Coding Clubs Joint Alliance", location: "Host Campuses", details: "A preparatory mock hackathon featuring review panels of senior alumni who previously won SIH to critique problem statements.", linkText: "Join sprint" },
     ],
     Startups: [
@@ -65,7 +65,7 @@ export default function OpportunitiesSection() {
   };
 
   return (
-    <section className="bg-slate-50/50 py-16 sm:py-24 border-y border-slate-100">
+    <section className="bg-slate-50/50 py-16 sm:py-16 border-y border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
@@ -106,7 +106,7 @@ export default function OpportunitiesSection() {
           {data[activeTab].map((opp, index) => (
             <div
               key={index}
-              className="flex flex-col justify-between rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
+              className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">

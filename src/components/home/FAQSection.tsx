@@ -12,7 +12,7 @@ export default function FAQSection() {
   const faqs = [
     {
       question: "What is IIITians Network?",
-      answer: "IIITians Network is an autonomous, student-led community and platform connecting all 25+ Indian Institutes of Information Technology (IIITs) across India. It serves as a unified talent layer, digital directory, and collaboration network for students, alumni, recruiters, and aspirants."
+      answer: "IIITians Network is an autonomous, student-led community and platform connecting all 31 Indian Institutes of Information Technology (IIITs) across India. It serves as a unified talent layer, digital directory, and collaboration network for students, alumni, recruiters, and aspirants."
     },
     {
       question: "How can I verify my profile on the platform?",
@@ -46,7 +46,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className={`py-16 sm:py-24 border-t transition-colors duration-300 ${
+    <section className={`py-16 sm:py-16 border-t transition-colors duration-300 ${
       isDarkMode ? "bg-slate-955/20 border-slate-900 text-slate-100" : "bg-slate-50/30 border-slate-100 text-slate-900"
     }`}>
       {/* JSON-LD Schema Markup */}
@@ -57,7 +57,7 @@ export default function FAQSection() {
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
         <div className="text-center mb-12">
-          <div className="inline-flex rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/40 p-3 text-indigo-650 dark:text-indigo-400 mb-4">
+          <div className={`inline-flex rounded-xl border p-3 mb-4 ${isDarkMode ? "bg-indigo-950/30 border-indigo-900/40 text-indigo-400" : "bg-indigo-50 border-indigo-100 text-indigo-600"}`}>
             <HelpCircle className="h-6 w-6" />
           </div>
           <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Frequently Asked Questions</h2>

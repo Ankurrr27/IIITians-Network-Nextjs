@@ -35,7 +35,7 @@ export default function DiscussPreviewSection() {
     .slice(0, LIMIT);
 
   return (
-    <section className="bg-slate-50/50 py-8 sm:py-24">
+    <section className="bg-slate-50/50 py-8 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="mb-6 flex items-end justify-between gap-4 sm:mb-10">
           <div>

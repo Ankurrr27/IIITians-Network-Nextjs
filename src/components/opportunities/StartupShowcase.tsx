@@ -22,84 +22,85 @@ export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShow
   return (
     <section
       id="startups"
-      className={`rounded-2xl border p-6 sm:p-8 transition-colors duration-300 ${
+      className={`rounded-2xl border p-6 sm:p-8 transition-colors duration-300 h-full flex flex-col justify-between ${
         isDarkMode
           ? "border-slate-800 bg-slate-900/60"
           : "border-slate-200 bg-white shadow-sm"
       }`}
     >
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Rocket size={16} className={isDarkMode ? "text-amber-400" : "text-amber-600"} />
-            <p
-              className={`text-xs font-semibold uppercase tracking-[0.24em] ${
-                isDarkMode ? "text-amber-400" : "text-amber-600"
+      <div>
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Rocket size={16} className={isDarkMode ? "text-amber-400" : "text-amber-600"} />
+              <p
+                className={`text-xs font-semibold uppercase tracking-[0.24em] ${
+                  isDarkMode ? "text-amber-400" : "text-amber-600"
+                }`}
+              >
+                Startup Ecosystem
+              </p>
+            </div>
+            <h2
+              className={`mt-3 text-xl font-bold tracking-tight sm:text-2xl ${
+                isDarkMode ? "text-white" : "text-slate-900"
               }`}
             >
-              Startup Ecosystem
+              Startup Opportunities
+            </h2>
+            <p
+              className={`mt-2 max-w-2xl text-sm leading-relaxed ${
+                isDarkMode ? "text-slate-400" : "text-slate-605 font-semibold"
+              }`}
+            >
+              The IIIT network produces builders, researchers, and founders. Explore founding
+              engineer roles, growth internships, and early-stage opportunities from startups
+              built by IIITians.
             </p>
           </div>
-          <h2
-            className={`mt-3 text-xl font-bold tracking-tight sm:text-2xl ${
-              isDarkMode ? "text-white" : "text-slate-900"
-            }`}
+
+          <button
+            onClick={onPostClick}
+            className="shrink-0 inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/20 transition hover:bg-amber-600 active:scale-95 self-start sm:self-auto"
           >
-            Startup Opportunities from the IIIT Ecosystem
-          </h2>
-          <p
-            className={`mt-2 max-w-2xl text-sm leading-relaxed ${
-              isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"
-            }`}
-          >
-            The IIIT network produces builders, researchers, and founders. Explore founding
-            engineer roles, growth internships, and early-stage opportunities from startups
-            built by IIITians.
-          </p>
+            Pitch Your Startup
+            <ArrowRight size={14} />
+          </button>
         </div>
 
-        <button
-          onClick={onPostClick}
-          className="shrink-0 inline-flex items-center gap-2 rounded-full bg-amber-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-amber-500/20 transition hover:bg-amber-600 active:scale-95 self-start sm:self-auto"
-        >
-          Pitch Your Startup
-          <ArrowRight size={14} />
-        </button>
-      </div>
-
-      {/* Ecosystem Areas */}
-      <div className="mt-5 flex flex-wrap gap-2">
-        {ecosystemAreas.map((area) => {
-          const Icon = area.icon;
-          return (
-            <div
-              key={area.label}
-              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
-                isDarkMode
-                  ? "border-slate-800 bg-slate-950/50 text-slate-300"
-                  : "border-slate-200 bg-slate-50 text-slate-600"
-              }`}
-            >
-              <Icon size={12} className={isDarkMode ? "text-amber-400" : "text-amber-600"} />
-              {area.label}
-            </div>
-          );
-        })}
-        <div
-          className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
-            isDarkMode
-              ? "border-slate-800 bg-slate-950/50 text-slate-400"
-              : "border-slate-200 bg-slate-50 text-slate-500"
-          }`}
-        >
-          + More
+        {/* Ecosystem Areas */}
+        <div className="mt-5 flex flex-wrap gap-2">
+          {ecosystemAreas.map((area) => {
+            const Icon = area.icon;
+            return (
+              <div
+                key={area.label}
+                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
+                  isDarkMode
+                    ? "border-slate-800 bg-slate-950/50 text-slate-300"
+                    : "border-slate-200 bg-slate-50 text-slate-600"
+                }`}
+              >
+                <Icon size={12} className={isDarkMode ? "text-amber-400" : "text-amber-600"} />
+                {area.label}
+              </div>
+            );
+          })}
+          <div
+            className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[11px] font-bold ${
+              isDarkMode
+                ? "border-slate-800 bg-slate-950/50 text-slate-400"
+                : "border-slate-200 bg-slate-50 text-slate-500"
+            }`}
+          >
+            + More
+          </div>
         </div>
-      </div>
 
-      {/* Startup opportunity cards — compact list */}
-      {startupOpps.length > 0 && (
-        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        {/* Startup opportunity cards — compact list */}
+        {startupOpps.length > 0 && (
+          <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
           {startupOpps.map((opp) => (
             <div
               key={opp.id}
@@ -148,6 +149,7 @@ export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShow
           ))}
         </div>
       )}
+      </div>
 
       {/* VC-facing trust message */}
       <div

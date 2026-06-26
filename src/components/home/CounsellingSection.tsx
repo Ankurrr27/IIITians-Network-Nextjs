@@ -46,7 +46,7 @@ export default function CounsellingSection() {
   const [showMore, setShowMore] = useState(false);
 
   return (
-    <section className="bg-white py-10 sm:py-24">
+    <section className="bg-white py-10 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid items-start gap-8 sm:gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16 text-left">
           

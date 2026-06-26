@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import React from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowRight, UserPlus } from "lucide-react";
+import { ArrowRight, UserPlus, Search } from "lucide-react";
 
 import type { ITeamMember } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
@@ -116,64 +116,62 @@ export default function TeamClient({ initialMembers }: Props) {
     <div className="ui-page-bg relative min-h-screen">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
-      <section className="relative z-10 pb-2 pt-16 sm:pt-20">
+      <section className="relative z-10 pb-2 pt-24 sm:pt-20">
         <div className="ui-page-shell">
           <PageHeader
             title=""
             description=""
-            searchValue={search}
-            onSearchChange={setSearch}
-            searchPlaceholder="Search by name, role or IIIT"
+            searchControl={
+              <div className="flex items-center gap-3 w-full">
+                <label className="ui-control flex h-11 flex-1 items-center gap-3 px-3.5 py-0">
+                  <Search className="h-4 w-4 shrink-0 text-slate-400" />
+                  <input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search by name, role or IIIT"
+                    className="h-full w-full bg-transparent text-sm font-medium text-slate-700 outline-none placeholder:text-slate-400 py-0"
+                  />
+                </label>
+                <Link
+                  href="/team/join"
+                  className="ui-button ui-button-primary inline-flex h-11 w-11 sm:w-auto shrink-0 items-center justify-center gap-1.5 p-0 sm:px-4 text-xs font-bold rounded-2xl"
+                  title="Join the Team"
+                >
+                  <UserPlus className="h-4 w-4" />
+                  <span className="hidden sm:inline">Join</span>
+                  <ArrowRight className="h-4 w-4 hidden sm:inline" />
+                </Link>
+              </div>
+            }
             filters={
-              <>
-                <div className="flex gap-2 w-full sm:w-auto">
-                  <select
-                    value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
-                  >
-                    {years.map((option) => (
-                      <option key={option} value={option}>
-                        {option === "ALL" ? "All years" : option}
-                      </option>
-                    ))}
-                  </select>
-
-                  <select
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
-                  >
-                    {roleFilters.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <Link
-                  href="/team/join"
-                  className="sm:hidden ui-button ui-button-primary inline-flex h-11 items-center justify-center gap-1.5 px-3.5 text-xs w-full mt-1"
+              <div className="flex gap-2 w-full sm:w-auto">
+                <select
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
                 >
-                  <UserPlus className="h-3.5 w-3.5" />
-                  Join
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </>
-            }
-            actions={
-              <>
-                <Link
-                  href="/team/join"
-                  className="ui-button ui-button-primary hidden sm:inline-flex h-10 min-h-10 items-center gap-1.5 px-3.5 text-xs"
+                  {years.map((option) => (
+                    <option key={option} value={option}>
+                      {option === "ALL" ? "All years" : option}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className={`${pageHeaderControlClass} flex-1 min-w-0 sm:flex-none sm:w-44`}
                 >
-                  <UserPlus className="h-3.5 w-3.5" />
-                  Join
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </>
+                  {roleFilters.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
             }
+            actions={undefined}
           />
         </div>
       </section>

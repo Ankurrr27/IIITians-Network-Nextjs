@@ -378,6 +378,16 @@ body {
 .animate-slide-up  { animation: slideUp 0.5s ease both; }
 .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
 
+/* ─── Skeleton Loading ─────────────────────────────────────────────────── */
+.ui-skeleton {
+  background: #f1f5f9;
+  border-radius: var(--ui-radius-control);
+}
+
+[data-theme="dark"] .ui-skeleton {
+  background: rgba(30, 41, 59, 0.4);
+}
+
 /* ─── Line Clamp (compat) ───────────────────────────────────────────────── */
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }

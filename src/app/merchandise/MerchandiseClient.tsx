@@ -8,6 +8,7 @@ import { iiitCampuses } from "@/data/iiitCampuses";
 import { isIIITEmail } from "@/data/iiitDomains";
 import {
   ChevronRight,
+  ChevronDown,
   Sparkles,
   Search,
   X,
@@ -317,7 +318,7 @@ function ProductModal({
   const handleAdd = () => {
     if (!resolvedVariant) return;
 
-    // Validate fields based on the tier
+    
     if (tier) {
       if (tier === "req_name") {
         if (!printName.trim()) {
@@ -392,17 +393,14 @@ function ProductModal({
   const transformedDesc = generateDescription(transformedTitle, selectedCampus);
 
   const bg = isDarkMode
-    ? "bg-[#0d1424] text-slate-105 border-slate-800"
+    ? "bg-[#0d1424] text-slate-100 border-slate-800"
     : "bg-white text-slate-900 border-slate-200";
   const subtle = isDarkMode ? "text-slate-400" : "text-slate-500";
   const divider = isDarkMode ? "border-slate-800" : "border-slate-100";
-  const tagBg = isDarkMode
-    ? "bg-slate-800 text-slate-300"
-    : "bg-slate-100 text-slate-600";
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in"
       role="dialog"
       aria-modal="true"
     >
@@ -414,122 +412,114 @@ function ProductModal({
 
       {/* Panel */}
       <div
-        className={`relative z-10 w-full sm:max-w-4xl sm:rounded-[2rem] border shadow-2xl max-h-[92dvh] flex flex-col md:flex-row overflow-hidden rounded-t-[2rem] ${bg}`}
+        className={`relative z-10 w-full h-[85dvh] sm:h-auto sm:max-w-4xl sm:rounded-[2rem] border shadow-2xl sm:max-h-[92dvh] flex flex-col overflow-hidden rounded-t-[2rem] ${bg}`}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className={`absolute top-4 right-4 z-20 rounded-full p-1.5 transition ${
-            isDarkMode
-              ? "bg-slate-850 text-slate-400 hover:text-white"
-              : "bg-slate-100 text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          <X size={16} />
-        </button>
-
-        {/* Left — Images */}
-        <div className={`md:w-1/2 flex flex-col justify-between p-6 ${isDarkMode ? "bg-slate-950/20" : "bg-slate-50/50"}`}>
-          <div className="flex-1 flex items-center justify-center min-h-[260px] max-h-[380px]">
-            {product.images[activeImg] ? (
-              <Image
-                src={product.images[activeImg].url}
-                alt={product.images[activeImg].alt}
-                width={product.images[activeImg].width}
-                height={product.images[activeImg].height}
-                className="max-h-[350px] w-full object-contain"
-                priority
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center text-5xl opacity-20">
-                👕
-              </div>
-            )}
+        {/* ─── MOBILE VIEW: AMAZON STYLE BOTTOM SHEET ─── */}
+        <div className="flex flex-col h-full w-full overflow-hidden sm:hidden bg-white dark:bg-[#090d16]">
+          {/* Mobile Drag Indicator / Header */}
+          <div className="flex flex-col items-center border-b pb-2 pt-3 bg-white dark:bg-[#0d1424] border-slate-100 dark:border-slate-850 shrink-0">
+            <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mb-2" />
+            <div className="flex items-center justify-between w-full px-4">
+              <button onClick={onClose} className="text-slate-500 dark:text-slate-400 p-1">
+                <X size={18} />
+              </button>
+              <span className="text-xs font-black uppercase tracking-wider text-slate-850 dark:text-white">
+                Customize & Buy
+              </span>
+              <div className="w-8" />
+            </div>
           </div>
 
-          {/* Thumbnails */}
-          {product.images.length > 1 && (
-            <div className="flex gap-2 justify-center mt-4 overflow-x-auto">
-              {product.images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`shrink-0 rounded-lg overflow-hidden border-2 transition p-1 bg-white ${
-                    activeImg === i ? "border-indigo-500 ring-2 ring-indigo-500/20" : "border-slate-200 hover:border-slate-350"
-                  }`}
-                  style={{ width: 48, height: 48 }}
-                >
-                  <img src={img.url} alt="thumbnail" className="h-full w-full object-contain" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Right — Customization Forms */}
-        <div className="md:w-1/2 flex flex-col justify-between border-t md:border-t-0 md:border-l border-slate-100 dark:border-slate-850 p-6 overflow-y-auto max-h-[50vh] md:max-h-[90vh]">
-          <div>
-            <div className="flex items-start gap-3">
-              {activeCampusObj?.logo && (
-                <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-100 dark:ring-slate-800 animate-fade-in">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    key={selectedCampus}
-                    src={activeCampusObj.logo}
-                    alt={`${selectedCampus} logo`}
-                    className="h-full w-full object-contain"
-                    onError={(e) => {
-                      const favicon = getWebsiteFavicon(activeCampusObj.website);
-                      if (favicon && e.currentTarget.src !== favicon) {
-                        e.currentTarget.src = favicon;
-                      } else {
-                        e.currentTarget.style.display = "none";
-                      }
-                    }}
-                  />
+          {/* Scrollable Details */}
+          <div className="flex-1 overflow-y-auto pb-28 px-4 pt-4 space-y-5">
+            {/* Image Swiper */}
+            <div className="relative w-full aspect-square bg-slate-50 dark:bg-slate-950/20 rounded-2xl overflow-hidden flex items-center justify-center">
+              {product.images[activeImg] ? (
+                <Image
+                  src={product.images[activeImg].url}
+                  alt={product.images[activeImg].alt}
+                  width={product.images[activeImg].width}
+                  height={product.images[activeImg].height}
+                  className="max-h-[85%] w-full object-contain p-2"
+                  priority
+                />
+              ) : (
+                <span className="text-4xl opacity-20">👕</span>
+              )}
+              {product.images.length > 1 && (
+                <div className="absolute bottom-3 inset-x-0 flex justify-center gap-1.5">
+                  {product.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveImg(i)}
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        activeImg === i ? "w-4 bg-indigo-500" : "w-1.5 bg-slate-300 dark:bg-slate-700"
+                      }`}
+                    />
+                  ))}
                 </div>
               )}
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-500">
-                  Premium Quality Apparel
-                </span>
-                <h2 className="text-xl font-black mt-0.5 leading-tight">{transformedTitle}</h2>
-              </div>
             </div>
-            
-            {/* Price */}
-            <div className="flex items-baseline flex-wrap gap-x-2 mt-3 border-y py-3 border-slate-100 dark:border-slate-850">
-              <span className="text-2xl font-black text-indigo-650 dark:text-indigo-400">
-                {product.hasRange ? `From ${product.minPrice}` : product.minPrice}
+
+            {/* Title & Brand */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">
+                IIITians Network Merchandise
               </span>
-              {product.compareAtPrice && (
-                <span className={`text-sm line-through ${subtle}`}>
-                  M.R.P.: {product.compareAtPrice}
-                </span>
-              )}
-              {product.discountPercent && (
-                <span className="text-sm text-emerald-600 font-extrabold">
-                  ({product.discountPercent}% OFF)
-                </span>
+              <h2 className="text-lg font-black leading-tight text-slate-900 dark:text-white">
+                {transformedTitle}
+              </h2>
+              {product.reviewCount > 0 && (
+                <div className="flex items-center gap-1.5 pt-1">
+                  <StarRow rating={product.reviewRating} size={12} />
+                  <span className="text-[11px] font-bold text-indigo-555 dark:text-indigo-400">
+                    {product.reviewRating} ({product.reviewCount} ratings)
+                  </span>
+                </div>
               )}
             </div>
 
-            {/* Clean Specifications Description */}
-            <div className="mt-4">
-              <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 mb-2">Product Description</h4>
-              <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-350 whitespace-pre-line font-medium">
+            {/* Price Block */}
+            <div className="border-y py-3 border-slate-100 dark:border-slate-850 space-y-1">
+              <div className="flex items-baseline gap-2">
+                {product.discountPercent && (
+                  <span className="text-2xl font-light text-rose-500 dark:text-rose-450">
+                    -{product.discountPercent}%
+                  </span>
+                )}
+                <span className="text-3xl font-black text-slate-900 dark:text-white">
+                  {product.minPrice}
+                </span>
+              </div>
+              <div className="text-xs text-slate-450 space-y-1 font-semibold">
+                {product.compareAtPrice && (
+                  <div>
+                    M.R.P.: <span className="line-through">{product.compareAtPrice}</span>
+                  </div>
+                )}
+                <div className="text-emerald-600 dark:text-emerald-500 font-extrabold flex items-center gap-1">
+                  <Truck size={12} />
+                  <span>FREE Delivery by KS Verse</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-900/40 p-4 border border-slate-100 dark:border-slate-800">
+              <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-455 mb-2">Description</h4>
+              <p className="text-[11px] leading-relaxed text-slate-655 dark:text-slate-350 whitespace-pre-line font-medium">
                 {transformedDesc}
               </p>
             </div>
 
-            {/* Option / Variant Selectors */}
-            <div className="space-y-4 mt-6">
+            {/* Size & Color Selector */}
+            <div className="space-y-4">
               {product.sizes.length > 0 && (
                 <div>
                   <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Select Size
+                    Size: <span className="text-indigo-500 font-extrabold">{selectedSize}</span>
                   </span>
-                  <div className="flex flex-wrap gap-2 mt-1.5">
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {product.sizes.map((s) => (
                       <button
                         key={s}
@@ -538,7 +528,7 @@ function ProductModal({
                         className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
                           selectedSize === s
                             ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
-                            : "border-slate-200 bg-white text-slate-700 hover:border-slate-350 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                            : "border-slate-200 bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
                         }`}
                       >
                         {s}
@@ -551,9 +541,9 @@ function ProductModal({
               {product.colors.length > 1 && (
                 <div>
                   <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Select Color
+                    Color: <span className="text-indigo-500 font-extrabold">{selectedColor}</span>
                   </span>
-                  <div className="flex flex-wrap gap-2 mt-1.5">
+                  <div className="flex flex-wrap gap-2 mt-2">
                     {product.colors.map((c) => (
                       <button
                         key={c}
@@ -562,7 +552,7 @@ function ProductModal({
                         className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
                           selectedColor === c
                             ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
-                            : "border-slate-200 bg-white text-slate-700 hover:border-slate-350 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                            : "border-slate-200 bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
                         }`}
                       >
                         {c}
@@ -571,163 +561,144 @@ function ProductModal({
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Customization Inputs */}
-              {tier && (
-                <div className="border-t border-slate-100 dark:border-slate-850 pt-5 space-y-4">
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles size={14} className="text-indigo-500 animate-pulse" />
-                    <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-                      Personalize Your Apparel (Required)
-                    </h4>
+            {/* Customization tier */}
+            {tier && (
+              <div className="border-t border-slate-100 dark:border-slate-850 pt-5 space-y-4">
+                <div className="flex items-center gap-1.5">
+                  <Sparkles size={14} className="text-indigo-500" />
+                  <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                    Personalization Details (Required)
+                  </h4>
+                </div>
+
+                {validationError && (
+                  <div className="text-[11px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-955/20 border border-rose-100 dark:border-rose-900/30 px-3 py-2.5 rounded-xl">
+                    ⚠️ {validationError}
                   </div>
+                )}
 
-                  {validationError && (
-                    <div className="text-[11px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 px-3.5 py-2.5 rounded-xl">
-                      ⚠️ {validationError}
+                <div className="space-y-3.5">
+                  {(tier === "req_name" || tier === "req_half" || tier === "req_full") && (
+                    <div>
+                      <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                        Print Your Name <span className="text-rose-505">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={15}
+                        placeholder="e.g. DHRUV"
+                        value={printName}
+                        onChange={(e) => setPrintName(e.target.value.toUpperCase())}
+                        className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                          isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
+                        }`}
+                      />
                     </div>
                   )}
 
-                  <div className="space-y-3">
-                    {/* Field 1: Name (for req_name, req_half, req_full) */}
-                    {(tier === "req_name" || tier === "req_half" || tier === "req_full") && (
+                  {tier === "req_college" && (
+                    <div>
+                      <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                        Print Your College <span className="text-rose-505">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. IIIT RANCHI"
+                        value={college}
+                        onChange={(e) => setCollege(e.target.value)}
+                        className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                          isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
+                        }`}
+                      />
+                    </div>
+                  )}
+
+                  {tier === "req_full" && (
+                    <div>
+                      <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                        Print Your Branch <span className="text-rose-505">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        maxLength={30}
+                        placeholder="e.g. COMPUTER SCIENCE"
+                        value={branch}
+                        onChange={(e) => setBranch(e.target.value)}
+                        className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                          isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
+                        }`}
+                      />
+                    </div>
+                  )}
+
+                  {(tier === "req_half" || tier === "req_full") && (
+                    <div className="grid gap-3 grid-cols-2">
                       <div>
-                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                          Print Your Name <span className="text-rose-500">*</span>
+                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                          Print Your Batch <span className="text-rose-505">*</span>
                         </label>
                         <input
                           type="text"
-                          maxLength={15}
-                          placeholder="e.g. DHRUV"
-                          value={printName}
-                          onChange={(e) => setPrintName(e.target.value.toUpperCase())}
-                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
-                            isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
+                          maxLength={9}
+                          placeholder="2022 - 26"
+                          value={batch}
+                          onChange={(e) => setBatch(e.target.value)}
+                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                            isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
                           }`}
                         />
                       </div>
-                    )}
-
-                    {/* Field 2: College (for req_college only) */}
-                    {tier === "req_college" && (
                       <div>
-                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                          Print Your College <span className="text-rose-500">*</span>
+                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                          Print Your College <span className="text-rose-505">*</span>
                         </label>
                         <input
                           type="text"
                           placeholder="e.g. IIIT RANCHI"
                           value={college}
                           onChange={(e) => setCollege(e.target.value)}
-                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
-                            isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
+                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+                            isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
                           }`}
                         />
                       </div>
-                    )}
-
-                    {/* Field 3: Branch (for req_full only) */}
-                    {tier === "req_full" && (
-                      <div>
-                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                          Print Your Branch <span className="text-rose-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          maxLength={30}
-                          placeholder="e.g. COMPUTER SCIENCE"
-                          value={branch}
-                          onChange={(e) => setBranch(e.target.value)}
-                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
-                            isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
-                          }`}
-                        />
-                      </div>
-                    )}
-
-                    {/* Fields Row: Batch & College (for req_half and req_full) */}
-                    {(tier === "req_half" || tier === "req_full") && (
-                      <div className="grid gap-3 grid-cols-2">
-                        <div>
-                          <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                            Print Your Batch <span className="text-rose-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            maxLength={9}
-                            placeholder="2022 - 26"
-                            value={batch}
-                            onChange={(e) => setBatch(e.target.value)}
-                            className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
-                              isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
-                            }`}
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-450 dark:text-slate-500">
-                            Print Your College <span className="text-rose-500">*</span>
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="e.g. IIIT RANCHI"
-                            value={college}
-                            onChange={(e) => setCollege(e.target.value)}
-                            className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
-                              isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
-                            }`}
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Field 5: Special Instructions/Notes (always show if customizable) */}
-                    <div>
-                      <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
-                        Special Instructions / Notes (Optional)
-                      </label>
-                      <textarea
-                        rows={2}
-                        placeholder="Any additional customization details..."
-                        value={customNotes}
-                        onChange={(e) => setCustomNotes(e.target.value)}
-                        className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none ${
-                          isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-200 text-slate-950"
-                        }`}
-                      />
                     </div>
+                  )}
+
+                  <div>
+                    <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                      Special Instructions (Optional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="Any additional customization notes..."
+                      value={customNotes}
+                      onChange={(e) => setCustomNotes(e.target.value)}
+                      className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none transition ${
+                        isDarkMode ? "bg-slate-900 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-955"
+                      }`}
+                    />
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* Delivery & Timeline info */}
-          <div className={`mt-6 rounded-xl border p-3 flex flex-col gap-2 ${divider} ${isDarkMode ? "bg-slate-950/60" : "bg-slate-50"}`}>
-            <div className="flex items-center gap-2.5">
-              <Truck size={14} className="text-indigo-500 shrink-0" />
-              <span className={`text-[11px] font-semibold ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
-                7–10 business days · Custom orders printed fresh
+          {/* Sticky Bottom Action Bar */}
+          <div className="fixed bottom-0 left-0 right-0 z-35 bg-white dark:bg-[#0d1424] border-t border-slate-100 dark:border-slate-850 p-4 flex items-center justify-between gap-4">
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Price:</span>
+              <span className="text-lg font-black text-indigo-650 dark:text-indigo-400">
+                {product.hasRange ? `From ${product.minPrice}` : product.minPrice}
               </span>
             </div>
-          </div>
-
-          {/* Validation Error Display */}
-          {validationError && (
-            <div className="mt-4 rounded-xl border border-rose-500/20 bg-rose-500/5 p-3 flex items-center gap-2.5 animate-fade-in text-rose-550 dark:text-rose-450">
-              <Info size={14} className="shrink-0 text-rose-550 dark:text-rose-400" />
-              <span className="text-[11px] font-bold">
-                {validationError}
-              </span>
-            </div>
-          )}
-
-          {/* Actions Footer */}
-          <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center gap-4">
             <button
               type="button"
               disabled={!resolvedVariant || !resolvedVariant.availableForSale}
               onClick={handleAdd}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-xs font-extrabold text-white transition hover:bg-indigo-700 active:scale-95 shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-xs font-extrabold text-white transition hover:bg-indigo-700 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-md shadow-indigo-500/20"
             >
               <ShoppingBag size={14} />
               <span>
@@ -740,11 +711,310 @@ function ProductModal({
             </button>
           </div>
         </div>
+
+        {/* ─── DESKTOP VIEW: ORIGINAL TWO-COLUMN SPLIT ─── */}
+        <div className="hidden sm:flex flex-row w-full h-full">
+          {/* Left — Images */}
+          <div className={`sm:w-1/2 flex flex-col justify-between p-6 ${isDarkMode ? "bg-slate-950/20" : "bg-slate-50/50"}`}>
+            <div className="flex-1 flex items-center justify-center min-h-[260px] max-h-[380px]">
+              {product.images[activeImg] ? (
+                <Image
+                  src={product.images[activeImg].url}
+                  alt={product.images[activeImg].alt}
+                  width={product.images[activeImg].width}
+                  height={product.images[activeImg].height}
+                  className="max-h-[350px] w-full object-contain"
+                  priority
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center text-5xl opacity-20">
+                  👕
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnails */}
+            {product.images.length > 1 && (
+              <div className="flex gap-2 justify-center mt-4 overflow-x-auto">
+                {product.images.map((img, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveImg(i)}
+                    className={`shrink-0 rounded-lg overflow-hidden border-2 transition p-1 bg-white ${
+                      activeImg === i ? "border-indigo-500 ring-2 ring-indigo-500/20" : "border-slate-200 hover:border-slate-350"
+                    }`}
+                    style={{ width: 48, height: 48 }}
+                  >
+                    <img src={img.url} alt="thumbnail" className="h-full w-full object-contain" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right — Customization Forms */}
+          <div className="sm:w-1/2 flex flex-col justify-between border-t sm:border-t-0 sm:border-l border-slate-100 dark:border-slate-850 p-6 overflow-y-auto max-h-[50vh] sm:max-h-[90vh]">
+            <div>
+              <div className="flex items-start gap-3">
+                {activeCampusObj?.logo && (
+                  <div className="relative h-20 w-20 overflow-hidden rounded-2xl bg-white p-2 shadow-sm ring-1 ring-slate-100 dark:ring-slate-800 animate-fade-in">
+                    <img
+                      key={selectedCampus}
+                      src={activeCampusObj.logo}
+                      alt={`${selectedCampus} logo`}
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        const favicon = getWebsiteFavicon(activeCampusObj.website);
+                        if (favicon && e.currentTarget.src !== favicon) {
+                          e.currentTarget.src = favicon;
+                        } else {
+                          e.currentTarget.style.display = "none";
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-500">
+                    Premium Quality Apparel
+                  </span>
+                  <h2 className="text-xl font-black mt-0.5 leading-tight">{transformedTitle}</h2>
+                </div>
+              </div>
+              
+              {/* Price */}
+              <div className="flex items-baseline flex-wrap gap-x-2 mt-3 border-y py-3 border-slate-100 dark:border-slate-850">
+                <span className="text-2xl font-black text-indigo-650 dark:text-indigo-400">
+                  {product.hasRange ? `From ${product.minPrice}` : product.minPrice}
+                </span>
+                {product.compareAtPrice && (
+                  <span className={`text-sm line-through ${subtle}`}>
+                    M.R.P.: {product.compareAtPrice}
+                  </span>
+                )}
+                {product.discountPercent && (
+                  <span className="text-sm text-emerald-600 font-extrabold">
+                    ({product.discountPercent}% OFF)
+                  </span>
+                )}
+              </div>
+
+              {/* Specs Description */}
+              <div className="mt-4">
+                <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-450 mb-2">Product Description</h4>
+                <p className="text-xs leading-relaxed text-slate-650 dark:text-slate-355 whitespace-pre-line font-medium font-semibold">
+                  {transformedDesc}
+                </p>
+              </div>
+
+              {/* Option / Variant Selectors */}
+              <div className="space-y-4 mt-6">
+                {product.sizes.length > 0 && (
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Select Size
+                    </span>
+                    <div className="flex flex-wrap gap-2 mt-1.5">
+                      {product.sizes.map((s) => (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => setSelectedSize(s)}
+                          className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
+                            selectedSize === s
+                              ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
+                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-350 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                          }`}
+                        >
+                          {s}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {product.colors.length > 1 && (
+                  <div>
+                    <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      Select Color
+                    </span>
+                    <div className="flex flex-wrap gap-2 mt-1.5">
+                      {product.colors.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          onClick={() => setSelectedColor(c)}
+                          className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
+                            selectedColor === c
+                              ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
+                              : "border-slate-200 bg-white text-slate-700 hover:border-slate-350 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                          }`}
+                        >
+                          {c}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Customization Inputs */}
+                {tier && (
+                  <div className="border-t border-slate-100 dark:border-slate-850 pt-5 space-y-4">
+                    <div className="flex items-center gap-1.5">
+                      <Sparkles size={14} className="text-indigo-500 animate-pulse" />
+                      <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+                        Personalize Your Apparel (Required)
+                      </h4>
+                    </div>
+
+                    {validationError && (
+                      <div className="text-[11px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-955/20 border border-rose-100 dark:border-rose-900/30 px-3.5 py-2.5 rounded-xl">
+                        ⚠️ {validationError}
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      {(tier === "req_name" || tier === "req_half" || tier === "req_full") && (
+                        <div>
+                          <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                            Print Your Name <span className="text-rose-505">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={15}
+                            placeholder="e.g. DHRUV"
+                            value={printName}
+                            onChange={(e) => setPrintName(e.target.value.toUpperCase())}
+                            className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
+                              isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                            }`}
+                          />
+                        </div>
+                      )}
+
+                      {tier === "req_college" && (
+                        <div>
+                          <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                            Print Your College <span className="text-rose-505">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="e.g. IIIT RANCHI"
+                            value={college}
+                            onChange={(e) => setCollege(e.target.value)}
+                            className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
+                              isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                            }`}
+                          />
+                        </div>
+                      )}
+
+                      {tier === "req_full" && (
+                        <div>
+                          <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                            Print Your Branch <span className="text-rose-505">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            maxLength={30}
+                            placeholder="e.g. COMPUTER SCIENCE"
+                            value={branch}
+                            onChange={(e) => setBranch(e.target.value)}
+                            className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
+                              isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                            }`}
+                          />
+                        </div>
+                      )}
+
+                      {(tier === "req_half" || tier === "req_full") && (
+                        <div className="grid gap-3 grid-cols-2">
+                          <div>
+                            <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                              Print Your Batch <span className="text-rose-505">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              maxLength={9}
+                              placeholder="2022 - 26"
+                              value={batch}
+                              onChange={(e) => setBatch(e.target.value)}
+                              className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
+                                isDarkMode ? "bg-slate-955 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                              }`}
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-500">
+                              Print Your College <span className="text-rose-505">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. IIIT RANCHI"
+                              value={college}
+                              onChange={(e) => setCollege(e.target.value)}
+                              className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-bold tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition ${
+                                isDarkMode ? "bg-slate-955 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                              }`}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-[9.5px] font-extrabold uppercase tracking-wider text-slate-455 dark:text-slate-505">
+                          Special Instructions / Notes (Optional)
+                        </label>
+                        <textarea
+                          rows={2}
+                          placeholder="Any additional customization details..."
+                          value={customNotes}
+                          onChange={(e) => setCustomNotes(e.target.value)}
+                          className={`mt-1.5 w-full rounded-xl border p-2.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none ${
+                            isDarkMode ? "bg-slate-950 border-slate-800 text-white" : "bg-slate-50 border-slate-202 text-slate-950"
+                          }`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Delivery & Timeline info */}
+            <div className={`mt-6 rounded-xl border p-3 flex flex-col gap-2 ${divider} ${isDarkMode ? "bg-slate-950/60" : "bg-slate-50"}`}>
+              <div className="flex items-center gap-2.5">
+                <Truck size={14} className="text-indigo-500 shrink-0" />
+                <span className={`text-[11px] font-semibold ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                  7–10 business days · Custom orders printed fresh
+                </span>
+              </div>
+            </div>
+
+            {/* Actions Footer */}
+            <div className="mt-8 pt-4 border-t border-slate-100 dark:border-slate-850 flex items-center gap-4">
+              <button
+                type="button"
+                disabled={!resolvedVariant || !resolvedVariant.availableForSale}
+                onClick={handleAdd}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-xs font-extrabold text-white transition hover:bg-indigo-700 active:scale-95 shadow-md shadow-indigo-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ShoppingBag size={14} />
+                <span>
+                  {!resolvedVariant
+                    ? "Select options"
+                    : !resolvedVariant.availableForSale
+                    ? "Sold Out"
+                    : "Add to Cart"}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
 // ── Main Client Component ─────────────────────────────────────────────────────
 export default function MerchandiseClient({
   products,
@@ -771,7 +1041,9 @@ export default function MerchandiseClient({
   // Cart
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+
 
   // Custom Club Order Modal
   const [showClubModal, setShowClubModal] = useState(false);
@@ -1195,7 +1467,7 @@ export default function MerchandiseClient({
       )}
 
       <div
-        className={`relative min-h-screen pb-16 pt-24 transition-colors duration-300 sm:pb-20 sm:pt-28 ${
+        className={`relative min-h-screen pb-12 pt-24 transition-colors duration-300 sm:pb-16 sm:pt-20 ${
           isDarkMode
             ? "bg-[linear-gradient(180deg,_#090d16_0%,_#0d1424_40%,_#0a0a0a_100%)] text-slate-100"
             : "bg-[linear-gradient(180deg,_#eff6ff_0%,_#f8faff_40%,_#ffffff_100%)] text-slate-900"
@@ -1206,15 +1478,15 @@ export default function MerchandiseClient({
 
         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
           {/* Header */}
-          <div className="text-center mb-12 sm:mb-16">
+          <div className="text-center mb-8 sm:mb-10">
             <div
-              className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.24em] backdrop-blur-md transition-colors duration-300 ${
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] backdrop-blur-md transition-colors duration-300 ${
                 isDarkMode
                   ? "border-indigo-900/30 bg-slate-900/80 text-indigo-400"
                   : "border-indigo-100 bg-white/80 text-indigo-700 shadow-sm"
               }`}
             >
-              <div className="relative h-4.5 w-4.5 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="relative h-4 w-4 flex items-center justify-center overflow-hidden shrink-0">
                 <img
                   src={isDarkMode ? "/IIITians-Network-Logo-Light.png" : "/IIITians-Network-Logo-Blue.png"}
                   alt="IIITians Network"
@@ -1224,14 +1496,14 @@ export default function MerchandiseClient({
               Official IIITians Network Merchandise
             </div>
             <h1
-              className={`mt-5 text-4xl font-extrabold tracking-tight sm:text-6xl ${
+              className={`mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl ${
                 isDarkMode ? "text-white" : "text-slate-900"
               }`}
             >
               Represent Your IIIT.
             </h1>
             <p
-              className={`mx-auto mt-4 max-w-2xl text-sm leading-relaxed sm:text-base ${
+              className={`mx-auto mt-2.5 max-w-xl text-xs leading-relaxed sm:text-sm ${
                 isDarkMode ? "text-slate-400" : "text-slate-650 font-semibold"
               }`}
             >
@@ -1239,8 +1511,106 @@ export default function MerchandiseClient({
             </p>
           </div>
 
-          {/* Search, Campus Dropdown & Filters Toolbar */}
-          <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b pb-6 border-slate-200/50 dark:border-slate-800/50">
+          
+          
+          <div className="sm:hidden mb-4 flex items-center gap-2">
+            <div className={`flex flex-1 items-center gap-2 border px-3 py-2 rounded-xl bg-white dark:bg-[#0d1424] ${
+              isDarkMode ? "border-slate-800" : "border-slate-200 shadow-sm"
+            }`}>
+              <Search size={16} className="text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search IIIT merchandise..."
+                className="w-full bg-transparent text-xs font-semibold outline-none text-slate-750 dark:text-slate-200 placeholder:text-slate-400"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="text-slate-400">
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm"
+            >
+              <ShoppingBag size={18} />
+              {cart.reduce((a, item) => a + item.quantity, 0) > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-black text-white">
+                  {cart.reduce((a, item) => a + item.quantity, 0)}
+                </span>
+              )}
+            </button>
+          </div>
+
+          
+          <div className="sm:hidden mb-6 flex flex-col gap-3">
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">
+              
+              <div className="relative shrink-0">
+                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
+                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-indigo-400" : "border-slate-200 bg-white text-indigo-700 shadow-sm"
+                }`}>
+                  <span>College: {selectedCampus === "All" ? "All" : selectedCampus.replace("IIIT ", "")}</span>
+                  <ChevronDown size={12} />
+                </button>
+                <select
+                  value={selectedCampus}
+                  onChange={(e) => setSelectedCampus(e.target.value)}
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                >
+                  <option value="All">All Campuses</option>
+                  {sortedCampuses.map((c) => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              
+              <div className="relative shrink-0">
+                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
+                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-slate-350" : "border-slate-200 bg-white text-slate-700 shadow-sm"
+                }`}>
+                  <span>Sort: {sortBy === "default" ? "Featured" : sortBy === "price-asc" ? "Price: Low to High" : sortBy === "price-desc" ? "Price: High to Low" : sortBy === "rating" ? "Top Rated" : "A-Z"}</span>
+                  <ChevronDown size={12} />
+                </button>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortKey)}
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                >
+                  <option value="default">Featured</option>
+                  <option value="price-asc">Price: Low to High</option>
+                  <option value="price-desc">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="az">A → Z</option>
+                </select>
+              </div>
+
+              
+              <div className="relative shrink-0">
+                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
+                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-slate-350" : "border-slate-200 bg-white text-slate-700 shadow-sm"
+                }`}>
+                  <span>Category: {activeType}</span>
+                  <ChevronDown size={12} />
+                </button>
+                <select
+                  value={activeType}
+                  onChange={(e) => setActiveType(e.target.value)}
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+                >
+                  <option value="All">All Categories</option>
+                  {productTypes.map((type) => (
+                    <option key={type} value={type}>{type}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+{/* Search, Campus Dropdown & Filters Toolbar */}
+          <div className="mb-8 hidden sm:flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b pb-6 border-slate-200/50 dark:border-slate-800/50">
             {/* Campus Select dropdown */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <span className="text-xs font-black uppercase tracking-wider text-slate-400 shrink-0">
@@ -1275,16 +1645,35 @@ export default function MerchandiseClient({
                       : "bg-white border-slate-200 text-indigo-700 focus:border-indigo-300 shadow-sm"
                   }`}
                 >
-                {sortedCampuses.map((c) => (
-                  <option key={c.id} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
+                  <option value="All">All Campuses</option>
+                  {sortedCampuses.map((c) => (
+                    <option key={c.id} value={c.name}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
             </div>
           </div>
 
             <div className="flex flex-col sm:flex-row gap-4 flex-1 lg:justify-end items-stretch sm:items-center">
+              
+              <div className={`flex items-center gap-2 border px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0d1424] w-64 ${
+                isDarkMode ? "border-slate-800" : "border-slate-200 shadow-sm"
+              }`}>
+                <Search size={14} className="text-slate-400 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search merchandise..."
+                  className="w-full bg-transparent text-xs font-bold outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
+                />
+                {searchQuery && (
+                  <button onClick={() => setSearchQuery("")} className="text-slate-400">
+                    <X size={12} />
+                  </button>
+                )}
+              </div>
 
               {/* Sort selector */}
               <div className="flex items-center gap-3 shrink-0">
@@ -1319,7 +1708,7 @@ export default function MerchandiseClient({
 
           {/* Department Type Filter Pills */}
           {productTypes.length > 1 && (
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
+            <div className="mb-6 hidden sm:flex flex-wrap items-center justify-center gap-2">
               {["All", ...productTypes].map((type) => (
                 <button
                   key={type}
@@ -1338,6 +1727,8 @@ export default function MerchandiseClient({
             </div>
           )}
 
+          
+          
           {/* Results count info */}
           <p className={`mb-4 text-xs font-semibold ${isDarkMode ? "text-slate-550" : "text-slate-450"}`}>
             {filteredAndSorted.length} product{filteredAndSorted.length !== 1 ? "s" : ""} found
@@ -1351,7 +1742,7 @@ export default function MerchandiseClient({
               <p className="text-xs text-slate-400 mt-1">Try tweaking your search or browse options.</p>
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-3">
               {filteredAndSorted.map((product) => {
                 const price = parseRupees(product.minPrice);
                 const isAvailable = product.availableForSale;
@@ -1360,7 +1751,7 @@ export default function MerchandiseClient({
                   <div
                     key={product.id}
                     onClick={() => setOpenProduct(product)}
-                    className={`group flex flex-col justify-between rounded-3xl border p-4 transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer ${
+                    className={`group flex flex-col justify-between rounded-2xl sm:rounded-3xl border p-2.5 sm:p-4 transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer ${
                       isDarkMode
                         ? "border-slate-850 bg-slate-900/30 text-slate-100 hover:bg-slate-900/50"
                         : "border-slate-200/60 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-md shadow-sm"
@@ -1377,7 +1768,7 @@ export default function MerchandiseClient({
                             alt={product.images[0].alt}
                             width={product.images[0].width}
                             height={product.images[0].height}
-                            className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105"
+                            className="h-full w-full object-contain p-1.5 sm:p-2 transition-transform duration-500 group-hover:scale-105"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
                         ) : (
@@ -1411,7 +1802,7 @@ export default function MerchandiseClient({
 
                       {/* Info Details */}
                       <div className="px-1 space-y-1.5">
-                        <h3 className="text-sm font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-200 line-clamp-2 min-h-[40px]">
+                        <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors duration-200 line-clamp-2 min-h-[32px] sm:min-h-[40px]">
                           {product.title}
                         </h3>
 
@@ -1427,7 +1818,7 @@ export default function MerchandiseClient({
 
                         {/* Pricing row */}
                         <div className="flex items-baseline flex-wrap gap-x-2">
-                          <span className="text-lg font-black tracking-tight text-slate-900 dark:text-white">
+                          <span className="text-sm sm:text-lg font-black tracking-tight text-indigo-650 dark:text-indigo-400">
                             {product.minPrice}
                           </span>
                           {product.compareAtPrice && (
@@ -1441,12 +1832,12 @@ export default function MerchandiseClient({
                             </span>
                           )}
                         </div>
-                        <p className="text-[9px] font-bold text-slate-400 leading-none">FREE Delivery by KS Verse</p>
+                        <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 leading-none mt-1">FREE Delivery by KS Verse</p>
                       </div>
                     </div>
 
                     {/* Actions */}
-                    <div className="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850/60">
+                    <div className="hidden sm:block mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850/60">
                       <button
                         type="button"
                         className="w-full inline-flex items-center justify-center gap-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95 shadow-sm"

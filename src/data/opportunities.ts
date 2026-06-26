@@ -251,7 +251,7 @@ export const opportunities: Opportunity[] = [
     compensation: "Prizes + Certificates",
     deadline: "Jul 20, 2026",
     description:
-      "24-hour development sprint bringing teams from all 25+ IIITs to solve structural challenges in education, tech, and college outreach.",
+      "24-hour development sprint bringing teams from all 31 IIITs to solve structural challenges in education, tech, and college outreach.",
     skills: ["Full Stack", "Problem Solving", "Teamwork", "Pitching"],
     recruiterVerified: true,
     companyVerified: true,

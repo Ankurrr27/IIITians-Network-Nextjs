@@ -15,7 +15,7 @@ export default function CollaborateSection() {
   ];
 
   return (
-    <section className="bg-slate-50/50 py-16 sm:py-24 border-t border-slate-100">
+    <section className="bg-slate-50/50 py-16 sm:py-16 border-t border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           <div>

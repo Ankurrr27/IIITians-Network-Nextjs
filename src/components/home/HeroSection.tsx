@@ -106,20 +106,12 @@ export default function HeroSection() {
             isDarkMode ? "border-slate-800/80 text-slate-400" : "border-slate-200/50"
           }`}>
             <div className="flex flex-col">
-              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>25+</span>
+              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>31</span>
               <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">IIITs Connected</span>
-            </div>
-            <div className="flex flex-col">
-              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>5,000+</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Members</span>
             </div>
             <div className="flex flex-col">
               <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>950K+</span>
               <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Network Reach</span>
-            </div>
-            <div className="flex flex-col">
-              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>1,200+</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Verified Alumni</span>
             </div>
           </div>
         </div>

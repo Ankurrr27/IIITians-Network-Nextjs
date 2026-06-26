@@ -26,11 +26,12 @@ function AnimatedCounter({ value, duration = 2000, trigger = false }: { value: n
 
 export default function NetworkReachSection() {
   const [stats, setStats] = useState({
-    instagramFollowers: 20000,
-    linkedinFollowers: 15500,
-    overallReach: 950000,
-    totalViews: 45000,
+    instagramFollowers: 0,
+    linkedinFollowers: 0,
+    overallReach: 0,
+    totalViews: 0,
   });
+  const [loaded, setLoaded] = useState(false);
 
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
@@ -40,14 +41,18 @@ export default function NetworkReachSection() {
       .then((res) => {
         if (res.data) {
           setStats({
-            instagramFollowers: res.data.instagramFollowers ?? 20000,
-            linkedinFollowers: res.data.linkedinFollowers ?? 15500,
-            overallReach: res.data.overallReach ?? 950000,
+            instagramFollowers: res.data.instagramFollowers ?? 0,
+            linkedinFollowers: res.data.linkedinFollowers ?? 0,
+            overallReach: res.data.overallReach ?? 0,
             totalViews: res.data.totalViews ?? 0,
           });
+          setLoaded(true);
         }
       })
-      .catch((err) => console.error("Failed to fetch site stats:", err));
+      .catch((err) => {
+        console.error("Failed to fetch site stats:", err);
+        setLoaded(false);
+      });
   }, []);
 
   const statCards = [
@@ -86,7 +91,7 @@ export default function NetworkReachSection() {
   ];
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-slate-950 py-12 sm:py-24 border-t border-slate-900">
+    <section ref={sectionRef} className="relative overflow-hidden bg-slate-950 py-12 sm:py-16 border-t border-slate-900">
       {/* Subtle glow */}
       <div className="pointer-events-none absolute inset-0 opacity-25">
         <div className="absolute -left-1/4 top-0 h-96 w-96 rounded-full bg-indigo-500/10 blur-[120px]" />

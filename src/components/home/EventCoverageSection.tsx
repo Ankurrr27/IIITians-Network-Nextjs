@@ -8,7 +8,7 @@ export default function EventCoverageSection() {
   const emailHref = `mailto:iiitiansnetwork@gmail.com?subject=${encodeURIComponent(mailSubject)}`;
 
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section className="bg-white py-16 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="rounded-[2.5rem] border border-slate-200 bg-gradient-to-br from-indigo-50/50 via-white to-blue-50/40 p-8 shadow-sm sm:p-14">
           <div className="mx-auto max-w-3xl text-center">

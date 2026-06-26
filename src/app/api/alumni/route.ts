@@ -26,6 +26,36 @@ function normalizePayload(body: Record<string, unknown>) {
   };
 }
 
+function getEarliestYear(alumni: any) {
+  let earliest = Infinity;
+
+  if (Array.isArray(alumni.roleHistory)) {
+    for (const role of alumni.roleHistory) {
+      if (role.year) {
+        const match = role.year.match(/\d{4}/);
+        if (match) {
+          const y = parseInt(match[0], 10);
+          if (y < earliest) earliest = y;
+        }
+      }
+    }
+  }
+
+  if (alumni.generation) {
+    const match = alumni.generation.match(/\d{4}/);
+    if (match) {
+      const y = parseInt(match[0], 10);
+      if (y < earliest) earliest = y;
+    }
+  }
+
+  if (earliest === Infinity && alumni.graduationYear) {
+    earliest = alumni.graduationYear - 4;
+  }
+
+  return earliest === Infinity ? 9999 : earliest;
+}
+
 async function resolvePhoto(
   file: File | null,
   body: Record<string, unknown>,
@@ -117,17 +147,17 @@ export async function GET(req: NextRequest) {
       ]);
 
       const sortedAlumni = [...alumniRaw].sort((a, b) => {
-        const termsA = Array.isArray(a.roleHistory) ? a.roleHistory.length : 0;
-        const termsB = Array.isArray(b.roleHistory) ? b.roleHistory.length : 0;
-        if (termsB !== termsA) return termsB - termsA;
-        
-        const gradA = a.graduationYear || 0;
-        const gradB = b.graduationYear || 0;
-        if (gradB !== gradA) return gradB - gradA;
+        const yearA = getEarliestYear(a);
+        const yearB = getEarliestYear(b);
+        if (yearA !== yearB) return yearA - yearB;
 
-        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-        return dateB - dateA;
+        const gradA = a.graduationYear || 9999;
+        const gradB = b.graduationYear || 9999;
+        if (gradA !== gradB) return gradA - gradB;
+
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 9999999999999;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 9999999999999;
+        return dateA - dateB;
       });
 
       const total = sortedAlumni.length;
@@ -152,17 +182,17 @@ export async function GET(req: NextRequest) {
 
     const alumniRaw = await Alumni.find(query).lean();
     const alumni = [...alumniRaw].sort((a, b) => {
-      const termsA = Array.isArray(a.roleHistory) ? a.roleHistory.length : 0;
-      const termsB = Array.isArray(b.roleHistory) ? b.roleHistory.length : 0;
-      if (termsB !== termsA) return termsB - termsA;
+      const yearA = getEarliestYear(a);
+      const yearB = getEarliestYear(b);
+      if (yearA !== yearB) return yearA - yearB;
 
-      const gradA = a.graduationYear || 0;
-      const gradB = b.graduationYear || 0;
-      if (gradB !== gradA) return gradB - gradA;
+      const gradA = a.graduationYear || 9999;
+      const gradB = b.graduationYear || 9999;
+      if (gradA !== gradB) return gradA - gradB;
 
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA;
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 9999999999999;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 9999999999999;
+      return dateA - dateB;
     });
     return NextResponse.json(alumni);
   } catch (err) {

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "IIIT Campus Events & Hackathons",
-  description: "Browse verified hackathons, fests, technical events, workshops, and webinars across all 25+ IIITs. Connect with other campus communities.",
+  description: "Browse verified hackathons, fests, technical events, workshops, and webinars across all 31 IIITs. Connect with other campus communities.",
   keywords: [
     "IIIT events",
     "IIIT student community",
