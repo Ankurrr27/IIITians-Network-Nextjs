@@ -97,8 +97,8 @@ export default function OpportunitiesSection() {
             </div>
           </div>
 
-          {/* Global CTA (Moved to top) */}
-          <div className="flex flex-col sm:items-start lg:items-end gap-3 px-4 sm:px-0">
+          {/* Global CTA (Moved to top on desktop, bottom on mobile) */}
+          <div className="hidden sm:flex flex-col sm:items-start lg:items-end gap-3 px-4 sm:px-0">
             <Link
               href="/opportunities"
               className="inline-flex justify-center w-full sm:w-auto items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
@@ -181,7 +181,23 @@ export default function OpportunitiesSection() {
           ))}
         </div>
 
-        {/* Global CTA removed from bottom, moved to top */}
+        {/* Mobile Global CTA */}
+        <div className="flex sm:hidden flex-col items-start gap-4 mt-8 px-4">
+          <Link
+            href="/opportunities"
+            className="inline-flex justify-between w-full items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
+          >
+            <span>Explore the Talent Marketplace</span>
+            <ChevronRight size={16} className="text-slate-400 shrink-0" />
+          </Link>
+          <p className="text-[11px] text-slate-500 font-semibold text-left leading-relaxed">
+            Are you a recruiter?{" "}
+            <Link href="/opportunities?post=true" className="text-indigo-600 hover:text-indigo-700 transition">
+              Post opportunities
+            </Link>{" "}
+            to reach all IIITs.
+          </p>
+        </div>
       </div>
     </section>
   );

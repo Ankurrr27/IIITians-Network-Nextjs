@@ -17,7 +17,9 @@ import {
   MessageSquare,
   Building2,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  ExternalLink,
+  Search
 } from "lucide-react";
 import api from "@/lib/apiClient";
 import type { ICollege, IClub } from "@/types";
@@ -191,7 +193,8 @@ export default function NetworkVisualization() {
   const { isDarkMode } = useThemeMode();
   const [dbColleges, setDbColleges] = useState<ICollege[]>([]);
   const [dbClubs, setDbClubs] = useState<IClub[]>([]);
-  const [selectedCampus, setSelectedCampus] = useState<string | null>(null);
+  const [selectedCampus, setSelectedCampus] = useState<string | null>("IIIT Allahabad");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch db colleges to enrich metadata
   useEffect(() => {
@@ -216,18 +219,27 @@ export default function NetworkVisualization() {
       });
   }, []);
 
-  const topCampuses = [
-    "IIIT Allahabad",
-    "IIIT Delhi",
-    "IIIT Gwalior",
-    "IIIT Hyderabad",
-    "IIIT Kota",
-    "IIIT Lucknow",
-    "IIIT Nagpur",
-    "IIIT Pune",
-    "IIIT Ranchi",
-    "IIIT Sri City",
-  ];
+  const displayedCampuses = useMemo(() => {
+    if (searchQuery.trim().length === 0) {
+      return [
+        "IIIT Allahabad",
+        "IIIT Delhi",
+        "IIIT Gwalior",
+        "IIIT Hyderabad",
+        "IIIT Kota",
+        "IIIT Lucknow",
+        "IIIT Nagpur",
+        "IIIT Pune",
+        "IIIT Ranchi",
+        "IIIT Sri City",
+      ];
+    }
+    const q = searchQuery.toLowerCase();
+    return iiitCampuses
+      .filter((c) => c.name.toLowerCase().includes(q) || (c.city && c.city.toLowerCase().includes(q)))
+      .map((c) => c.name)
+      .slice(0, 10);
+  }, [searchQuery]);
 
   // Match the selected campus to the database college record
   const matchedDbCollege = useMemo(() => {
@@ -249,7 +261,7 @@ export default function NetworkVisualization() {
     if (matchedDbCollege) {
       const collegeClubs = dbClubs.filter(c => c.collegeId === matchedDbCollege._id);
       if (collegeClubs.length > 0) {
-        clubs = collegeClubs.map(c => ({ name: c.name, link: `/clubs/${c._id}`, logo: c.logo }));
+        clubs = collegeClubs.map(c => ({ name: c.name, link: `/clubs/${c._id}` }));
       } else if (matchedDbCollege.clubLinks && matchedDbCollege.clubLinks.length > 0) {
         // Merge DB club links with fallback clubs if DB has very few, or just use DB ones
         clubs = matchedDbCollege.clubLinks.map(c => ({ name: c.name, link: c.link }));
@@ -301,29 +313,46 @@ export default function NetworkVisualization() {
             ? "sm:bg-slate-900/20 sm:border-slate-800"
             : "sm:bg-white sm:border-slate-200/80"
         }`}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-8 gap-3 sm:gap-4">
             <div className="hidden sm:block">
               <h3 className="text-lg sm:text-xl font-extrabold">Explore Campus Hubs</h3>
               <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5 sm:mt-1">Direct community directories</p>
             </div>
+            
+            <div className="flex-1 max-w-sm w-full relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input 
+                type="text" 
+                placeholder="Search IIITs..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`w-full pl-9 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium ${
+                  isDarkMode 
+                    ? "bg-slate-900/50 border-slate-700/80 text-slate-200 placeholder:text-slate-500 focus:bg-slate-900/80" 
+                    : "bg-slate-50/50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white"
+                }`}
+              />
+            </div>
+
             <Link
               href="/colleges"
-              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition"
+              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition shrink-0"
             >
               Explore Full Directory
               <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {topCampuses.map((campus) => {
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-3 sm:grid-cols-4 lg:grid-cols-5">
+            {displayedCampuses.map((campus, idx) => {
               const isActive = selectedCampus === campus;
+              const hideOnMobile = searchQuery.trim().length === 0 && idx >= 6;
               return (
                 <button
                   key={campus}
                   type="button"
                   onClick={() => handleCardClick(campus)}
-                  className={`flex items-center justify-between rounded-xl border p-3 sm:p-3.5 text-[11px] sm:text-xs font-extrabold shadow-sm transition hover:-translate-y-0.5 duration-200 text-left ${
+                  className={`${hideOnMobile ? "hidden sm:flex" : "flex"} items-center justify-between rounded-xl border p-2 sm:p-3.5 text-[10px] sm:text-xs font-extrabold shadow-sm transition hover:-translate-y-0.5 duration-200 text-left ${
                     isActive
                       ? isDarkMode
                         ? "border-indigo-500 bg-indigo-950/40 text-indigo-400 font-black"
@@ -477,21 +506,15 @@ export default function NetworkVisualization() {
                     {/* Column 2: Clubs & Events lists */}
                     <div className="md:col-span-5 grid gap-5 sm:grid-cols-2 md:grid-cols-1">
                       {/* Clubs */}
-                      <div className={`rounded-2xl border p-5 transition ${
-                        isDarkMode ? "bg-slate-900/20 border-slate-800/60" : "bg-slate-50/20 border-slate-200/60"
-                      }`}>
+                      <div>
                         <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
                           <Building2 className="h-4 w-4" />
                           Student Clubs
                         </h5>
                         <ul className="mt-3.5 space-y-2.5">
-                          {activeDetails.clubs.map((club, idx) => (
+                          {activeDetails.clubs.slice(0, 5).map((club, idx) => (
                             <li key={idx} className="flex items-start gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
-                              {club.logo ? (
-                                <img src={club.logo} alt={club.name} className="mt-0.5 h-4 w-4 shrink-0 rounded-full object-cover" />
-                              ) : (
-                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
-                              )}
+                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
                               {club.link ? (
                                 <Link href={club.link} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
                                   {club.name}
@@ -506,15 +529,13 @@ export default function NetworkVisualization() {
                       </div>
 
                       {/* Events */}
-                      <div className={`rounded-2xl border p-5 transition ${
-                        isDarkMode ? "bg-slate-900/20 border-slate-800/60" : "bg-slate-50/20 border-slate-200/60"
-                      }`}>
+                      <div className="pt-2 sm:pt-0">
                         <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
                           <Sparkles className="h-4 w-4" />
                           Campus Events
                         </h5>
                         <ul className="mt-3.5 space-y-2.5">
-                          {activeDetails.events.map((event, idx) => (
+                          {activeDetails.events.slice(0, 5).map((event, idx) => (
                             <li key={idx} className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
                               <div className="flex items-start gap-2">
                                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />

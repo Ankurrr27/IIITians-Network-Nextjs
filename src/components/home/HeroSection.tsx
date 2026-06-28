@@ -101,20 +101,6 @@ export default function HeroSection() {
                 Colleges
               </button>
             </div>
-
-            {/* Trust Banner / Stats Row */}
-            <div className={`flex items-center gap-x-6 sm:gap-x-8 text-xs font-semibold ${
-              isDarkMode ? "text-slate-400" : "text-slate-600"
-            }`}>
-              <div className="flex flex-col">
-                <span className={`text-xl font-extrabold ${isDarkMode ? "text-indigo-400" : "text-indigo-700"}`}>31</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">IIITs Connected</span>
-              </div>
-              <div className="flex flex-col">
-                <span className={`text-xl font-extrabold ${isDarkMode ? "text-indigo-400" : "text-indigo-700"}`}>950K+</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Network Reach</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>

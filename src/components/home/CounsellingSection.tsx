@@ -37,8 +37,8 @@ const counsellingPoints = [
 ];
 
 const counsellingPortals = [
-  { label: "JoSAA Official Website", href: "https://josaa.nic.in" },
-  { label: "CSAB Official Website", href: "https://csab.nic.in" },
+  { label: "JoSAA", href: "https://josaa.nic.in" },
+  { label: "CSAB", href: "https://csab.nic.in" },
 ];
 
 export default function CounsellingSection() {
@@ -153,7 +153,7 @@ export default function CounsellingSection() {
         </div>
 
         {/* Mobile View Portals */}
-        <div className="mt-10 flex flex-col gap-3 sm:hidden">
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:hidden">
           {counsellingPortals.map((portal) => (
             <a
               key={portal.href}

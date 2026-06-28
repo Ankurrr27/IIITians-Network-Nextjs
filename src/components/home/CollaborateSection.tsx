@@ -15,13 +15,16 @@ export default function CollaborateSection() {
   ];
 
   return (
-    <section className="bg-slate-50/50 py-10 sm:py-16 border-t border-slate-100">
+    <section className="hidden sm:block bg-slate-50/50 py-10 sm:py-16 border-t border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="grid gap-8 sm:gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           <div>
             <h2 className="text-2xl sm:text-3xl mt-0 sm:mt-4 font-bold tracking-tight text-slate-900 sm:text-4xl">
               Collaborate With Us
             </h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-600 font-medium sm:text-lg sm:leading-relaxed lg:max-w-md">
+              We're building the largest unified ecosystem across all 31 IIITs. Partner with us to reach top engineering talent, co-host nationwide events, and empower the next generation of developers.
+            </p>
             <div className="mt-6 sm:mt-8">
               <a
                 href={emailHref}
