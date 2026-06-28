@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import api from "@/lib/apiClient";
 import type { ICollege } from "@/types";
-import { Images, Search, Camera, Building2, Users, Sparkles, History, Upload, Send, ExternalLink, X, MapPin } from "lucide-react";
+import { Images, Search, Camera, Building2, History, Upload, Send, ExternalLink, X } from "lucide-react";
 
 const CATS = [
   { id: "all", label: "All" },
@@ -95,30 +95,62 @@ export default function CollegeGalleryPage() {
   return (
     <div className="min-h-screen bg-white pb-16 pt-18 sm:pb-20 sm:pt-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        {/* Header */}
-        <div className="mb-5 text-center sm:mb-10">
-          <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-indigo-100 bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-700 shadow-sm sm:mb-4 sm:px-3 sm:py-1.5 sm:text-[11px] sm:tracking-[0.22em]">
+
+        {/* Header — compact on mobile, full on desktop */}
+        <div className="mb-3 sm:mb-10 sm:text-center">
+          {/* Badge — desktop only */}
+          <div className="hidden sm:inline-flex mb-4 items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-700 shadow-sm">
             <Images className="h-4 w-4" /> Gallery
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+          <h1 className="text-lg font-bold tracking-tight text-slate-900 sm:text-4xl">
             {collegeName ? <>{collegeName} <span className="text-indigo-600">Gallery</span></> : <>IIIT <span className="text-indigo-600">Gallery</span></>}
           </h1>
-          <p className="mt-1 text-xs text-slate-500 sm:mt-2 sm:text-sm">{collegeName ? `Visual memories from ${collegeName}.` : "Explore photos from across the IIIT network."}</p>
+          {/* Subtitle — desktop only */}
+          <p className="hidden sm:block mt-2 text-sm text-slate-500">
+            {collegeName ? `Visual memories from ${collegeName}.` : "Explore photos from across the IIIT network."}
+          </p>
         </div>
 
-        {/* Filters */}
-        <div className="mb-4 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-          <div className="flex flex-wrap gap-1.5 sm:gap-2">
-            {CATS.map((c) => (
-              <button key={c.id} onClick={() => setCat(c.id)}
-                className={`rounded-full px-2.5 py-1.5 text-[11px] font-semibold transition sm:px-3 sm:text-xs ${cat === c.id ? "bg-indigo-700 text-white" : "border border-indigo-100 bg-white text-slate-600 hover:border-indigo-300"}`}>
-                {c.label} <span className={`ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${cat === c.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>{c.id === "all" ? scoped.length : scoped.filter((p) => p.category === c.id).length}</span>
-              </button>
-            ))}
+        {/* Filters — mobile: icon + dropdown + search in one row; desktop: pill buttons + search */}
+        <div className="mb-4 sm:mb-6">
+          {/* Mobile row */}
+          <div className="flex items-center gap-2 sm:hidden">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-indigo-100 bg-indigo-50 text-indigo-600">
+              <Images className="h-4 w-4" />
+            </div>
+            <div className="relative flex-1">
+              <select
+                value={cat}
+                onChange={(e) => setCat(e.target.value)}
+                className="w-full appearance-none rounded-full border border-slate-200 bg-white py-2 pl-4 pr-8 text-xs font-semibold text-slate-700 outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              >
+                {CATS.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.label} ({c.id === "all" ? scoped.length : scoped.filter((p) => p.category === c.id).length})
+                  </option>
+                ))}
+              </select>
+              <svg className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-3 text-xs outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
+            </div>
           </div>
-          <div className="relative w-full sm:w-56">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-4 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
+          {/* Desktop row */}
+          <div className="hidden sm:flex sm:items-center sm:justify-between sm:gap-3">
+            <div className="flex flex-wrap gap-2">
+              {CATS.map((c) => (
+                <button key={c.id} onClick={() => setCat(c.id)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${cat === c.id ? "bg-indigo-700 text-white" : "border border-indigo-100 bg-white text-slate-600 hover:border-indigo-300"}`}>
+                  {c.label} <span className={`ml-1 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${cat === c.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>{c.id === "all" ? scoped.length : scoped.filter((p) => p.category === c.id).length}</span>
+                </button>
+              ))}
+            </div>
+            <div className="relative w-56">
+              <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search…" className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-4 text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100" />
+            </div>
           </div>
         </div>
 
@@ -165,9 +197,9 @@ export default function CollegeGalleryPage() {
 
         {/* Photo Grid */}
         {loading ? (
-          <div className="columns-2 gap-3 sm:columns-2 sm:gap-5 lg:columns-3 xl:columns-4">
+          <div className="columns-2 gap-1 sm:columns-2 sm:gap-2 lg:columns-3 xl:columns-4">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="mb-3 inline-block w-full break-inside-avoid sm:mb-5"><div className="animate-pulse rounded-2xl bg-slate-200" style={{ height: `${150 + (i % 3) * 54}px` }} /></div>
+              <div key={i} className="mb-1 inline-block w-full break-inside-avoid sm:mb-2"><div className="animate-pulse rounded-lg bg-slate-200" style={{ height: `${150 + (i % 3) * 54}px` }} /></div>
             ))}
           </div>
         ) : filtered.length === 0 ? (
@@ -177,12 +209,12 @@ export default function CollegeGalleryPage() {
             <p className="mt-2 text-sm text-slate-400">Try changing the filter or search query.</p>
           </div>
         ) : (
-          <div className="columns-2 gap-3 sm:columns-2 sm:gap-5 lg:columns-3 xl:columns-4">
+          <div className="columns-2 gap-1 sm:columns-2 sm:gap-2 lg:columns-3 xl:columns-4">
             {filtered.map((photo, idx) => (
               <div key={`${photo.url}-${idx}`} onClick={() => open(photo, idx)}
-                className="group mb-3 inline-block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-[1.1rem] border border-slate-100 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl sm:mb-5 sm:rounded-2xl">
+                className="group mb-1 inline-block w-full cursor-pointer break-inside-avoid overflow-hidden rounded-md sm:mb-2 sm:rounded-xl transition-all hover:opacity-90">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={photo.url.replace("/upload/", "/upload/f_auto,q_auto,w_900/")} alt={photo.caption || "Gallery"} className="h-auto w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
+                <img src={photo.url.replace("/upload/", "/upload/f_auto,q_auto,w_900/")} alt={photo.caption || "Gallery"} className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" loading="lazy" />
               </div>
             ))}
           </div>

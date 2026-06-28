@@ -105,17 +105,17 @@ export default function NetworkReachSection() {
             initial={{ opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.45 }}
-            className="text-2xl font-bold tracking-tight !text-white sm:text-4xl"
+            className="text-2xl font-bold tracking-tight !text-white sm:text-3xl"
           >
             Network Reach
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="mt-3 text-sm !text-slate-500 leading-relaxed sm:text-base"
+            transition={{ duration: 0.45, delay: 0.1 }}
+            className="mt-3 text-sm !text-slate-200 sm:text-base"
           >
-            Our growing nationwide student and professional network connecting IIIT campuses, students, alumni, and aspirants.
+            Our community spans across the country, creating a dense web of shared knowledge, mentorship, and boundless opportunities.
           </motion.p>
         </div>
 

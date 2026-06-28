@@ -85,24 +85,18 @@ export default function DevelopersSection() {
       isDarkMode ? "bg-slate-950/20 border-slate-900 text-slate-100" : "bg-white border-slate-100 text-slate-900"
     }`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center mb-8">
-          <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-indigo-600 dark:text-indigo-400">
-            Contributors
-          </p>
+        <div className="text-left mb-8">
           <h2 className="mt-1.5 text-xl font-extrabold tracking-tight sm:text-2xl">
             Contact the Developers
           </h2>
-          <p className="mx-auto mt-1 max-w-2xl text-[10px] leading-relaxed text-slate-450 dark:text-slate-500 font-bold uppercase tracking-wider">
-            Autonomous & student-driven team behind the platform
-          </p>
         </div>
 
-        {/* Mobile View: Snapping Scroll Container */}
-        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory px-4 pb-6 scrollbar-none justify-start sm:hidden">
+        {/* Mobile View: Stacked Container */}
+        <div className="flex flex-col gap-4 px-4 pb-6 sm:hidden">
           {devs.map((dev) => (
             <div
               key={dev.name}
-              className={`snap-center shrink-0 w-[280px] flex items-center justify-between rounded-xl border p-4 shadow-sm transition-colors duration-300 ${
+              className={`w-full flex items-center justify-between rounded-xl border p-4 shadow-sm transition-colors duration-300 ${
                 isDarkMode ? "border-slate-800 bg-slate-900/60" : "border-slate-200 bg-white"
               }`}
             >

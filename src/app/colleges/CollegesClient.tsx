@@ -19,10 +19,19 @@ interface Props {
   initialTeamMembers: ITeamMember[];
   initialAlumni: IAlumni[];
   initialDiscussClubs: IDiscussAccount[];
+  initialPlacements?: any[];
 }
 
 const RECENT_COLLEGE_SEARCHES_KEY = "iiitians-network-recent-college-searches";
 const COLLEGE_PLACEHOLDER = "/placeholder.svg";
+
+const normalizeName = (name: string) => {
+  let n = (name || "").trim().toLowerCase();
+  if (n.includes("sricity") || n.includes("sri city") || n === "chittoor" || (n.includes("iiit") && n.includes("chittoor"))) {
+    return "iiit sricity_chittoor_canonical";
+  }
+  return n;
+};
 
 /* ─── Main Page ──────────────────────────────────────────────────────────── */
 export default function CollegesClient({
@@ -30,6 +39,7 @@ export default function CollegesClient({
   initialTeamMembers,
   initialAlumni,
   initialDiscussClubs,
+  initialPlacements = [],
 }: Props) {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -101,18 +111,11 @@ export default function CollegesClient({
   // Unique member count per college (same logic as original)
   const getUniqueCollegeMemberCount = (collegeName: string) => {
     const uniqueMembers = new Set<string>();
-    const normalize = (name: string) => {
-      let n = (name || "").trim().toLowerCase();
-      if (n.includes("sricity") || n.includes("sri city") || n === "chittoor" || (n.includes("iiit") && n.includes("chittoor"))) {
-        return "iiit sricity_chittoor_canonical";
-      }
-      return n;
-    };
-    const targetCollege = normalize(collegeName);
+    const targetCollege = normalizeName(collegeName);
     const addMember = (member: { iiit?: string; email?: string; name?: string }) => {
-      if (normalize(member.iiit || "") !== targetCollege) return;
+      if (normalizeName(member.iiit || "") !== targetCollege) return;
       const key = (member.email || "").trim().toLowerCase() ||
-        `${(member.name || "").trim().toLowerCase()}::${normalize(member.iiit || "")}`;
+        `${(member.name || "").trim().toLowerCase()}::${normalizeName(member.iiit || "")}`;
       if (key) uniqueMembers.add(key);
     };
     initialTeamMembers.forEach(addMember);
@@ -179,6 +182,12 @@ export default function CollegesClient({
             (club) =>
               (club.collegeName || "").trim().toLowerCase() ===
               (selectedCollege.name || "").trim().toLowerCase()
+          )}
+          collegeAlumni={initialAlumni.filter(
+            (a) => normalizeName(a.iiit || "") === normalizeName(selectedCollege.name)
+          )}
+          collegePlacement={initialPlacements.find(
+            (p) => p.college && normalizeName(p.college.name) === normalizeName(selectedCollege.name)
           )}
           onClose={() => setSelectedCollege(null)}
         />
@@ -314,9 +323,9 @@ function CollegeCard({
             {mergedClubs.length}
           </Link>
           <Link
-            href={`/team?iiit=${encodeURIComponent(name)}`}
+            href={`/legacy?iiit=${encodeURIComponent(name)}`}
               className="flex items-center gap-1.5 rounded-full border border-white/20 bg-indigo-900/40 px-2.5 py-1.5 text-[10px] font-bold text-white shadow-lg backdrop-blur-md transition-all hover:bg-indigo-900/60 active:scale-95 sm:px-3 sm:text-[11px]"
-            title="Community Team"
+            title="Alumni Legacy"
           >
             <Users className="h-3.5 w-3.5" />
             {teamCount}
@@ -473,11 +482,15 @@ function CollegeDetailDrawer({
   college,
   teamCount,
   discussClubs,
+  collegeAlumni = [],
+  collegePlacement = null,
   onClose,
 }: {
   college: ICollege;
   teamCount: number;
   discussClubs: IDiscussAccount[];
+  collegeAlumni?: IAlumni[];
+  collegePlacement?: any;
   onClose: () => void;
 }) {
   const { name, description, website, clubLinks = [] } = college;
@@ -556,7 +569,7 @@ function CollegeDetailDrawer({
 
       {/* Drawer */}
       <aside
-        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-slate-200 bg-white shadow-[-8px_0_30px_rgba(0,0,0,0.08)] sm:w-[26rem]"
+        className="fixed right-0 top-0 z-50 flex h-full w-full flex-col border-l border-slate-200 bg-white shadow-[-8px_0_30px_rgba(0,0,0,0.08)] sm:w-[50vw] lg:w-[50vw] xl:w-[46vw]"
         style={{ animation: "slideInRight 0.25s cubic-bezier(0.16,1,0.3,1)" }}
       >
         {/* Header */}
@@ -651,24 +664,20 @@ function CollegeDetailDrawer({
                       View All →
                     </button>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col divide-y divide-slate-100">
                     {mergedClubs.slice(0, 6).map((club) => (
                       <Link
                         key={club.id}
                         href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
-                          club.source === "discuss"
-                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
-                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
-                        }`}
+                        className="flex items-center justify-between py-2.5 text-xs font-semibold text-slate-800 hover:text-indigo-600 transition-colors"
                       >
-                        {club.name}
-                        {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
+                        <span className="truncate">{club.name}</span>
+                        {club.isAuthorized && <ShieldCheck size={12} className="ml-2 shrink-0 text-emerald-500" />}
                       </Link>
                     ))}
                     {mergedClubs.length > 6 && (
-                      <button type="button" onClick={() => setActiveTab("clubs")} className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-bold text-indigo-500 ring-1 ring-indigo-200 hover:bg-indigo-50">
-                        +{mergedClubs.length - 6} more
+                      <button type="button" onClick={() => setActiveTab("clubs")} className="py-2.5 text-left text-xs font-bold text-indigo-500 hover:text-indigo-700">
+                        +{mergedClubs.length - 6} more clubs →
                       </button>
                     )}
                   </div>
@@ -679,21 +688,31 @@ function CollegeDetailDrawer({
 
           {/* Gallery Tab */}
           {activeTab === "gallery" && (
-            <div className="px-5 py-8">
+            <div className="px-5 py-6">
               {galleryCount > 0 ? (
-                <div className="text-center">
-                  <Images size={32} className="mx-auto mb-3 text-indigo-300" />
-                  <p className="text-sm font-semibold text-slate-700 mb-1">{galleryCount} photos available</p>
-                  <p className="text-xs text-slate-400 mb-4">Browse the full campus gallery</p>
-                  <Link
-                    href={`/college/${encodeURIComponent(name)}/gallery`}
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95"
-                  >
-                    Open Gallery <ExternalLink size={12} />
-                  </Link>
-                </div>
+                <>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Campus Gallery</h3>
+                    <Link href={`/college/${encodeURIComponent(name)}/gallery`} className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-1">
+                      Full Gallery <ExternalLink size={10} />
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {college.gallery?.slice(0, 6).map((img, idx) => (
+                      <div key={idx} className="relative aspect-square overflow-hidden rounded-xl bg-slate-100 border border-slate-200">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.url} alt={img.caption || "Campus photo"} className="h-full w-full object-cover transition duration-300 hover:scale-110" />
+                      </div>
+                    ))}
+                  </div>
+                  {galleryCount > 6 && (
+                    <Link href={`/college/${encodeURIComponent(name)}/gallery`} className="mt-4 block text-center text-xs font-bold text-indigo-600 hover:underline">
+                      View all {galleryCount} photos
+                    </Link>
+                  )}
+                </>
               ) : (
-                <div className="text-center py-6">
+                <div className="py-8 text-center">
                   <Images size={32} className="mx-auto mb-3 text-slate-200" />
                   <p className="text-sm font-medium text-slate-400">No gallery photos yet</p>
                 </div>
@@ -712,19 +731,20 @@ function CollegeDetailDrawer({
                       Full Page →
                     </Link>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-col divide-y divide-slate-100">
                     {mergedClubs.map((club) => (
                       <Link
                         key={club.id}
                         href={`/college/${encodeURIComponent(name)}/clubs/${encodeURIComponent(club.name)}`}
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition-all ${
-                          club.source === "discuss"
-                            ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 hover:bg-emerald-100"
-                            : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"
+                        className={`flex items-center justify-between py-3 text-xs font-semibold transition-colors hover:text-indigo-600 ${
+                          club.source === "discuss" ? "text-emerald-700" : "text-slate-800"
                         }`}
                       >
-                        {club.name}
-                        {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
+                        <span className="truncate">{club.name}</span>
+                        <div className="ml-2 flex shrink-0 items-center gap-1.5">
+                          {club.source === "discuss" && <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-600 ring-1 ring-emerald-200">Discuss</span>}
+                          {club.isAuthorized && <ShieldCheck size={12} className="text-emerald-500" />}
+                        </div>
                       </Link>
                     ))}
                   </div>
@@ -740,31 +760,105 @@ function CollegeDetailDrawer({
 
           {/* Legacy Tab */}
           {activeTab === "legacy" && (
-            <div className="px-5 py-8 text-center">
-              <History size={32} className="mx-auto mb-3 text-amber-300" />
-              <p className="text-sm font-semibold text-slate-700 mb-1">Alumni & Legacy</p>
-              <p className="text-xs text-slate-400 mb-4">Explore notable alumni from {name}</p>
-              <Link
-                href={`/legacy?iiit=${encodeURIComponent(name)}`}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-amber-600 active:scale-95"
-              >
-                View Legacy <ExternalLink size={12} />
-              </Link>
+            <div className="px-5 py-6">
+              {collegeAlumni && collegeAlumni.length > 0 ? (
+                <>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Notable Alumni</h3>
+                    <Link href={`/legacy?iiit=${encodeURIComponent(name)}`} className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-1">
+                      View Directory <ExternalLink size={10} />
+                    </Link>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {collegeAlumni.slice(0, 10).map((alumnus: any, idx: number) => (
+                      <div key={idx} className="flex items-center gap-3 rounded-xl border border-slate-100 bg-white p-3 shadow-sm">
+                        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-slate-100">
+                          {alumnus.photo?.url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={alumnus.photo.url} alt={alumnus.name} className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center bg-indigo-50 text-indigo-600 font-bold text-sm">
+                              {alumnus.name?.charAt(0) || "?"}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="truncate text-sm font-bold text-slate-900">{alumnus.name}</h4>
+                          <p className="truncate text-[11px] font-medium text-slate-500">
+                            {alumnus.currentRole || alumnus.branch || "Alumnus"} {alumnus.currentCompany ? `at ${alumnus.currentCompany}` : ""}
+                          </p>
+                        </div>
+                        {alumnus.generation && (
+                          <div className="shrink-0 text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md">
+                            Class of {alumnus.generation}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {collegeAlumni.length > 10 && (
+                      <Link href={`/legacy?iiit=${encodeURIComponent(name)}`} className="mt-2 text-center text-xs font-bold text-indigo-600 hover:underline">
+                        See {collegeAlumni.length - 10} more alumni
+                      </Link>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="py-8 text-center">
+                  <History size={32} className="mx-auto mb-3 text-slate-200" />
+                  <p className="text-sm font-medium text-slate-400">No alumni data available for {name} yet.</p>
+                  <Link href={`/legacy`} className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-indigo-500 hover:underline">
+                    Explore all IIIT Alumni <ExternalLink size={12} />
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 
           {/* Placement Tab */}
           {activeTab === "placement" && (
-            <div className="px-5 py-8 text-center">
-              <BriefcaseBusiness size={32} className="mx-auto mb-3 text-rose-300" />
-              <p className="text-sm font-semibold text-slate-700 mb-1">Placement Data</p>
-              <p className="text-xs text-slate-400 mb-4">View placement statistics for {name}</p>
-              <Link
-                href={`/placement?college=${encodeURIComponent(name)}`}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-rose-600 active:scale-95"
-              >
-                View Placements <ExternalLink size={12} />
-              </Link>
+            <div className="px-5 py-6">
+              {collegePlacement && collegePlacement.yearlyPlacements?.length > 0 ? (
+                <>
+                  <div className="mb-4 flex items-center justify-between">
+                    <h3 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Placement Highlights</h3>
+                    <Link href={`/placement?college=${encodeURIComponent(name)}`} className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-1">
+                      Full Report <ExternalLink size={10} />
+                    </Link>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    {collegePlacement.yearlyPlacements
+                      .sort((a: any, b: any) => b.year - a.year)
+                      .slice(0, 2)
+                      .map((yearData: any) => (
+                        <div key={yearData.year} className="rounded-xl border border-slate-100 bg-slate-50/50 p-4">
+                          <h4 className="mb-3 text-xs font-extrabold text-slate-800">Class of {yearData.year}</h4>
+                          <div className="grid gap-3">
+                            {yearData.placements.map((p: any, i: number) => (
+                              <div key={i} className="rounded-lg border border-slate-200 bg-white p-3 shadow-sm flex items-center justify-between">
+                                <div className="font-bold text-sm text-slate-700">{p.branch}</div>
+                                <div className="text-right flex flex-col gap-0.5">
+                                  <span className="text-xs font-bold text-emerald-600">Avg: {p.averagePackage} LPA</span>
+                                  <span className="text-[10px] text-slate-500">Highest: {p.highestPackage} LPA</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    <Link href={`/placement?college=${encodeURIComponent(name)}`} className="text-center text-xs font-bold text-indigo-600 hover:underline">
+                      View Detailed Placements
+                    </Link>
+                  </div>
+                </>
+              ) : (
+                <div className="py-8 text-center">
+                  <BriefcaseBusiness size={32} className="mx-auto mb-3 text-slate-200" />
+                  <p className="text-sm font-medium text-slate-400">No placement records found for {name}.</p>
+                  <Link href={`/placement`} className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-indigo-500 hover:underline">
+                    Explore all IIIT Placements <ExternalLink size={12} />
+                  </Link>
+                </div>
+              )}
             </div>
           )}
         </div>

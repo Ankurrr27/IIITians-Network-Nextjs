@@ -57,7 +57,7 @@ export default function HeroSection() {
           >
             <span className={`${isDarkMode ? "text-white" : "text-slate-900"} block`}>Empowering</span>
             <span className="block mt-2">
-              <span className="text-indigo-600 dark:text-indigo-400 font-bold">
+              <span className="text-indigo-700 dark:text-indigo-400 font-bold">
                 Connections Across IIITs
               </span>
             </span>
@@ -74,44 +74,46 @@ export default function HeroSection() {
             connect students with alumni while promoting the brand <span className="font-semibold">&quot;IIITians&quot;</span>.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-3 sm:mt-8 sm:gap-5">
-            <button
-              onClick={() => router.push("/events")}
-              className="
-                rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20
-                transition hover:bg-indigo-700 active:scale-95 sm:px-8 sm:text-base cursor-pointer
-              "
-            >
-              Explore
-            </button>
+          <div className="mt-8 flex flex-wrap items-center gap-6 sm:gap-10">
+            <div className="flex gap-3 sm:gap-5">
+              <button
+                onClick={() => router.push("/events")}
+                className="
+                  rounded-xl bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20
+                  transition hover:bg-indigo-700 active:scale-95 sm:px-8 sm:text-base cursor-pointer
+                "
+              >
+                Explore
+              </button>
 
-            <button
-              onClick={() => router.push("/colleges")}
-              className={`
-                rounded-xl border px-6 py-3 text-sm font-semibold
-                transition active:scale-95 sm:px-8 sm:text-base cursor-pointer
-                ${
-                  isDarkMode
-                    ? "border-slate-800 bg-slate-900/40 text-slate-200 hover:bg-slate-900"
-                    : "border-indigo-600 bg-white text-indigo-600 hover:bg-indigo-50"
-                }
-              `}
-            >
-              Colleges
-            </button>
-          </div>
-
-          {/* Trust Banner / Stats Row */}
-          <div className={`mt-10 border-t pt-6 flex flex-wrap gap-x-8 gap-y-4 text-xs font-semibold ${
-            isDarkMode ? "border-slate-800/80 text-slate-400" : "border-slate-200/50"
-          }`}>
-            <div className="flex flex-col">
-              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>31</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">IIITs Connected</span>
+              <button
+                onClick={() => router.push("/colleges")}
+                className={`
+                  rounded-xl border px-6 py-3 text-sm font-semibold
+                  transition active:scale-95 sm:px-8 sm:text-base cursor-pointer
+                  ${
+                    isDarkMode
+                      ? "border-slate-800 bg-slate-900/40 text-slate-200 hover:bg-slate-900"
+                      : "border-indigo-700 bg-white text-indigo-700 hover:bg-indigo-50"
+                  }
+                `}
+              >
+                Colleges
+              </button>
             </div>
-            <div className="flex flex-col">
-              <span className={`text-xl font-extrabold ${isDarkMode ? "text-white" : "text-slate-900"}`}>950K+</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Network Reach</span>
+
+            {/* Trust Banner / Stats Row */}
+            <div className={`flex items-center gap-x-6 sm:gap-x-8 text-xs font-semibold ${
+              isDarkMode ? "text-slate-400" : "text-slate-600"
+            }`}>
+              <div className="flex flex-col">
+                <span className={`text-xl font-extrabold ${isDarkMode ? "text-indigo-400" : "text-indigo-700"}`}>31</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">IIITs Connected</span>
+              </div>
+              <div className="flex flex-col">
+                <span className={`text-xl font-extrabold ${isDarkMode ? "text-indigo-400" : "text-indigo-700"}`}>950K+</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 text-slate-400 dark:text-slate-500">Network Reach</span>
+              </div>
             </div>
           </div>
         </div>

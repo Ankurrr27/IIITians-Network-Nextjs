@@ -15,23 +15,17 @@ export default function CollaborateSection() {
   ];
 
   return (
-    <section className="bg-slate-50/50 py-16 sm:py-16 border-t border-slate-100">
+    <section className="bg-slate-50/50 py-10 sm:py-16 border-t border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
+        <div className="grid gap-8 sm:gap-12 lg:grid-cols-[1fr_1.2fr] lg:items-center">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-              Partnership
-            </p>
-            <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="text-2xl sm:text-3xl mt-0 sm:mt-4 font-bold tracking-tight text-slate-900 sm:text-4xl">
               Collaborate With Us
             </h2>
-            <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base font-medium">
-              We work with clubs, startups, and enterprises to build opportunities, verify programs, and establish active bridges. Partner with IIITians Network to expand your reach.
-            </p>
-            <div className="mt-8">
+            <div className="mt-6 sm:mt-8">
               <a
                 href={emailHref}
-                className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-700 active:scale-95"
+                className="inline-flex justify-center w-full sm:w-auto items-center gap-2 rounded-full bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-700 active:scale-95"
               >
                 Collaborate
                 <ArrowRight size={16} />
@@ -39,17 +33,17 @@ export default function CollaborateSection() {
             </div>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            {partners.map((partner) => (
+          <div className="grid gap-0 sm:gap-4 sm:grid-cols-2 -mx-4 sm:mx-0">
+            {partners.map((partner, index) => (
               <div
                 key={partner.name}
-                className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition hover:shadow-md duration-200"
+                className={`sm:rounded-2xl border-b sm:border border-slate-200/80 bg-white px-4 py-5 sm:p-5 shadow-sm transition hover:shadow-md duration-200 ${index === 0 ? "border-t sm:border-t-slate-200/80 sm:border-t" : ""}`}
               >
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-indigo-500" />
                   <h3 className="text-sm font-extrabold text-slate-950 tracking-tight">{partner.name}</h3>
                 </div>
-                <p className="mt-2.5 text-xs leading-relaxed text-slate-500 font-semibold">
+                <p className="mt-2 text-[11px] sm:text-xs leading-relaxed text-slate-500 font-semibold">
                   {partner.description}
                 </p>
               </div>

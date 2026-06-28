@@ -41,6 +41,7 @@ export default function OpportunitiesSection() {
     Internships: [
       { title: "Frontend Engineering Intern", provider: "Fintech Startup (Alumni Led)", location: "Remote / Bengaluru", details: "Build reactive dashboards using Next.js, Tailwind CSS, and state management. Work directly under a Senior Architect (IIIT Gwalior alumnus).", linkText: "Learn more", verified: true },
       { title: "Product Design Intern", provider: "IIITians Network Web Team", location: "Remote", details: "Iterate on user flows, design official merchandising mockups, and run accessibility compliance checks for the centralized network portal.", linkText: "Apply now", verified: true },
+      { title: "Backend Systems Intern", provider: "CloudScale Inc.", location: "Pune / Hybrid", details: "Develop high-throughput microservices using Go and PostgreSQL. Excellent opportunity to learn system design and container orchestration.", linkText: "Apply now", verified: true },
     ],
     "Full-Time": [
       { title: "Software Development Engineer", provider: "TechCorp India", location: "Hyderabad", details: "Join our platform engineering team to build distributed systems at scale. Strong DSA, system design, and backend fundamentals required.", linkText: "View details", verified: true },
@@ -65,48 +66,84 @@ export default function OpportunitiesSection() {
   };
 
   return (
-    <section className="bg-slate-50/50 py-16 sm:py-16 border-y border-slate-100">
+    <section className="bg-slate-50/50 py-10 sm:py-16 border-y border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-            Talent Marketplace
-          </p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Explore Community Opportunities
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-medium">
-            Find roles, hackathons, research positions, startup opportunities, and open source projects curated specifically for IIITians.
-          </p>
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+          <div className="text-left">
+            <h2 className="mt-1 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
+              Explore Community Opportunities
+            </h2>
+            
+            {/* Desktop Tabs */}
+            <div className="mt-4 sm:mt-6 hidden sm:flex flex-wrap gap-1.5">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.name;
+                return (
+                  <button
+                    key={tab.name}
+                    onClick={() => setActiveTab(tab.name)}
+                    className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-extrabold transition-all duration-200 active:scale-95 ${
+                      isActive
+                        ? "bg-indigo-600 text-white shadow shadow-indigo-500/20"
+                        : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:border-slate-300"
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{tab.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Global CTA (Moved to top) */}
+          <div className="flex flex-col sm:items-start lg:items-end gap-3 px-4 sm:px-0">
+            <Link
+              href="/opportunities"
+              className="inline-flex justify-center w-full sm:w-auto items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
+            >
+              Explore the Talent Marketplace
+              <ChevronRight size={16} className="text-slate-400" />
+            </Link>
+            <p className="text-[11px] sm:text-xs text-slate-500 font-semibold text-left lg:text-right leading-relaxed">
+              Are you a recruiter?{" "}
+              <Link href="/opportunities?post=true" className="text-indigo-600 hover:text-indigo-700 transition">
+                Post opportunities
+              </Link>{" "}
+              to reach all IIITs.
+            </p>
+          </div>
         </div>
 
-        {/* Tab switchers */}
-        <div className="mt-10 flex flex-wrap justify-center gap-2">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.name;
-            return (
-              <button
-                key={tab.name}
-                onClick={() => setActiveTab(tab.name)}
-                className={`flex items-center gap-2 rounded-full px-5 py-2.5 text-xs font-extrabold transition-all duration-200 active:scale-95 ${
-                  isActive
-                    ? "bg-indigo-600 text-white shadow shadow-indigo-500/20"
-                    : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:border-slate-300"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{tab.name}</span>
-              </button>
-            );
-          })}
+        {/* Mobile Dropdown */}
+        <div className="mt-6 sm:hidden px-4">
+          <div className="relative">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value as Category)}
+              className="block w-full appearance-none rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              {tabs.map((tab) => (
+                <option key={tab.name} value={tab.name}>
+                  {tab.name}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+              <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         {/* Tab content listings */}
-        <div className="mt-8 grid gap-6 md:grid-cols-2 max-w-4xl mx-auto">
+        <div className="mt-6 sm:mt-8 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 -mx-4 sm:mx-0">
           {data[activeTab].map((opp, index) => (
             <div
               key={index}
-              className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
+              className="flex flex-col justify-between sm:rounded-xl border-y sm:border-y-0 sm:border border-slate-200/80 bg-white px-4 py-5 sm:p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -124,14 +161,14 @@ export default function OpportunitiesSection() {
                     </span>
                   )}
                 </div>
-                <h3 className="mt-4 text-base font-extrabold text-slate-950 tracking-tight">{opp.title}</h3>
-                <p className="text-xs text-slate-400 font-bold uppercase tracking-wide mt-0.5">{opp.provider}</p>
-                <p className="mt-3.5 text-sm leading-relaxed text-slate-600 font-medium">
+                <h3 className="mt-3 sm:mt-4 text-sm sm:text-base font-extrabold text-slate-950 tracking-tight">{opp.title}</h3>
+                <p className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wide mt-0.5">{opp.provider}</p>
+                <p className="mt-2.5 sm:mt-3.5 text-xs sm:text-sm leading-relaxed text-slate-600 font-medium">
                   {opp.details}
                 </p>
               </div>
 
-              <div className="mt-6 border-t border-slate-100 pt-4 flex justify-end">
+              <div className="mt-4 sm:mt-6 border-t border-slate-100 pt-4 flex justify-end">
                 <Link
                   href="/opportunities"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition"
@@ -144,23 +181,7 @@ export default function OpportunitiesSection() {
           ))}
         </div>
 
-        {/* Global CTA */}
-        <div className="mt-12 flex flex-col items-center gap-3">
-          <Link
-            href="/opportunities"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
-          >
-            Explore the Talent Marketplace
-            <ChevronRight size={16} className="text-slate-400" />
-          </Link>
-          <p className="text-[11px] text-slate-400 font-semibold">
-            Are you a recruiter?{" "}
-            <Link href="/opportunities?post=true" className="text-indigo-600 hover:text-indigo-700 transition">
-              Post opportunities
-            </Link>{" "}
-            to reach all IIITs.
-          </p>
-        </div>
+        {/* Global CTA removed from bottom, moved to top */}
       </div>
     </section>
   );
