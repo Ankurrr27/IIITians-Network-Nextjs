@@ -52,7 +52,7 @@ export default function StakeholdersSection() {
   ];
 
   return (
-    <section className="relative bg-white py-12 sm:py-16 overflow-hidden">
+    <section className="relative bg-white py-10 sm:py-16 overflow-hidden">
       {/* Decorative background elements */}
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-32 top-1/4 h-64 w-64 rounded-full bg-indigo-50/80 blur-[80px]" />
@@ -65,17 +65,11 @@ export default function StakeholdersSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.5 }}
-          className="text-center"
+          className="text-left"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-indigo-600">
-            Stakeholders
-          </p>
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+          <h2 className="mt-1 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
             Designed for the Entire Community
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 sm:text-base font-medium">
-            Bridging students, graduates, and organizations to build a stronger and more collaborative ecosystem.
-          </p>
         </motion.div>
 
         <motion.div
@@ -83,7 +77,7 @@ export default function StakeholdersSection() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
-          className="mt-10 grid gap-6 md:grid-cols-3"
+          className="mt-6 sm:mt-10 grid gap-4 sm:gap-6 md:grid-cols-3 -mx-4 sm:mx-0"
         >
           {points.map((point) => {
             const Icon = point.icon;
@@ -91,21 +85,23 @@ export default function StakeholdersSection() {
               <motion.div
                 key={point.title}
                 variants={cardVariants}
-                className={`group relative rounded-xl border border-slate-200 bg-white p-7 shadow-sm flex flex-col justify-between transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(79,70,229,0.10)] ${point.accentBorder}`}
+                className={`group relative sm:rounded-xl border-y sm:border-y-0 sm:border border-slate-200 bg-white px-4 py-6 sm:p-7 shadow-sm flex flex-col justify-between transition-all duration-400 hover:-translate-y-1.5 hover:shadow-[0_16px_40px_rgba(79,70,229,0.10)] ${point.accentBorder}`}
               >
                 {/* Gradient overlay on hover */}
                 <div className={`pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-br ${point.gradient} opacity-0 transition-opacity duration-400 group-hover:opacity-100`} />
 
                 <div className="relative z-10">
-                  <div className={`inline-flex rounded-xl border p-3.5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 ${point.iconBg}`}>
-                    <Icon className="h-6 w-6" />
+                  <div className="flex items-center gap-3 sm:gap-4">
+                    <div className={`inline-flex shrink-0 rounded-xl border p-3 sm:p-3.5 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3 ${point.iconBg}`}>
+                      <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-950 tracking-tight">{point.title}</h3>
                   </div>
-                  <h3 className="mt-5 text-xl font-extrabold text-slate-950 tracking-tight">{point.title}</h3>
-                  <p className="mt-3.5 text-sm leading-relaxed text-slate-600 font-medium">
+                  <p className="mt-3 sm:mt-4 text-xs sm:text-sm leading-relaxed text-slate-600 font-medium">
                     {point.description}
                   </p>
                 </div>
-                <div className="relative z-10 mt-6 border-t border-slate-100 pt-4">
+                <div className="relative z-10 mt-5 sm:mt-6 border-t border-slate-100 pt-4">
                   <ul className="space-y-2">
                     {point.highlights.map((h) => (
                       <li key={h} className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">

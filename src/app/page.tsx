@@ -9,7 +9,7 @@ import FounderSection from "@/components/home/FounderSection";
 import CounsellingSection from "@/components/home/CounsellingSection";
 import FAQSection from "@/components/home/FAQSection";
 import OpportunitiesSection from "@/components/home/OpportunitiesSection";
-import EventCoverageSection from "@/components/home/EventCoverageSection";
+
 import CollaborateSection from "@/components/home/CollaborateSection";
 import DevelopersSection from "@/components/home/DevelopersSection";
 import ExploreYourIIITSection from "@/components/home/ExploreYourIIITSection";
@@ -84,8 +84,6 @@ export default function HomePage() {
       {/* 8. Opportunities Section */}
       <OpportunitiesSection />
 
-      {/* 9. Event Coverage Section */}
-      <EventCoverageSection />
 
       {/* 10. Collaborate With Us */}
       <CollaborateSection />

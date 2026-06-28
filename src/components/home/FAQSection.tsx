@@ -46,7 +46,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className={`py-16 sm:py-16 border-t transition-colors duration-300 ${
+    <section className={`py-10 sm:py-16 border-t transition-colors duration-300 ${
       isDarkMode ? "bg-slate-955/20 border-slate-900 text-slate-100" : "bg-slate-50/30 border-slate-100 text-slate-900"
     }`}>
       {/* JSON-LD Schema Markup */}
@@ -56,38 +56,34 @@ export default function FAQSection() {
       />
 
       <div className="mx-auto max-w-4xl px-4 sm:px-6">
-        <div className="text-center mb-12">
-          <div className={`inline-flex rounded-xl border p-3 mb-4 ${isDarkMode ? "bg-indigo-950/30 border-indigo-900/40 text-indigo-400" : "bg-indigo-50 border-indigo-100 text-indigo-600"}`}>
-            <HelpCircle className="h-6 w-6" />
-          </div>
-          <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">Frequently Asked Questions</h2>
-          <p className="mt-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-            Everything you need to know about the IIIT ecosystem
-          </p>
+        <div className="text-left mb-6 sm:mb-12">
+          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight sm:text-3xl">Frequently Asked Questions</h2>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-0 sm:space-y-4 -mx-4 sm:mx-0">
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div
                 key={index}
-                className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                className={`sm:rounded-2xl border-b sm:border transition-all duration-200 overflow-hidden ${
                   isOpen
-                    ? isDarkMode ? "bg-slate-900/40 border-indigo-900/50" : "bg-indigo-50/20 border-indigo-100"
+                    ? isDarkMode ? "bg-indigo-950/20 border-indigo-500/50" : "bg-indigo-50/30 sm:border-indigo-600 shadow-sm"
                     : isDarkMode ? "bg-slate-900/10 border-slate-800/80 hover:border-slate-800" : "bg-white border-slate-200 hover:border-slate-300"
-                }`}
+                } ${index === 0 ? "border-t sm:border-t-slate-200 sm:border-t" : ""}`}
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
-                  className="flex w-full items-center justify-between p-5 text-left font-bold text-sm sm:text-base cursor-pointer focus:outline-none"
+                  className={`flex w-full items-center justify-between px-4 py-4 sm:p-5 text-left font-bold text-sm sm:text-base cursor-pointer focus:outline-none ${
+                    isOpen ? (isDarkMode ? "text-indigo-400" : "text-indigo-700") : ""
+                  }`}
                 >
                   <span className="pr-4">{faq.question}</span>
                   {isOpen ? (
-                    <Minus className="h-4 w-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                    <Minus className={`h-4 w-4 shrink-0 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`} />
                   ) : (
-                    <Plus className="h-4 w-4 shrink-0 text-slate-400" />
+                    <Plus className={`h-4 w-4 shrink-0 ${isDarkMode ? "text-slate-500" : "text-slate-400"}`} />
                   )}
                 </button>
                 <AnimatePresence initial={false}>
@@ -98,7 +94,9 @@ export default function FAQSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.2, ease: "easeInOut" }}
                     >
-                      <div className="px-5 pb-5 text-xs sm:text-sm font-medium leading-relaxed text-slate-500 dark:text-slate-400 border-t border-slate-200/40 dark:border-slate-800/40 pt-4">
+                      <div className={`px-4 pb-4 sm:px-5 sm:pb-5 text-xs sm:text-sm font-medium leading-relaxed border-t pt-3 sm:pt-4 ${
+                        isDarkMode ? "text-slate-400 border-indigo-900/40" : "text-slate-600 border-indigo-100"
+                      }`}>
                         {faq.answer}
                       </div>
                     </motion.div>

@@ -9,7 +9,8 @@ import College from "@/models/College";
 import TeamMember from "@/models/TeamMember";
 import Alumni from "@/models/Alumni";
 import DiscussAccount from "@/models/DiscussAccount";
-import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
+import Placement from "@/models/Placement";
+import type { ICollege, ITeamMember, IAlumni, IDiscussAccount, IPlacementDocument } from "@/types";
 import { Suspense } from "react";
 import CollegesClient from "./CollegesClient";
 
@@ -27,21 +28,24 @@ export default async function CollegesPage() {
   let teamMembers: any[] = [];
   let alumni: any[] = [];
   let discussAccounts: any[] = [];
+  let placements: any[] = [];
 
   try {
     await connectDB();
-    const [c, t, a, d] = await Promise.all([
+    const [c, t, a, d, p] = await Promise.all([
       College.find().sort({ name: 1 }).lean(),
       TeamMember.find({ isActive: true }).select("name email iiit photo year").lean(),
       Alumni.find({ $or: [{ status: "approved" }, { status: { $exists: false } }] })
-        .select("name email iiit photo generation branch").limit(300).lean(),
+        .select("name email iiit photo generation branch currentRole currentCompany").limit(300).lean(),
       DiscussAccount.find({ isAuthorized: true })
         .select("collegeName clubName badgeLabel role isAuthorized").lean(),
+      Placement.find().populate("college", "name").lean(),
     ]);
     colleges = c;
     teamMembers = t;
     alumni = a;
     discussAccounts = d;
+    placements = p;
   } catch (error) {
     console.error("Failed to fetch colleges data from DB:", error);
   }
@@ -57,6 +61,7 @@ export default async function CollegesPage() {
         initialTeamMembers={serialize(teamMembers) as unknown as ITeamMember[]}
         initialAlumni={serialize(alumni) as unknown as IAlumni[]}
         initialDiscussClubs={serialize(discussAccounts) as unknown as IDiscussAccount[]}
+        initialPlacements={serialize(placements) as unknown as any[]}
       />
     </Suspense>
   );

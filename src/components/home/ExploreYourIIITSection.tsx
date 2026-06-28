@@ -158,7 +158,7 @@ export default function ExploreYourIIITSection() {
             <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
   Explore <span className="text-indigo-600"> Your IIIT</span>
 </h2>
-            <p className="mt-2 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base sm:leading-7">
+            <p className="hidden sm:block mt-2 max-w-xl text-sm leading-relaxed text-slate-500 sm:text-base sm:leading-7">
               Explore every IIIT across India, compare campuses, and discover the student communities connected through IIITians Network.
             </p>
 
