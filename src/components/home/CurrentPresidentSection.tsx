@@ -334,12 +334,12 @@ export default function CurrentPresidentSection() {
                   </div>
                   <div className="flex gap-1.5">
                     {vp.linkedin && (
-                      <a href={vp.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-slate-500 hover:text-[#0077b5] transition hover:bg-slate-100 shadow-sm" title="LinkedIn">
+                      <a href={vp.linkedin} target="_blank" rel="noreferrer" className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-[#0077b5] hover:text-[#005582] transition hover:bg-slate-100 shadow-sm" title="LinkedIn">
                         <Linkedin size={11} />
                       </a>
                     )}
                     {vp.email && (
-                      <a href={vp.email.startsWith("mailto:") ? vp.email : `mailto:${vp.email}`} className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-slate-500 hover:text-indigo-600 transition hover:bg-slate-100 shadow-sm" title="Email">
+                      <a href={vp.email.startsWith("mailto:") ? vp.email : `mailto:${vp.email}`} className="inline-flex h-7.5 w-7.5 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-indigo-600 hover:text-indigo-800 transition hover:bg-slate-100 shadow-sm" title="Email">
                         <Mail size={11} />
                       </a>
                     )}

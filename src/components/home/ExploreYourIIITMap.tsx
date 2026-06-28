@@ -18,8 +18,25 @@ function FlyToCampus({ campus }: { campus: IIITCampus | null }) {
   const map = useMap();
 
   useEffect(() => {
-    if (campus) {
-      map.flyTo([campus.latitude, campus.longitude], 7, { duration: 0.9 });
+    if (campus && map && map.getContainer && map.getContainer()) {
+      const lat = Number(campus.latitude);
+      const lng = Number(campus.longitude);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        const timeout = setTimeout(() => {
+          try {
+            if (!map || !map.getContainer || !map.getContainer()) return;
+            const size = map.getSize();
+            if (size && size.x > 0 && size.y > 0) {
+              map.flyTo([lat, lng], 7, { duration: 0.9 });
+            } else {
+              map.setView([lat, lng], 7);
+            }
+          } catch (e) {
+            console.warn("Leaflet map animation skipped due to unmount or missing container.", e);
+          }
+        }, 50);
+        return () => clearTimeout(timeout);
+      }
     }
   }, [campus, map]);
 
@@ -39,25 +56,29 @@ function ZoomWatcher({ onZoom }: { onZoom: (zoom: number) => void }) {
 }
 
 function getClusteredCampuses(campuses: IIITCampus[], zoom: number): ClusterPoint[] {
+  const validCampuses = campuses.filter(c => !isNaN(Number(c.latitude)) && !isNaN(Number(c.longitude)));
+  
   if (zoom >= 7) {
-    return campuses.map((campus) => ({
+    return validCampuses.map((campus) => ({
       id: campus.id,
-      latitude: campus.latitude,
-      longitude: campus.longitude,
+      latitude: Number(campus.latitude),
+      longitude: Number(campus.longitude),
       campuses: [campus],
     }));
   }
 
   const groups = new Map<string, IIITCampus[]>();
-  campuses.forEach((campus) => {
-    const key = `${Math.round(campus.latitude / 2) * 2}:${Math.round(campus.longitude / 2) * 2}`;
+  validCampuses.forEach((campus) => {
+    const lat = Number(campus.latitude);
+    const lng = Number(campus.longitude);
+    const key = `${Math.round(lat / 2) * 2}:${Math.round(lng / 2) * 2}`;
     groups.set(key, [...(groups.get(key) || []), campus]);
   });
 
   return Array.from(groups.entries()).map(([id, group]) => ({
     id,
-    latitude: group.reduce((sum, campus) => sum + campus.latitude, 0) / group.length,
-    longitude: group.reduce((sum, campus) => sum + campus.longitude, 0) / group.length,
+    latitude: group.reduce((sum, campus) => sum + Number(campus.latitude), 0) / group.length,
+    longitude: group.reduce((sum, campus) => sum + Number(campus.longitude), 0) / group.length,
     campuses: group,
   }));
 }
