@@ -98,12 +98,8 @@ export default function CollegeGalleryPage() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
 
         {/* Header — compact on mobile, full on desktop */}
-        <div className="mb-3 sm:mb-10 sm:text-center">
-          {/* Badge — desktop only */}
-          <div className="hidden sm:inline-flex mb-4 items-center gap-2 rounded-full border border-indigo-100 bg-white px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-indigo-700 shadow-sm">
-            <Images className="h-4 w-4" /> Gallery
-          </div>
-          <h1 className="text-lg font-bold tracking-tight text-slate-900 sm:text-4xl">
+        <div className="mb-3 sm:mb-10 text-left">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">
             {collegeName ? <>{collegeName} <span className="text-indigo-600">Gallery</span></> : <>IIIT <span className="text-indigo-600">Gallery</span></>}
           </h1>
           {/* Subtitle — desktop only */}
@@ -121,7 +117,7 @@ export default function CollegeGalleryPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search photos..."
-              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-4 text-xs sm:text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-slate-200 bg-white py-2 pl-8 pr-4 text-xs sm:text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
             />
             {query && (
               <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
@@ -133,7 +129,7 @@ export default function CollegeGalleryPage() {
           {/* Filter toggle button */}
           <button
             onClick={() => { setIsFilterOpen(!isFilterOpen); if (showUpload) setShowUpload(false); }}
-            className={`relative flex h-9 w-9 sm:h-10 sm:w-auto sm:px-4 shrink-0 items-center justify-center gap-1.5 rounded-full border transition ${
+            className={`relative flex h-9 w-9 sm:h-10 sm:w-auto sm:px-4 shrink-0 items-center justify-center gap-1.5 rounded-xl border transition ${
               isFilterOpen
                 ? "border-indigo-300 bg-indigo-50 text-indigo-700"
                 : "border-slate-200 bg-white text-slate-600 hover:border-indigo-300 hover:text-indigo-600"
@@ -149,7 +145,7 @@ export default function CollegeGalleryPage() {
           {/* Add / Upload button */}
           <button
             onClick={() => { setShowUpload(!showUpload); if (isFilterOpen) setIsFilterOpen(false); }}
-            className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 sm:px-4 text-xs font-semibold transition ${
+            className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3 sm:px-4 text-xs font-semibold transition ${
               showUpload
                 ? "border-indigo-300 bg-indigo-50 text-indigo-700"
                 : "border-indigo-100 bg-white text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50"
