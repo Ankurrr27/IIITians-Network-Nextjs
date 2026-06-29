@@ -198,6 +198,17 @@ const flowTabs: FlowTab[] = [
 ];
 
 export default function GuidePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <LogoLoader text="Loading guide..." />
+      </div>
+    }>
+      <GuidePageClient />
+    </Suspense>
+  );
+}
+
 function GuidePageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
