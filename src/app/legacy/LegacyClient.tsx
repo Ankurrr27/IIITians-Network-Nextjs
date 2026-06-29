@@ -398,7 +398,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
   return (
     <div
-      className={`ui-page-bg relative min-h-screen pb-10 pt-24 text-slate-900 sm:pb-12 sm:pt-20 ${
+      className={`ui-page-bg relative min-h-screen pb-10 pt-24 text-slate-900 sm:pb-12 sm:pt-28 ${
         isDarkMode ? "bg-slate-950" : ""
       }`}
     >
@@ -406,8 +406,13 @@ export default function LegacyClient({ initialAlumni }: Props) {
 
       <div className="ui-page-shell relative z-10">
         <PageHeader
-          title=""
-          description=""
+          title={
+            <span className="ui-heading-row">
+              <span>Legacy Across The</span>
+              <span className="ui-title-accent">IIITians Network</span>
+            </span>
+          }
+          description="Honoring the achievements and history of alumni across the IIIT network."
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search by name, role, company, or institute..."

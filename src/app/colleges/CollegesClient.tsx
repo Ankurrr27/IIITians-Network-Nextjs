@@ -125,13 +125,18 @@ export default function CollegesClient({
   };
 
   return (
-    <section className="ui-page-bg relative min-h-screen pb-10 pt-24 sm:pb-12 sm:pt-20">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-24 sm:pb-12 sm:pt-28">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
       <div className="ui-page-shell relative z-10">
 
         <PageHeader
-          title=""
-          description=""
+          title={
+            <span className="ui-heading-row">
+              <span>Colleges Across The</span>
+              <span className="ui-title-accent">IIITians Network</span>
+            </span>
+          }
+          description="Discover all Indian Institutes of Information Technology. Find campuses, clubs, and people across the nation."
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search IIIT by name..."
@@ -698,11 +703,11 @@ function CollegeDetailDrawer({
                       Full Gallery <ExternalLink size={10} />
                     </Link>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="columns-2 gap-1 sm:columns-3">
                     {college.gallery?.slice(0, 9).map((img, idx) => (
-                      <div key={idx} className="relative aspect-square overflow-hidden rounded-xl bg-slate-100 border border-slate-200">
+                      <div key={idx} className="break-inside-avoid relative overflow-hidden rounded-lg bg-slate-100 border border-slate-200 mb-1">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={img.url} alt={img.caption || "Campus photo"} className="h-full w-full object-cover transition duration-300 hover:scale-110" />
+                        <img src={img.url} alt={img.caption || "Campus photo"} className="w-full h-auto object-cover transition duration-300 hover:scale-110" />
                       </div>
                     ))}
                   </div>

@@ -87,7 +87,7 @@ export default function PageHeader({
           {/* ── Mobile: search + ⋯ in one row ── */}
           {(shouldRenderSearch || filters) && (
             <div className="sm:hidden" ref={filterRef}>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 group/header">
                 {/* Search */}
                 <div className="min-w-0 flex-1">
                   {searchControl || (
@@ -108,7 +108,7 @@ export default function PageHeader({
                 {filters && (
                   <button
                     onClick={() => setFiltersOpen((v) => !v)}
-                    className={`ui-control flex h-11 w-11 shrink-0 items-center justify-center p-0 transition ${
+                    className={`ui-control flex h-11 w-11 shrink-0 items-center justify-center p-0 transition group-focus-within/header:hidden ${
                       filtersOpen
                         ? "border-indigo-300 bg-indigo-50 text-indigo-600"
                         : "text-slate-500 hover:text-slate-700"
@@ -124,7 +124,7 @@ export default function PageHeader({
                 )}
 
                 {/* Actions inline on mobile */}
-                {actions && <div className="shrink-0">{actions}</div>}
+                {actions && <div className="shrink-0 group-focus-within/header:hidden transition-all">{actions}</div>}
               </div>
 
               {/* Filter panel — slides open below */}

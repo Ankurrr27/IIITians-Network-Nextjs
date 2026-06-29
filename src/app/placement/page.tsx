@@ -15,6 +15,7 @@ import CampusComparisonDashboard from "./components/CampusComparisonDashboard";
 import PlacementResults from "./components/PlacementResults";
 import PlacementSkeleton from "./components/PlacementSkeleton";
 import PageHeader, { pageHeaderButtonClass } from "@/components/PageHeader";
+import LogoLoader from "@/components/LogoLoader";
 
 const QUICK_CAMPUSES = [
   "ABV-IIITM Gwalior",
@@ -29,10 +30,7 @@ export default function PlacementPage() {
   return (
     <Suspense fallback={
       <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
-          <p className="text-sm font-bold text-slate-500">Loading placement dashboard...</p>
-        </div>
+        <LogoLoader text="Loading dashboard..." />
       </div>
     }>
       <PlacementPageClient />
@@ -161,15 +159,20 @@ function PlacementPageClient() {
   const showSuggestions = isFocused && filteredSuggestions.length > 0 && !loading;
 
   return (
-    <div className="ui-page-bg relative min-h-screen pb-10 pt-24 text-slate-900 sm:pb-12 sm:pt-20">
+    <div className="ui-page-bg relative min-h-screen pb-10 pt-24 text-slate-900 sm:pb-12 sm:pt-28">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
 
       <div className="ui-page-shell relative z-10 space-y-6 sm:space-y-8">
         
         {/* ─── HERO HEADER ─── */}
         <PageHeader
-          title=""
-          description=""
+          title={
+            <span className="ui-heading-row">
+              <span>Placement Across The</span>
+              <span className="ui-title-accent">IIITians Network</span>
+            </span>
+          }
+          description="Explore placement statistics, top recruiters, and salary trends across different IIIT campuses."
           searchControl={
             <div className="relative">
               <div className="ui-control flex h-11 items-center gap-3 px-3.5">
