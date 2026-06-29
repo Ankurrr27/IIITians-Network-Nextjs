@@ -6,14 +6,6 @@ import {
   Handshake,
   FileText,
   Megaphone,
-"use client";
-import { useEffect, useMemo, useState, Suspense } from "react";
-import {
-  BookOpenText,
-  Building2,
-  Handshake,
-  FileText,
-  Megaphone,
   Sparkles,
   Users,
   UserPlus,
