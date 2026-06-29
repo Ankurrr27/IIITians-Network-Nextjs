@@ -122,6 +122,9 @@ export default function PageHeader({
                     )}
                   </button>
                 )}
+
+                {/* Actions inline on mobile */}
+                {actions && <div className="shrink-0">{actions}</div>}
               </div>
 
               {/* Filter panel — slides open below */}
@@ -152,14 +155,15 @@ export default function PageHeader({
               </div>
             )}
 
-            {filters && (
-              <div className={`flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end ${filtersClassName}`}>
-                {filters}
-              </div>
-            )}
+            <div className="flex items-center gap-3">
+              {filters && (
+                <div className={`flex min-w-0 flex-col gap-3 sm:flex-row sm:flex-wrap lg:justify-end ${filtersClassName}`}>
+                  {filters}
+                </div>
+              )}
+              {actions && <div className="flex shrink-0 flex-wrap items-center gap-3">{actions}</div>}
+            </div>
           </div>
-
-          {actions && <div className="flex flex-wrap items-center gap-3">{actions}</div>}
         </div>
       )}
     </header>

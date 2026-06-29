@@ -57,7 +57,7 @@ export default function HeroSection() {
           >
             <span className={`${isDarkMode ? "text-white" : "text-slate-900"} block`}>Empowering</span>
             <span className="block mt-2">
-              <span className="text-indigo-700 dark:text-indigo-400 font-bold">
+              <span className="text-indigo-600 font-bold">
                 Connections Across IIITs
               </span>
             </span>

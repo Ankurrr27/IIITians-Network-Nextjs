@@ -413,6 +413,7 @@ function DiscussPageClient() {
   const [regForm, setRegForm] = useState(INIT_REG);
   const [queryForm, setQueryForm] = useState(INIT_QUERY);
   const [queries, setQueries] = useState<QueryPost[]>([]);
+  const [querySort, setQuerySort] = useState<"votes" | "newest">("newest");
   const [activeTopic, setActiveTopic] = useState<(typeof TOPIC_FILTERS)[number]>("For You");
   const [search, setSearch] = useState("");
   const [postState, setPostState] = useState({ loading: false, error: "", success: "" });
@@ -456,12 +457,18 @@ function DiscussPageClient() {
 
   const filteredQueries = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return queries.filter((query) => {
+    const result = queries.filter((query) => {
       const topicMatch = activeTopic === "For You" || query.category === activeTopic;
       const searchMatch = !q || [query.title, query.body, query.author, query.college, query.category].join(" ").toLowerCase().includes(q);
       return topicMatch && searchMatch;
     });
-  }, [activeTopic, queries, search]);
+    if (querySort === "votes") {
+      result.sort((a, b) => b.votes - a.votes);
+    } else {
+      result.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+    return result;
+  }, [activeTopic, queries, search, querySort]);
 
   const exploreItems = useMemo(() => [
     ...approvedPosts.slice(0, 4).map((post) => ({

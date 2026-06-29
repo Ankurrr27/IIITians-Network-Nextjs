@@ -8,6 +8,7 @@ import {
   MoreHorizontal, Link2, ShieldCheck,
   Users, Images, ImagePlus,
   BriefcaseBusiness, History, Globe, ExternalLink,
+  Linkedin, Instagram,
 } from "lucide-react";
 import type { ICollege, ITeamMember, IAlumni, IDiscussAccount } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
@@ -698,14 +699,14 @@ function CollegeDetailDrawer({
                     </Link>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    {college.gallery?.slice(0, 6).map((img, idx) => (
+                    {college.gallery?.slice(0, 9).map((img, idx) => (
                       <div key={idx} className="relative aspect-square overflow-hidden rounded-xl bg-slate-100 border border-slate-200">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={img.url} alt={img.caption || "Campus photo"} className="h-full w-full object-cover transition duration-300 hover:scale-110" />
                       </div>
                     ))}
                   </div>
-                  {galleryCount > 6 && (
+                  {galleryCount > 9 && (
                     <Link href={`/college/${encodeURIComponent(name)}/gallery`} className="mt-4 block text-center text-xs font-bold text-indigo-600 hover:underline">
                       View all {galleryCount} photos
                     </Link>
@@ -788,11 +789,25 @@ function CollegeDetailDrawer({
                             {alumnus.currentRole || alumnus.branch || "Alumnus"} {alumnus.currentCompany ? `at ${alumnus.currentCompany}` : ""}
                           </p>
                         </div>
-                        {alumnus.generation && (
-                          <div className="shrink-0 text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md">
-                            Class of {alumnus.generation}
-                          </div>
-                        )}
+                        <div className="flex shrink-0 items-center gap-1.5">
+                          {alumnus.linkedin && (
+                            <a href={alumnus.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn"
+                              className="inline-flex items-center justify-center rounded-full p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition">
+                              <Linkedin className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                          {alumnus.instagram && (
+                            <a href={alumnus.instagram} target="_blank" rel="noopener noreferrer" title="Instagram"
+                              className="inline-flex items-center justify-center rounded-full p-1.5 text-slate-400 hover:text-pink-500 hover:bg-pink-50 transition">
+                              <Instagram className="h-3.5 w-3.5" />
+                            </a>
+                          )}
+                          {alumnus.generation && (
+                            <div className="text-[10px] font-bold text-indigo-500 bg-indigo-50 px-2 py-1 rounded-md">
+                              Class of {alumnus.generation}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     ))}
                     {collegeAlumni.length > 10 && (

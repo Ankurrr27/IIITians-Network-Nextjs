@@ -209,69 +209,69 @@ export default function PlacementAnalytics({
       </div>
 
       {/* Desktop: individual hover cards */}
-      <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+      <div className="hidden sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
 
         {hasPlacementRate && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-            className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl">
+            className="group relative flex items-center justify-between overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-indigo-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(99,102,241,0.06),_transparent_70%)]" />
-            <div className="space-y-1 min-w-0 z-10">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Percent className="h-3.5 w-3.5 text-indigo-600" />Placement Rate</span>
-              <p className="text-2xl font-black tracking-tight text-slate-900">{currentSummary.placementRate.toFixed(1)}%</p>
-              <p className="text-[10px] font-bold text-indigo-600/70">{currentSummary.studentsPlaced}/{currentSummary.totalStudents} students</p>
+            <div className="space-y-1.5 min-w-0 z-10">
+              <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400"><Percent className="h-3.5 w-3.5 text-indigo-600" />Placement Rate</span>
+              <p className="text-3xl font-black tracking-tight text-slate-900">{currentSummary.placementRate.toFixed(1)}%</p>
+              <p className="text-[11px] font-bold text-indigo-600/70">{currentSummary.studentsPlaced}/{currentSummary.totalStudents} students</p>
             </div>
-            <div className="relative flex h-14 w-14 shrink-0 items-center justify-center z-10">
+            <div className="relative flex h-16 w-16 shrink-0 items-center justify-center z-10">
               <svg viewBox="0 0 56 56" className="absolute h-full w-full -rotate-90">
                 <circle cx="28" cy="28" r="23" className="stroke-slate-100 fill-none" strokeWidth="4" />
                 <circle cx="28" cy="28" r="23" className="stroke-indigo-600 fill-none transition-all duration-1000 ease-out" strokeWidth="4"
                   strokeDasharray={2 * Math.PI * 23} strokeDashoffset={(2 * Math.PI * 23) * (1 - currentSummary.placementRate / 100)} strokeLinecap="round" />
               </svg>
-              <span className="text-[10px] font-black text-indigo-700">{Math.round(currentSummary.placementRate)}%</span>
+              <span className="text-xs font-black text-indigo-700">{Math.round(currentSummary.placementRate)}%</span>
             </div>
           </motion.div>
         )}
 
         {hasHighestPkg && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.04 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:shadow-xl">
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(244,63,94,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Award className="h-3.5 w-3.5 text-rose-500" />Highest Offer</span>
-              <span className="rounded-full bg-rose-50 px-2 py-0.5 text-[9px] font-black text-rose-700 uppercase">Max</span>
+              <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400"><Award className="h-4 w-4 text-rose-500" />Highest Offer</span>
+              <span className="rounded-full bg-rose-50 px-2.5 py-0.5 text-[10px] font-black text-rose-700 uppercase">Max</span>
             </div>
-            <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.highestPackage)}</p>
-              <p className="mt-0.5 text-[10px] font-bold text-rose-600/70 truncate">{currentSummary.topBranch ? `Lead: ${currentSummary.topBranch.branch}` : "All branches"}</p>
+            <div className="mt-5 z-10 relative">
+              <p className="text-3xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.highestPackage)}</p>
+              <p className="mt-1 text-[11px] font-bold text-rose-600/70 truncate">{currentSummary.topBranch ? `Lead: ${currentSummary.topBranch.branch}` : "All branches"}</p>
             </div>
           </motion.div>
         )}
 
         {hasAvgPkg && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl">
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(16,185,129,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><Briefcase className="h-3.5 w-3.5 text-emerald-500" />Avg Package</span>
-              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-black text-emerald-700 uppercase">Mean</span>
+              <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400"><Briefcase className="h-4 w-4 text-emerald-500" />Avg Package</span>
+              <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[10px] font-black text-emerald-700 uppercase">Mean</span>
             </div>
-            <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.averagePackage)}</p>
-              <p className="mt-0.5 text-[10px] font-bold text-emerald-600/70">Across {currentSummary.branchCount} branches</p>
+            <div className="mt-5 z-10 relative">
+              <p className="text-3xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.averagePackage)}</p>
+              <p className="mt-1 text-[11px] font-bold text-emerald-600/70">Across {currentSummary.branchCount} branches</p>
             </div>
           </motion.div>
         )}
 
         {hasMedianPkg && (
           <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}
-            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl">
+            className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl">
             <div className="absolute right-0 top-0 h-24 w-24 -translate-y-6 translate-x-6 rounded-full bg-[radial-gradient(circle,_rgba(245,158,11,0.06),_transparent_70%)]" />
             <div className="flex items-center justify-between gap-1 z-10 relative">
-              <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-slate-400"><TrendingUp className="h-3.5 w-3.5 text-amber-500" />Median Pkg</span>
-              <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[9px] font-black text-amber-700 uppercase">Median</span>
+              <span className="flex items-center gap-1.5 text-[11px] font-black uppercase tracking-wider text-slate-400"><TrendingUp className="h-4 w-4 text-amber-500" />Median Pkg</span>
+              <span className="rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-black text-amber-700 uppercase">Median</span>
             </div>
-            <div className="mt-3.5 z-10 relative">
-              <p className="text-2xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.medianPackage)}</p>
-              <p className="mt-0.5 text-[10px] font-bold text-amber-600/70">Departmental median value</p>
+            <div className="mt-5 z-10 relative">
+              <p className="text-3xl font-black tracking-tight text-slate-900">{formatLpa(currentSummary.medianPackage)}</p>
+              <p className="mt-1 text-[11px] font-bold text-amber-600/70">Departmental median value</p>
             </div>
           </motion.div>
         )}
