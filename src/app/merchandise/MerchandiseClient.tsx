@@ -1657,7 +1657,7 @@ export default function MerchandiseClient({
 
             <div className="flex flex-col sm:flex-row gap-4 flex-1 lg:justify-end items-stretch sm:items-center">
               
-              <div className={`flex items-center gap-2 border px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0d1424] w-64 ${
+              <div className={`flex items-center gap-2 border px-3.5 py-2.5 rounded-2xl bg-white w-64 ${
                 isDarkMode ? "border-slate-800" : "border-slate-200 shadow-sm"
               }`}>
                 <Search size={14} className="text-slate-400 shrink-0" />

@@ -68,7 +68,7 @@ export default function OpportunitiesSection() {
   return (
     <section className="bg-slate-50/50 py-8 sm:py-16 border-y border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+        <div className="flex flex-col lg:flex-row lg:items-baseline lg:justify-between gap-6">
           <div className="text-left">
             <h2 className="mt-0 sm:mt-4 text-xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
               Explore{" "}
@@ -84,7 +84,7 @@ export default function OpportunitiesSection() {
                   <button
                     key={tab.name}
                     onClick={() => setActiveTab(tab.name)}
-                    className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-extrabold transition-all duration-200 active:scale-95 ${
+                    className={`flex items-center gap-1.5 rounded-3xl px-3.5 py-1.5 text-xs font-extrabold transition-all duration-200 active:scale-95 ${
                       isActive
                         ? "bg-indigo-600 text-white shadow shadow-indigo-500/20"
                         : "bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50 hover:border-slate-300"
@@ -99,7 +99,7 @@ export default function OpportunitiesSection() {
           </div>
 
           {/* Global CTA (Moved to top on desktop, bottom on mobile) */}
-          <div className="hidden sm:flex flex-col sm:items-start lg:items-end gap-3 px-4 sm:px-0">
+          <div className="hidden sm:flex flex-col sm:items-start lg:items-end gap-4 sm:gap-6 px-4 sm:px-0">
             <Link
               href="/opportunities"
               className="inline-flex justify-center w-full sm:w-auto items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
