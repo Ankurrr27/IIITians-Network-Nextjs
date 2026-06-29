@@ -1953,10 +1953,10 @@ export default function MerchandiseClient({
                           </div>
 
                           <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-slate-850/40">
-                            <span className="text-xs font-black text-slate-900 dark:text-white">
+                            <span className="text-xs font-black text-slate-900 dark:text-blue-400">
                               ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                             </span>
-                            <div className="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-950">
+                            <div className="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-white">
                               <button
                                 onClick={() => updateQuantity(item.id, -1)}
                                 className="px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-900 transition text-slate-550"
@@ -1980,15 +1980,15 @@ export default function MerchandiseClient({
 
                 {/* Footer Subtotal and Checkout link */}
                 {cart.length > 0 && (
-                  <div className="border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/20 p-5 space-y-4">
+                  <div className="border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-200 p-5 space-y-4">
                     <div className="space-y-1.5">
-                      <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      <div className="flex items-center justify-between text-xs font-bold text-slate-600 uppercase tracking-wider">
                         <span>Subtotal</span>
-                        <span className="text-slate-900 dark:text-white font-black text-sm">
+                        <span className="text-slate-900 dark:text-slate-900 font-black text-sm">
                           ₹{cartSubtotal.toLocaleString("en-IN")}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                      <div className="flex items-center justify-between text-[10px] text-slate-600">
                         <span>Shipping & taxes</span>
                         <span>Calculated at checkout</span>
                       </div>
