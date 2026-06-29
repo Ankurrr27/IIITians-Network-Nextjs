@@ -781,11 +781,16 @@ function DiscussPageClient() {
   const input = "w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-100";
 
   return (
-    <section className="min-h-screen bg-[#f5f7fb] pt-[4.5rem] text-slate-950 pb-12">
-      <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-5 lg:px-6">
+    <section className="ui-page-bg relative min-h-screen pb-10 pt-24 sm:pb-12 sm:pt-28 text-slate-950">
+      <div className="ui-page-shell relative z-10 space-y-6 sm:space-y-8">
         <PageHeader
-          title=""
-          description=""
+          title={
+            <span className="ui-heading-row">
+              <span>Discussions Across The</span>
+              <span className="ui-title-accent">IIITians Network</span>
+            </span>
+          }
+          description="Join conversations, ask queries, and share announcements with the entire IIIT community."
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search discussions..."
@@ -856,80 +861,6 @@ function DiscussPageClient() {
             </div>
           ) : null}
 
-          {account && (
-            <div className="mt-6 rounded-none sm:rounded-xl border-x-0 sm:border border-slate-200 bg-white p-4 shadow-none sm:shadow-sm">
-              {!showQueryForm ? (
-                <button
-                  type="button"
-                  onClick={() => setShowQueryForm(true)}
-                  className="flex w-full items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-bold text-slate-800 transition hover:bg-slate-100/80 cursor-pointer"
-                >
-                  <span className="flex items-center gap-2">
-                    <MessageCircle className="h-4 w-4 text-indigo-600" />
-                    Raise a query
-                  </span>
-                  <Plus className="h-4 w-4 text-slate-500" />
-                </button>
-              ) : (
-                <form onSubmit={handleSubmitQuery} className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                      <MessageCircle className="h-4 w-4 text-indigo-600" />
-                      Raise a query
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setShowQueryForm(false)}
-                      className="rounded-full p-1 text-slate-400 hover:bg-slate-100 transition cursor-pointer"
-                      aria-label="Close query form"
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
-                  </div>
-                  <input
-                    value={queryForm.title}
-                    onChange={(e) => setQueryForm({ ...queryForm, title: e.target.value })}
-                    placeholder="Title, e.g. Need help with a club event or placement roadmap"
-                    className={input}
-                  />
-                  <textarea
-                    value={queryForm.body}
-                    onChange={(e) => setQueryForm({ ...queryForm, body: e.target.value })}
-                    rows={3}
-                    placeholder="Write your question or message for the community"
-                    className={`${input} resize-none`}
-                  />
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <select
-                      value={queryForm.category}
-                      onChange={(e) => setQueryForm({ ...queryForm, category: e.target.value })}
-                      className={`${input} sm:w-52`}
-                    >
-                      {TOPIC_FILTERS.filter((topic) => topic !== "For You").map((topic) => (
-                        <option key={topic}>{topic}</option>
-                      ))}
-                    </select>
-                    <button
-                      type="submit"
-                      disabled={queryState === "posting"}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-bold text-white transition hover:bg-indigo-700 disabled:opacity-60 cursor-pointer"
-                    >
-                      {queryState === "posting" ? (
-                        <><div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> Posting...</>
-                      ) : (
-                        <><Send className="h-4 w-4" /> Post query</>
-                      )}
-                    </button>
-                  </div>
-                  {queryState && queryState !== "posting" && (
-                    <p className={`text-sm font-medium ${queryState === "success" ? "text-emerald-700" : "text-rose-600"}`}>
-                      {queryState === "success" ? "✓ Query posted successfully!" : queryState}
-                    </p>
-                  )}
-                </form>
-              )}
-            </div>
-          )}
 
           <div className="mt-6">
             <div className="flex items-center gap-5 text-sm font-medium text-slate-500">
