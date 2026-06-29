@@ -183,54 +183,57 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
             id="legacy-instagram-poster"
             className={`relative flex h-[1920px] w-[1080px] flex-col items-center justify-center select-none overflow-hidden ${
               isDarkMode
-                ? "bg-[linear-gradient(180deg,_#0a0a1a_0%,_#0d0d2b_100%)]"
-                : "bg-[linear-gradient(180deg,_#eef2ff_0%,_#f5f3ff_100%)]"
+                ? "bg-slate-950"
+                : "bg-slate-50"
             }`}
           >
-            {/* Top Wave */}
-            <div className="absolute top-0 left-0 w-full leading-[0] pointer-events-none z-0">
-              <svg className="relative block w-full h-[320px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 320" preserveAspectRatio="none">
-                <path d="M0,0V120C120,180,240,220,360,200C480,180,540,120,660,100C780,80,900,120,1080,160V0Z" opacity={isDarkMode ? "0.35" : "0.15"} fill="#4f46e5" />
-                <path d="M0,0V80C100,140,220,180,360,160C500,140,580,80,720,60C860,40,980,100,1080,120V0Z" opacity={isDarkMode ? "0.55" : "0.3"} fill="#4f46e5" />
-                <path d="M0,0V40C80,80,200,120,340,110C480,100,580,50,720,30C860,10,980,60,1080,80V0Z" fill="#4f46e5" />
-              </svg>
-            </div>
-
-            {/* Bottom Wave (flipped) */}
-            <div className="absolute bottom-0 left-0 w-full leading-[0] pointer-events-none z-0 rotate-180">
-              <svg className="relative block w-full h-[220px]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 220" preserveAspectRatio="none">
-                <path d="M0,0V60C120,110,280,140,440,120C600,100,700,50,860,40C980,30,1060,60,1080,80V0Z" opacity={isDarkMode ? "0.3" : "0.12"} fill="#4f46e5" />
-                <path d="M0,0V30C100,70,240,100,400,90C560,80,680,40,840,20C960,5,1040,30,1080,50V0Z" opacity={isDarkMode ? "0.5" : "0.25"} fill="#4f46e5" />
-                <path d="M0,0V10C80,40,200,70,360,60C520,50,640,20,800,10C920,2,1020,20,1080,30V0Z" fill="#4f46e5" opacity={isDarkMode ? "0.7" : "0.5"} />
-              </svg>
+            {/* Mesh Gradient / Ambient Background */}
+            <div className="absolute inset-0 pointer-events-none z-0">
+              {/* Colored Orbs */}
+              <div className="absolute -top-[200px] -left-[200px] h-[800px] w-[800px] rounded-full bg-indigo-600/30 blur-[120px]" />
+              <div className="absolute top-[400px] -right-[300px] h-[900px] w-[900px] rounded-full bg-violet-600/20 blur-[140px]" />
+              <div className="absolute -bottom-[300px] left-[100px] h-[1000px] w-[1000px] rounded-full bg-blue-600/20 blur-[150px]" />
+              
+              {/* Noise Overlay */}
+              <div 
+                className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+                }}
+              />
             </div>
             
-            {/* Logo — top left over the wave */}
-            <div className="absolute top-12 left-14 z-20 flex items-center gap-6">
+            {/* Logo — top left */}
+            <div className="absolute top-16 left-16 z-20 flex items-center gap-6">
               <img
-                src="/iiitians-logo.png"
+                src={isDarkMode ? "/IIITians-Network-Logo-Dark.png" : "/IIITians-Network-Logo-Blue.png"}
                 alt="IIITians Network"
                 crossOrigin="anonymous"
-                className="h-28 w-28 object-contain drop-shadow-lg"
+                className="h-28 w-auto object-contain drop-shadow-xl"
               />
-              <div>
-                <p className="text-[2rem] font-black tracking-[0.2em] text-white uppercase leading-none drop-shadow">
+              <div className="flex flex-col">
+                <p className={`text-[2rem] font-black tracking-[0.2em] uppercase leading-none drop-shadow-md ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                   IIITians Network
                 </p>
-                <p className="text-[1.3rem] font-semibold tracking-[0.12em] text-white/70 mt-1">
+                <p className={`text-[1.3rem] font-bold tracking-[0.12em] mt-2 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
                   EST. 2021
                 </p>
               </div>
             </div>
 
-            {/* Main Content — fits inside waves top(~260px) and bottom(~180px) */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center px-20 pt-[260px] pb-[220px] z-10">
+            {/* Main Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center px-24 pt-[180px] pb-[100px] z-10 w-full h-full">
 
               {/* Image Avatar */}
-              <div className="relative mb-10 flex items-center justify-center">
-                <div className="absolute inset-[-8px] rounded-full bg-gradient-to-tr from-[#4f46e5] via-[#6366f1] to-[#818cf8] opacity-90" />
-                <div className={`h-[360px] w-[360px] overflow-hidden rounded-full ring-[14px] relative z-10 ${
-                  isDarkMode ? "ring-[#0a0a1a] bg-[#0a0a1a] shadow-[0_30px_80px_rgba(0,0,0,0.6)]" : "ring-white bg-white shadow-[0_40px_80px_rgba(79,70,229,0.25)]"
+              <div className="relative mb-14 flex items-center justify-center">
+                {/* Dynamic Glow */}
+                <div className="absolute inset-[-40px] rounded-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-blue-500 opacity-40 blur-[40px] animate-pulse" />
+                
+                {/* Glassmorphism Ring */}
+                <div className={`absolute inset-[-16px] rounded-full border-[4px] border-white/20 backdrop-blur-xl ${isDarkMode ? "bg-white/5" : "bg-white/30"}`} />
+                
+                <div className={`h-[420px] w-[420px] overflow-hidden rounded-full ring-[8px] relative z-10 ${
+                  isDarkMode ? "ring-slate-800 bg-slate-900 shadow-[0_0_80px_rgba(79,70,229,0.3)]" : "ring-white bg-white shadow-[0_0_80px_rgba(79,70,229,0.2)]"
                 }`}>
                   {entry.photo?.url ? (
                     <img
@@ -241,52 +244,60 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-[8rem] font-black text-white">
+                    <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-indigo-500 to-violet-600 text-[10rem] font-black text-white">
                       {entry.name[0]}
                     </div>
                   )}
                 </div>
-                <div className={`absolute bottom-2 right-2 z-20 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-[#4f46e5] to-[#4338ca] ring-[10px] shadow-2xl ${
-                  isDarkMode ? "ring-[#0a0a1a]" : "ring-white"
+                
+                {/* Floating Role Icon */}
+                <div className={`absolute bottom-4 right-4 z-20 flex h-28 w-28 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 ring-[12px] shadow-2xl backdrop-blur-md ${
+                  isDarkMode ? "ring-slate-900 border border-white/10" : "ring-slate-50 border border-white/20"
                 }`}>
-                  <Sparkles className="h-12 w-12 text-white" />
+                  <Sparkles className="h-14 w-14 text-white" />
                 </div>
               </div>
 
               {/* Name */}
-              <h2 className={`text-[5.5rem] font-black tracking-tight mb-6 text-center leading-none ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+              <h2 className={`text-[6.5rem] font-black tracking-tight mb-8 text-center leading-[1.1] ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                 {entry.name}
               </h2>
 
-              {/* Role Badge */}
-              <div className="flex items-center gap-6 mb-6">
-                <Sparkles className="h-9 w-9 text-[#6366f1]" />
-                <div className="rounded-full bg-gradient-to-r from-[#4f46e5] to-[#4338ca] px-12 py-4 text-[2rem] font-black tracking-widest text-white uppercase shadow-xl shadow-indigo-500/30">
-                  {tagText}
+              {/* Role Badge (Glassmorphism Pill) */}
+              <div className="flex items-center justify-center mb-8">
+                <div className={`flex items-center gap-6 rounded-full px-12 py-5 shadow-2xl backdrop-blur-md border border-white/20 ${
+                  isDarkMode ? "bg-white/10 shadow-indigo-500/20" : "bg-white/60 shadow-indigo-500/10"
+                }`}>
+                  <Sparkles className={`h-8 w-8 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`} />
+                  <span className={`text-[2rem] font-black tracking-[0.25em] uppercase ${
+                    isDarkMode ? "text-white" : "text-indigo-900"
+                  }`}>
+                    {tagText}
+                  </span>
+                  <Sparkles className={`h-8 w-8 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`} />
                 </div>
-                <Sparkles className="h-9 w-9 text-[#6366f1]" />
               </div>
 
               {/* Service Line */}
-              <p className={`text-[2.2rem] font-extrabold tracking-wide mb-3 text-center ${isDarkMode ? "text-slate-200" : "text-slate-800"}`}>
+              <p className={`text-[2.4rem] font-extrabold tracking-wide mb-4 text-center ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
                 {serviceLine}
               </p>
 
               {/* Current Job */}
               {showCurrentJob && currentJobLine && (
-                <div className={`flex items-center gap-4 text-[1.8rem] font-bold mb-6 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                  <Briefcase className={`h-9 w-9 shrink-0 ${isDarkMode ? "text-slate-500" : "text-slate-400"}`} />
+                <div className={`flex items-center gap-5 text-[2rem] font-bold mb-10 ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                  <Briefcase className={`h-10 w-10 shrink-0 ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`} />
                   <span>{currentJobLine}</span>
                 </div>
               )}
 
-              {/* Quote Box */}
+              {/* Quote Box (Glassmorphism) */}
               {showQuote && quoteText && (
-                <div className={`relative mt-8 mb-10 w-full rounded-[1.8rem] px-14 py-14 border-2 ${
-                  isDarkMode ? "bg-[#0d0d2b]/80 border-white/5 shadow-[0_20px_50px_rgba(0,0,0,0.3)]" : "bg-white border-[#e0e7ff]/60 shadow-[0_20px_50px_rgba(79,70,229,0.07)]"
+                <div className={`relative mt-12 mb-12 w-full rounded-[2.5rem] px-16 py-16 backdrop-blur-xl border border-white/20 shadow-2xl ${
+                  isDarkMode ? "bg-white/5 shadow-black/50" : "bg-white/40 shadow-indigo-900/5"
                 }`}>
-                  <Quote className={`absolute -top-9 left-10 h-20 w-20 text-[#4f46e5] rounded-full rotate-180 ${isDarkMode ? "bg-[#0a0a1a]" : "bg-white"}`} />
-                  <p className={`text-[1.9rem] font-semibold leading-[1.65] italic text-center ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+                  <Quote className={`absolute -top-12 left-12 h-24 w-24 rounded-full p-5 rotate-180 text-white bg-gradient-to-br from-indigo-500 to-violet-600 shadow-xl border-4 ${isDarkMode ? "border-slate-900" : "border-slate-50"}`} />
+                  <p className={`text-[2.2rem] font-semibold leading-[1.6] italic text-center ${isDarkMode ? "text-slate-200" : "text-slate-800"}`}>
                     "{quoteText}"
                   </p>
                 </div>
@@ -294,26 +305,26 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
 
               {/* Network Journey */}
               {showJourney && entry.roleHistory && entry.roleHistory.length > 0 && (
-                <div className="w-full mt-2">
-                  <div className="flex items-center gap-6 mb-10">
-                    <div className={`h-[2px] flex-1 ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
-                    <span className={`text-[1.7rem] font-black uppercase tracking-[0.3em] ${isDarkMode ? "text-[#818cf8]" : "text-[#4f46e5]"}`}>
+                <div className="w-full mt-4">
+                  <div className="flex items-center gap-8 mb-12">
+                    <div className={`h-[3px] flex-1 rounded-full ${isDarkMode ? "bg-indigo-500/30" : "bg-indigo-600/20"}`} />
+                    <span className={`text-[1.8rem] font-black uppercase tracking-[0.35em] ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
                       Network Journey
                     </span>
-                    <div className={`h-[2px] flex-1 ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
+                    <div className={`h-[3px] flex-1 rounded-full ${isDarkMode ? "bg-indigo-500/30" : "bg-indigo-600/20"}`} />
                   </div>
 
-                  <div className="relative space-y-12 pl-[5rem]">
-                    <div className={`absolute bottom-4 left-[1.7rem] top-4 w-[3px] rounded-full ${isDarkMode ? "bg-[#4f46e5]/20" : "bg-[#e0e7ff]"}`} />
+                  <div className="relative space-y-14 pl-[6rem]">
+                    <div className={`absolute bottom-4 left-[2.2rem] top-4 w-[4px] rounded-full ${isDarkMode ? "bg-indigo-500/30" : "bg-indigo-600/20"}`} />
                     {entry.roleHistory.slice(0, 3).map((item, index) => (
                       <div key={index} className="relative">
-                        <div className={`absolute -left-[5rem] top-1 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-[#4f46e5] to-[#4338ca] ring-[8px] shadow-lg z-10 ${isDarkMode ? "ring-[#0a0a1a]" : "ring-[#eef2ff]"}`}>
+                        <div className={`absolute -left-[6rem] top-0 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 ring-[8px] shadow-xl z-10 ${isDarkMode ? "ring-slate-900" : "ring-slate-50"}`}>
                           {getRoleIcon(item.role)}
                         </div>
-                        <p className={`text-[2rem] font-black mb-1 uppercase tracking-wide ${isDarkMode ? "text-white" : "text-slate-900"}`}>
+                        <p className={`text-[2.2rem] font-black mb-2 uppercase tracking-wide ${isDarkMode ? "text-white" : "text-slate-900"}`}>
                           {item.role || "Legacy Member"}
                         </p>
-                        <p className={`text-[1.5rem] font-bold tracking-wide ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                        <p className={`text-[1.7rem] font-bold tracking-wide ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
                           {[item.team, item.year].filter(Boolean).join(" · ")}
                         </p>
                       </div>
@@ -323,18 +334,30 @@ export default function LegacyPosterModal({ entry, onClose, isDarkMode }: Legacy
               )}
             </div>
 
-            {/* Bottom-right: tagline */}
-            <div className="absolute bottom-[4rem] right-[4rem] z-20 text-right">
-              <p className={`text-[1.8rem] font-bold italic tracking-wide ${
-                isDarkMode ? "text-white/40" : "text-[#4f46e5]/55"
+            {/* Bottom-right: tagline & QR placeholder */}
+            <div className="absolute bottom-16 right-16 z-20 flex items-center gap-8">
+              <div className="text-right">
+                <p className={`text-[2rem] font-black italic tracking-wide ${
+                  isDarkMode ? "text-white/60" : "text-slate-900/50"
+                }`}>
+                  A never-ending connection...
+                </p>
+                <p className={`text-[1.3rem] font-bold tracking-[0.25em] uppercase mt-2 ${
+                  isDarkMode ? "text-indigo-400/80" : "text-indigo-600/80"
+                }`}>
+                  iiitiansnetwork.in/legacy
+                </p>
+              </div>
+              <div className={`h-24 w-24 rounded-2xl backdrop-blur-md border border-white/20 p-2 shadow-xl ${
+                isDarkMode ? "bg-white/10" : "bg-white/60"
               }`}>
-                A never-ending connection...
-              </p>
-              <p className={`text-[1.2rem] font-semibold tracking-[0.18em] uppercase mt-1 ${
-                isDarkMode ? "text-white/25" : "text-[#4f46e5]/40"
-              }`}>
-                iiitiansnetwork.in/legacy
-              </p>
+                {/* We use a simple CSS pattern for the QR code representation */}
+                <div className={`h-full w-full rounded-lg opacity-80 ${isDarkMode ? "bg-white" : "bg-slate-900"}`} style={{
+                  backgroundImage: `linear-gradient(45deg, ${isDarkMode ? "#000" : "#fff"} 25%, transparent 25%, transparent 75%, ${isDarkMode ? "#000" : "#fff"} 75%, ${isDarkMode ? "#000" : "#fff"}), linear-gradient(45deg, ${isDarkMode ? "#000" : "#fff"} 25%, transparent 25%, transparent 75%, ${isDarkMode ? "#000" : "#fff"} 75%, ${isDarkMode ? "#000" : "#fff"})`,
+                  backgroundSize: `16px 16px`,
+                  backgroundPosition: `0 0, 8px 8px`
+                }} />
+              </div>
             </div>
           </div>
         </div>

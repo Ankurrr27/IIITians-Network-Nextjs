@@ -127,7 +127,8 @@ body {
   }
 
   .ui-title {
-    font-size: clamp(1.75rem, 10vw, 2.4rem);
+    font-size: 1.5rem; /* text-2xl */
+    line-height: 2rem;
   }
 
   .ui-section {
@@ -151,9 +152,9 @@ body {
 
 .ui-page-shell {
   width: 100%;
-  max-width: 76rem;
+  max-width: 80rem;
   margin-inline: auto;
-  padding-inline: clamp(0.75rem, 2vw, 1.25rem);
+  padding-inline: clamp(1rem, 2vw, 1.5rem);
 }
 
 .ui-section {
@@ -162,21 +163,21 @@ body {
 
 .ui-title {
   color: var(--ui-ink);
-  font-size: clamp(2rem, 1.45rem + 1.85vw, 3rem);
-  font-weight: 800;
-  letter-spacing: 0;
-  line-height: 1.04;
-}
-
-.ui-title-accent {
-  color: var(--ui-primary);
+  font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2.25rem); /* text-2xl to 4xl */
+  font-weight: 600; /* font-semibold */
+  letter-spacing: -0.025em; /* tracking-tight */
+  line-height: 1.1;
 }
 
 .ui-heading-row {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.36em;
+}
+
+.ui-title-accent {
+  color: var(--ui-primary);
+  margin-left: 0.25em;
 }
 
 .ui-subtitle {

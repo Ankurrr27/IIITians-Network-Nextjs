@@ -8,6 +8,7 @@ import TeamMember from "@/models/TeamMember";
 import type { ITeamMember } from "@/types";
 import { Suspense } from "react";
 import TeamClient from "./TeamClient";
+import LogoLoader from "@/components/LogoLoader";
 
 export const metadata: Metadata = {
   title: "Our Team",
@@ -29,7 +30,7 @@ export default async function TeamPage() {
   return (
     <Suspense fallback={
       <div className="flex h-screen items-center justify-center bg-white">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
+        <LogoLoader text="Loading team..." />
       </div>
     }>
       <TeamClient initialMembers={serialize(members) as unknown as ITeamMember[]} />

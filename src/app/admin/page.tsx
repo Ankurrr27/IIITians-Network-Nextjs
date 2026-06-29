@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, LockKeyhole, ShieldCheck } from "lucide-react";
 import api from "@/lib/apiClient";
+import LogoLoader from "@/components/LogoLoader";
 
 function AdminLoginPageContent() {
   const router = useRouter();
@@ -127,9 +128,9 @@ function AdminLoginPageContent() {
 export default function AdminLoginPage() {
   return (
     <Suspense fallback={
-      <main className="flex min-h-screen items-center justify-center bg-[linear-gradient(135deg,_#0f172a_0%,_#1e1b4b_40%,_#0f172a_100%)]">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-slate-700 border-t-emerald-500" />
-      </main>
+      <div className="flex h-screen items-center justify-center">
+        <LogoLoader text="Loading admin..." />
+      </div>
     }>
       <AdminLoginPageContent />
     </Suspense>

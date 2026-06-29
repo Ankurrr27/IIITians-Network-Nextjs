@@ -6,6 +6,14 @@ import {
   Handshake,
   FileText,
   Megaphone,
+"use client";
+import { useEffect, useMemo, useState, Suspense } from "react";
+import {
+  BookOpenText,
+  Building2,
+  Handshake,
+  FileText,
+  Megaphone,
   Sparkles,
   Users,
   UserPlus,
@@ -14,6 +22,7 @@ import {
 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import GuideFlowSection from "./components/GuideFlowSection";
+import LogoLoader from "@/components/LogoLoader";
 
 interface FlowTab {
   id: string;
@@ -197,17 +206,6 @@ const flowTabs: FlowTab[] = [
 ];
 
 export default function GuidePage() {
-  return (
-    <Suspense fallback={
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
-      </div>
-    }>
-      <GuidePageClient />
-    </Suspense>
-  );
-}
-
 function GuidePageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
