@@ -150,7 +150,7 @@ function OpportunitiesPageInner() {
           <div className="max-w-3xl">
             <h1 className={`text-2xl font-semibold tracking-tight sm:text-4xl ${isDarkMode ? "text-white" : "text-slate-900"}`}>
               Opportunities Across The{" "}
-              <span className="text-violet-600 dark:text-violet-600 font-semibold">IIIT Network</span>
+              <span className="text-violet-600 dark:text-violet-600 font-semibold">IIITians Network</span>
             </h1>
             <p className={`mt-3 text-sm leading-6 ${isDarkMode ? "text-slate-400" : "text-slate-600 font-semibold"}`}>
               Discover internships, research positions, open source programs, startup roles, hackathons, and full-time opportunities from recruiters hiring across India's IIIT ecosystem.
