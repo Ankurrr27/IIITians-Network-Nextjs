@@ -66,12 +66,13 @@ export default function OpportunitiesSection() {
   };
 
   return (
-    <section className="bg-slate-50/50 py-10 sm:py-16 border-y border-slate-100">
+    <section className="bg-slate-50/50 py-8 sm:py-16 border-y border-slate-100">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div className="text-left">
-            <h2 className="mt-1 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-slate-900">
-              Explore Community Opportunities
+            <h2 className="mt-0 sm:mt-4 text-xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
+              Explore{" "}
+              <span className="text-indigo-600"> Opportunities</span>
             </h2>
             
             {/* Desktop Tabs */}
@@ -117,12 +118,12 @@ export default function OpportunitiesSection() {
         </div>
 
         {/* Mobile Dropdown */}
-        <div className="mt-6 sm:hidden px-4">
+        <div className="mt-3 sm:hidden px-4">
           <div className="relative">
             <select
               value={activeTab}
               onChange={(e) => setActiveTab(e.target.value as Category)}
-              className="block w-full appearance-none rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-extrabold text-slate-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="block w-full appearance-none rounded-lg border border-slate-200/80 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             >
               {tabs.map((tab) => (
                 <option key={tab.name} value={tab.name}>
@@ -130,8 +131,8 @@ export default function OpportunitiesSection() {
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
-              <svg className="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+              <svg className="h-3.5 w-3.5 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
               </svg>
             </div>
@@ -139,11 +140,11 @@ export default function OpportunitiesSection() {
         </div>
 
         {/* Tab content listings */}
-        <div className="mt-6 sm:mt-8 grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 -mx-4 sm:mx-0">
+        <div className="mt-4 sm:mt-8 grid gap-3 sm:gap-6 md:grid-cols-2 lg:grid-cols-3 -mx-4 sm:mx-0">
           {data[activeTab].map((opp, index) => (
             <div
               key={index}
-              className="flex flex-col justify-between sm:rounded-xl border-y sm:border-y-0 sm:border border-slate-200/80 bg-white px-4 py-5 sm:p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
+              className="flex flex-col justify-between sm:rounded-xl border-y sm:border-y-0 sm:border border-slate-200/80 bg-white px-4 py-3.5 sm:p-6 shadow-sm transition hover:shadow-md hover:border-slate-300 duration-200"
             >
               <div>
                 <div className="flex flex-wrap items-center gap-2">
@@ -161,14 +162,14 @@ export default function OpportunitiesSection() {
                     </span>
                   )}
                 </div>
-                <h3 className="mt-3 sm:mt-4 text-sm sm:text-base font-extrabold text-slate-950 tracking-tight">{opp.title}</h3>
+                <h3 className="mt-2 sm:mt-4 text-sm sm:text-base font-extrabold text-slate-950 tracking-tight">{opp.title}</h3>
                 <p className="text-[10px] sm:text-xs text-slate-400 font-bold uppercase tracking-wide mt-0.5">{opp.provider}</p>
-                <p className="mt-2.5 sm:mt-3.5 text-xs sm:text-sm leading-relaxed text-slate-600 font-medium">
+                <p className="mt-2 sm:mt-3.5 text-xs sm:text-sm leading-relaxed text-slate-600 font-medium line-clamp-3 sm:line-clamp-none">
                   {opp.details}
                 </p>
               </div>
 
-              <div className="mt-4 sm:mt-6 border-t border-slate-100 pt-4 flex justify-end">
+              <div className="mt-3 sm:mt-6 border-t border-slate-100 pt-2.5 sm:pt-4 flex justify-end">
                 <Link
                   href="/opportunities"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition"
@@ -182,13 +183,13 @@ export default function OpportunitiesSection() {
         </div>
 
         {/* Mobile Global CTA */}
-        <div className="flex sm:hidden flex-col items-start gap-4 mt-8 px-4">
+        <div className="flex sm:hidden flex-col items-start gap-2.5 mt-5 px-4">
           <Link
             href="/opportunities"
-            className="inline-flex justify-between w-full items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-4 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
+            className="inline-flex justify-between w-full items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 active:scale-95"
           >
             <span>Explore the Talent Marketplace</span>
-            <ChevronRight size={16} className="text-slate-400 shrink-0" />
+            <ChevronRight size={14} className="text-slate-400 shrink-0" />
           </Link>
           <p className="text-[11px] text-slate-500 font-semibold text-left leading-relaxed">
             Are you a recruiter?{" "}

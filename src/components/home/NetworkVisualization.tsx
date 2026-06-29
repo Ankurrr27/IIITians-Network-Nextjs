@@ -193,8 +193,9 @@ export default function NetworkVisualization() {
   const { isDarkMode } = useThemeMode();
   const [dbColleges, setDbColleges] = useState<ICollege[]>([]);
   const [dbClubs, setDbClubs] = useState<IClub[]>([]);
-  const [selectedCampus, setSelectedCampus] = useState<string | null>("IIIT Allahabad");
+  const [selectedCampus, setSelectedCampus] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [detailTab, setDetailTab] = useState<"programs" | "clubs" | "events">("programs");
 
   // Fetch db colleges to enrich metadata
   useEffect(() => {
@@ -257,13 +258,13 @@ export default function NetworkVisualization() {
     const extra = campusExtraDetails[selectedCampus] || getFallbackDetails(selectedCampus);
     const campusObj = iiitCampuses.find(c => c.name === selectedCampus) || iiitCampuses.find(c => c.name.includes(selectedCampus));
 
-    let clubs: { name: string; link?: string; logo?: string }[] = extra.clubs.map(name => ({ name }));
+    // Only use real DB club data — no hardcoded fallback
+    let clubs: { name: string; link?: string }[] = [];
     if (matchedDbCollege) {
       const collegeClubs = dbClubs.filter(c => c.collegeId === matchedDbCollege._id);
       if (collegeClubs.length > 0) {
         clubs = collegeClubs.map(c => ({ name: c.name, link: `/clubs/${c._id}` }));
       } else if (matchedDbCollege.clubLinks && matchedDbCollege.clubLinks.length > 0) {
-        // Merge DB club links with fallback clubs if DB has very few, or just use DB ones
         clubs = matchedDbCollege.clubLinks.map(c => ({ name: c.name, link: c.link }));
       }
     }
@@ -292,6 +293,7 @@ export default function NetworkVisualization() {
 
   const handleCardClick = (campus: string) => {
     setSelectedCampus((prev) => (prev === campus ? null : campus));
+    setDetailTab("programs");
   };
 
   return (
@@ -302,8 +304,9 @@ export default function NetworkVisualization() {
     }`}>
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="text-left">
-          <h2 className="mt-1 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-            A Nationwide Multi-IIIT Ecosystem
+          <h2 className="mt-1 sm:mt-4 text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight text-slate-900 dark:text-slate-100">
+            A Nationwide{" "}
+            <span className="text-indigo-600"> Ecosystem</span>
           </h2>
         </div>
 
@@ -313,37 +316,38 @@ export default function NetworkVisualization() {
             ? "sm:bg-slate-900/20 sm:border-slate-800"
             : "sm:bg-white sm:border-slate-200/80"
         }`}>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-8 gap-3 sm:gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-8 gap-2 sm:gap-4">
             <div className="hidden sm:block">
               <h3 className="text-lg sm:text-xl font-extrabold">Explore Campus Hubs</h3>
               <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5 sm:mt-1">Direct community directories</p>
             </div>
             
-            <div className="flex-1 max-w-sm w-full relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search IIITs..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full pl-9 pr-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium ${
-                  isDarkMode 
-                    ? "bg-slate-900/50 border-slate-700/80 text-slate-200 placeholder:text-slate-500 focus:bg-slate-900/80" 
-                    : "bg-slate-50/50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white"
-                }`}
-              />
+            <div className="flex items-center gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-slate-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search IIITs..." 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full pl-7 sm:pl-9 pr-3 py-1.5 sm:py-2.5 text-[11px] sm:text-sm rounded-lg sm:rounded-xl border focus:outline-none focus:ring-2 focus:ring-indigo-500 transition font-medium ${
+                    isDarkMode 
+                      ? "bg-slate-900/50 border-slate-700/80 text-slate-200 placeholder:text-slate-500 focus:bg-slate-900/80" 
+                      : "bg-slate-50/50 border-slate-200 text-slate-800 placeholder:text-slate-400 focus:bg-white"
+                  }`}
+                />
+              </div>
+              <Link
+                href="/colleges"
+                className="inline-flex items-center gap-0.5 text-[10px] sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition shrink-0"
+              >
+                All
+                <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+              </Link>
             </div>
-
-            <Link
-              href="/colleges"
-              className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 transition shrink-0"
-            >
-              Explore Full Directory
-              <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </Link>
           </div>
 
-          <div className="grid grid-cols-2 gap-1.5 sm:gap-3 sm:grid-cols-4 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-1 sm:gap-3 sm:grid-cols-4 lg:grid-cols-5">
             {displayedCampuses.map((campus, idx) => {
               const isActive = selectedCampus === campus;
               const hideOnMobile = searchQuery.trim().length === 0 && idx >= 6;
@@ -352,21 +356,21 @@ export default function NetworkVisualization() {
                   key={campus}
                   type="button"
                   onClick={() => handleCardClick(campus)}
-                  className={`${hideOnMobile ? "hidden sm:flex" : "flex"} items-center justify-between rounded-xl border p-2 sm:p-3.5 text-[10px] sm:text-xs font-extrabold shadow-sm transition hover:-translate-y-0.5 duration-200 text-left ${
+                  className={`${hideOnMobile ? "hidden sm:flex" : "flex"} items-center justify-between rounded-lg sm:rounded-xl border px-2 py-1.5 sm:p-3.5 text-[10px] sm:text-xs font-bold shadow-sm transition hover:-translate-y-0.5 duration-200 text-left ${
                     isActive
                       ? isDarkMode
-                        ? "border-indigo-500 bg-indigo-950/40 text-indigo-400 font-black"
-                        : "border-indigo-300 bg-indigo-50 text-indigo-700 font-black"
+                        ? "border-indigo-500 bg-indigo-950/40 text-indigo-400"
+                        : "border-indigo-300 bg-indigo-50 text-indigo-700"
                       : isDarkMode
                         ? "border-slate-800/80 bg-slate-900/20 text-slate-300 hover:border-indigo-900/40 hover:bg-indigo-950/20 hover:text-indigo-400"
-                        : "border-slate-100 bg-slate-50/30 text-slate-700 hover:border-indigo-100 hover:bg-indigo-50/50 hover:text-indigo-700"
+                        : "border-slate-100 bg-slate-50/30 text-slate-600 hover:border-indigo-100 hover:bg-indigo-50/50 hover:text-indigo-700"
                   }`}
                 >
-                  <span>{campus}</span>
-                  <ChevronRight className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${
+                  <span className="truncate">{campus}</span>
+                  <ChevronRight className={`h-3 w-3 shrink-0 ml-1 transition-transform duration-200 ${
                     isActive
                       ? "rotate-90 text-indigo-600 dark:text-indigo-400"
-                      : "text-slate-450"
+                      : "text-slate-400"
                   }`} />
                 </button>
               );
@@ -444,7 +448,105 @@ export default function NetworkVisualization() {
                   </div>
 
                   {/* Body Content */}
-                  <div className="mt-6 grid gap-6 md:grid-cols-12">
+
+                  {/* ── MOBILE: tab selector for Programs / Clubs / Events ── */}
+                  <div className="mt-3 sm:hidden">
+                    {/* Description */}
+                    <p className="mb-3 text-xs leading-relaxed font-medium text-slate-500 dark:text-slate-400">
+                      {activeDetails.description}
+                    </p>
+                    {/* Tab pills — hide Clubs tab if no DB clubs */}
+                    <div className={`inline-flex w-full gap-0.5 rounded-lg border p-0.5 ${
+                      isDarkMode ? "bg-slate-900/40 border-slate-800" : "bg-slate-100/80 border-slate-200"
+                    }`}>
+                      {([
+                        { key: "programs", label: "Programs", icon: BookOpen },
+                        ...(activeDetails.clubs.length > 0 ? [{ key: "clubs" as const, label: "Clubs", icon: Building2 }] : []),
+                        { key: "events", label: "Events", icon: Sparkles },
+                      ] as { key: "programs" | "clubs" | "events"; label: string; icon: React.ElementType }[]).map(({ key, label, icon: Icon2 }) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setDetailTab(key)}
+                          className={`flex flex-1 items-center justify-center gap-1 rounded-md px-1.5 py-1 text-[10px] font-bold transition-all duration-200 ${
+                            detailTab === key
+                              ? "bg-indigo-600 text-white shadow-sm"
+                              : isDarkMode
+                                ? "text-slate-400 hover:text-slate-200"
+                                : "text-slate-500 hover:text-slate-700"
+                          }`}
+                        >
+                          <Icon2 className="h-2.5 w-2.5 shrink-0" />
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Animated tab content */}
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={detailTab}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className="mt-2"
+                      >
+                        {detailTab === "programs" && (
+                          <ul className="space-y-1.5">
+                            {activeDetails.programs.map((prog) => (
+                              <li key={prog} className="flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-350">
+                                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                {prog}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {detailTab === "clubs" && (
+                          <ul className="space-y-2">
+                            {activeDetails.clubs.slice(0, 5).map((club, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
+                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                {club.link ? (
+                                  <Link href={club.link} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+                                    {club.name}
+                                    <ExternalLink size={10} className="opacity-50" />
+                                  </Link>
+                                ) : (
+                                  <span>{club.name}</span>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+
+                        {detailTab === "events" && (
+                          <ul className="space-y-2">
+                            {activeDetails.events.slice(0, 5).map((event, idx) => (
+                              <li key={idx} className="flex items-center justify-between gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
+                                <div className="flex items-start gap-2">
+                                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                                  <span>{event.title}</span>
+                                </div>
+                                {event.url && (
+                                  <Link href={event.url} target="_blank" rel="noopener noreferrer"
+                                    className="shrink-0 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-900/30 text-rose-500 transition-colors"
+                                    title="View Event Image"
+                                  >
+                                    <ExternalLink size={12} />
+                                  </Link>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* ── DESKTOP: original full grid ── */}
+                  <div className="hidden sm:grid mt-6 gap-6 md:grid-cols-12">
                     {/* Column 1: Info & Stats */}
                     <div className="md:col-span-7 space-y-6">
                       <div>
@@ -453,33 +555,33 @@ export default function NetworkVisualization() {
                       </div>
 
                       {/* Info Cards */}
-                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
+                      <div className="grid grid-cols-3 gap-3">
+                        <div className={`rounded-xl border p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
-                            <Clock className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-500 shrink-0" />
-                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate">Estd</span>
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <Clock className="h-4 w-4 text-indigo-500 shrink-0" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Estd</span>
                           </div>
-                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.established}</p>
+                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.established}</p>
                         </div>
-                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
+                        <div className={`rounded-xl border p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
-                            <Users className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-500 shrink-0" />
-                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate">Intake</span>
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <Users className="h-4 w-4 text-emerald-500 shrink-0" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Intake</span>
                           </div>
-                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.intake}</p>
+                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.intake}</p>
                         </div>
-                        <div className={`rounded-xl border p-2 sm:p-3.5 transition ${
+                        <div className={`rounded-xl border p-3.5 transition ${
                           isDarkMode ? "bg-slate-900/30 border-slate-800/80" : "bg-white/80 border-slate-200/50"
                         }`}>
-                          <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
-                            <BookOpen className="hidden sm:inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-500 shrink-0" />
-                            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate" title="Students">Students</span>
+                          <div className="flex items-center gap-2 text-slate-400">
+                            <BookOpen className="h-4 w-4 text-indigo-500 shrink-0" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider">Students</span>
                           </div>
-                          <p className="mt-1 text-sm sm:text-base font-extrabold tracking-tight">{activeDetails.studentStrength}</p>
+                          <p className="mt-1 text-base font-extrabold tracking-tight">{activeDetails.studentStrength}</p>
                         </div>
                       </div>
 
@@ -488,49 +590,42 @@ export default function NetworkVisualization() {
                         <h5 className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 dark:text-slate-500">Programs Offered</h5>
                         <div className="mt-2.5 flex flex-wrap gap-2">
                           {activeDetails.programs.map((prog) => (
-                            <span
-                              key={prog}
-                              className={`rounded-full px-3 py-1 text-[11px] font-extrabold border ${
-                                isDarkMode
-                                  ? "bg-slate-900 border-slate-800 text-slate-300"
-                                  : "bg-white border-slate-200 text-slate-650"
-                              }`}
-                            >
-                              {prog}
-                            </span>
+                            <span key={prog} className={`rounded-full px-3 py-1 text-[11px] font-extrabold border ${
+                              isDarkMode ? "bg-slate-900 border-slate-800 text-slate-300" : "bg-white border-slate-200 text-slate-650"
+                            }`}>{prog}</span>
                           ))}
                         </div>
                       </div>
                     </div>
 
-                    {/* Column 2: Clubs & Events lists */}
+                    {/* Column 2: Clubs & Events */}
                     <div className="md:col-span-5 grid gap-5 sm:grid-cols-2 md:grid-cols-1">
-                      {/* Clubs */}
                       <div>
-                        <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                        <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-indigo-600 uppercase tracking-wider">
                           <Building2 className="h-4 w-4" />
                           Student Clubs
                         </h5>
-                        <ul className="mt-3.5 space-y-2.5">
-                          {activeDetails.clubs.slice(0, 5).map((club, idx) => (
-                            <li key={idx} className="flex items-start gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
-                              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
-                              {club.link ? (
-                                <Link href={club.link} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
-                                  {club.name}
-                                  <ExternalLink size={10} className="opacity-50" />
-                                </Link>
-                              ) : (
-                                <span>{club.name}</span>
-                              )}
-                            </li>
-                          ))}
-                        </ul>
+                        {activeDetails.clubs.length > 0 ? (
+                          <ul className="mt-3.5 space-y-2.5">
+                            {activeDetails.clubs.slice(0, 5).map((club, idx) => (
+                              <li key={idx} className="flex items-start gap-2 text-xs font-semibold text-slate-600 dark:text-slate-350">
+                                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-500" />
+                                {club.link ? (
+                                  <Link href={club.link} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-600 transition-colors flex items-center gap-1">
+                                    {club.name}<ExternalLink size={10} className="opacity-50" />
+                                  </Link>
+                                ) : <span>{club.name}</span>}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="mt-3 text-xs font-medium text-slate-400 dark:text-slate-500 italic">
+                            No clubs registered yet
+                          </p>
+                        )}
                       </div>
-
-                      {/* Events */}
                       <div className="pt-2 sm:pt-0">
-                        <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
+                        <h5 className="flex items-center gap-1.5 text-xs font-extrabold text-rose-600 uppercase tracking-wider">
                           <Sparkles className="h-4 w-4" />
                           Campus Events
                         </h5>
@@ -542,10 +637,7 @@ export default function NetworkVisualization() {
                                 <span>{event.title}</span>
                               </div>
                               {event.url && (
-                                <Link
-                                  href={event.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link href={event.url} target="_blank" rel="noopener noreferrer"
                                   className="shrink-0 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-900/30 text-rose-500 transition-colors"
                                   title="View Event Image"
                                 >

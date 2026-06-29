@@ -17,35 +17,37 @@ import NetworkReachSection from "@/components/home/NetworkReachSection";
 
 export const metadata: Metadata = {
   title: "IIITians Network Connect — Home",
-  description: "Connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.",
+  description:
+    "Connecting IIIT students, alumni, and aspirants across India through data, collaboration, and shared opportunities.",
 };
 
 export default function HomePage() {
   const orgSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "IIITians Network",
-    "url": "https://iiitiansnetwork.in",
-    "logo": "https://iiitiansnetwork.in/favicon-32x32.png",
-    "description": "An autonomous student-led community connecting all 31 Indian Institutes of Information Technology (IIITs) across India.",
-    "sameAs": [
+    name: "IIITians Network",
+    url: "https://iiitiansnetwork.in",
+    logo: "https://iiitiansnetwork.in/favicon-32x32.png",
+    description:
+      "An autonomous student-led community connecting all 31 Indian Institutes of Information Technology (IIITs) across India.",
+    sameAs: [
       "https://linkedin.com/company/iiitians-network",
       "https://instagram.com/iiitiansnetwork",
       "https://x.com/iiitiansnetwork",
-      "https://www.youtube.com/@iiitiansnetwork"
-    ]
+      "https://www.youtube.com/@iiitiansnetwork",
+    ],
   };
 
   const webSiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "IIITians Network Connect",
-    "url": "https://iiitiansnetwork.in",
-    "potentialAction": {
+    name: "IIITians Network Connect",
+    url: "https://iiitiansnetwork.in",
+    potentialAction: {
       "@type": "SearchAction",
-      "target": "https://iiitiansnetwork.in/colleges?search={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
+      target: "https://iiitiansnetwork.in/colleges?search={search_term_string}",
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (
@@ -63,17 +65,18 @@ export default function HomePage() {
       {/* 1. Hero Section */}
       <HeroSection />
 
+      {/* 4. Community Highlights & About */}
+      <AboutSection />
       {/* 2. IIIT Network Visualization */}
       <NetworkVisualization />
 
-      {/* 3. What Makes IIITians Network Different (Stakeholders) */}
-      <StakeholdersSection />
-
-      {/* 4. Community Highlights & About */}
-      <AboutSection />
+      
 
       {/* 5. Explore Your IIIT */}
       <ExploreYourIIITSection />
+
+      {/* 3. What Makes IIITians Network Different (Stakeholders) */}
+      <StakeholdersSection />
 
       {/* 6. Events Preview Section */}
       <EventsPreviewSection />
@@ -83,7 +86,6 @@ export default function HomePage() {
 
       {/* 8. Opportunities Section */}
       <OpportunitiesSection />
-
 
       {/* 10. Collaborate With Us */}
       <CollaborateSection />
