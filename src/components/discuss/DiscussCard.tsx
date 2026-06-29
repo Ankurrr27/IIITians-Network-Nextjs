@@ -57,7 +57,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
               href={post.actionLink}
               target="_blank"
               rel="noreferrer"
-              className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-sm bg-slate-900 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
+              className="mt-0.5 inline-flex w-fit items-center gap-1 rounded-xl bg-indigo-600 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
             >
               Open link <ExternalLink className="h-2.5 w-2.5" />
             </a>
@@ -122,7 +122,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
                 href={post.actionLink}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex w-fit items-center gap-1 rounded-sm bg-slate-900 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
+                className="inline-flex w-fit items-center gap-1 rounded-xl bg-indigo-600 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wide text-white transition hover:bg-indigo-700"
               >
                 Open link <ExternalLink className="h-3 w-3" />
               </a>

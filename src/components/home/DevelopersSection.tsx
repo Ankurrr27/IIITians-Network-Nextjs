@@ -129,7 +129,7 @@ export default function DevelopersSection() {
                 target="_blank"
                 rel="noreferrer"
                 title={`${dev.name}'s LinkedIn Profile`}
-                className="text-[#0077b5] hover:text-[#005582] transition-colors p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px]"
+                className="text-[#0077b5] hover:text-[#005582] transition-colors p-2 hover:bg-slate-100 dark:hover:bg-slate-100 rounded-full shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px]"
               >
                 <Linkedin className="h-5 w-5" />
               </a>
@@ -203,7 +203,7 @@ export default function DevelopersSection() {
                     rel="noreferrer"
                     title={`${dev.name}'s LinkedIn Profile`}
                     onClick={(e) => e.stopPropagation()}
-                    className="text-[#0077b5] hover:text-[#005582] transition-colors p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px]"
+                    className="text-[#0077b5] hover:text-[#005582] transition-colors p-2 hover:bg-slate-100 dark:hover:bg-slate-100 rounded-full shrink-0 flex items-center justify-center min-h-[44px] min-w-[44px]"
                   >
                     <Linkedin className="h-5 w-5" />
                   </a>

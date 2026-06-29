@@ -114,19 +114,21 @@ export default function CollegeGalleryPage() {
 
         {/* ─── Unified Toolbar: Add + Filter + Search ─── */}
         <div className="mb-4 sm:mb-6 flex items-center gap-2">
-          {/* Add / Upload button */}
-          <button
-            onClick={() => { setShowUpload(!showUpload); if (isFilterOpen) setIsFilterOpen(false); }}
-            className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 sm:px-4 text-xs font-semibold transition ${
-              showUpload
-                ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                : "border-indigo-100 bg-white text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50"
-            }`}
-          >
-            <Upload className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Add Photos</span>
-            <span className="sm:hidden">Add</span>
-          </button>
+          {/* Search bar */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search photos..."
+              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-4 text-xs sm:text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
 
           {/* Filter toggle button */}
           <button
@@ -144,21 +146,19 @@ export default function CollegeGalleryPage() {
             )}
           </button>
 
-          {/* Search bar */}
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-slate-400" />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search photos..."
-              className="w-full rounded-full border border-slate-200 bg-white py-2 pl-8 pr-4 text-xs sm:text-sm outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-            />
-            {query && (
-              <button onClick={() => setQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
+          {/* Add / Upload button */}
+          <button
+            onClick={() => { setShowUpload(!showUpload); if (isFilterOpen) setIsFilterOpen(false); }}
+            className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-full border px-3 sm:px-4 text-xs font-semibold transition ${
+              showUpload
+                ? "border-indigo-300 bg-indigo-50 text-indigo-700"
+                : "border-indigo-100 bg-white text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50"
+            }`}
+          >
+            <Upload className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">Add Photos</span>
+            <span className="sm:hidden">Add</span>
+          </button>
         </div>
 
         {/* ─── Filter Dropdown Panel ─── */}
