@@ -1912,11 +1912,11 @@ export default function MerchandiseClient({
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
             onClick={() => setIsCartOpen(false)}
           />
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex max-w-full pl-10">
-            <div className={`pointer-events-auto w-screen max-w-md transform transition-all duration-300 animate-slide-in-right ${
-              isDarkMode ? "bg-[#0d1424] text-white" : "bg-white text-slate-900"
-            }`}>
-              <div className="flex h-full flex-col border-l border-slate-200 dark:border-slate-850">
+          <div className="pointer-events-none absolute inset-0 flex max-w-full justify-end sm:items-center sm:justify-center p-0 sm:p-4">
+            <div className={`pointer-events-auto w-full sm:max-w-md transform transition-all duration-300 animate-slide-in-right ${
+              isDarkMode ? "bg-[#0d1424] text-white sm:border sm:border-slate-850" : "bg-white text-slate-900 sm:border sm:border-slate-200"
+            } flex flex-col h-full sm:h-auto sm:max-h-[calc(100vh-2rem)] rounded-none sm:rounded-3xl shadow-2xl`}>
+              <div className="flex h-full sm:max-h-[calc(100vh-2rem)] flex-col">
                 {/* Header */}
                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 p-5">
                   <div className="flex items-center gap-2">
@@ -1931,8 +1931,8 @@ export default function MerchandiseClient({
                   </button>
                 </div>
 
-                {/* Items */}
-                <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                {/* Items container — scrolls, flex-grow */}
+                <div className="flex-grow overflow-y-auto p-5 space-y-4">
                   {cart.length === 0 ? (
                     <div className="text-center py-20">
                       <ShoppingBag className="mx-auto h-12 w-12 text-slate-400 mb-4" />
@@ -2020,7 +2020,7 @@ export default function MerchandiseClient({
 
                 {/* Footer Subtotal and Checkout link */}
                 {cart.length > 0 && (
-                  <div className="border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/20 p-5 space-y-4">
+                  <div className="shrink-0 border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/20 p-5 space-y-4">
                     <div className="space-y-1.5">
                       <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
                         <span>Subtotal</span>
