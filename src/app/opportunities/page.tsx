@@ -11,7 +11,6 @@ import api from "@/lib/apiClient";
 import { Search, X, ChevronDown, PlusCircle } from "lucide-react";
 import OpportunityCard from "@/components/opportunities/OpportunityCard";
 import PostOpportunityModal from "@/components/opportunities/PostOpportunityModal";
-import ApplyModal from "@/components/opportunities/ApplyModal";
 import RecruiterCTA from "@/components/opportunities/RecruiterCTA";
 import StartupShowcase from "@/components/opportunities/StartupShowcase";
 
@@ -50,8 +49,6 @@ function OpportunitiesPageInner() {
   const [activeTab, setActiveTab] = useState<TabValue>(CATEGORY_ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPostModal, setShowPostModal] = useState(false);
-  const [showApplyModal, setShowApplyModal] = useState(false);
-  const [applyTarget, setApplyTarget] = useState<any | null>(null);
 
   const loadOpportunities = async () => {
     setLoading(true);
@@ -93,8 +90,18 @@ function OpportunitiesPageInner() {
   }, [opportunities, activeTab, searchQuery]);
 
   const handleApply = (opp: any) => {
-    setApplyTarget(opp);
-    setShowApplyModal(true);
+    if (opp.applicationLink) {
+      const trimmed = opp.applicationLink.trim();
+      let url = trimmed;
+      if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://") && !trimmed.startsWith("mailto:")) {
+        if (trimmed.includes("@")) {
+          url = `mailto:${trimmed}`;
+        } else {
+          url = `https://${trimmed}`;
+        }
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const jobPostingSchemas = useMemo(() => {
@@ -320,16 +327,6 @@ function OpportunitiesPageInner() {
       <PostOpportunityModal
         open={showPostModal}
         onClose={() => setShowPostModal(false)}
-        isDarkMode={isDarkMode}
-      />
-
-      <ApplyModal
-        open={showApplyModal}
-        opportunity={applyTarget}
-        onClose={() => {
-          setShowApplyModal(false);
-          setApplyTarget(null);
-        }}
         isDarkMode={isDarkMode}
       />
     </div>
