@@ -1345,7 +1345,8 @@ export default function MerchandiseClient({
       addParams.set("return_to", "/cart");
       addParams.set("checkout[email]", trimmedEmail);
 
-      const redirectUrl = `https://ksverse.in/cart/clear?return_to=${encodeURIComponent(`/cart/add?${addParams.toString()}`)}`;
+      const utmParams = "utm_source=iiitians-network&utm_medium=merch-store&utm_campaign=iiit-drops";
+      const redirectUrl = `https://ksverse.in/cart/clear?${utmParams}&return_to=${encodeURIComponent(`/cart/add?${addParams.toString()}`)}`;
 
       setRedirectState({
         active: true,
