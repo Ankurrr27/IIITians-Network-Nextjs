@@ -19,30 +19,6 @@ export async function GET(req: NextRequest) {
   try {
     await connectDB();
 
-    // Auto-seed database with mock listings if empty
-    const count = await Opportunity.countDocuments();
-    if (count === 0) {
-      const { opportunities: seedData } = await import("@/data/opportunities");
-      const prepared = seedData.map((opp) => ({
-        title: opp.title,
-        company: opp.company,
-        category: opp.category,
-        location: opp.location,
-        workMode: opp.workMode,
-        compensation: opp.compensation,
-        deadline: opp.deadline,
-        description: opp.description,
-        skills: opp.skills,
-        applicationLink: opp.applicationLink,
-        recruiterEmail: "iiitiansnetwork@gmail.com",
-        recruiterVerified: opp.recruiterVerified ?? false,
-        companyVerified: opp.companyVerified ?? false,
-        status: "approved",
-        featured: opp.featured ?? false,
-      }));
-      await Opportunity.insertMany(prepared);
-    }
-
     const url = req.nextUrl;
     const category = url.searchParams.get("category");
     const search = url.searchParams.get("search");
