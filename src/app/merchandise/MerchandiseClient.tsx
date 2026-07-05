@@ -1046,10 +1046,25 @@ export default function MerchandiseClient({
   
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
-  // Freeze background scroll when cart or filter modal is open
+  // Freeze background scroll when any modal is open (bulletproof for iOS Safari)
   useEffect(() => {
-    document.body.style.overflow = (isCartOpen || isFilterOpen || openProduct) ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    const anyModalOpen = isCartOpen || isFilterOpen || !!openProduct;
+    if (anyModalOpen) {
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.overflow = "";
+        window.scrollTo(0, scrollY);
+      };
+    }
   }, [isCartOpen, isFilterOpen, openProduct]);
 
   // Custom Club Order Modal
@@ -1872,10 +1887,11 @@ export default function MerchandiseClient({
 
       {/* ─── Cart Drawer Slide-over Panel ──────────────────────────────────── */}
       {isCartOpen && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-50 overflow-hidden" style={{ touchAction: "none", overscrollBehavior: "none" }}>
           <div
             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
             onClick={() => setIsCartOpen(false)}
+            onTouchMove={(e) => e.preventDefault()}
           />
           <div className="pointer-events-none absolute inset-0 flex max-w-full justify-end sm:items-center sm:justify-center p-0 sm:p-4">
             <div className={`pointer-events-auto w-full sm:max-w-md transform transition-all duration-300 animate-slide-in-right ${
