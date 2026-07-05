@@ -1,0 +1,614 @@
+﻿diff --git a/src/app/merchandise/MerchandiseClient.tsx b/src/app/merchandise/MerchandiseClient.tsx
+index c584fef..3116a78 100644
+--- a/src/app/merchandise/MerchandiseClient.tsx
++++ b/src/app/merchandise/MerchandiseClient.tsx
+@@ -27,7 +27,6 @@ import {
+   Users,
+   HelpCircle,
+   ExternalLink,
+-  SlidersHorizontal,
+ } from "lucide-react";
+ 
+ function getWebsiteFavicon(website?: string) {
+@@ -528,7 +527,7 @@ function ProductModal({
+                         onClick={() => setSelectedSize(s)}
+                         className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
+                           selectedSize === s
+-                            ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-slate-300"
++                            ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
+                             : "border-slate-200 bg-white text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300"
+                         }`}
+                       >
+@@ -823,7 +822,7 @@ function ProductModal({
+                           onClick={() => setSelectedSize(s)}
+                           className={`rounded-xl px-4 py-2 text-xs font-bold border transition ${
+                             selectedSize === s
+-                              ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-slate-300"
++                              ? "border-indigo-600 bg-indigo-50 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400"
+                               : "border-slate-200 bg-white text-slate-700 hover:border-slate-350 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+                           }`}
+                         >
+@@ -1042,7 +1041,6 @@ export default function MerchandiseClient({
+   // Cart
+   const [cart, setCart] = useState<CartItem[]>([]);
+   const [isCartOpen, setIsCartOpen] = useState(false);
+-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+   
+   const [checkoutLoading, setCheckoutLoading] = useState(false);
+ 
+@@ -1345,7 +1343,8 @@ export default function MerchandiseClient({
+       addParams.set("return_to", "/cart");
+       addParams.set("checkout[email]", trimmedEmail);
+ 
+-      const redirectUrl = `https://ksverse.in/cart/clear?return_to=${encodeURIComponent(`/cart/add?${addParams.toString()}`)}`;
++      const utmParams = "utm_source=iiitians-network&utm_medium=merch-store&utm_campaign=iiit-drops";
++      const redirectUrl = `https://ksverse.in/cart/clear?${utmParams}&return_to=${encodeURIComponent(`/cart/add?${addParams.toString()}`)}`;
+ 
+       setRedirectState({
+         active: true,
+@@ -1480,7 +1479,23 @@ export default function MerchandiseClient({
+ 
+         <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6">
+           {/* Header */}
+-          <div className="mb-8 sm:mb-10">
++          <div className="text-center mb-8 sm:mb-10">
++            <div
++              className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.24em] backdrop-blur-md transition-colors duration-300 ${
++                isDarkMode
++                  ? "border-indigo-900/30 bg-slate-900/80 text-indigo-400"
++                  : "border-indigo-100 bg-white/80 text-indigo-700 shadow-sm"
++              }`}
++            >
++              <div className="relative h-4 w-4 flex items-center justify-center overflow-hidden shrink-0">
++                <img
++                  src={isDarkMode ? "/IIITians-Network-Logo-Light.png" : "/IIITians-Network-Logo-Blue.png"}
++                  alt="IIITians Network"
++                  className="h-full w-full object-contain"
++                />
++              </div>
++              Official IIITians Network Merchandise
++            </div>
+             <h1
+               className={`mt-4 text-3xl font-extrabold tracking-tight sm:text-5xl ${
+                 isDarkMode ? "text-white" : "text-slate-900"
+@@ -1489,7 +1504,7 @@ export default function MerchandiseClient({
+               Represent Your IIIT.
+             </h1>
+             <p
+-              className={`mt-2.5 max-w-xl text-xs leading-relaxed sm:text-sm ${
++              className={`mx-auto mt-2.5 max-w-xl text-xs leading-relaxed sm:text-sm ${
+                 isDarkMode ? "text-slate-400" : "text-slate-650 font-semibold"
+               }`}
+             >
+@@ -1497,13 +1512,11 @@ export default function MerchandiseClient({
+             </p>
+           </div>
+ 
+-          {/* ─── Unified Search + Filter + Cart Toolbar ─── */}
+-          <div className="mb-6 flex items-center gap-2 sm:gap-3">
+-            {/* Search bar */}
+-            <div className={`flex flex-1 items-center gap-2 border px-3 sm:px-4 py-2.5 rounded-2xl transition-colors duration-300 ${
+-              isDarkMode
+-                ? "border-slate-800 bg-[#0d1424]"
+-                : "border-slate-200 bg-white shadow-sm"
++          
++          
++          <div className="sm:hidden mb-4 flex items-center gap-2">
++            <div className={`flex flex-1 items-center gap-2 border px-3 py-2 rounded-xl bg-white dark:bg-[#0d1424] ${
++              isDarkMode ? "border-slate-800" : "border-slate-200 shadow-sm"
+             }`}>
+               <Search size={16} className="text-slate-400 shrink-0" />
+               <input
+@@ -1511,44 +1524,19 @@ export default function MerchandiseClient({
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 placeholder="Search IIIT merchandise..."
+-                className="w-full bg-transparent text-xs sm:text-sm font-semibold outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
++                className="w-full bg-transparent text-xs font-semibold outline-none text-slate-750 dark:text-slate-200 placeholder:text-slate-400"
+               />
+               {searchQuery && (
+-                <button onClick={() => setSearchQuery("")} className="text-slate-400 hover:text-slate-600 transition">
++                <button onClick={() => setSearchQuery("")} className="text-slate-400">
+                   <X size={14} />
+                 </button>
+               )}
+             </div>
+-
+-            {/* Filter toggle button */}
+-            <button
+-              onClick={() => setIsFilterOpen(!isFilterOpen)}
+-              className={`relative flex h-10 w-10 sm:h-11 sm:w-auto sm:px-4 shrink-0 items-center justify-center gap-2 rounded-2xl border transition-all duration-200 ${
+-                isFilterOpen
+-                  ? isDarkMode
+-                    ? "border-indigo-500/50 bg-indigo-950/40 text-indigo-400"
+-                    : "border-indigo-200 bg-indigo-50 text-indigo-700"
+-                  : isDarkMode
+-                    ? "border-slate-800 bg-[#0d1424] text-slate-400 hover:border-slate-700 hover:text-slate-300"
+-                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-800 shadow-sm"
+-              }`}
+-            >
+-              <SlidersHorizontal size={16} />
+-              <span className="hidden sm:inline text-xs font-bold">Filters</span>
+-              {(selectedCampus !== "All" || sortBy !== "default" || activeType !== "All") && (
+-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-black text-white">
+-                  {[selectedCampus !== "All", sortBy !== "default", activeType !== "All"].filter(Boolean).length}
+-                </span>
+-              )}
+-            </button>
+-
+-            {/* Cart button */}
+             <button
+               onClick={() => setIsCartOpen(true)}
+-              className="relative flex h-10 w-10 sm:h-11 sm:w-auto sm:px-5 shrink-0 items-center justify-center gap-2 rounded-2xl bg-indigo-600 text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-700 active:scale-95"
++              className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm"
+             >
+-              <ShoppingBag size={16} />
+-              <span className="hidden sm:inline text-xs font-extrabold">Cart</span>
++              <ShoppingBag size={18} />
+               {cart.reduce((a, item) => a + item.quantity, 0) > 0 && (
+                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-black text-white">
+                   {cart.reduce((a, item) => a + item.quantity, 0)}
+@@ -1557,136 +1545,188 @@ export default function MerchandiseClient({
+             </button>
+           </div>
+ 
+-          {/* ─── Filter Dropdown Panel ─── */}
+-          <AnimatePresence>
+-            {isFilterOpen && (
+-              <motion.div
+-                initial={{ opacity: 0, height: 0 }}
+-                animate={{ opacity: 1, height: "auto" }}
+-                exit={{ opacity: 0, height: 0 }}
+-                transition={{ duration: 0.2, ease: "easeInOut" }}
+-                className="overflow-hidden"
+-              >
+-                <div className={`mb-6 rounded-2xl border p-4 sm:p-5 space-y-5 transition-colors duration-300 ${
+-                  isDarkMode
+-                    ? "border-slate-800 bg-slate-900/40"
+-                    : "border-slate-200 bg-white shadow-sm"
++          
++          <div className="sm:hidden mb-6 flex flex-col gap-3">
++            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4">
++              
++              <div className="relative shrink-0">
++                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
++                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-indigo-400" : "border-slate-200 bg-white text-indigo-700 shadow-sm"
+                 }`}>
+-                  <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+-                    {/* College filter */}
+-                    <div className="flex-1 space-y-1.5">
+-                      <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+-                        College
+-                      </label>
+-                      <div className="flex items-center gap-2">
+-                        {activeCampusObj?.logo && (
+-                          <div className="relative h-7 w-7 flex items-center justify-center bg-white rounded-lg p-0.5 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden shrink-0">
+-                            <img
+-                              key={selectedCampus}
+-                              src={activeCampusObj.logo}
+-                              alt={`${selectedCampus} logo`}
+-                              className="h-full w-full object-contain"
+-                              referrerPolicy="no-referrer"
+-                              onError={(e) => {
+-                                const favicon = getWebsiteFavicon(activeCampusObj.website);
+-                                if (favicon && e.currentTarget.src !== favicon) {
+-                                  e.currentTarget.src = favicon;
+-                                } else {
+-                                  e.currentTarget.style.display = "none";
+-                                }
+-                              }}
+-                            />
+-                          </div>
+-                        )}
+-                        <select
+-                          value={selectedCampus}
+-                          onChange={(e) => setSelectedCampus(e.target.value)}
+-                          className={`w-full rounded-xl border px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition cursor-pointer ${
+-                            isDarkMode
+-                              ? "bg-[#0d1424] border-slate-800 text-indigo-400"
+-                              : "bg-slate-50 border-slate-200 text-indigo-700"
+-                          }`}
+-                        >
+-                          <option value="All">All Campuses</option>
+-                          {sortedCampuses.map((c) => (
+-                            <option key={c.id} value={c.name}>{c.name}</option>
+-                          ))}
+-                        </select>
+-                      </div>
+-                    </div>
+-
+-                    {/* Sort filter */}
+-                    <div className="flex-1 space-y-1.5">
+-                      <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+-                        Sort By
+-                      </label>
+-                      <select
+-                        value={sortBy}
+-                        onChange={(e) => setSortBy(e.target.value as SortKey)}
+-                        className={`w-full rounded-xl border px-3 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition cursor-pointer ${
+-                          isDarkMode
+-                            ? "bg-[#0d1424] border-slate-800 text-slate-300"
+-                            : "bg-slate-50 border-slate-200 text-slate-700"
+-                        }`}
+-                      >
+-                        <option value="default">Featured</option>
+-                        <option value="price-asc">Price: Low to High</option>
+-                        <option value="price-desc">Price: High to Low</option>
+-                        <option value="rating">Top Rated</option>
+-                        <option value="az">A → Z</option>
+-                      </select>
+-                    </div>
+-                  </div>
++                  <span>College: {selectedCampus === "All" ? "All" : selectedCampus.replace("IIIT ", "")}</span>
++                  <ChevronDown size={12} />
++                </button>
++                <select
++                  value={selectedCampus}
++                  onChange={(e) => setSelectedCampus(e.target.value)}
++                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
++                >
++                  <option value="All">All Campuses</option>
++                  {sortedCampuses.map((c) => (
++                    <option key={c.id} value={c.name}>{c.name}</option>
++                  ))}
++                </select>
++              </div>
+ 
+-                  {/* Category pills */}
+-                  {productTypes.length > 1 && (
+-                    <div className="space-y-1.5">
+-                      <label className="block text-[10px] font-black uppercase tracking-wider text-slate-400">
+-                        Category
+-                      </label>
+-                      <div className="flex flex-wrap gap-2">
+-                        {["All", ...productTypes].map((type) => (
+-                          <button
+-                            key={type}
+-                            onClick={() => setActiveType(type)}
+-                            className={`rounded-full px-3.5 py-1.5 text-xs font-bold transition-all duration-200 ${
+-                              activeType === type
+-                                ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+-                                : isDarkMode
+-                                  ? "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
+-                                  : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 shadow-sm"
+-                            }`}
+-                          >
+-                            {type}
+-                          </button>
+-                        ))}
+-                      </div>
+-                    </div>
+-                  )}
++              
++              <div className="relative shrink-0">
++                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
++                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-slate-350" : "border-slate-200 bg-white text-slate-700 shadow-sm"
++                }`}>
++                  <span>Sort: {sortBy === "default" ? "Featured" : sortBy === "price-asc" ? "Price: Low to High" : sortBy === "price-desc" ? "Price: High to Low" : sortBy === "rating" ? "Top Rated" : "A-Z"}</span>
++                  <ChevronDown size={12} />
++                </button>
++                <select
++                  value={sortBy}
++                  onChange={(e) => setSortBy(e.target.value as SortKey)}
++                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
++                >
++                  <option value="default">Featured</option>
++                  <option value="price-asc">Price: Low to High</option>
++                  <option value="price-desc">Price: High to Low</option>
++                  <option value="rating">Top Rated</option>
++                  <option value="az">A → Z</option>
++                </select>
++              </div>
+ 
+-                  {/* Reset & close row */}
+-                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
+-                    <button
+-                      onClick={() => {
+-                        setSelectedCampus("All");
+-                        setSortBy("default");
+-                        setActiveType("All");
++              
++              <div className="relative shrink-0">
++                <button className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-extrabold ${
++                  isDarkMode ? "border-slate-800 bg-[#0d1424] text-slate-350" : "border-slate-200 bg-white text-slate-700 shadow-sm"
++                }`}>
++                  <span>Category: {activeType}</span>
++                  <ChevronDown size={12} />
++                </button>
++                <select
++                  value={activeType}
++                  onChange={(e) => setActiveType(e.target.value)}
++                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
++                >
++                  <option value="All">All Categories</option>
++                  {productTypes.map((type) => (
++                    <option key={type} value={type}>{type}</option>
++                  ))}
++                </select>
++              </div>
++            </div>
++          </div>
++{/* Search, Campus Dropdown & Filters Toolbar */}
++          <div className="mb-8 hidden sm:flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between border-b pb-6 border-slate-200/50 dark:border-slate-800/50">
++            {/* Campus Select dropdown */}
++            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
++              <span className="text-xs font-black uppercase tracking-wider text-slate-400 shrink-0">
++                Browse College:
++              </span>
++              <div className="flex items-center gap-2.5">
++                {activeCampusObj?.logo && (
++                  <div className="relative h-7 w-7 flex items-center justify-center bg-white rounded-lg p-0.5 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden shrink-0">
++                    <img
++                      key={selectedCampus}
++                      src={activeCampusObj.logo}
++                      alt={`${selectedCampus} logo`}
++                      className="h-full w-full object-contain"
++                      referrerPolicy="no-referrer"
++                      onError={(e) => {
++                        const favicon = getWebsiteFavicon(activeCampusObj.website);
++                        if (favicon && e.currentTarget.src !== favicon) {
++                          e.currentTarget.src = favicon;
++                        } else {
++                          e.currentTarget.style.display = "none";
++                        }
+                       }}
+-                      className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline transition"
+-                    >
+-                      Reset Filters
+-                    </button>
+-                    <button
+-                      onClick={() => setIsFilterOpen(false)}
+-                      className="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-extrabold text-white shadow-sm transition hover:bg-indigo-700 active:scale-95"
+-                    >
+-                      Done
+-                    </button>
++                    />
+                   </div>
+-                </div>
+-              </motion.div>
+-            )}
+-          </AnimatePresence>
++                )}
++                <select
++                  value={selectedCampus}
++                  onChange={(e) => setSelectedCampus(e.target.value)}
++                  className={`rounded-2xl border px-4 py-2.5 text-xs font-black focus:outline-none focus:ring-2 focus:ring-indigo-500 transition cursor-pointer ${
++                    isDarkMode
++                      ? "bg-[#0d1424] border-slate-800 text-indigo-400 focus:bg-slate-900"
++                      : "bg-white border-slate-200 text-indigo-700 focus:border-indigo-300 shadow-sm"
++                  }`}
++                >
++                  <option value="All">All Campuses</option>
++                  {sortedCampuses.map((c) => (
++                    <option key={c.id} value={c.name}>
++                      {c.name}
++                    </option>
++                  ))}
++                </select>
++            </div>
++          </div>
++
++            <div className="flex flex-col sm:flex-row gap-4 flex-1 lg:justify-end items-stretch sm:items-center">
++              
++              <div className={`flex items-center gap-2 border px-3.5 py-2.5 rounded-2xl bg-white dark:bg-[#0d1424] w-64 ${
++                isDarkMode ? "border-slate-800" : "border-slate-200 shadow-sm"
++              }`}>
++                <Search size={14} className="text-slate-400 shrink-0" />
++                <input
++                  type="text"
++                  value={searchQuery}
++                  onChange={(e) => setSearchQuery(e.target.value)}
++                  placeholder="Search merchandise..."
++                  className="w-full bg-transparent text-xs font-bold outline-none text-slate-700 dark:text-slate-200 placeholder:text-slate-400"
++                />
++                {searchQuery && (
++                  <button onClick={() => setSearchQuery("")} className="text-slate-400">
++                    <X size={12} />
++                  </button>
++                )}
++              </div>
++
++              {/* Sort selector */}
++              <div className="flex items-center gap-3 shrink-0">
++                <ArrowUpDown size={12} className="text-slate-400 shrink-0" />
++                <select
++                  value={sortBy}
++                  onChange={(e) => setSortBy(e.target.value as SortKey)}
++                  className={`appearance-none rounded-2xl border px-4 py-2.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/40 transition cursor-pointer ${
++                    isDarkMode
++                      ? "border-slate-800 bg-[#0d1424] text-slate-350"
++                      : "border-slate-200 bg-white text-slate-700 shadow-sm"
++                  }`}
++                >
++                  <option value="default">Featured</option>
++                  <option value="price-asc">Price: Low to High</option>
++                  <option value="price-desc">Price: High to Low</option>
++                  <option value="rating">Top Rated</option>
++                  <option value="az">A → Z</option>
++                </select>
++              </div>
++
++              {/* Cart button */}
++              <button
++                onClick={() => setIsCartOpen(true)}
++                className="relative inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-5 py-2.5 text-xs font-extrabold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-700 active:scale-95 shrink-0"
++              >
++                <ShoppingBag size={14} />
++                <span>Cart ({cart.reduce((a, item) => a + item.quantity, 0)})</span>
++              </button>
++            </div>
++          </div>
++
++          {/* Department Type Filter Pills */}
++          {productTypes.length > 1 && (
++            <div className="mb-6 hidden sm:flex flex-wrap items-center justify-center gap-2">
++              {["All", ...productTypes].map((type) => (
++                <button
++                  key={type}
++                  onClick={() => setActiveType(type)}
++                  className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all duration-200 ${
++                    activeType === type
++                      ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
++                      : isDarkMode
++                        ? "bg-slate-800/60 text-slate-400 hover:bg-slate-800 hover:text-slate-200"
++                        : "border border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 shadow-sm"
++                  }`}
++                >
++                  {type}
++                </button>
++              ))}
++            </div>
++          )}
+ 
+           
+           
+@@ -1697,7 +1737,7 @@ export default function MerchandiseClient({
+ 
+           {/* Product Grid */}
+           {filteredAndSorted.length === 0 ? (
+-            <div className="text-center py-20 border border-dashed rounded-xl border-slate-300 dark:border-slate-800">
++            <div className="text-center py-20 border border-dashed rounded-3xl border-slate-300 dark:border-slate-800">
+               <ShoppingBag size={48} className="mx-auto text-slate-400 mb-4" />
+               <h3 className="text-sm font-bold">No products found</h3>
+               <p className="text-xs text-slate-400 mt-1">Try tweaking your search or browse options.</p>
+@@ -1712,7 +1752,7 @@ export default function MerchandiseClient({
+                   <div
+                     key={product.id}
+                     onClick={() => setOpenProduct(product)}
+-                    className={`group flex flex-col justify-between rounded-2xl sm:rounded-3xl border overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer ${
++                    className={`group flex flex-col justify-between rounded-2xl sm:rounded-3xl border p-2.5 sm:p-4 transition-all duration-300 hover:shadow-xl hover:border-slate-300 dark:hover:border-slate-700 cursor-pointer ${
+                       isDarkMode
+                         ? "border-slate-850 bg-slate-900/30 text-slate-100 hover:bg-slate-900/50"
+                         : "border-slate-200/60 bg-white text-slate-900 hover:border-indigo-100 hover:shadow-md shadow-sm"
+@@ -1720,7 +1760,7 @@ export default function MerchandiseClient({
+                   >
+                     <div>
+                       {/* Image Frame */}
+-                      <div className={`relative aspect-square w-full flex items-center justify-center overflow-hidden ${
++                      <div className={`relative aspect-square w-full flex items-center justify-center rounded-2xl overflow-hidden mb-4 ${
+                         isDarkMode ? "bg-slate-950/40" : "bg-slate-50"
+                       }`}>
+                         {product.images[0] ? (
+@@ -1729,7 +1769,7 @@ export default function MerchandiseClient({
+                             alt={product.images[0].alt}
+                             width={product.images[0].width}
+                             height={product.images[0].height}
+-                            className="h-full w-full object-contain p-1.5 sm:p-2"
++                            className="h-full w-full object-contain p-1.5 sm:p-2 transition-transform duration-500 group-hover:scale-105"
+                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                           />
+                         ) : (
+@@ -1762,16 +1802,16 @@ export default function MerchandiseClient({
+                       </div>
+ 
+                       {/* Info Details */}
+-                      <div className="px-3 sm:px-4 pt-3 pb-3 sm:pb-4 space-y-1.5">
+-                        <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors duration-200 line-clamp-2 min-h-[36px] sm:min-h-[44px]">
++                      <div className="px-1 space-y-1.5">
++                        <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-indigo-650 dark:group-hover:text-indigo-400 transition-colors duration-200 line-clamp-2 min-h-[32px] sm:min-h-[40px]">
+                           {product.title}
+                         </h3>
+ 
+                         {/* Stars */}
+                         {product.reviewCount > 0 && (
+                           <div className="flex items-center gap-1.5">
+-                            <StarRow rating={product.reviewRating} size={13} />
+-                            <span className={`text-[11px] font-semibold ${isDarkMode ? "text-slate-500" : "text-slate-400"}`}>
++                            <StarRow rating={product.reviewRating} size={11} />
++                            <span className={`text-[10px] font-semibold ${isDarkMode ? "text-slate-500" : "text-slate-400"}`}>
+                               ({product.reviewCount})
+                             </span>
+                           </div>
+@@ -1779,26 +1819,26 @@ export default function MerchandiseClient({
+ 
+                         {/* Pricing row */}
+                         <div className="flex items-baseline flex-wrap gap-x-2">
+-                          <span className="text-base sm:text-xl font-black tracking-tight text-indigo-650 dark:text-indigo-400">
++                          <span className="text-sm sm:text-lg font-black tracking-tight text-indigo-650 dark:text-indigo-400">
+                             {product.minPrice}
+                           </span>
+                           {product.compareAtPrice && (
+-                            <span className="text-[13px] text-slate-450 line-through">
++                            <span className="text-xs text-slate-450 line-through">
+                               {product.compareAtPrice}
+                             </span>
+                           )}
+                           {product.discountPercent && (
+-                            <span className="text-[13px] text-emerald-600 font-extrabold">
++                            <span className="text-xs text-emerald-600 font-extrabold">
+                               {product.discountPercent}% OFF
+                             </span>
+                           )}
+                         </div>
+-                        <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 leading-none mt-1">FREE Delivery by KS Verse</p>
++                        <p className="text-[8px] sm:text-[9px] font-bold text-slate-400 leading-none mt-1">FREE Delivery by KS Verse</p>
+                       </div>
+                     </div>
+ 
+                     {/* Actions */}
+-                    <div className="hidden sm:block mt-5 pt-3.5 mx-3 sm:mx-4 mb-3 sm:mb-4 border-t border-slate-100 dark:border-slate-850/60">
++                    <div className="hidden sm:block mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-850/60">
+                       <button
+                         type="button"
+                         className="w-full inline-flex items-center justify-center gap-1 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-indigo-700 active:scale-95 shadow-sm"
+@@ -1872,11 +1912,11 @@ export default function MerchandiseClient({
+             className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+             onClick={() => setIsCartOpen(false)}
+           />
+-          <div className="pointer-events-none absolute inset-y-0 right-0 flex max-w-full pl-10">
+-            <div className={`pointer-events-auto w-screen max-w-md transform transition-all duration-300 animate-slide-in-right ${
+-              isDarkMode ? "bg-[#0d1424] text-white" : "bg-white text-slate-900"
+-            }`}>
+-              <div className="flex h-full flex-col border-l border-slate-200 dark:border-slate-850">
++          <div className="pointer-events-none absolute inset-0 flex max-w-full justify-end sm:items-center sm:justify-center p-0 sm:p-4">
++            <div className={`pointer-events-auto w-full sm:max-w-md transform transition-all duration-300 animate-slide-in-right ${
++              isDarkMode ? "bg-[#0d1424] text-white sm:border sm:border-slate-850" : "bg-white text-slate-900 sm:border sm:border-slate-200"
++            } flex flex-col h-full sm:h-auto sm:max-h-[calc(100vh-2rem)] rounded-none sm:rounded-3xl shadow-2xl`}>
++              <div className="flex h-full sm:max-h-[calc(100vh-2rem)] flex-col">
+                 {/* Header */}
+                 <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-850 p-5">
+                   <div className="flex items-center gap-2">
+@@ -1891,8 +1931,8 @@ export default function MerchandiseClient({
+                   </button>
+                 </div>
+ 
+-                {/* Items */}
+-                <div className="flex-1 overflow-y-auto p-5 space-y-4">
++                {/* Items container — scrolls, flex-grow */}
++                <div className="flex-grow overflow-y-auto p-5 space-y-4">
+                   {cart.length === 0 ? (
+                     <div className="text-center py-20">
+                       <ShoppingBag className="mx-auto h-12 w-12 text-slate-400 mb-4" />
+@@ -1953,10 +1993,10 @@ export default function MerchandiseClient({
+                           </div>
+ 
+                           <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 dark:border-slate-850/40">
+-                            <span className="text-xs font-black text-slate-900 dark:text-blue-400">
++                            <span className="text-xs font-black text-slate-900 dark:text-white">
+                               ₹{(item.price * item.quantity).toLocaleString("en-IN")}
+                             </span>
+-                            <div className="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-white">
++                            <div className="flex items-center border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-950">
+                               <button
+                                 onClick={() => updateQuantity(item.id, -1)}
+                                 className="px-2 py-1 hover:bg-slate-50 dark:hover:bg-slate-900 transition text-slate-550"
+@@ -1980,15 +2020,15 @@ export default function MerchandiseClient({
+ 
+                 {/* Footer Subtotal and Checkout link */}
+                 {cart.length > 0 && (
+-                  <div className="border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-200 p-5 space-y-4">
++                  <div className="shrink-0 border-t border-slate-100 dark:border-slate-850 bg-slate-50 dark:bg-slate-900/20 p-5 space-y-4">
+                     <div className="space-y-1.5">
+-                      <div className="flex items-center justify-between text-xs font-bold text-slate-600 uppercase tracking-wider">
++                      <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider">
+                         <span>Subtotal</span>
+-                        <span className="text-slate-900 dark:text-slate-900 font-black text-sm">
++                        <span className="text-slate-900 dark:text-white font-black text-sm">
+                           ₹{cartSubtotal.toLocaleString("en-IN")}
+                         </span>
+                       </div>
+-                      <div className="flex items-center justify-between text-[10px] text-slate-600">
++                      <div className="flex items-center justify-between text-[10px] text-slate-400">
+                         <span>Shipping & taxes</span>
+                         <span>Calculated at checkout</span>
+                       </div>

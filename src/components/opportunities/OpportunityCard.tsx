@@ -24,10 +24,23 @@ interface OpportunityCardProps {
   onApply?: (opportunity: Opportunity) => void;
 }
 
+const formatApplicationLink = (link: string) => {
+  if (!link) return "";
+  const trimmed = link.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("mailto:")) {
+    return trimmed;
+  }
+  if (trimmed.includes("@") && !trimmed.startsWith("mailto:")) {
+    return `mailto:${trimmed}`;
+  }
+  return `https://${trimmed}`;
+};
+
 export default function OpportunityCard({ opportunity, isDarkMode, onApply }: OpportunityCardProps) {
   const opp = opportunity;
   const mode = workModeConfig[opp.workMode] || workModeConfig.Remote;
   const ModeIcon = mode.icon;
+  const formattedLink = formatApplicationLink(opp.applicationLink);
 
   return (
     <div
@@ -138,15 +151,17 @@ export default function OpportunityCard({ opportunity, isDarkMode, onApply }: Op
               Apply
             </button>
           )}
-          <a
-            href={opp.applicationLink}
-            target={opp.applicationLink.startsWith("http") ? "_blank" : undefined}
-            rel={opp.applicationLink.startsWith("http") ? "noreferrer" : undefined}
-            className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 transition hover:text-indigo-700"
-          >
-            Details
-            <ExternalLink size={11} />
-          </a>
+          {formattedLink && (
+            <a
+              href={formattedLink}
+              target={formattedLink.startsWith("http") ? "_blank" : undefined}
+              rel={formattedLink.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 transition hover:text-indigo-700"
+            >
+              Details
+              <ExternalLink size={11} />
+            </a>
+          )}
         </div>
       </div>
 

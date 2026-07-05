@@ -22,6 +22,7 @@ type Opportunity = {
   location: string;
   details: string;
   linkText: string;
+  link?: string;
   verified?: boolean;
 };
 
@@ -39,29 +40,30 @@ export default function OpportunitiesSection() {
 
   const data: Record<Category, Opportunity[]> = {
     Internships: [
-      { title: "Frontend Engineering Intern", provider: "Fintech Startup (Alumni Led)", location: "Remote / Bengaluru", details: "Build reactive dashboards using Next.js, Tailwind CSS, and state management. Work directly under a Senior Architect (IIIT Gwalior alumnus).", linkText: "Learn more", verified: true },
-      { title: "Product Design Intern", provider: "IIITians Network Web Team", location: "Remote", details: "Iterate on user flows, design official merchandising mockups, and run accessibility compliance checks for the centralized network portal.", linkText: "Apply now", verified: true },
-      { title: "Backend Systems Intern", provider: "CloudScale Inc.", location: "Pune / Hybrid", details: "Develop high-throughput microservices using Go and PostgreSQL. Excellent opportunity to learn system design and container orchestration.", linkText: "Apply now", verified: true },
+      { title: "Software Engineering Intern", provider: "Google", location: "Bengaluru / Hyderabad", details: "Work on core products with Google engineers. Requires strong DSA fundamentals, proficiency in C++, Java, or Python, and currently pursuing a B.Tech/M.Tech in CS or related field.", linkText: "Apply on Google Careers", link: "https://careers.google.com/", verified: true },
+      { title: "Explore Program Intern", provider: "Microsoft", location: "Hyderabad / Bengaluru", details: "8-week internship program for first and second-year students. Explore Design, Build, and Quality roles across the software development cycle at Microsoft India.", linkText: "Apply on Microsoft Careers", link: "https://careers.microsoft.com/", verified: true },
+      { title: "SDE Intern", provider: "Amazon", location: "Bengaluru / Hyderabad", details: "Build scalable software solutions at Amazon. Online assessment with 2 coding problems followed by technical interviews focused on DSA and system design fundamentals.", linkText: "Apply on Amazon Jobs", link: "https://www.amazon.jobs/en/", verified: true },
     ],
     "Full-Time": [
-      { title: "Software Development Engineer", provider: "TechCorp India", location: "Hyderabad", details: "Join our platform engineering team to build distributed systems at scale. Strong DSA, system design, and backend fundamentals required.", linkText: "View details", verified: true },
-      { title: "ML Engineer", provider: "DataMinds AI", location: "Bengaluru / Hybrid", details: "Design and deploy production ML pipelines for recommendation systems. Experience with PyTorch and large-scale data processing preferred.", linkText: "View details", verified: true },
+      { title: "Software Development Engineer", provider: "Flipkart", location: "Bengaluru", details: "Join Flipkart's engineering team to build India's largest e-commerce platform. Unique machine coding round testing modular, production-ready code under time pressure.", linkText: "View on Flipkart Careers", link: "https://www.flipkartcareers.com/", verified: true },
+      { title: "Backend Engineer", provider: "Razorpay", location: "Bengaluru", details: "Build scalable payment infrastructure processing billions of transactions. Work on distributed systems, APIs, and financial technology powering India's digital economy.", linkText: "View on Razorpay Jobs", link: "https://razorpay.com/jobs/", verified: true },
+      { title: "Software Engineer", provider: "PhonePe", location: "Bengaluru / Pune", details: "Build products serving 500M+ users on India's leading digital payments platform. Work on high-scale distributed systems, microservices, and real-time data pipelines.", linkText: "View on PhonePe Careers", link: "https://www.phonepe.com/careers/", verified: true },
     ],
     Research: [
-      { title: "Machine Learning Research Assistant", provider: "AI Lab, IIIT Delhi", location: "New Delhi / Hybrid", details: "Work on computer vision and multimodal model alignment. Ideal for third/fourth-year undergraduate students aiming for research papers.", linkText: "View details", verified: true },
-      { title: "Natural Language Processing Intern", provider: "LTRC, IIIT Hyderabad", location: "Hyderabad", details: "Contribute to Indian language translation models. Requires proficiency in Python and deep learning frameworks.", linkText: "View details", verified: true },
+      { title: "Project Research Assistant", provider: "IIT Bombay — IRCC", location: "Mumbai", details: "Work on sponsored research projects across Computer Science, AI/ML, and interdisciplinary labs. Contractual positions under Principal Investigators with stipend support.", linkText: "View on IIT Bombay", link: "https://www.ircc.iitb.ac.in/IRCC-Webpage/rnd/HRMSLoginPage.jsp", verified: true },
+      { title: "Project Staff Positions", provider: "IIT Delhi — IRD Unit", location: "New Delhi", details: "Research and project staff positions funded by DST, DRDO, and internal grants. Roles in AI, NLP, Cryptography, VLSI, and more across IIT Delhi's research labs.", linkText: "View on IIT Delhi", link: "https://ird.iitd.ac.in/content/project-staff-positions", verified: true },
     ],
     "Open Source": [
-      { title: "Next.js Central Portal Contribution", provider: "IIITians Network", location: "GitHub", details: "Help optimize placement search index filters, build the merchandise custom store canvas, and resolve responsiveness bug tickets.", linkText: "GitHub repo", verified: true },
-      { title: "Discuss Forums Auth Integration", provider: "Student Discuss Team", location: "GitHub", details: "Implement secure OAuth flows for official club manager profiles using NextAuth and MongoDB adapter patterns.", linkText: "GitHub repo", verified: true },
+      { title: "Google Summer of Code 2026", provider: "Google Open Source", location: "Remote / Global", details: "12-week paid open source program. Contribute to projects under mentoring organizations. Coding period: May 25 – Aug 24, 2026. Stipend provided by Google.", linkText: "Visit GSoC", link: "https://summerofcode.withgoogle.com/", verified: true },
+      { title: "IIITians Network — Open Source", provider: "IIITians Network", location: "GitHub", details: "Contribute to the official IIITians Network portal. Work on Next.js, React, TypeScript, and MongoDB. Fix bugs, build features, and earn open source credit.", linkText: "GitHub Repo", link: "https://github.com/Ankurrr27/IIITians-Network-Nextjs", verified: true },
     ],
     Hackathons: [
-      { title: "Inter-IIIT Hackathon 2026", provider: "IIITians Network Community", location: "Online / Hybrid", details: "24-hour development sprint bringing teams from all 31 IIITs to solve structural challenges in education, tech, and college outreach.", linkText: "Register", verified: true },
-      { title: "Smart India Hackathon Prep-Sprint", provider: "Coding Clubs Joint Alliance", location: "Host Campuses", details: "A preparatory mock hackathon featuring review panels of senior alumni who previously won SIH to critique problem statements.", linkText: "Join sprint" },
+      { title: "Smart India Hackathon 2026", provider: "Ministry of Education, Govt. of India", location: "Nationwide", details: "India's largest open innovation hackathon organized by MoE's Innovation Cell and AICTE. Internal college selection followed by national-level grand finale.", linkText: "Visit SIH Portal", link: "https://www.sih.gov.in/", verified: true },
+      { title: "Flipkart GRiD 6.0", provider: "Flipkart", location: "Online + Bengaluru", details: "Flipkart's flagship engineering competition. Solve real-world e-commerce challenges in robotics, software dev, and information security. Serves as a hiring pipeline.", linkText: "Learn more", link: "https://unstop.com/hackathons/flipkart-grid-60", verified: true },
     ],
     Startups: [
-      { title: "Founding Engineer", provider: "NexEd (IIIT Hyderabad Alumni)", location: "Bengaluru", details: "Join as the first engineer at an EdTech startup building AI-powered personalized learning paths. Founded by IIIT Hyderabad alumni.", linkText: "Apply now", verified: true },
-      { title: "Growth Intern", provider: "HealthStack (Seed Stage)", location: "Remote", details: "Drive user acquisition and retention for a HealthTech startup building remote diagnostics tools for Tier-2/3 cities.", linkText: "Apply now", verified: true },
+      { title: "Software Engineer", provider: "CRED", location: "Bengaluru", details: "Build fintech products at one of India's most premium startups. Selective hiring for engineering roles in payments, rewards, and credit-tech. Strong DSA and system design expected.", linkText: "View on CRED Careers", link: "https://cred.club/careers", verified: true },
+      { title: "Associate SDE", provider: "Swiggy", location: "Bengaluru / Remote", details: "Join Swiggy's engineering team building hyperlocal delivery and commerce platforms serving millions daily. Roles across backend, frontend, and platform engineering.", linkText: "View on Swiggy Careers", link: "https://careers.swiggy.com/", verified: true },
     ],
   };
 
@@ -170,13 +172,25 @@ export default function OpportunitiesSection() {
               </div>
 
               <div className="mt-3 sm:mt-6 border-t border-slate-100 pt-2.5 sm:pt-4 flex justify-end">
-                <Link
-                  href="/opportunities"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition"
-                >
-                  {opp.linkText}
-                  <ChevronRight size={14} />
-                </Link>
+                {opp.link ? (
+                  <a
+                    href={opp.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition"
+                  >
+                    {opp.linkText}
+                    <ChevronRight size={14} />
+                  </a>
+                ) : (
+                  <Link
+                    href="/opportunities"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition"
+                  >
+                    {opp.linkText}
+                    <ChevronRight size={14} />
+                  </Link>
+                )}
               </div>
             </div>
           ))}

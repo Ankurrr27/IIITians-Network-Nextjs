@@ -11,7 +11,6 @@ import api from "@/lib/apiClient";
 import { Search, X, ChevronDown, PlusCircle } from "lucide-react";
 import OpportunityCard from "@/components/opportunities/OpportunityCard";
 import PostOpportunityModal from "@/components/opportunities/PostOpportunityModal";
-import ApplyModal from "@/components/opportunities/ApplyModal";
 import RecruiterCTA from "@/components/opportunities/RecruiterCTA";
 import StartupShowcase from "@/components/opportunities/StartupShowcase";
 
@@ -50,8 +49,6 @@ function OpportunitiesPageInner() {
   const [activeTab, setActiveTab] = useState<TabValue>(CATEGORY_ALL);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPostModal, setShowPostModal] = useState(false);
-  const [showApplyModal, setShowApplyModal] = useState(false);
-  const [applyTarget, setApplyTarget] = useState<any | null>(null);
 
   const loadOpportunities = async () => {
     setLoading(true);
@@ -93,8 +90,18 @@ function OpportunitiesPageInner() {
   }, [opportunities, activeTab, searchQuery]);
 
   const handleApply = (opp: any) => {
-    setApplyTarget(opp);
-    setShowApplyModal(true);
+    if (opp.applicationLink) {
+      const trimmed = opp.applicationLink.trim();
+      let url = trimmed;
+      if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://") && !trimmed.startsWith("mailto:")) {
+        if (trimmed.includes("@")) {
+          url = `mailto:${trimmed}`;
+        } else {
+          url = `https://${trimmed}`;
+        }
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const jobPostingSchemas = useMemo(() => {
@@ -264,21 +271,36 @@ function OpportunitiesPageInner() {
                 </div>
               ) : filtered.length === 0 ? (
                 <div
-                  className={`py-12 rounded-2xl border text-center ${
+                  className={`py-16 rounded-2xl border text-center ${
                     isDarkMode
                       ? "border-slate-800 bg-slate-900/20"
-                      : "border-slate-200 bg-white/50"
+                      : "border-slate-200 bg-white/80"
                   }`}
                 >
-                  <p
-                    className={`text-sm ${
-                      isDarkMode
-                        ? "text-slate-400"
-                        : "text-slate-650 font-semibold"
+                  <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${isDarkMode ? "bg-slate-800" : "bg-indigo-50"}`}>
+                    <Search size={28} className={isDarkMode ? "text-slate-500" : "text-indigo-400"} />
+                  </div>
+                  <h3
+                    className={`mt-5 text-lg font-bold ${
+                      isDarkMode ? "text-white" : "text-slate-900"
                     }`}
                   >
-                    No opportunities found matching your criteria.
+                    No Opportunities Yet
+                  </h3>
+                  <p
+                    className={`mt-2 text-sm max-w-md mx-auto leading-relaxed ${
+                      isDarkMode ? "text-slate-400" : "text-slate-500 font-medium"
+                    }`}
+                  >
+                    Real opportunities from verified recruiters will appear here once they are posted and approved. Be the first to post!
                   </p>
+                  <button
+                    onClick={() => setShowPostModal(true)}
+                    className="mt-6 inline-flex items-center gap-2 rounded-full bg-indigo-600 px-6 py-2.5 text-sm font-bold text-white shadow-md shadow-indigo-500/20 transition hover:bg-indigo-700 active:scale-95"
+                  >
+                    <PlusCircle size={16} />
+                    Post an Opportunity
+                  </button>
                 </div>
               ) : (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -320,16 +342,6 @@ function OpportunitiesPageInner() {
       <PostOpportunityModal
         open={showPostModal}
         onClose={() => setShowPostModal(false)}
-        isDarkMode={isDarkMode}
-      />
-
-      <ApplyModal
-        open={showApplyModal}
-        opportunity={applyTarget}
-        onClose={() => {
-          setShowApplyModal(false);
-          setApplyTarget(null);
-        }}
         isDarkMode={isDarkMode}
       />
     </div>

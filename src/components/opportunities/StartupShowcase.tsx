@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Rocket, ArrowRight, Sparkles, Code2, Brain, Banknote } from "lucide-react";
-import { opportunities } from "@/data/opportunities";
+import api from "@/lib/apiClient";
 import VerificationBadge from "./VerificationBadge";
 
 interface StartupShowcaseProps {
@@ -17,7 +18,13 @@ const ecosystemAreas = [
 ];
 
 export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShowcaseProps) {
-  const startupOpps = opportunities.filter((o) => o.category === "Startups").slice(0, 3);
+  const [startupOpps, setStartupOpps] = useState<any[]>([]);
+
+  useEffect(() => {
+    api.get("/opportunities?category=Startups")
+      .then((res) => setStartupOpps((res.data || []).slice(0, 3)))
+      .catch(() => setStartupOpps([]));
+  }, []);
 
   return (
     <section
@@ -99,11 +106,11 @@ export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShow
         </div>
 
         {/* Startup opportunity cards — compact list */}
-        {startupOpps.length > 0 && (
+        {startupOpps.length > 0 ? (
           <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
           {startupOpps.map((opp) => (
             <div
-              key={opp.id}
+              key={opp._id || opp.id}
               className={`rounded-xl border p-4 transition-all duration-200 hover:-translate-y-0.5 ${
                 isDarkMode
                   ? "border-slate-800 bg-slate-950/40 hover:border-slate-700"
@@ -140,6 +147,8 @@ export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShow
                 </span>
                 <a
                   href={opp.applicationLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 transition"
                 >
                   Learn more →
@@ -148,7 +157,30 @@ export default function StartupShowcase({ isDarkMode, onPostClick }: StartupShow
             </div>
           ))}
         </div>
-      )}
+        ) : (
+          <div
+            className={`mt-6 rounded-xl border p-6 text-center ${
+              isDarkMode
+                ? "border-slate-800 bg-slate-950/30"
+                : "border-amber-100 bg-amber-50/40"
+            }`}
+          >
+            <Rocket size={24} className={`mx-auto ${isDarkMode ? "text-amber-400" : "text-amber-500"}`} />
+            <p className={`mt-3 text-xs font-bold ${isDarkMode ? "text-slate-300" : "text-slate-700"}`}>
+              No startup opportunities listed yet
+            </p>
+            <p className={`mt-1 text-[11px] ${isDarkMode ? "text-slate-500" : "text-slate-500"}`}>
+              Are you a founder from an IIIT? Pitch your startup and find your founding team here.
+            </p>
+            <button
+              onClick={onPostClick}
+              className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-amber-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm shadow-amber-500/20 transition hover:bg-amber-600 active:scale-95"
+            >
+              <Rocket size={12} />
+              Pitch Your Startup
+            </button>
+          </div>
+        )}
       </div>
 
       {/* VC-facing trust message */}
