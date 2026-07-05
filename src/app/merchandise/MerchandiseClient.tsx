@@ -1046,6 +1046,11 @@ export default function MerchandiseClient({
   
   const [checkoutLoading, setCheckoutLoading] = useState(false);
 
+  // Freeze background scroll when cart or filter modal is open
+  useEffect(() => {
+    document.body.style.overflow = (isCartOpen || isFilterOpen || openProduct) ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [isCartOpen, isFilterOpen, openProduct]);
 
   // Custom Club Order Modal
   const [showClubModal, setShowClubModal] = useState(false);
