@@ -326,7 +326,7 @@ export default function Navigation() {
               return (
                 <div key={item.name} className="flex flex-col">
                   {/* Label navigates to page; chevron toggles sub-links */}
-                  <div className={`flex items-center rounded-xl font-medium transition ${
+                  <div className={`flex items-center rounded-xl text-[13px] font-medium transition ${
                     active
                       ? isDarkMode ? "bg-slate-900 text-white" : "bg-indigo-50 text-indigo-700"
                       : isDarkMode ? "text-slate-100 hover:bg-slate-900" : "text-indigo-600 hover:bg-indigo-50"
@@ -334,7 +334,7 @@ export default function Navigation() {
                     <a
                       href={item.href}
                       onClick={(e) => handleNavClick(e, item.href)}
-                      className="flex-1 px-4 py-3 text-sm font-medium"
+                      className="flex-1 px-4 py-2.5 text-[13px] font-medium"
                     >
                       {item.name}
                     </a>
@@ -375,7 +375,7 @@ export default function Navigation() {
                 key={item.name}
                 href={item.href}
                 onClick={(event) => handleNavClick(event, item.href)}
-                className={`flex flex-col rounded-xl px-4 py-3 font-medium transition ${
+                className={`flex flex-col rounded-xl px-4 py-2.5 text-[13px] font-medium transition ${
                   item.highlight
                     ? active
                       ? isDarkMode
