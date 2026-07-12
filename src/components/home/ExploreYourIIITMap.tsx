@@ -115,9 +115,8 @@ export default function ExploreYourIIITMap({
   const center: LatLngExpression = [22.8, 79.6];
   const points = useMemo(() => getClusteredCampuses(campuses, zoom), [campuses, zoom]);
   const campusForActions = activeCampus || selectedCampus;
-  const tileUrl = isDarkMode
-    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-    : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+  const tileUrl =
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const logoUrl = campusForActions ? (campusForActions.logo || getWebsiteFavicon(campusForActions.website)) : "";
 
   return (
