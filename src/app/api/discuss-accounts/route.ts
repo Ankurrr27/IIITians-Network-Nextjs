@@ -19,6 +19,8 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
+    const payload = requireAdmin(req);
+    if (isNextResponse(payload)) return payload;
     const body = await req.json();
     const { email, password, ...rest } = body;
     if (!email || !password) return NextResponse.json({ message: "Email and password required" }, { status: 400 });

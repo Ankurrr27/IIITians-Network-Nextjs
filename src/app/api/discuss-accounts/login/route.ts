@@ -39,13 +39,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid credentials" }, { status: 401 });
     }
 
-    if (!account.isAuthorized) {
-      return NextResponse.json(
-        { message: "Your club request is still pending admin approval." },
-        { status: 403 }
-      );
-    }
-
     const secret = process.env.JWT_SECRET;
     if (!secret) throw new Error("JWT_SECRET not configured");
 
