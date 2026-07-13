@@ -76,8 +76,10 @@ export async function POST(req: NextRequest) {
     if (!account) return NextResponse.json({ message: "Discuss account not found" }, { status: 404 });
 
     const { body, photos } = await readDiscussPayload(req);
-    const isPrivileged = ["club_manager", "publisher"].includes(account.role);
-    const shouldAutoApprove = account.isAuthorized && isPrivileged;
+
+    if (body.type === "event" && !account.isAuthorized) {
+      return NextResponse.json({ message: "Only verified clubs can post events." }, { status: 403 });
+    }
 
     const post = await Discuss.create({
       title: body.title,
@@ -94,7 +96,7 @@ export async function POST(req: NextRequest) {
       accountRole: account.role,
       isAuthorisedPost: account.isAuthorized,
       badgeLabel: account.badgeLabel,
-      status: shouldAutoApprove ? "approved" : "pending",
+      status: "pending",
       banner: photos[0],
       photos,
     });

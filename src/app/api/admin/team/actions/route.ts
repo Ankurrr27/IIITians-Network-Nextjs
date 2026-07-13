@@ -3,11 +3,14 @@ import connectDB from "@/lib/mongoose";
 import TeamMember from "@/models/TeamMember";
 import TermTenure from "@/models/TermTenure";
 import PromotionLog from "@/models/PromotionLog";
+import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
 
 // Minimal admin actions: promote, endTenure, copy, remove
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
+    const payload = requireAdmin(req);
+    if (isNextResponse(payload)) return payload;
 
     const body = await req.json();
     const { action, memberId, toRoleId, termId, committeeId, reason, targetTermId, targetCommitteeId, targetRoleId } = body || {};
