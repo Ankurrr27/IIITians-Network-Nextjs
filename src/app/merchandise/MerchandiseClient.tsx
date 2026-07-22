@@ -1517,6 +1517,38 @@ export default function MerchandiseClient({
             </p>
           </div>
 
+          {/* ─── Promo Banner ─── */}
+          <div
+            className="mb-6 rounded-2xl"
+            style={{
+              backgroundColor: "#FFF44F",
+              overflow: "hidden",
+              isolation: "isolate",
+              position: "relative",
+              zIndex: 0,
+            }}
+          >
+            <div
+              className="whitespace-nowrap py-2 px-3 text-xs sm:py-2.5 sm:px-4 sm:text-sm md:text-base font-extrabold text-black tracking-wide"
+              style={{
+                animation: "iiitPromoScroll 12s linear infinite",
+                willChange: "transform",
+              }}
+            >
+              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+            </div>
+            <style>{`
+              @keyframes iiitPromoScroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-33.33%); }
+              }
+            `}</style>
+          </div>
+
           {/* ─── Unified Search + Filter + Cart Toolbar ─── */}
           <div className="mb-6 flex items-center gap-2 sm:gap-3">
             {/* Search bar */}
