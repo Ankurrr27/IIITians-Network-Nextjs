@@ -75,11 +75,14 @@ export async function POST(req: NextRequest) {
     const account = await DiscussAccount.findById(accountId);
     if (!account) return NextResponse.json({ message: "Discuss account not found" }, { status: 404 });
 
-    const { body, photos } = await readDiscussPayload(req);
-
-    if (body.type === "event" && !account.isAuthorized) {
-      return NextResponse.json({ message: "Only verified clubs can post events." }, { status: 403 });
+    if (!account.isAuthorized) {
+      return NextResponse.json(
+        { message: "Your club account is pending admin verification. You cannot create posts until it has been approved." },
+        { status: 403 }
+      );
     }
+
+    const { body, photos } = await readDiscussPayload(req);
 
     const post = await Discuss.create({
       title: body.title,

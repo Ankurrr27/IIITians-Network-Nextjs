@@ -46,6 +46,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Account not found" }, { status: 404 });
     }
 
+    if (!account.isAuthorized) {
+      return NextResponse.json(
+        { message: "Your club account is pending admin verification. You cannot create discussions until it has been approved." },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     if (!body.title?.trim() || !body.body?.trim()) {
       return NextResponse.json({ message: "Title and body are required" }, { status: 400 });
