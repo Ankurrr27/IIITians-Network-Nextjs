@@ -11,10 +11,12 @@ function normalizeCategory(cat: unknown) {
   return GALLERY_CATEGORIES.includes(n) ? n : undefined;
 }
 
-// PATCH /api/colleges/[id]/gallery — add images (anyone)
+// PATCH /api/colleges/[id]/gallery — add images (admin only)
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await connectDB();
+    const payload = requireAdmin(req);
+    if (isNextResponse(payload)) return payload;
     const { id } = await params;
     const formData = await req.formData();
     const files = formData.getAll("images") as File[];

@@ -104,6 +104,8 @@ function GalleryPageClient() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   useEffect(() => {
     const fetchGallery = async () => {
       try {
@@ -116,6 +118,13 @@ function GalleryPageClient() {
       }
     };
     fetchGallery();
+
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      api.get("/admin/me")
+        .then(() => setIsAdmin(true))
+        .catch(() => setIsAdmin(false));
+    }
   }, []);
 
   useEffect(() => {
@@ -259,19 +268,21 @@ function GalleryPageClient() {
                   </option>
                 ))}
               </select>
-              <button
-                type="button"
-                onClick={() => setShowUploadForm((v) => !v)}
-                className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-1.5 px-3.5 text-xs sm:text-sm w-full sm:w-auto"
-              >
-                <Upload className="h-4 w-4" /> Add Image
-              </button>
+              {isAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setShowUploadForm((v) => !v)}
+                  className="ui-button ui-button-primary inline-flex h-11 shrink-0 items-center justify-center gap-1.5 px-3.5 text-xs sm:text-sm w-full sm:w-auto"
+                >
+                  <Upload className="h-4 w-4" /> Add Image
+                </button>
+              )}
             </>
           }
         />
 
         {/* Upload Section */}
-        {showUploadForm && (
+        {showUploadForm && isAdmin && (
           <section className="mb-6 sm:mb-8 overflow-hidden border-y sm:border border-slate-200 bg-white p-4 shadow-sm rounded-none sm:rounded-2xl">
             <form onSubmit={handleUploadSubmit} className="space-y-4">
               <div className="grid gap-3 md:grid-cols-2">
