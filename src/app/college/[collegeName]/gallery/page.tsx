@@ -32,9 +32,16 @@ export default function CollegeGalleryPage() {
   const [upFiles, setUpFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [upMsg, setUpMsg] = useState({ type: "", text: "" });
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     api.get("/colleges").then((r) => setColleges(r.data || [])).finally(() => setLoading(false));
+    const token = localStorage.getItem("adminToken");
+    if (token) {
+      api.get("/admin/me")
+        .then(() => setIsAdmin(true))
+        .catch(() => setIsAdmin(false));
+    }
   }, []);
 
   useEffect(() => {
@@ -143,18 +150,20 @@ export default function CollegeGalleryPage() {
           </button>
 
           {/* Add / Upload button */}
-          <button
-            onClick={() => { setShowUpload(!showUpload); if (isFilterOpen) setIsFilterOpen(false); }}
-            className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3 sm:px-4 text-xs font-semibold transition ${
-              showUpload
-                ? "border-indigo-300 bg-indigo-50 text-indigo-700"
-                : "border-indigo-100 bg-white text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50"
-            }`}
-          >
-            <Upload className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Add Photos</span>
-            <span className="sm:hidden">Add</span>
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => { setShowUpload(!showUpload); if (isFilterOpen) setIsFilterOpen(false); }}
+              className={`flex h-9 sm:h-10 shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3 sm:px-4 text-xs font-semibold transition ${
+                showUpload
+                  ? "border-indigo-300 bg-indigo-50 text-indigo-700"
+                  : "border-indigo-100 bg-white text-indigo-600 hover:border-indigo-300 hover:bg-indigo-50"
+              }`}
+            >
+              <Upload className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Add Photos</span>
+              <span className="sm:hidden">Add</span>
+            </button>
+          )}
         </div>
 
         {/* ─── Filter Dropdown Panel ─── */}
@@ -192,7 +201,7 @@ export default function CollegeGalleryPage() {
         )}
 
         {/* ─── Upload Form (expandable) ─── */}
-        {showUpload && (
+        {showUpload && isAdmin && (
           <section className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-indigo-50/50 p-3 shadow-sm sm:mb-6 sm:p-5">
             <form onSubmit={handleUpload} className="space-y-3">
               <h3 className="font-bold text-slate-900">Upload Photos</h3>
