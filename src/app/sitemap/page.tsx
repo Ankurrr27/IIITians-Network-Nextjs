@@ -14,6 +14,11 @@ import {
   ShieldCheck,
   AlertCircle,
   Briefcase,
+  ShoppingBag,
+  GraduationCap,
+  User,
+  Award,
+  PlusCircle,
 } from "lucide-react";
 import api from "@/lib/apiClient";
 import type { ICollege } from "@/types";
@@ -46,6 +51,9 @@ export default function SitemapPage() {
         { name: "Placements Desk", href: "/placement" },
         { name: "Events Portal", href: "/events" },
         { name: "Student Discuss", href: "/discuss" },
+        { name: "Career Opportunities", href: "/opportunities" },
+        { name: "Merchandise Store", href: "/merchandise" },
+        { name: "Platform Gallery", href: "/gallery" },
       ],
     },
     {
@@ -53,6 +61,7 @@ export default function SitemapPage() {
       icon: Users2,
       links: [
         { name: "Network Legacy", href: "/legacy" },
+        { name: "Alumni Portal", href: "/alumni" },
         { name: "Our Team", href: "/team" },
         { name: "Join the Team", href: "/team/join" },
         { name: "Contact Us", href: "/contact" },
@@ -63,6 +72,9 @@ export default function SitemapPage() {
       icon: BookOpen,
       links: [
         { name: "User Guide", href: "/guide" },
+        { name: "Register a Club", href: "/club/register" },
+        { name: "Verify Certificates", href: "/legacy/certificate" },
+        { name: "User Profile", href: "/profile" },
         { name: "Platform Admin", href: "/admin" },
       ],
     },
