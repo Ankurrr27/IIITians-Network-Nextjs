@@ -11,6 +11,9 @@ import {
   Calendar,
   Briefcase,
   AlertCircle,
+  BarChart3,
+  Activity,
+  GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -44,6 +47,7 @@ export default function AdminSitemapPage() {
         { name: "Colleges Directory", path: "/colleges/admin", desc: "Manage IIITs and their details" },
         { name: "Global Events", path: "/events/admin", desc: "Create and update events" },
         { name: "Platform Gallery", path: "/admin/gallery", desc: "Review and manage site images" },
+        { name: "Opportunities Desk", path: "/admin/opportunities", desc: "Post and review career opportunities" },
       ],
     },
     {
@@ -52,6 +56,7 @@ export default function AdminSitemapPage() {
       links: [
         { name: "Team Directory", path: "/team/admin", desc: "Manage core team members" },
         { name: "Network Legacy", path: "/legacy/admin", desc: "Approve legacy/alumni submissions" },
+        { name: "Alumni Applications", path: "/alumni/admin", desc: "Approve and manage alumni accounts" },
         { name: "Student Discuss", path: "/discuss/admin", desc: "Moderate student discussions" },
       ],
     },
@@ -61,6 +66,8 @@ export default function AdminSitemapPage() {
       links: [
         { name: "Placement Records", path: "/placement/admin", desc: "Update placement stats" },
         { name: "System Notifications", path: "/admin/notifications", desc: "Broadcast app notifications" },
+        { name: "System Logs", path: "/admin/logs", desc: "View administrative activity logs" },
+        { name: "Platform Analytics", path: "/admin/stats", desc: "View real-time traffic and database stats" },
         { name: "Admin Guide", path: "/admin/guide", desc: "Read operational procedures" },
       ],
     },
