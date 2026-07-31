@@ -49,6 +49,8 @@ export const metadata: Metadata = {
   },
 };
 
+import TournamentPopup from "@/components/TournamentPopup";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
@@ -56,6 +58,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SmoothScrolling>
           <SplashProvider>
             <AppShell>{children}</AppShell>
+            <TournamentPopup />
           </SplashProvider>
         </SmoothScrolling>
       </body>

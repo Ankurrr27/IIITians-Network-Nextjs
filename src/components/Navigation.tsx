@@ -174,60 +174,82 @@ export default function Navigation() {
   };
 
   const navTextClass = (active: boolean) =>
-    `relative inline-flex items-center gap-1 text-[13px] font-medium transition-colors duration-200 py-1 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${
-      active ? "after:scale-x-100" : "after:scale-x-0"
-    } ${
-      isDarkMode
-        ? `after:bg-indigo-400 hover:text-white ${active ? "text-white" : "text-slate-200"}`
-        : isSolidNav
-          ? `after:bg-indigo-600 hover:text-indigo-600 ${active ? "text-indigo-600" : "text-slate-700"}`
-          : `after:bg-white hover:text-white ${active ? "text-white" : "text-slate-100"}`
+    `relative inline-flex items-center gap-1 text-[13px] font-medium transition-colors duration-200 py-1 after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-full after:origin-center after:transition-transform after:duration-300 hover:after:scale-x-100 ${active ? "after:scale-x-100" : "after:scale-x-0"
+    } ${isDarkMode
+      ? `after:bg-indigo-400 hover:text-white ${active ? "text-white" : "text-slate-200"}`
+      : isSolidNav
+        ? `after:bg-indigo-600 hover:text-indigo-600 ${active ? "text-indigo-600" : "text-slate-700"}`
+        : `after:bg-white hover:text-white ${active ? "text-white" : "text-slate-100"}`
     }`;
 
-  const dropdownClass = `rounded-xl border p-1.5 shadow-2xl ${
-    isDarkMode
+  const dropdownClass = `rounded-xl border p-1.5 shadow-2xl ${isDarkMode
       ? "border-slate-800 bg-slate-900 text-slate-100 shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
       : "border-slate-100 bg-white text-slate-800 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
-  }`;
+    }`;
 
-  const rowClass = `flex items-start gap-2.5 rounded-lg px-3 py-2 transition ${
-    isDarkMode ? "hover:bg-slate-800" : "hover:bg-slate-50"
-  }`;
+  const rowClass = `flex items-start gap-2.5 rounded-lg px-3 py-2 transition ${isDarkMode ? "hover:bg-slate-800" : "hover:bg-slate-50"
+    }`;
 
   return (
     <>
       <nav
-        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
-          isSolidNav
+        className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${isSolidNav
             ? isDarkMode
               ? "border-b border-slate-800 bg-slate-950/92 py-2.5 shadow-[0_10px_40px_rgba(15,23,42,0.3)] backdrop-blur-md"
               : "border-b border-slate-200 bg-white/90 py-2.5 shadow-[0_10px_40px_rgba(15,23,42,0.08)] backdrop-blur-md"
             : "bg-indigo-600 py-3"
-        }`}
+          }`}
       >
         <div className="ui-page-shell flex items-center justify-between gap-3">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src={
-                isSolidNav
-                  ? isDarkMode
-                    ? "/IIITians-Network-Logo-Light.png"
-                    : "/IIITians-Network-Logo-Blue.png"
-                  : "/IIITians-Network-Logo-Light.png"
-              }
-              width={56}
-              height={56}
-              className="h-auto w-12 shrink-0 object-contain"
-              alt="IIITians Network"
-            />
-            <span
-              className={`hidden font-semibold transition-colors duration-300 sm:inline ${
-                isDarkMode ? "text-slate-100" : isSolidNav ? "text-indigo-600" : "text-white"
-              }`}
+          <div className="flex items-center gap-3 sm:gap-4">
+            <Link href="/" className="flex items-center gap-3">
+              <Image
+                src={
+                  isSolidNav
+                    ? isDarkMode
+                      ? "/IIITians-Network-Logo-Light.png"
+                      : "/IIITians-Network-Logo-Blue.png"
+                    : "/IIITians-Network-Logo-Light.png"
+                }
+                width={56}
+                height={56}
+                className="h-auto w-12 shrink-0 object-contain"
+                alt="IIITians Network"
+              />
+              <span
+                className={`hidden font-semibold transition-colors duration-300 sm:inline ${isDarkMode ? "text-slate-100" : isSolidNav ? "text-indigo-600" : "text-white"
+                  }`}
+              >
+                IIITians Network
+              </span>
+            </Link>
+
+            <a
+              href="https://esports.iiitiansnetwork.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex items-center gap-1 shrink-0 border-l pl-3 sm:pl-4 transition-colors duration-300 ${isSolidNav && !isDarkMode ? "border-slate-300" : "border-white/30"}`}
+              title="Inter-IIIT Esports Championship"
             >
-              IIITians Network
-            </span>
-          </Link>
+              <div
+                className={`h-10 sm:h-12 w-12 sm:w-14 shrink-0 transition-colors duration-300 ${
+                  isSolidNav && !isDarkMode ? "bg-indigo-600" : "bg-white"
+                }`}
+                style={{
+                  WebkitMask: "url(/ieclogo.png) center/contain no-repeat",
+                  mask: "url(/ieclogo.png) center/contain no-repeat",
+                }}
+                title="IEC Logo"
+              />
+              <span
+                className={`hidden font-semibold transition-colors duration-300 sm:inline ${
+                  isDarkMode ? "text-slate-100" : isSolidNav ? "text-indigo-600" : "text-white"
+                }`}
+              >
+                InterIIIT Esports
+              </span>
+            </a>
+          </div>
 
           <div className="hidden items-center gap-2.5 md:flex">
             {navItems.map((item) => {
@@ -248,13 +270,12 @@ export default function Navigation() {
                     <a
                       href={item.href}
                       onClick={(event) => handleNavClick(event, item.href)}
-                       className={`relative inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold transition duration-200 active:scale-95 ${
-                        isDarkMode
+                      className={`relative inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-sm font-semibold transition duration-200 active:scale-95 ${isDarkMode
                           ? "bg-indigo-500/20 text-indigo-100 ring-1 ring-indigo-400/30 hover:bg-indigo-500/30"
                           : isSolidNav
                             ? "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-100"
                             : "bg-white/12 text-white ring-1 ring-white/20 hover:bg-white/18"
-                      } ${active ? "ring-2 ring-indigo-400" : ""}`}
+                        } ${active ? "ring-2 ring-indigo-400" : ""}`}
                     >
                       {item.name}
                     </a>
@@ -280,13 +301,12 @@ export default function Navigation() {
 
           <button
             onClick={() => setIsOpen(true)}
-            className={`md:hidden rounded-lg p-2 transition-colors focus:outline-none ${
-              isSolidNav
+            className={`md:hidden rounded-lg p-2 transition-colors focus:outline-none ${isSolidNav
                 ? isDarkMode
                   ? "text-slate-100 hover:bg-slate-800"
                   : "text-slate-700 hover:bg-slate-100"
                 : "text-white hover:bg-white/10"
-            }`}
+              }`}
             aria-label="Open navigation"
           >
             <Menu className="h-6 w-6" />
@@ -297,18 +317,17 @@ export default function Navigation() {
       {isOpen && <div className="fixed inset-0 z-40 bg-slate-950/40" onClick={() => setIsOpen(false)} />}
 
       <aside
-        className={`fixed right-0 top-0 z-50 h-full w-[min(16rem,calc(100vw-0.5rem))] transform shadow-2xl transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        } ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-800"}`}
+        className={`fixed right-0 top-0 z-50 h-full w-[min(16rem,calc(100vw-0.5rem))] flex flex-col transform shadow-2xl transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+          } ${isDarkMode ? "bg-slate-950 text-slate-100" : "bg-white text-slate-800"}`}
       >
-        <div className={`flex items-center justify-between px-5 py-4 ${isDarkMode ? "border-b border-slate-800" : "border-b border-slate-200"}`}>
+        <div className={`shrink-0 flex items-center justify-between px-5 py-4 ${isDarkMode ? "border-b border-slate-800" : "border-b border-slate-200"}`}>
           <span className={`font-semibold ${isDarkMode ? "text-slate-100" : "text-indigo-600"}`}>Menu</span>
           <button onClick={() => setIsOpen(false)}>
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <div className={`flex flex-col gap-1 p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]`}>
+        <div className={`flex-1 overflow-y-auto flex flex-col gap-1 p-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))]`}>
           {navItems.map((item) => {
             const active = isNavActive(item);
             const quickLinkKey =
@@ -326,11 +345,10 @@ export default function Navigation() {
               return (
                 <div key={item.name} className="flex flex-col">
                   {/* Label navigates to page; chevron toggles sub-links */}
-                  <div className={`flex items-center rounded-xl text-[13px] font-medium transition ${
-                    active
+                  <div className={`flex items-center rounded-xl text-[13px] font-medium transition ${active
                       ? isDarkMode ? "bg-slate-900 text-white" : "bg-indigo-50 text-indigo-700"
                       : isDarkMode ? "text-slate-100 hover:bg-slate-900" : "text-indigo-600 hover:bg-indigo-50"
-                  }`}>
+                    }`}>
                     <a
                       href={item.href}
                       onClick={(e) => handleNavClick(e, item.href)}
@@ -355,9 +373,8 @@ export default function Navigation() {
                             key={link.href}
                             href={link.href}
                             onClick={(e) => handleNavClick(e, link.href)}
-                            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold ${
-                              isDarkMode ? "text-slate-400 hover:text-white" : "text-slate-600 hover:text-indigo-600"
-                            }`}
+                            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-semibold ${isDarkMode ? "text-slate-400 hover:text-white" : "text-slate-600 hover:text-indigo-600"
+                              }`}
                           >
                             <Icon size={13} />
                             {link.title}
@@ -375,8 +392,7 @@ export default function Navigation() {
                 key={item.name}
                 href={item.href}
                 onClick={(event) => handleNavClick(event, item.href)}
-                className={`flex flex-col rounded-xl px-4 py-2.5 text-[13px] font-medium transition ${
-                  item.highlight
+                className={`flex flex-col rounded-xl px-4 py-2.5 text-[13px] font-medium transition ${item.highlight
                     ? active
                       ? isDarkMode
                         ? "bg-indigo-500/25 text-indigo-100 ring-2 ring-indigo-400"
@@ -387,7 +403,7 @@ export default function Navigation() {
                     : active
                       ? isDarkMode ? "bg-slate-900 text-white" : "bg-indigo-50 text-indigo-700"
                       : isDarkMode ? "text-slate-100 hover:bg-slate-900" : "text-indigo-600 hover:bg-indigo-50"
-                }`}
+                  }`}
               >
                 <span>{item.name}</span>
                 {item.highlight && (
@@ -396,6 +412,26 @@ export default function Navigation() {
               </a>
             );
           })}
+        </div>
+
+        <div className={`shrink-0 p-4 ${isDarkMode ? "border-t border-slate-800 bg-slate-950" : "border-t border-slate-200 bg-white"}`}>
+          <a
+            href="https://esports.iiitiansnetwork.in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block relative overflow-hidden rounded-sm h-28 w-full shadow-md group"
+          >
+            <Image
+              src="/InstaBanner.png"
+              alt="Inter IUT E-Sports Championship"
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-3">
+              <span className="text-white font-bold text-[12px] drop-shadow-md">Play Now</span>
+              <span className="text-indigo-300 font-medium text-[7px] drop-shadow-md">Inter-IIIT Esports Championship</span>
+            </div>
+          </a>
         </div>
       </aside>
     </>
