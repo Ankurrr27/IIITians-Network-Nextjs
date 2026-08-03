@@ -4,11 +4,12 @@ import Alumni from "@/models/Alumni";
 import TeamMember from "@/models/TeamMember";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { handleServerError, handleClientError } from "@/lib/errorHelper";
+import { normalizeProfileFields, normalizeCollegeName, normalizeGeneration } from "@/lib/dataNormalization";
 
 const escapeRegex = (v = "") => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 function normalizePayload(body: Record<string, unknown>) {
-  return {
+  const base = {
     ...body,
     name: (body.name as string)?.trim(),
     email: (body.email as string)?.trim().toLowerCase(),
@@ -24,6 +25,7 @@ function normalizePayload(body: Record<string, unknown>) {
     bio: (body.bio as string)?.trim() || "",
     graduationYear: Number(body.graduationYear),
   };
+  return normalizeProfileFields(base);
 }
 
 function getEarliestYear(alumni: any) {
@@ -82,8 +84,10 @@ export async function GET(req: NextRequest) {
     await connectDB();
     const url = req.nextUrl;
     const search = url.searchParams.get("search") || "";
-    const generation = url.searchParams.get("generation") || "";
-    const iiit = url.searchParams.get("iiit") || "";
+    const rawGeneration = url.searchParams.get("generation") || "";
+    const rawIiit = url.searchParams.get("iiit") || "";
+    const generation = rawGeneration.trim() ? normalizeGeneration(rawGeneration.trim()) : "";
+    const iiit = rawIiit.trim() ? normalizeCollegeName(rawIiit.trim()) : "";
     const professionalStatus =
       url.searchParams.get("professionalStatus") || url.searchParams.get("placed") || "";
     const legacyType = url.searchParams.get("legacyType") || "";
@@ -214,6 +218,12 @@ export async function POST(req: NextRequest) {
     const required = ["name", "email", "iiit", "generation", "branch", "graduationYear"];
     const missing = required.find((f) => !payload[f as keyof typeof payload]);
     if (missing) return NextResponse.json({ message: `${missing} is required` }, { status: 400 });
+
+    // Check for existing profile with the same email to prevent duplicates
+    const existing = await Alumni.findOne({ email: payload.email });
+    if (existing) {
+      return NextResponse.json({ message: "A profile with this email already exists." }, { status: 400 });
+    }
 
     const photo = await resolvePhoto(file, rawBody);
     const alumni = await Alumni.create({ ...payload, photo, status: "pending", reviewedAt: null });

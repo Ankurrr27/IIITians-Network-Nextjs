@@ -28,6 +28,7 @@ import useThemeMode from "@/hooks/useThemeMode";
 import { notifyPromise } from "@/utils/appNotifications";
 import PageHeader, { pageHeaderButtonClass, pageHeaderControlClass } from "@/components/PageHeader";
 import LegacyPosterModal from "./LegacyPosterModal";
+import { CANONICAL_COLLEGES, STANDARD_BRANCHES } from "@/lib/dataNormalization";
 
 interface Props {
   initialAlumni: IAlumni[];
@@ -638,57 +639,229 @@ function LegacySubmissionSection({
   useTeamPhoto: boolean;
   setUseTeamPhoto: (value: boolean) => void;
 }) {
+  const [collegeSelect, setCollegeSelect] = useState(() => {
+    if (!form.iiit) return "";
+    return CANONICAL_COLLEGES.includes(form.iiit) ? form.iiit : "Other";
+  });
+  const [customCollege, setCustomCollege] = useState(() => {
+    if (!form.iiit) return "";
+    return CANONICAL_COLLEGES.includes(form.iiit) ? "" : form.iiit;
+  });
+
+  const [branchSelect, setBranchSelect] = useState(() => {
+    if (!form.branch) return "";
+    return STANDARD_BRANCHES.includes(form.branch as any) ? form.branch : "Other";
+  });
+  const [customBranch, setCustomBranch] = useState(() => {
+    if (!form.branch) return "";
+    return STANDARD_BRANCHES.includes(form.branch as any) ? "" : form.branch;
+  });
+
+  // Sync state back when form is reset externally
+  useEffect(() => {
+    if (!form.iiit) {
+      setCollegeSelect("");
+      setCustomCollege("");
+    } else {
+      const isCanonical = CANONICAL_COLLEGES.includes(form.iiit);
+      setCollegeSelect(isCanonical ? form.iiit : "Other");
+      setCustomCollege(isCanonical ? "" : form.iiit);
+    }
+  }, [form.iiit]);
+
+  useEffect(() => {
+    if (!form.branch) {
+      setBranchSelect("");
+      setCustomBranch("");
+    } else {
+      const isStandard = STANDARD_BRANCHES.includes(form.branch as any);
+      setBranchSelect(isStandard ? form.branch : "Other");
+      setCustomBranch(isStandard ? "" : form.branch);
+    }
+  }, [form.branch]);
+
+  const handleCollegeSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setCollegeSelect(val);
+    if (val !== "Other") {
+      handleChange({ target: { name: "iiit", value: val } } as any);
+    } else {
+      handleChange({ target: { name: "iiit", value: customCollege } } as any);
+    }
+  };
+
+  const handleCustomCollegeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCustomCollege(val);
+    handleChange({ target: { name: "iiit", value: val } } as any);
+  };
+
+  const handleBranchSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setBranchSelect(val);
+    if (val !== "Other") {
+      handleChange({ target: { name: "branch", value: val } } as any);
+    } else {
+      handleChange({ target: { name: "branch", value: customBranch } } as any);
+    }
+  };
+
+  const handleCustomBranchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCustomBranch(val);
+    handleChange({ target: { name: "branch", value: val } } as any);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-            {legacyFormFields.map(([name, label, placeholder, type, required, span]) => (
-              <label key={name} className={`flex flex-col gap-2 ${span}`}>
+            {legacyFormFields.map(([name, label, placeholder, type, required, span]) => {
+              if (name === "branch") return null;
+
+              if (name === "generation") {
+                return (
+                  <label key={name} className={`flex flex-col gap-2 ${span}`}>
+                    <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                      {label}
+                      {required ? " *" : ""}
+                    </span>
+                    <input
+                      name={name}
+                      type={type}
+                      value={form[name]}
+                      onChange={handleChange}
+                      placeholder="e.g. 2024-28 or 2024-25"
+                      required={required}
+                      pattern="^[0-9]{4}-[0-9]{2}$|^[0-9]{4}$"
+                      title="Format should be YYYY-YY (e.g. 2024-28) or YYYY (e.g. 2024)"
+                      className={`ui-control px-4 py-3 text-sm sm:text-base ${
+                        isDarkMode
+                          ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                          : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                      }`}
+                    />
+                    <p className="text-[10px] text-slate-500">Enter graduation batch (e.g. 2024-28) or team tenure (e.g. 2024-25)</p>
+                  </label>
+                );
+              }
+
+              return (
+                <label key={name} className={`flex flex-col gap-2 ${span}`}>
+                  <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                    {label}
+                    {required ? " *" : ""}
+                  </span>
+                  <input
+                    name={name}
+                    type={type}
+                    value={form[name]}
+                    onChange={handleChange}
+                    placeholder={placeholder}
+                    required={required}
+                    className={`ui-control px-4 py-3 text-sm sm:text-base ${
+                      isDarkMode
+                        ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                        : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                    }`}
+                  />
+                </label>
+              );
+            })}
+
+            {/* Institute Dropdown Selector */}
+            <div className="flex flex-col gap-2 sm:col-span-2">
+              <label className="flex flex-col gap-2">
                 <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                  {label}
-                  {required ? " *" : ""}
+                  Institute *
                 </span>
-                <input
-                  name={name}
-                  type={type}
-                  value={form[name]}
-                  onChange={handleChange}
-                  placeholder={placeholder}
-                  required={required}
-              className={`ui-control px-4 py-3 text-sm sm:text-base ${
+                <select
+                  value={collegeSelect}
+                  onChange={handleCollegeSelectChange}
+                  required
+                  className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
                     isDarkMode
                       ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
                       : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
                   }`}
-                />
+                >
+                  <option value="">Select your IIIT campus</option>
+                  {CANONICAL_COLLEGES.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
+                  <option value="Other">Other / Not Listed</option>
+                </select>
               </label>
-            ))}
 
-            <label className="flex flex-col gap-2 sm:col-span-2">
-              <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
-                Institute *
-              </span>
-              <input
-                name="iiit"
-                list="legacy-iiit-options"
-                type="text"
-                value={form.iiit}
-                onChange={handleChange}
-                placeholder="Choose or type an IIIT, e.g. IIIT Kota"
-                required
-                className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
-                  isDarkMode
-                    ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
-                    : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
-                }`}
-              />
-              <datalist id="legacy-iiit-options">
-                {iiitOptions.map((option) => (
-                  <option key={option} value={option} />
-                ))}
-              </datalist>
-              <p className="mt-2 text-xs text-slate-500">Pick from the existing IIIT list if available so your profile is easier to group correctly.</p>
-            </label>
+              {collegeSelect === "Other" && (
+                <label className="mt-2 flex flex-col gap-2">
+                  <span className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                    Enter College Name *
+                  </span>
+                  <input
+                    type="text"
+                    value={customCollege}
+                    onChange={handleCustomCollegeChange}
+                    placeholder="e.g. IIIT Cityname"
+                    required
+                    className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
+                      isDarkMode
+                        ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                        : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                    }`}
+                  />
+                </label>
+              )}
+            </div>
+
+            {/* Branch Dropdown Selector */}
+            <div className="flex flex-col gap-2 sm:col-span-2">
+              <label className="flex flex-col gap-2">
+                <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                  Branch *
+                </span>
+                <select
+                  value={branchSelect}
+                  onChange={handleBranchSelectChange}
+                  required
+                  className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
+                    isDarkMode
+                      ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                      : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                  }`}
+                >
+                  <option value="">Select your branch</option>
+                  {STANDARD_BRANCHES.map((branch) => (
+                    <option key={branch} value={branch}>
+                      {branch}
+                    </option>
+                  ))}
+                  <option value="Other">Other / Custom</option>
+                </select>
+              </label>
+
+              {branchSelect === "Other" && (
+                <label className="mt-2 flex flex-col gap-2">
+                  <span className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
+                    Enter Branch Name *
+                  </span>
+                  <input
+                    type="text"
+                    value={customBranch}
+                    onChange={handleCustomBranchChange}
+                    placeholder="e.g. Computational Linguistics"
+                    required
+                    className={`ui-control w-full px-4 py-3 text-sm sm:text-base ${
+                      isDarkMode
+                        ? "border-slate-700 bg-slate-950 text-slate-100 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/20"
+                        : "border-slate-200 bg-slate-50 text-slate-900 focus:border-indigo-600 focus:bg-white focus:ring-4 focus:ring-indigo-100"
+                    }`}
+                  />
+                </label>
+              )}
+            </div>
 
             <label className="flex flex-col gap-2 sm:col-span-2">
               <span className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${isDarkMode ? "text-slate-400" : "text-slate-500"}`}>
