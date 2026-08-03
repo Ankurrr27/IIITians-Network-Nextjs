@@ -1026,7 +1026,7 @@ export default function MerchandiseClient({
   const { isDarkMode } = useThemeMode();
 
   // State
-  const [selectedCampus, setSelectedCampus] = useState("IIIT Ranchi");
+  const [selectedCampus, setSelectedCampus] = useState("IIIT");
   const [buyerEmail, setBuyerEmail] = useState("");
   const [emailError, setEmailError] = useState("");
   const [checkoutError, setCheckoutError] = useState("");
@@ -1385,9 +1385,10 @@ export default function MerchandiseClient({
     // 1. Filter by selected campus. We show:
     // - Products specifically tagged with the selected campus (e.g. "IIIT Pune")
     // - AND products that are generic custom/department drops (isCustomDrop === true)
+    const isGenericIiit = !selectedCampus || selectedCampus === "IIIT" || selectedCampus === "All";
     const targetTag = getShopifyTagForCampus(selectedCampus);
     let list = products.filter((p) => {
-      const matchCampus = p.campuses.includes(targetTag) || p.isCustomDrop;
+      const matchCampus = isGenericIiit || p.campuses.includes(targetTag) || p.isCustomDrop;
       if (!matchCampus) return false;
 
       if (activeType !== "All" && p.type !== activeType) return false;
@@ -1519,32 +1520,33 @@ export default function MerchandiseClient({
 
           {/* ─── Promo Banner ─── */}
           <div
-            className="mb-6 rounded-2xl"
+            className={`mb-6 overflow-hidden rounded-2xl border transition-colors shadow-sm ${
+              isDarkMode
+                ? "border-indigo-800/60 bg-indigo-950/80 text-indigo-100"
+                : "border-indigo-600/20 bg-indigo-600 text-white"
+            }`}
             style={{
-              backgroundColor: "#FFF44F",
-              overflow: "hidden",
               isolation: "isolate",
               position: "relative",
               zIndex: 0,
             }}
           >
             <div
-              className="whitespace-nowrap py-2 px-3 text-xs sm:py-2.5 sm:px-4 sm:text-sm md:text-base font-extrabold text-black tracking-wide"
+              className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-semibold tracking-wide"
               style={{
-                animation: "iiitPromoScroll 12s linear infinite",
+                animation: "iiitPromoScroll 16s linear infinite",
                 willChange: "transform",
               }}
             >
-              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
-              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
-              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
-              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
-              <span className="inline-block mx-4 sm:mx-8">🎉 Use code &quot;IIITians&quot; and get 5% off 🎉</span>
+              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
+              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
+              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
+              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
             </div>
             <style>{`
               @keyframes iiitPromoScroll {
                 0% { transform: translateX(0); }
-                100% { transform: translateX(-33.33%); }
+                100% { transform: translateX(-50%); }
               }
             `}</style>
           </div>
@@ -1587,9 +1589,9 @@ export default function MerchandiseClient({
             >
               <SlidersHorizontal size={16} />
               <span className="hidden sm:inline text-xs font-bold">Filters</span>
-              {(selectedCampus !== "All" || sortBy !== "default" || activeType !== "All") && (
+              {(selectedCampus !== "IIIT" && selectedCampus !== "All" || sortBy !== "default" || activeType !== "All") && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-black text-white">
-                  {[selectedCampus !== "All", sortBy !== "default", activeType !== "All"].filter(Boolean).length}
+                  {[selectedCampus !== "IIIT" && selectedCampus !== "All", sortBy !== "default", activeType !== "All"].filter(Boolean).length}
                 </span>
               )}
             </button>
@@ -1659,7 +1661,7 @@ export default function MerchandiseClient({
                               : "bg-slate-50 border-slate-200 text-indigo-700"
                           }`}
                         >
-                          <option value="All">All Campuses</option>
+                          <option value="IIIT">All IIIT Campuses</option>
                           {sortedCampuses.map((c) => (
                             <option key={c.id} value={c.name}>{c.name}</option>
                           ))}

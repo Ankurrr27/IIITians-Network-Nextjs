@@ -4,9 +4,11 @@ import Alumni from "@/models/Alumni";
 import TeamMember from "@/models/TeamMember";
 import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
+import { normalizeProfileFields } from "@/lib/dataNormalization";
 
 function normalizePayload(body: Record<string, unknown>) {
-  return { ...body, name: (body.name as string)?.trim(), email: (body.email as string)?.trim().toLowerCase(), iiit: (body.iiit as string)?.trim(), generation: (body.generation as string)?.trim(), branch: (body.branch as string)?.trim(), networkPost: (body.networkPost as string)?.trim() || "", currentRole: (body.currentRole as string)?.trim() || "", currentCompany: (body.currentCompany as string)?.trim() || "", location: (body.location as string)?.trim() || "", linkedin: (body.linkedin as string)?.trim() || "", instagram: (body.instagram as string)?.trim() || "", bio: (body.bio as string)?.trim() || "", contribution: (body.contribution as string)?.trim() || "", graduationYear: Number(body.graduationYear) };
+  const base = { ...body, name: (body.name as string)?.trim(), email: (body.email as string)?.trim().toLowerCase(), iiit: (body.iiit as string)?.trim(), generation: (body.generation as string)?.trim(), branch: (body.branch as string)?.trim(), networkPost: (body.networkPost as string)?.trim() || "", currentRole: (body.currentRole as string)?.trim() || "", currentCompany: (body.currentCompany as string)?.trim() || "", location: (body.location as string)?.trim() || "", linkedin: (body.linkedin as string)?.trim() || "", instagram: (body.instagram as string)?.trim() || "", bio: (body.bio as string)?.trim() || "", contribution: (body.contribution as string)?.trim() || "", graduationYear: Number(body.graduationYear) };
+  return normalizeProfileFields(base);
 }
 
 // PATCH /api/alumni/admin/[id] — admin update alumni profile
