@@ -66,7 +66,7 @@ export default function DiscussCard({ post, onApprove, onReject, onDelete }: Dis
       </div>
 
       {/* ─── Desktop layout: horizontal ─── */}
-      <div className="hidden md:grid md:min-h-[11rem] md:grid-cols-[14rem_minmax(0,1fr)]">
+      <div className="hidden md:grid md:min-h-[11rem] md:grid-cols-[20rem_minmax(0,1fr)]">
         <a
           href={coverUrl}
           target="_blank"

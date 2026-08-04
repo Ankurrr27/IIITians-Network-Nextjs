@@ -12,6 +12,7 @@ export interface IDiscussAccountDocument extends Document {
   isAuthorized: boolean;
   badgeLabel?: string;
   lastLogin?: Date;
+  logo?: { public_id?: string; url?: string };
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -29,6 +30,7 @@ const discussAccountSchema = new Schema<IDiscussAccountDocument>(
     isAuthorized: { type: Boolean, default: false },
     badgeLabel: { type: String, trim: true, default: "Pending verification" },
     lastLogin: { type: Date },
+    logo: { public_id: String, url: String },
   },
   { timestamps: true }
 );

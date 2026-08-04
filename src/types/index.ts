@@ -186,6 +186,7 @@ export interface IDiscussAccount {
   isAuthorized: boolean;
   badgeLabel?: string;
   lastLogin?: string;
+  logo?: CloudinaryAsset;
   createdAt?: string;
   updatedAt?: string;
 }

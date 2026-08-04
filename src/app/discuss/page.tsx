@@ -157,6 +157,7 @@ function OfficialPostRow({
 }) {
   const [hasViewed, setHasViewed] = useState(false);
   const [viewsCount, setViewsCount] = useState(post.views || 0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const elementRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -206,9 +207,17 @@ function OfficialPostRow({
     <article ref={elementRef} className={`border-b py-4 sm:py-5 ${post.isPinned ? "border-amber-100 bg-amber-50/40 -mx-4 px-4 sm:-mx-6 sm:px-6" : "border-slate-200"}`}>
       <div className="flex gap-3 sm:gap-4 items-start">
         <div className="hidden pt-1 sm:block">
-          <div className={`flex h-10 w-10 items-center justify-center rounded-full text-white ${post.isPinned ? "bg-amber-500" : "bg-slate-950"}`}>
-            {post.isPinned ? <Pin className="h-5 w-5" /> : <Megaphone className="h-5 w-5" />}
-          </div>
+          {post.isPinned ? (
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white">
+              <Pin className="h-5 w-5" />
+            </div>
+          ) : typeof post.account === "object" && post.account?.logo?.url ? (
+            <img src={post.account.logo.url} alt={post.clubName} className="h-10 w-10 rounded-full object-cover" />
+          ) : (
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-bold text-white">
+              {post.clubName?.[0] || "?"}
+            </div>
+          )}
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-slate-500">
@@ -225,7 +234,7 @@ function OfficialPostRow({
             <span>{date}</span>
           </div>
           <h3 className="mt-1 text-base sm:text-lg lg:text-xl font-bold leading-snug text-slate-950">{post.title}</h3>
-          <p className="mt-2 line-clamp-3 text-xs sm:text-sm md:text-base leading-relaxed text-slate-600">
+          <p className={`mt-2 text-xs sm:text-sm md:text-base leading-relaxed text-slate-600 ${!isExpanded ? "line-clamp-3" : ""}`}>
             {post.description.split(/(\[.*?\]\(.*?\))/g).map((part, i) => {
               const match = part.match(/\[(.*?)\]\((.*?)\)/);
               if (match) {
@@ -238,6 +247,11 @@ function OfficialPostRow({
               return <span key={i}>{part}</span>;
             })}
           </p>
+          {post.description.length > 180 && (
+            <button onClick={() => setIsExpanded(!isExpanded)} className="text-indigo-600 text-xs font-bold mt-1 hover:underline">
+              {isExpanded ? "Show less" : "See more"}
+            </button>
+          )}
           <div className="mt-3 flex flex-wrap items-center gap-3 text-xs sm:text-sm text-slate-500">
             <button
               onClick={() => onVote(post._id)}
@@ -251,15 +265,15 @@ function OfficialPostRow({
             <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {viewsCount.toLocaleString("en-IN")}</span>
             <span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> Official</span>
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">{post.type}</span>
+            {post.actionLink && (
+              <a href={post.actionLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-slate-800">
+                Open link <LinkIcon className="h-3 w-3" />
+              </a>
+            )}
           </div>
-          {post.actionLink && (
-            <a href={post.actionLink} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-slate-800">
-              Open link <LinkIcon className="h-3 w-3" />
-            </a>
-          )}
         </div>
         {coverUrl && (
-          <a href={coverUrl} target="_blank" rel="noreferrer" className="h-16 w-16 sm:h-20 sm:w-28 md:h-28 md:w-44 shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-slate-100">
+          <a href={coverUrl} target="_blank" rel="noreferrer" className="h-24 w-32 sm:h-32 sm:w-48 md:h-40 md:w-64 shrink-0 overflow-hidden rounded-lg sm:rounded-xl bg-slate-100">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={coverUrl} alt={post.title} className="h-full w-full object-cover transition hover:scale-105" />
           </a>
@@ -425,6 +439,7 @@ function DiscussPageClient() {
   const [clubNames, setClubNames] = useState<string[]>([]);
   const [showQueryForm, setShowQueryForm] = useState(false);
   const [votedPostIds, setVotedPostIds] = useState<Set<string>>(new Set());
+  const [logoUploading, setLogoUploading] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -728,6 +743,29 @@ function DiscussPageClient() {
     closePanel();
   };
 
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const token = localStorage.getItem("discussToken");
+    if (!token) return;
+
+    setLogoUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("logo", file);
+      
+      const res = await api.patch("/discuss-accounts/me", fd, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAccount(res.data);
+    } catch (err: unknown) {
+      alert("Failed to upload logo.");
+    } finally {
+      setLogoUploading(false);
+      e.target.value = "";
+    }
+  };
+
   const handleSubmitPost = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = localStorage.getItem("discussToken");
@@ -737,7 +775,7 @@ function DiscussPageClient() {
       const fd = new FormData();
       Object.entries(postForm).forEach(([k, v]) => fd.append(k, v));
       postPhotos.forEach((f) => fd.append("photos", f));
-      const headers = { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" };
+      const headers = { Authorization: `Bearer ${token}` };
       if (editingId) await api.patch(`/discuss/mine/${editingId}`, fd, { headers });
       else await api.post("/discuss", fd, { headers });
       closePanel();
@@ -962,7 +1000,11 @@ function DiscussPageClient() {
             ) : account ? (
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-lg font-bold text-indigo-700">{account.clubName[0]}</div>
+                  {account.logo?.url ? (
+                    <img src={account.logo.url} alt="Club Logo" className="h-11 w-11 rounded-xl object-cover" />
+                  ) : (
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-50 text-lg font-bold text-indigo-700">{account.clubName[0]}</div>
+                  )}
                   <div className="min-w-0">
                     <p className="truncate font-bold text-slate-950">{account.clubName}</p>
                     <p className="truncate text-xs text-slate-500">{account.collegeName}</p>
@@ -993,7 +1035,9 @@ function DiscussPageClient() {
             <div className="mt-4 space-y-4">
               {exploreItems.map((item) => (
                 <div key={item.id} className="border-b border-slate-100 pb-4 last:border-0 last:pb-0">
-                  <p className="text-xs font-bold text-slate-400">#{item.label}</p>
+                  {item.label !== "announcement" && (
+                    <p className="text-xs font-bold text-slate-400">#{item.label}</p>
+                  )}
                   <p className="mt-1 line-clamp-1 font-semibold text-slate-900">{item.title}</p>
                   <p className="mt-1 text-sm text-slate-500">{item.subtitle}</p>
                 </div>
@@ -1065,7 +1109,17 @@ function DiscussPageClient() {
                 <div className="space-y-5">
                   <div className="space-y-3 rounded-xl border border-slate-100 bg-slate-50 p-5">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-50 text-xl font-bold text-indigo-600">{account.clubName[0]}</div>
+                      <div className="relative group">
+                        {account.logo?.url ? (
+                          <img src={account.logo.url} alt="Club Logo" className="h-14 w-14 rounded-xl object-cover" />
+                        ) : (
+                          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-indigo-50 text-xl font-bold text-indigo-600">{account.clubName[0]}</div>
+                        )}
+                        <label className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 opacity-0 transition group-hover:opacity-100 cursor-pointer">
+                          {logoUploading ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <ImageIcon className="h-5 w-5 text-white" />}
+                          <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} disabled={logoUploading} />
+                        </label>
+                      </div>
                       <div>
                         <p className="font-bold text-slate-900">{account.clubName}</p>
                         <p className="flex items-center gap-1 text-xs text-slate-500"><MapPin className="h-3 w-3" /> {account.collegeName}</p>

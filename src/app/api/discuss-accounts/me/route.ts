@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import DiscussAccount from "@/models/DiscussAccount";
 import jwt from "jsonwebtoken";
+import { uploadToCloudinary, deleteFromCloudinary } from "@/lib/cloudinary";
 
 function getDiscussAccountId(req: NextRequest): string | null {
   const auth = req.headers.get("authorization");
@@ -27,6 +28,36 @@ export async function GET(req: NextRequest) {
     if (!account) return NextResponse.json({ message: "Discuss account not found" }, { status: 404 });
 
     return NextResponse.json(account);
+  } catch (err: unknown) {
+    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req: NextRequest) {
+  try {
+    await connectDB();
+    const accountId = getDiscussAccountId(req);
+    if (!accountId) return NextResponse.json({ message: "No token provided" }, { status: 401 });
+
+    const account = await DiscussAccount.findById(accountId);
+    if (!account) return NextResponse.json({ message: "Discuss account not found" }, { status: 404 });
+
+    const formData = await req.formData();
+    const file = formData.get("logo") as File | null;
+    
+    if (file) {
+      if (account.logo?.public_id) {
+        await deleteFromCloudinary(account.logo.public_id);
+      }
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const result = await uploadToCloudinary(buffer, { folder: "iiitians/discuss-logos" });
+      account.logo = { public_id: result.public_id, url: result.secure_url };
+      await account.save();
+    }
+
+    // Make sure we don't return password
+    const updatedAccount = await DiscussAccount.findById(accountId).select("-password");
+    return NextResponse.json(updatedAccount);
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
   }
