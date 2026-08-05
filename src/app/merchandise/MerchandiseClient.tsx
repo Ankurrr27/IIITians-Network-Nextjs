@@ -183,19 +183,20 @@ function formatDate(iso: string) {
 const transformProductTitle = (title: string, campus: string) => {
   let clean = title;
   
-  // Replace "IIIT <Campus>" with selected campus
-  clean = clean.replace(/\bIIIT\s+[A-Za-z]+\b/gi, campus);
+  // Replace "IIIT <Campus>" with selected campus if a specific campus is selected
+  if (campus && campus !== "IIIT" && campus !== "All") {
+    clean = clean.replace(/\bIIIT\s+[A-Za-z]+\b/gi, campus);
+  }
   
-  // Replace "Customisable" or "Fully Customizable" with selected campus
+  // Replace "Customisable" or "Fully Customizable"
   if (/customisable/i.test(clean)) {
     clean = clean.replace(/Customisable/gi, campus);
   } else if (/Fully Customizable/i.test(clean)) {
-    clean = clean.replace(/\(Fully Customizable\)/gi, "").replace(/The Batch/i, `The ${campus} Batch`);
+    clean = clean.replace(/\(Fully Customizable\)/gi, "").replace(/The Batch/i, `${campus} Batch`);
   }
   
-  if (!clean.includes(campus)) {
-    clean = clean.replace(/^The\s+/i, `The ${campus} `);
-  }
+  // Remove leading "The " prefix (e.g. "The IIIT Minimalist" -> "IIIT Minimalist")
+  clean = clean.replace(/^The\s+/i, "");
   
   return clean.replace(/\s+/g, " ").replace(/[–-]/g, "–").trim();
 };
@@ -1520,17 +1521,17 @@ export default function MerchandiseClient({
 
           {/* ─── Promo Banner ─── */}
           <div
-            className={`relative z-0 mb-6 overflow-hidden rounded-xl border isolate transition-colors ${
+            className={`relative z-0 mb-6 overflow-hidden rounded-xl border isolate transition-colors shadow-sm ${
               isDarkMode
-                ? "border-slate-800 bg-slate-900/80 text-indigo-200"
-                : "border-indigo-200/80 bg-indigo-50/90 text-indigo-900"
+                ? "border-indigo-800/80 bg-indigo-950/90 text-white"
+                : "border-indigo-600/30 bg-indigo-600 text-white"
             }`}
           >
             <div className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-medium tracking-wide animate-ticker will-change-transform">
-              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
-              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
-              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
-              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-bold underline underline-offset-2 text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-bold underline underline-offset-2 text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-bold underline underline-offset-2 text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-bold underline underline-offset-2 text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
             </div>
           </div>
 
