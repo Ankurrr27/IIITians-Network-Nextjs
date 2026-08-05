@@ -53,6 +53,7 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-spin-slow: spinSlow 18s linear infinite;
   --animate-wave: wave 3s ease-out infinite;
+  --animate-ticker: tickerScroll 18s linear infinite;
 
   @keyframes waveSlow {
     0% { transform: translateX(0); }
@@ -80,6 +81,10 @@
   @keyframes wave {
     0% { transform: scale(0.9); opacity: 0.6; }
     100% { transform: scale(1.4); opacity: 0; }
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 }
 

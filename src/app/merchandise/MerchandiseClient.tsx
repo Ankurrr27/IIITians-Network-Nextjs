@@ -1520,35 +1520,18 @@ export default function MerchandiseClient({
 
           {/* ─── Promo Banner ─── */}
           <div
-            className={`mb-6 overflow-hidden rounded-xl border transition-colors ${
+            className={`relative z-0 mb-6 overflow-hidden rounded-xl border isolate transition-colors ${
               isDarkMode
                 ? "border-slate-800 bg-slate-900/80 text-indigo-200"
                 : "border-indigo-200/80 bg-indigo-50/90 text-indigo-900"
             }`}
-            style={{
-              isolation: "isolate",
-              position: "relative",
-              zIndex: 0,
-            }}
           >
-            <div
-              className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-medium tracking-wide"
-              style={{
-                animation: "iiitPromoScroll 18s linear infinite",
-                willChange: "transform",
-              }}
-            >
+            <div className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-medium tracking-wide animate-ticker will-change-transform">
               <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
               <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
               <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
               <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
             </div>
-            <style>{`
-              @keyframes iiitPromoScroll {
-                0% { transform: translateX(0); }
-                100% { transform: translateX(-50%); }
-              }
-            `}</style>
           </div>
 
           {/* ─── Unified Search + Filter + Cart Toolbar ─── */}
