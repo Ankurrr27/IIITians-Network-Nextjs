@@ -1520,10 +1520,10 @@ export default function MerchandiseClient({
 
           {/* ─── Promo Banner ─── */}
           <div
-            className={`mb-6 overflow-hidden rounded-2xl border transition-colors shadow-sm ${
+            className={`mb-6 overflow-hidden rounded-xl border transition-colors ${
               isDarkMode
-                ? "border-indigo-800/60 bg-indigo-950/80 text-indigo-100"
-                : "border-indigo-600/20 bg-indigo-600 text-white"
+                ? "border-slate-800 bg-slate-900/80 text-indigo-200"
+                : "border-indigo-200/80 bg-indigo-50/90 text-indigo-900"
             }`}
             style={{
               isolation: "isolate",
@@ -1532,16 +1532,16 @@ export default function MerchandiseClient({
             }}
           >
             <div
-              className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-semibold tracking-wide"
+              className="whitespace-nowrap py-2.5 px-4 text-xs sm:text-sm font-medium tracking-wide"
               style={{
-                animation: "iiitPromoScroll 16s linear infinite",
+                animation: "iiitPromoScroll 18s linear infinite",
                 willChange: "transform",
               }}
             >
-              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
-              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
-              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
-              <span className="inline-block mx-6 sm:mx-10">🎉 Use code <span className="underline underline-offset-4 decoration-white/50 font-bold">&quot;IIITians&quot;</span> for 5% off on all campus merchandise orders 🎉</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
+              <span className="inline-block mx-6 sm:mx-10">Use code <strong className="font-semibold text-indigo-950 dark:text-white">&quot;IIITians&quot;</strong> for 5% off on all campus merchandise orders</span>
             </div>
             <style>{`
               @keyframes iiitPromoScroll {
