@@ -1,11 +1,25 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { divIcon, LatLngExpression, LeafletKeyboardEvent } from "leaflet";
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
-import { ArrowUpRight, Building2, MapPin, Navigation } from "lucide-react";
+import type { Feature, FeatureCollection, Geometry } from "geojson";
+import { divIcon, LatLngExpression, Layer, LeafletKeyboardEvent, PathOptions } from "leaflet";
+import { GeoJSON, MapContainer, Marker, Pane, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { ArrowUpRight, Building2, Layers, MapPin, Navigation } from "lucide-react";
 import type { IIITCampus } from "@/data/iiitCampuses";
 import useThemeMode from "@/hooks/useThemeMode";
+
+type StateProperties = {
+  name: string;
+  code?: string;
+};
+
+type CountryProperties = {
+  name: string;
+  type?: string;
+};
+
+type StateFeatureCollection = FeatureCollection<Geometry, StateProperties>;
+type CountryFeatureCollection = FeatureCollection<Geometry, CountryProperties>;
 
 type ClusterPoint = {
   id: string;
@@ -111,18 +125,149 @@ export default function ExploreYourIIITMap({
 }) {
   const [zoom, setZoom] = useState(5);
   const [activeCampus, setActiveCampus] = useState<IIITCampus | null>(null);
+  const [statesGeoJson, setStatesGeoJson] = useState<StateFeatureCollection | null>(null);
+  const [countryGeoJson, setCountryGeoJson] = useState<CountryFeatureCollection | null>(null);
+  const [showBorders, setShowBorders] = useState(true);
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
   const { isDarkMode } = useThemeMode();
+
   const center: LatLngExpression = [22.8, 79.6];
   const points = useMemo(() => getClusteredCampuses(campuses, zoom), [campuses, zoom]);
   const campusForActions = activeCampus || selectedCampus;
+  const activeStateName = (activeCampus || selectedCampus)?.state;
+
+  const stateCampusMap = useMemo(() => {
+    const map = new Map<string, number>();
+    campuses.forEach((c) => {
+      if (c.state) {
+        map.set(c.state, (map.get(c.state) || 0) + 1);
+      }
+    });
+    return map;
+  }, [campuses]);
+
+  useEffect(() => {
+    let isMounted = true;
+    fetch("/data/india-states.json")
+      .then((res) => (res.ok ? (res.json() as Promise<StateFeatureCollection>) : null))
+      .then((data) => {
+        if (isMounted && data) setStatesGeoJson(data);
+      })
+      .catch((err) => console.error("Failed to load India states GeoJSON:", err));
+
+    fetch("/data/india-country.json")
+      .then((res) => (res.ok ? (res.json() as Promise<CountryFeatureCollection>) : null))
+      .then((data) => {
+        if (isMounted && data) setCountryGeoJson(data);
+      })
+      .catch((err) => console.error("Failed to load India country GeoJSON:", err));
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const tileUrl =
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
-  const logoUrl = campusForActions ? (campusForActions.logo || getWebsiteFavicon(campusForActions.website)) : "";
+    "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
+  const logoUrl = campusForActions ? campusForActions.logo || getWebsiteFavicon(campusForActions.website) : "";
+
+  const getStateStyle = (feature?: Feature<Geometry, StateProperties>): PathOptions => {
+    const stateName = feature?.properties?.name;
+    const isSelected = activeStateName && stateName === activeStateName;
+    const isHovered = hoveredState && stateName === hoveredState;
+
+    if (isSelected) {
+      return {
+        color: "#818cf8",
+        weight: 1.8,
+        opacity: 0.9,
+        fillColor: "#6366f1",
+        fillOpacity: 0.22,
+        dashArray: undefined,
+      };
+    }
+
+    if (isHovered) {
+      return {
+        color: "#a5b4fc",
+        weight: 1.5,
+        opacity: 0.85,
+        fillColor: "#6366f1",
+        fillOpacity: 0.12,
+        dashArray: undefined,
+      };
+    }
+
+    return {
+      color: isDarkMode ? "rgba(148, 163, 184, 0.65)" : "rgba(226, 232, 240, 0.75)",
+      weight: zoom >= 7 ? 1.3 : 0.9,
+      opacity: 0.65,
+      fillColor: "#6366f1",
+      fillOpacity: 0.02,
+      dashArray: "4, 4",
+    };
+  };
+
+  const onEachState = (feature: Feature<Geometry, StateProperties>, layer: Layer) => {
+    const stateName = feature?.properties?.name;
+    const count = stateCampusMap.get(stateName) || 0;
+    const tooltipText = count > 0
+      ? `${stateName} • ${count} ${count === 1 ? "IIIT" : "IIITs"}`
+      : stateName;
+
+    layer.bindTooltip(tooltipText, {
+      sticky: true,
+      direction: "auto",
+      className: "iiit-state-tooltip",
+    });
+
+    layer.on({
+      mouseover: () => setHoveredState(stateName),
+      mouseout: () => setHoveredState(null),
+      click: () => {
+        const firstCampus = campuses.find((c) => c.state === stateName);
+        if (firstCampus) {
+          setActiveCampus(firstCampus);
+          onSelect(firstCampus);
+        }
+      },
+    });
+  };
+
+  const countryStyle: PathOptions = {
+    color: "#ffffff",
+    weight: zoom >= 8 ? 3.4 : zoom >= 6 ? 2.8 : 2.2,
+    opacity: 0.95,
+    fill: false,
+    dashArray: undefined,
+    lineCap: "round",
+    lineJoin: "round",
+  };
 
   return (
     <div className={`relative h-[28rem] overflow-hidden rounded-none border-x-0 border-y bg-slate-950 shadow-none ring-0 -mx-4 sm:mx-0 sm:rounded-lg lg:h-[32rem] ${
       isDarkMode ? "border-slate-800" : "border-slate-200"
     }`}>
+      {/* Borders Toggle Button */}
+      <button
+        type="button"
+        onClick={() => setShowBorders((prev) => !prev)}
+        className={`absolute top-3 right-3 z-[500] inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-bold shadow-md backdrop-blur-md transition-all cursor-pointer ${
+          showBorders
+            ? isDarkMode
+              ? "border-indigo-700/80 bg-slate-900/90 text-indigo-300 ring-1 ring-indigo-500/20 hover:bg-slate-900"
+              : "border-indigo-200 bg-white/95 text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"
+            : isDarkMode
+              ? "border-slate-800 bg-slate-950/90 text-slate-400 hover:text-slate-300"
+              : "border-slate-200 bg-white/95 text-slate-600 hover:bg-slate-50"
+        }`}
+        title="Toggle India & State Boundaries"
+        aria-label="Toggle India & State Boundaries"
+      >
+        <Layers className={`h-3.5 w-3.5 ${showBorders ? "text-indigo-500" : "text-slate-400"}`} />
+        <span>{showBorders ? "Borders ON" : "Borders OFF"}</span>
+      </button>
+
       <MapContainer
         center={center}
         zoom={5}
@@ -136,6 +281,31 @@ export default function ExploreYourIIITMap({
         <TileLayer url={tileUrl} maxZoom={20} maxNativeZoom={20} />
         <FlyToCampus campus={selectedCampus} />
         <ZoomWatcher onZoom={setZoom} />
+
+        {/* Custom pane for national boundary to render above state borders with higher zIndex */}
+        <Pane name="countryBoundaryPane" style={{ zIndex: 450, pointerEvents: "none" }} />
+
+        {/* State Boundaries Layer (Subtle, interactive, with tooltips) */}
+        {showBorders && statesGeoJson && (
+          <GeoJSON
+            key={`states-${zoom}-${isDarkMode}-${activeStateName || ""}-${hoveredState || ""}`}
+            data={statesGeoJson}
+            style={getStateStyle}
+            onEachFeature={onEachState}
+          />
+        )}
+
+        {/* National Boundary Layer (Harder, bolder white boundary overriding shared state borders) */}
+        {showBorders && countryGeoJson && (
+          <GeoJSON
+            key={`country-${zoom}`}
+            data={countryGeoJson}
+            style={countryStyle}
+            interactive={false}
+            pane="countryBoundaryPane"
+          />
+        )}
+
         {points.map((point) => {
           const campus = point.campuses[0];
           const isCluster = point.campuses.length > 1;
@@ -291,3 +461,4 @@ export default function ExploreYourIIITMap({
     </div>
   );
 }
+
