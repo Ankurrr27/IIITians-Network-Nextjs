@@ -408,6 +408,23 @@ body {
   padding: 0.35rem 0.65rem !important;
 }
 
+.iiit-state-tooltip {
+  background: rgba(15, 23, 42, 0.88) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(99, 102, 241, 0.45) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.45) !important;
+  color: #f8fafc !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 0.35rem 0.65rem !important;
+  pointer-events: none !important;
+}
+
+.iiit-state-tooltip::before {
+  border-top-color: rgba(15, 23, 42, 0.88) !important;
+}
+
 .iiit-map-marker {
   position: relative;
   display: grid;
