@@ -108,8 +108,8 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
   const leadGridClass =
     leads.length === 3
-      ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-      : "grid gap-4 sm:grid-cols-2 xl:grid-cols-4";
+      ? "grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
+      : "grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 
   if (!members.length) {
     return <div className="py-12 text-center text-slate-500">No team members found.</div>;
@@ -303,7 +303,7 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
       className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
       <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
-        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-[3/4] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
+        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-[4/5] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
         </div>
         
@@ -322,13 +322,13 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
         </div>
       </div>
 
-      <div className="px-4 pb-4 pt-3 text-center sm:px-5 sm:pb-5 sm:pt-4 bg-white">
-        <h4 className="line-clamp-2 text-sm font-extrabold leading-tight text-slate-900 sm:text-base">{member.name}</h4>
+      <div className="px-3 pb-3 pt-2.5 text-center sm:px-4 sm:pb-4 sm:pt-3 bg-white">
+        <h4 className="line-clamp-2 text-xs font-extrabold leading-tight text-slate-900 sm:text-sm">{member.name}</h4>
         
         {/* Mobile Role */}
         <p className="mt-0.5 sm:hidden text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
         
-        <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs truncate">{member.iiit}</p>
+        <p className="mt-0.5 text-[10px] leading-4 text-slate-500 sm:text-[11px] truncate">{member.iiit}</p>
         
         {/* Mobile Social Links & Chevron Toggle */}
         <div className="mt-3 flex sm:hidden items-center justify-between border-t border-slate-100 pt-3">
