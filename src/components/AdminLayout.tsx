@@ -15,6 +15,7 @@ const adminLinks = [
   { label: "Placements", href: "/placement/admin" },
   { label: "Opportunities", href: "/admin/opportunities" },
   { label: "Notifications", href: "/admin/notifications" },
+  { label: "Popup Schedule", href: "/admin/popup" },
   { label: "Gallery", href: "/admin/gallery" },
   { label: "Guide", href: "/admin/guide" },
   { label: "Network Stats", href: "/admin/stats" },
@@ -50,7 +51,7 @@ function AdminNav({ isMenuOpen, setIsMenuOpen }: { isMenuOpen: boolean; setIsMen
           </div>
           <nav className="flex-1 space-y-1 overflow-y-auto p-3 custom-scrollbar">
             {adminLinks.map((link) => (
-              <Link key={link.href} href={link.href}
+              <Link key={link.href} href={link.href} onClick={() => setIsMenuOpen(false)}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${pathname.startsWith(link.href) ? "bg-slate-900 text-white shadow-lg shadow-slate-900/10" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}>
                 {link.label}
               </Link>
@@ -114,7 +115,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  useEffect(() => { setIsMenuOpen(false); }, [pathname]);
   useEffect(() => { document.body.style.overflow = isMenuOpen ? "hidden" : "unset"; }, [isMenuOpen]);
 
   // Don't wrap /admin (login page) with the layout guard
@@ -125,7 +125,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="relative min-h-screen bg-[linear-gradient(180deg,_#eef7ff_0%,_#f7fbff_36%,_#f9fcff_100%)]">
         <div className="pointer-events-none fixed inset-0 opacity-60 [background-image:radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.16),transparent_0_22%),radial-gradient(circle_at_80%_18%,rgba(125,211,252,0.18),transparent_0_20%),radial-gradient(circle_at_72%_72%,rgba(96,165,250,0.12),transparent_0_24%)]" />
         <div className="relative z-10 flex min-h-screen flex-col">
-          <AdminNav isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
+          <AdminNav key={pathname} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />
           <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-5 sm:px-5 sm:py-7">{children}</main>
           <footer className="mt-auto border-t border-slate-800 bg-slate-950 py-5">
             <div className="mx-auto max-w-7xl px-4 sm:px-6">

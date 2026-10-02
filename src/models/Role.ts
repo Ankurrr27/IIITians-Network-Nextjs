@@ -5,6 +5,7 @@ export interface IRoleDocument extends Document {
   level: number; // For hierarchy calculations: 100 for President, 10 for Volunteer
   roleType: "EXEC" | "LEAD" | "MEMBER"; // Legacy compat
   permissions: string[]; // ["MANAGE_TEAM", "MANAGE_EVENTS", "APPROVE_PROMOTIONS"]
+  isCustom?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -15,6 +16,7 @@ const roleSchema = new Schema<IRoleDocument>(
     level: { type: Number, required: true, default: 10 },
     roleType: { type: String, required: true, enum: ["EXEC", "LEAD", "MEMBER"] },
     permissions: [{ type: String }],
+    isCustom: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

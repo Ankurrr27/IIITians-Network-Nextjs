@@ -29,6 +29,7 @@ import {
   Plus,
   Send,
   ShieldCheck,
+  Sparkles,
   Trash2,
   User,
   UserPlus,
@@ -146,6 +147,11 @@ function FeaturedClubCard({ post, index }: { post: IDiscussPost; index: number }
   );
 }
 
+function getPostCollegeName(post: IDiscussPost): string {
+  const accountCollegeName = typeof post.account === "object" ? post.account?.collegeName?.trim() : "";
+  return accountCollegeName || post.collegeName || "";
+}
+
 function OfficialPostRow({
   post,
   isVoted,
@@ -229,7 +235,7 @@ function OfficialPostRow({
             <span className="font-semibold text-slate-800">{post.clubName}</span>
             {post.badgeLabel && <BadgeCheck className="h-3.5 w-3.5 fill-sky-500 text-white" />}
             <span>•</span>
-            <span>{post.collegeName}</span>
+            <span>{getPostCollegeName(post)}</span>
             <span>•</span>
             <span>{date}</span>
           </div>
@@ -263,7 +269,6 @@ function OfficialPostRow({
               {post.upvotes || 0}
             </button>
             <span className="inline-flex items-center gap-1"><Eye className="h-3.5 w-3.5" /> {viewsCount.toLocaleString("en-IN")}</span>
-            <span className="inline-flex items-center gap-1"><MessageCircle className="h-3.5 w-3.5" /> Official</span>
             <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-600">{post.type}</span>
             {post.actionLink && (
               <a href={post.actionLink} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 rounded-full bg-slate-950 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-slate-800">
@@ -455,19 +460,24 @@ function DiscussPageClient() {
   }, []);
 
   const approvedPosts = useMemo(() => posts.filter((p) => p.status === "approved"), [posts]);
-  const pinnedPosts = useMemo(() => approvedPosts.filter((p) => p.isPinned), [approvedPosts]);
-  const featuredPosts = useMemo(() => (pinnedPosts.length > 0 ? pinnedPosts : approvedPosts).slice(0, 3), [pinnedPosts, approvedPosts]);
+  const featuredPosts = useMemo(() => approvedPosts.filter((p) => p.isFeatured), [approvedPosts]);
 
   const filteredOfficialPosts = useMemo(() => {
     const q = search.trim().toLowerCase();
     return approvedPosts.filter((post) => {
       const topicMatch = activeTopic === "For You" || post.type === "event" && activeTopic === "Events" || post.type === "collaboration" && activeTopic === "Collaboration";
-      const searchMatch = !q || [post.title, post.description, post.clubName, post.collegeName, post.type].join(" ").toLowerCase().includes(q);
+      const searchMatch = !q || [post.title, post.description, post.clubName, getPostCollegeName(post), post.type].join(" ").toLowerCase().includes(q);
       return topicMatch && searchMatch;
     });
   }, [activeTopic, approvedPosts, search]);
 
-  const filteredPinnedPosts = useMemo(() => filteredOfficialPosts.filter((p) => p.isPinned), [filteredOfficialPosts]);
+  const filteredPinnedPosts = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return approvedPosts.filter((post) => {
+      if (!post.isPinned) return false;
+      return !q || [post.title, post.description, post.clubName, getPostCollegeName(post), post.type].join(" ").toLowerCase().includes(q);
+    });
+  }, [approvedPosts, search]);
   const filteredRegularPosts = useMemo(() => filteredOfficialPosts.filter((p) => !p.isPinned), [filteredOfficialPosts]);
 
   const filteredQueries = useMemo(() => {
@@ -588,6 +598,19 @@ function DiscussPageClient() {
     loadAccount();
     api.get("/colleges").then((r) => setColleges((r.data || []).map((c: { name: string }) => c.name)));
     api.get("/discuss-accounts/handles").then((r) => setClubNames(r.data || [])).catch(() => {});
+
+    const refreshPosts = () => {
+      if (document.visibilityState !== "visible") return;
+      api.get("/discuss")
+        .then((response) => setPosts(Array.isArray(response.data) ? response.data : []))
+        .catch(() => {});
+    };
+    window.addEventListener("focus", refreshPosts);
+    document.addEventListener("visibilitychange", refreshPosts);
+    return () => {
+      window.removeEventListener("focus", refreshPosts);
+      document.removeEventListener("visibilitychange", refreshPosts);
+    };
   }, []);
 
   useEffect(() => {
@@ -880,9 +903,9 @@ function DiscussPageClient() {
           {featuredPosts.length > 0 ? (
             <div className="mb-6">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-4 sm:px-0">Featured Updates</h2>
-              <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none snap-x snap-mandatory">
+              <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 scrollbar-none sm:px-0 sm:pb-4">
                 {featuredPosts.map((post, index) => (
-                  <div key={post._id} className="w-[75vw] shrink-0 snap-center sm:w-auto">
+                  <div key={post._id} className="w-[75vw] max-w-[28rem] shrink-0 snap-start sm:w-[48%] sm:max-w-none lg:w-[31%]">
                     <FeaturedClubCard post={post} index={index} />
                   </div>
                 ))}
@@ -891,9 +914,9 @@ function DiscussPageClient() {
           ) : loading ? (
             <div className="mb-6">
               <h2 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 px-4 sm:px-0">Featured Updates</h2>
-              <div className="flex overflow-x-auto gap-3 pb-3 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-4 sm:pb-0 scrollbar-none">
+              <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-3 scrollbar-none sm:px-0 sm:pb-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="w-[75vw] shrink-0 sm:w-auto h-36 sm:h-44 lg:h-48 rounded-2xl bg-slate-100 animate-pulse" />
+                  <div key={i} className="h-36 w-[75vw] max-w-[28rem] shrink-0 snap-start rounded-2xl bg-slate-100 animate-pulse sm:h-44 sm:w-[48%] sm:max-w-none lg:h-48 lg:w-[31%]" />
                 ))}
               </div>
             </div>
@@ -931,7 +954,7 @@ function DiscussPageClient() {
                   </div>
                 ))}
               </div>
-            ) : filteredOfficialPosts.length === 0 && filteredQueries.length === 0 ? (
+            ) : filteredPinnedPosts.length === 0 && filteredRegularPosts.length === 0 && filteredQueries.length === 0 ? (
               <div className="py-14 text-center">
                 <p className="font-bold text-slate-900">No discussions matched this view.</p>
                 <p className="mt-2 text-sm text-slate-500">Try another topic or post a fresh query above.</p>

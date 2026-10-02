@@ -9,6 +9,7 @@ import type { ITeamMember } from "@/types";
 import { notifyPageEntry } from "@/utils/appNotifications";
 import SourceTeamGrid from "@/components/team/SourceTeamGrid";
 import PageHeader, { pageHeaderControlClass } from "@/components/PageHeader";
+import { compareTermsNewestFirst } from "@/lib/termSort";
 
 interface Props {
   initialMembers: ITeamMember[];
@@ -67,9 +68,7 @@ export default function TeamClient({ initialMembers }: Props) {
 
   const years = useMemo(() => {
     const values = new Set(initialMembers.map((m) => m.year).filter(Boolean));
-    const sortedYears = Array.from(values).sort((a, b) =>
-      String(b).localeCompare(String(a), undefined, { numeric: true })
-    );
+    const sortedYears = Array.from(values).filter(Boolean).sort(compareTermsNewestFirst);
     return ["ALL", ...sortedYears];
   }, [initialMembers]);
 

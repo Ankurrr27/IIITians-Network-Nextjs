@@ -56,8 +56,8 @@ export async function GET(req: NextRequest) {
     const status = url.searchParams.get("status");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = status ? { status } : { status: "approved" };
-    const posts = await Discuss.find(query).sort({ isPinned: -1, createdAt: -1 }).populate("account", "logo clubName");
-    return NextResponse.json(posts);
+    const posts = await Discuss.find(query).sort({ isPinned: -1, createdAt: -1 }).populate("account", "logo clubName collegeName");
+    return NextResponse.json(posts, { headers: { "Cache-Control": "no-store, max-age=0" } });
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
   }

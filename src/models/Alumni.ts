@@ -10,9 +10,9 @@ export interface IAlumniDocument extends Document {
   name: string;
   email: string;
   iiit: string;
-  graduationYear: number;
-  generation: string;
-  branch: string;
+  graduationYear?: number;
+  generation?: string;
+  branch?: string;
   networkPost?: string;
   currentRole?: string;
   currentCompany?: string;
@@ -42,9 +42,9 @@ const alumniSchema = new Schema<IAlumniDocument>(
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     iiit: { type: String, required: true, trim: true },
-    graduationYear: { type: Number, required: true, min: 2000, max: 2100 },
-    generation: { type: String, required: true, trim: true },
-    branch: { type: String, required: true, trim: true },
+    graduationYear: { type: Number, required: function (this: IAlumniDocument): boolean { return this.legacyType !== "team_member"; }, min: 2000, max: 2100 },
+    generation: { type: String, required: function (this: IAlumniDocument): boolean { return this.legacyType !== "team_member"; }, trim: true, default: "" },
+    branch: { type: String, required: function (this: IAlumniDocument): boolean { return this.legacyType !== "team_member"; }, trim: true, default: "" },
     networkPost: { type: String, trim: true, default: "" },
     currentRole: { type: String, trim: true, default: "" },
     currentCompany: { type: String, trim: true, default: "" },

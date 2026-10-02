@@ -1,9 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import TeamMember from "@/models/TeamMember";
+import TeamRequest from "@/models/TeamRequest";
+import TermTenure from "@/models/TermTenure";
 import { uploadToCloudinary } from "@/lib/cloudinary";
+import { isNextResponse, requireAdmin } from "@/lib/requireAdmin";
+import { compareTermsNewestFirst } from "@/lib/termSort";
 
-// POST /api/team-requests — public: submit a join request (creates inactive member)
+export async function GET(req: NextRequest) {
+  const payload = requireAdmin(req);
+  if (isNextResponse(payload)) return payload;
+
+  try {
+    await connectDB();
+    const requests = await TeamRequest.find({ status: "pending" }).lean();
+    const reviewedMemberIds = new Set(
+      (await TeamRequest.distinct("memberId", { memberId: { $ne: null } })).map(String)
+    );
+    const legacyProfiles = await TeamMember.find({
+      isActive: { $ne: true },
+      role: "Member",
+      team: "Core",
+      year: "",
+    }).lean();
+    const legacyProfileIds = legacyProfiles
+      .filter((profile) => !reviewedMemberIds.has(String(profile._id)))
+      .map((profile) => profile._id);
+    const profilesWithTenures = new Set(
+      (await TermTenure.distinct("memberId", { memberId: { $in: legacyProfileIds } })).map(String)
+    );
+
+    for (const profile of legacyProfiles) {
+      const memberId = String(profile._id);
+      if (reviewedMemberIds.has(memberId) || profilesWithTenures.has(memberId)) continue;
+      const year = String(profile.createdAt?.getFullYear() || new Date().getFullYear());
+      const migratedRequest = await TeamRequest.create({
+        applicantType: "NEW",
+        name: profile.name,
+        email: profile.email,
+        iiit: profile.iiit || "Unspecified",
+        team: "Core",
+        role: "Member",
+        year,
+        linkedin: profile.linkedin || "",
+        instagram: profile.instagram || "",
+        twitter: profile.twitter || "",
+        aboutText: profile.aboutText || "",
+        messageText: profile.messageText || "",
+        ...(profile.photo ? { photo: profile.photo } : {}),
+        memberId: profile._id,
+        status: "pending",
+      });
+      requests.push(migratedRequest.toObject());
+    }
+
+    requests.sort((left, right) =>
+      compareTermsNewestFirst(left.year, right.year) ||
+      new Date(right.createdAt || 0).getTime() - new Date(left.createdAt || 0).getTime()
+    );
+    return NextResponse.json(requests, { headers: { "Cache-Control": "no-store, max-age=0" } });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });
+  }
+}
+
+// POST /api/team-requests — public: submit a profile/tenure request for admin review.
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
@@ -48,27 +109,32 @@ export async function POST(req: NextRequest) {
       photo = { public_id: result.public_id, url: result.secure_url };
     }
 
-    // Create member profile
-    const member = await TeamMember.create({
+    const existingMember = applicantType === "EXISTING"
+      ? await TeamMember.findOne({ email: email.toLowerCase() })
+      : null;
+    if (applicantType === "EXISTING" && !existingMember) {
+      return NextResponse.json({ message: "No existing team profile was found for this email." }, { status: 404 });
+    }
+
+    const request = await TeamRequest.create({
+      applicantType: applicantType === "EXISTING" ? "EXISTING" : "NEW",
       name,
       email,
-      iiit: iiit || "Unspecified",
+      iiit: iiit || existingMember?.iiit || "Unspecified",
+      team,
+      role,
+      year,
       linkedin,
       instagram,
       twitter,
       aboutText,
       messageText,
       ...(photo ? { photo } : {}),
+      memberId: existingMember?._id || null,
+      status: "pending",
     });
 
-    // Create a pending TermTenure
-    const mongoose = (await import("mongoose")).default;
-    // We just assume they exist or create placeholder ones, but actually we can just rely on the frontend to process it in localStorage.
-    // Wait, since the frontend is doing local offline sandbox review for requests, maybe we just save a basic object and return it, or don't even use this route.
-    // But since the frontend expects the backend to save it, let's create a stub TermTenure or just create the Member for now.
-    // Let's just return the member. The frontend will get the member, and it'll store the rest of the metadata locally.
-    
-    return NextResponse.json({ ...member.toObject(), team, role, year }, { status: 201 });
+    return NextResponse.json(request, { status: 201 });
   } catch (err: unknown) {
     return NextResponse.json(
       { message: err instanceof Error ? err.message : "Server error" },

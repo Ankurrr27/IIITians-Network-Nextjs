@@ -2,28 +2,62 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { X } from "lucide-react";
 
 export default function TournamentPopup() {
   const [mount, setMount] = useState(false);
   const [show, setShow] = useState(false);
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
-    // Check if the user has already seen the popup in this session
-    const hasSeenPopup = sessionStorage.getItem("hasSeenTournamentPopup");
+    let cancelled = false;
+    const refreshStatus = async () => {
+      try {
+        const response = await fetch("/api/popup", { cache: "no-store" });
+        const data = await response.json();
+        if (!cancelled) {
+          const active = response.ok && data.active === true;
+          setIsActive(active);
+          if (!active) {
+            setShow(false);
+            setMount(false);
+          }
+        }
+      } catch {
+        if (!cancelled) {
+          setIsActive(false);
+          setShow(false);
+          setMount(false);
+        }
+      }
+    };
 
-    if (!hasSeenPopup) {
-      // Delay mounting slightly for better UX on initial load
-      const timer = setTimeout(() => {
-        setMount(true);
-        // Delay showing to allow CSS transition to trigger
-        setTimeout(() => setShow(true), 50);
-        sessionStorage.setItem("hasSeenTournamentPopup", "true");
-      }, 1500); // 1.5s delay before popup appears
-      return () => clearTimeout(timer);
-    }
+    void refreshStatus();
+    const interval = window.setInterval(refreshStatus, 60_000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(interval);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isActive) return;
+
+    if (sessionStorage.getItem("hasSeenTournamentPopup")) return;
+
+    let transitionTimer: number;
+    const mountTimer = window.setTimeout(() => {
+      setMount(true);
+      transitionTimer = window.setTimeout(() => {
+        setShow(true);
+        sessionStorage.setItem("hasSeenTournamentPopup", "true");
+      }, 50);
+    }, 1500);
+    return () => {
+      window.clearTimeout(mountTimer);
+      window.clearTimeout(transitionTimer);
+    };
+  }, [isActive]);
 
   const handleClose = () => {
     setShow(false);
@@ -35,7 +69,7 @@ export default function TournamentPopup() {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex items-center justify-center p-4 transition-colors duration-300 ${
+      className={`fixed inset-0 z-9999 flex items-center justify-center p-4 transition-colors duration-300 ${
         show ? "bg-black/60 backdrop-blur-sm" : "bg-black/0 backdrop-blur-none"
       }`}
     >

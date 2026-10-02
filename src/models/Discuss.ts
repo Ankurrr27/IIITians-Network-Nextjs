@@ -21,6 +21,7 @@ export interface IDiscussDocument extends Document {
   upvotes?: number;
   views?: number;
   isPinned?: boolean;
+  isFeatured?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -30,7 +31,7 @@ const discussSchema = new Schema<IDiscussDocument>(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     type: { type: String, enum: ["announcement", "event", "campaign", "collaboration", "opportunity"], default: "announcement" },
-    collegeName: { type: String, required: true, trim: true },
+    collegeName: { type: String, default: "", trim: true },
     clubName: { type: String, required: true, trim: true },
     contactName: { type: String, trim: true },
     contactEmail: { type: String, trim: true, lowercase: true },
@@ -47,9 +48,15 @@ const discussSchema = new Schema<IDiscussDocument>(
     upvotes: { type: Number, default: 0 },
     views: { type: Number, default: 0 },
     isPinned: { type: Boolean, default: false },
+    isFeatured: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
+
+const cachedDiscussModel = mongoose.models.Discuss as Model<IDiscussDocument> | undefined;
+if (cachedDiscussModel && !cachedDiscussModel.schema.path("isFeatured")) {
+  delete mongoose.models.Discuss;
+}
 
 const Discuss: Model<IDiscussDocument> =
   mongoose.models.Discuss ||
