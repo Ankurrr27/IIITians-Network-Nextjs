@@ -6,6 +6,10 @@ export const dynamic = 'force-dynamic';
 
 import TeamMember from "@/models/TeamMember";
 import TermTenure from "@/models/TermTenure";
+// Register every model referenced by TermTenure before Mongoose populates them.
+import Term from "@/models/Term";
+import Committee from "@/models/Committee";
+import Role from "@/models/Role";
 import type { ITeamMember } from "@/types";
 import { compareTermsNewestFirst } from "@/lib/termSort";
 import { Suspense } from "react";
@@ -44,9 +48,9 @@ export default async function TeamPage() {
     const [rawTenures, rawProfiles] = await Promise.all([
       TermTenure.find({ status: { $ne: "REMOVED" } })
         .populate("memberId")
-        .populate("termId")
-        .populate("committeeId")
-        .populate("roleId")
+        .populate({ path: "termId", model: Term })
+        .populate({ path: "committeeId", model: Committee })
+        .populate({ path: "roleId", model: Role })
         .lean(),
       TeamMember.find().lean(),
     ]);
