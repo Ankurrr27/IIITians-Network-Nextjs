@@ -72,9 +72,9 @@ export interface IAlumni {
   name: string;
   email: string;
   iiit: string;
-  graduationYear: number;
-  generation: string;
-  branch: string;
+  graduationYear?: number;
+  generation?: string;
+  branch?: string;
   networkPost?: string;
   currentRole?: string;
   currentCompany?: string;
@@ -96,6 +96,7 @@ export interface IAlumni {
 
 export interface ITeamMember {
   _id: string;
+  memberId?: string;
   name: string;
   role: string;
   roleType: "EXEC" | "LEAD" | "MEMBER";
@@ -112,6 +113,7 @@ export interface ITeamMember {
   team: "Core" | "Tech" | "Development" | "Design" | "Content" | "Social Media";
   year: string;
   isActive?: boolean;
+  tenureStatus?: "ACTIVE" | "ARCHIVED" | "PROMOTED" | "REMOVED" | "PROFILE";
   order?: number;
   createdAt?: string;
   updatedAt?: string;
@@ -170,6 +172,7 @@ export interface IDiscussPost {
   upvotes?: number;
   views?: number;
   isPinned?: boolean;
+  isFeatured?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

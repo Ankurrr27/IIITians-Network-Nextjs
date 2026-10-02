@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import TermTenure from "@/models/TermTenure";
+import TeamMember from "@/models/TeamMember";
 import PromotionLog from "@/models/PromotionLog";
 import Role from "@/models/Role";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
+import { syncTeamMemberLegacyProfile } from "@/lib/teamLegacySync";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +26,10 @@ export async function POST(req: NextRequest) {
     const results = [];
 
     for (const promo of promotions) {
-      const tenure = await TermTenure.findById(promo.tenureId).populate("roleId");
+      const tenure = await TermTenure.findById(promo.tenureId)
+        .populate("roleId")
+        .populate("committeeId")
+        .populate("termId");
       if (!tenure) continue;
 
       const oldRoleId = tenure.roleId._id;
@@ -34,6 +39,19 @@ export async function POST(req: NextRequest) {
       // Update Tenure
       tenure.roleId = newRole._id;
       await tenure.save();
+
+      const committee = tenure.committeeId as unknown as { name?: string };
+      const term = tenure.termId as unknown as { name?: string };
+      const updatedMember = await TeamMember.findByIdAndUpdate(tenure.memberId, {
+        $set: {
+          role: newRole.name,
+          roleType: newRole.roleType,
+          team: committee?.name || "Core",
+          year: term?.name || "",
+          isActive: true,
+        },
+      }, { new: true });
+      if (updatedMember) await syncTeamMemberLegacyProfile(updatedMember);
 
       // Log Promotion
       const log = await PromotionLog.create({

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import Term from "@/models/Term";
 import TermTenure from "@/models/TermTenure";
+import TeamMember from "@/models/TeamMember";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
 
 export async function POST(req: NextRequest) {
@@ -49,7 +50,16 @@ export async function POST(req: NextRequest) {
 
     if (newTenures.length > 0) {
       await TermTenure.insertMany(newTenures);
+      await TeamMember.updateMany(
+        { _id: { $in: newTenures.map((tenure: any) => tenure.memberId) } },
+        { $set: { isActive: true, year: newTermName } }
+      );
     }
+
+    await TermTenure.updateMany(
+      { termId: sourceTermId, status: "ACTIVE" },
+      { $set: { status: "ARCHIVED" } }
+    );
 
     return NextResponse.json({
       message: `Successfully cloned term with ${newTenures.length} members.`,

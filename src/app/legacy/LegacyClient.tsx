@@ -121,16 +121,30 @@ function getLegacyStats(statsData: LegacyStatsData) {
 }
 
 function dedupeRoleHistory(roleHistory: IAlumni["roleHistory"] = []) {
-  return roleHistory.filter((item, index, list) => {
-    const signature = `${normalizeText(item.year || "")}|${normalizeText(item.team || "")}|${normalizeText(item.role || "")}`;
-    return (
-      index ===
-      list.findIndex((candidate) => {
-        const candidateSignature = `${normalizeText(candidate.year || "")}|${normalizeText(candidate.team || "")}|${normalizeText(candidate.role || "")}`;
-        return candidateSignature === signature;
-      })
-    );
-  });
+  const result: NonNullable<IAlumni["roleHistory"]> = [];
+  const termIndexes = new Map<string, number>();
+  const seenUntermedRoles = new Set<string>();
+
+  for (const item of roleHistory) {
+    const normalizedTerm = (item.year || "").trim().toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
+    if (normalizedTerm) {
+      const existingIndex = termIndexes.get(normalizedTerm);
+      if (existingIndex === undefined) {
+        termIndexes.set(normalizedTerm, result.length);
+        result.push(item);
+      } else {
+        result[existingIndex] = item;
+      }
+      continue;
+    }
+
+    const signature = `${normalizeText(item.team || "")}|${normalizeText(item.role || "")}`;
+    if (seenUntermedRoles.has(signature)) continue;
+    seenUntermedRoles.add(signature);
+    result.push(item);
+  }
+
+  return result;
 }
 
 function getLegacyEntryViewModel(entry: IAlumni) {
@@ -417,14 +431,14 @@ export default function LegacyClient({ initialAlumni }: Props) {
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search by name, role, company, or institute..."
-          controlsClassName="xl:grid xl:grid-cols-[minmax(36rem,1fr)_13rem_14rem_auto_auto] xl:items-center xl:gap-3"
+          controlsClassName="xl:grid xl:grid-cols-[minmax(36rem,1fr)_minmax(0,1fr)] xl:items-center xl:gap-3"
           filtersClassName="flex-row flex-nowrap items-center xl:contents"
           filters={
             <>
               <select
                 value={iiitFilter}
                 onChange={(e) => setIiitFilter(e.target.value)}
-                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
+                className={`${pageHeaderControlClass} w-full shrink-0 truncate text-xs sm:w-48 sm:text-sm`}
               >
                 <option value="">All institutes</option>
                 {iiitOptions.map((option) => (
@@ -434,7 +448,7 @@ export default function LegacyClient({ initialAlumni }: Props) {
               <select
                 value={networkPostFilter}
                 onChange={(e) => setNetworkPostFilter(e.target.value)}
-                className={`${pageHeaderControlClass} min-w-0 flex-1 truncate text-xs sm:text-sm`}
+                className={`${pageHeaderControlClass} w-full shrink-0 truncate text-xs sm:w-48 sm:text-sm`}
               >
                 <option value="">All posts</option>
                 {networkPostOptions.map((option) => (
@@ -1248,7 +1262,7 @@ function LegacyEntryCard({
 
           {/* ── Right: LinkedIn-style aside — desktop only ── */}
           {hasJourney && (
-            <aside className={`hidden md:flex md:flex-col ${
+            <aside className={`hidden max-h-80 overflow-y-auto overscroll-contain scrollbar-none md:flex md:flex-col ${
               isDarkMode
                 ? "border-l border-slate-800 pl-5"
                 : "border-l border-indigo-100 pl-5"

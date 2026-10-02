@@ -8,13 +8,15 @@ import Role from "@/models/Role";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
 import { handleServerError, handleClientError } from "@/lib/errorHelper";
+import { syncTeamMemberLegacyProfile } from "@/lib/teamLegacySync";
+import { compareTermsNewestFirst } from "@/lib/termSort";
 
 export async function GET() {
   try {
     await connectDB();
     
-    // Fetch all active tenures populated with their relations
-    const tenures = await TermTenure.find({ status: "ACTIVE" })
+    // Keep each term assignment as its own row so admins can review full history.
+    const tenures = await TermTenure.find()
       .populate("memberId")
       .populate("termId")
       .populate("committeeId")
@@ -43,6 +45,7 @@ export async function GET() {
         team: t.committeeId?.name || "Core",
         year: t.termId?.name || "2025-26",
         isActive: t.status === "ACTIVE",
+        tenureStatus: t.status,
         order: t.committeeId?.order || 0,
         createdAt: t.createdAt,
       };
@@ -72,13 +75,18 @@ export async function GET() {
           team: (mem as any).team || "Core",
           year: (mem as any).year || "",
           isActive: (mem as any).isActive ?? false,
+          tenureStatus: "PROFILE",
           order: (mem as any).order ?? 9999,
           createdAt: mem.createdAt,
         });
       }
     }
 
-    formattedMembers.sort((a: any, b: any) => a.order - b.order || new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    formattedMembers.sort((a: any, b: any) =>
+      compareTermsNewestFirst(a.year || "", b.year || "") ||
+      a.order - b.order ||
+      new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
 
     return NextResponse.json(formattedMembers);
   } catch (err) {
@@ -122,8 +130,25 @@ export async function POST(req: NextRequest) {
         location: fields.location,
         aboutText: fields.aboutText,
         messageText: fields.messageText,
+        role: fields.role || "Member",
+        roleType: fields.roleType || "MEMBER",
+        team: fields.team || "Core",
+        year: fields.year || "",
+        isActive: true,
         photo: photoData,
       });
+    } else {
+      Object.assign(member, {
+        name: fields.name,
+        iiit: fields.iiit,
+        role: fields.role || "Member",
+        roleType: fields.roleType || "MEMBER",
+        team: fields.team || "Core",
+        year: fields.year || "",
+        isActive: true,
+        ...(photoData ? { photo: photoData } : {}),
+      });
+      await member.save();
     }
 
     // 2. Resolve Term
@@ -146,6 +171,8 @@ export async function POST(req: NextRequest) {
       roleId: role._id,
       status: "ACTIVE",
     });
+
+    await syncTeamMemberLegacyProfile(member);
 
     return NextResponse.json(tenure, { status: 201 });
   } catch (err) {

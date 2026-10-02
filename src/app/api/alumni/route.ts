@@ -36,8 +36,8 @@ function getEarliestYear(alumni: any) {
       if (role.year) {
         const match = role.year.match(/\d{4}/);
         if (match) {
-          const y = parseInt(match[0], 10);
-          if (y < earliest) earliest = y;
+          const year = parseInt(match[0], 10);
+          if (year < earliest) earliest = year;
         }
       }
     }
@@ -46,8 +46,8 @@ function getEarliestYear(alumni: any) {
   if (alumni.generation) {
     const match = alumni.generation.match(/\d{4}/);
     if (match) {
-      const y = parseInt(match[0], 10);
-      if (y < earliest) earliest = y;
+      const year = parseInt(match[0], 10);
+      if (year < earliest) earliest = year;
     }
   }
 
@@ -95,6 +95,7 @@ export async function GET(req: NextRequest) {
     const page = Math.max(1, Number(url.searchParams.get("page") || 1));
     const limit = Math.min(100, Math.max(1, Number(url.searchParams.get("limit") || 0)));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const query: any = { $and: [{ $or: [{ status: "approved" }, { status: { $exists: false } }] }] };
 
@@ -226,7 +227,14 @@ export async function POST(req: NextRequest) {
     }
 
     const photo = await resolvePhoto(file, rawBody);
-    const alumni = await Alumni.create({ ...payload, photo, status: "pending", reviewedAt: null });
+    const alumni = await Alumni.create({
+      ...payload,
+      photo,
+      legacyType: "alumni",
+      sourceTeamMemberId: null,
+      status: "pending",
+      reviewedAt: null,
+    });
     return NextResponse.json({ message: "Alumni request submitted and pending admin approval.", alumni }, { status: 201 });
   } catch (err) {
     return handleClientError(err);

@@ -2,8 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 import TeamMember from "@/models/TeamMember";
 import TermTenure from "@/models/TermTenure";
+import Term from "@/models/Term";
+import Committee from "@/models/Committee";
+import Role from "@/models/Role";
 import PromotionLog from "@/models/PromotionLog";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
+import { syncTeamMemberLegacyProfile } from "@/lib/teamLegacySync";
 
 // Minimal admin actions: promote, endTenure, copy, remove
 export async function POST(req: NextRequest) {
@@ -13,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (isNextResponse(payload)) return payload;
 
     const body = await req.json();
-    const { action, memberId, toRoleId, termId, committeeId, reason, targetTermId, targetCommitteeId, targetRoleId } = body || {};
+    const { action, memberId, tenureId, toRoleId, termId, committeeId, reason, targetTermId, targetCommitteeId, targetRoleId } = body || {};
 
     if (!action || !memberId) {
       return NextResponse.json({ message: "action and memberId are required" }, { status: 400 });
@@ -26,7 +30,35 @@ export async function POST(req: NextRequest) {
 
       const activeTenures = await TermTenure.find({ memberId: new mongoose.Types.ObjectId(memberId), status: "ACTIVE" });
       if (!activeTenures || activeTenures.length === 0) {
-        return NextResponse.json({ message: "No active tenure found for member" }, { status: 404 });
+        if (!termId || !committeeId) {
+          return NextResponse.json({ message: "Choose a term and team to activate this archived member." }, { status: 400 });
+        }
+        const member = await TeamMember.findById(memberId);
+        if (!member) return NextResponse.json({ message: "Team member not found" }, { status: 404 });
+
+        const newTenure = await TermTenure.create({
+          memberId: member._id,
+          termId: new mongoose.Types.ObjectId(termId),
+          committeeId: new mongoose.Types.ObjectId(committeeId),
+          roleId: new mongoose.Types.ObjectId(toRoleId),
+          status: "ACTIVE",
+        });
+        const [role, committee, term] = await Promise.all([
+          Role.findById(newTenure.roleId),
+          Committee.findById(newTenure.committeeId),
+          Term.findById(newTenure.termId),
+        ]);
+        const updatedMember = await TeamMember.findByIdAndUpdate(member._id, {
+          $set: {
+            role: role?.name || "Member",
+            roleType: role?.roleType || "MEMBER",
+            team: committee?.name || "Core",
+            year: term?.name || "",
+            isActive: true,
+          },
+        }, { new: true });
+        if (updatedMember) await syncTeamMemberLegacyProfile(updatedMember);
+        return NextResponse.json({ ok: true, action: "promote", updatedCount: 0, newTenure }, { status: 201 });
       }
 
       // Archive existing active tenures as PROMOTED
@@ -44,6 +76,22 @@ export async function POST(req: NextRequest) {
         roleId: new mongoose.Types.ObjectId(toRoleId),
         status: "ACTIVE",
       });
+
+      const [role, committee, term] = await Promise.all([
+        Role.findById(newTenure.roleId),
+        Committee.findById(newTenure.committeeId),
+        Term.findById(newTenure.termId),
+      ]);
+      const updatedMember = await TeamMember.findByIdAndUpdate(source.memberId, {
+        $set: {
+          role: role?.name || "Member",
+          roleType: role?.roleType || "MEMBER",
+          team: committee?.name || "Core",
+          year: term?.name || "",
+          isActive: true,
+        },
+      }, { new: true });
+      if (updatedMember) await syncTeamMemberLegacyProfile(updatedMember);
 
       // Log promotion
       await PromotionLog.create({
@@ -67,13 +115,24 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === "remove") {
-      const mongoose = (await import("mongoose")).default;
+      const objectId = new mongoose.Types.ObjectId(memberId);
+      if (tenureId) {
+        const removedTenure = await TermTenure.findOneAndUpdate(
+          { _id: tenureId, memberId: objectId, status: "ACTIVE" },
+          { $set: { status: "REMOVED" } },
+          { new: true }
+        );
+        if (!removedTenure) return NextResponse.json({ message: "Active term assignment not found" }, { status: 404 });
+        const hasActiveTenure = await TermTenure.exists({ memberId: objectId, status: "ACTIVE" });
+        await TeamMember.updateOne({ _id: objectId }, { $set: { isActive: Boolean(hasActiveTenure) } });
+        return NextResponse.json({ ok: true, action: "remove", tenureId, isActive: Boolean(hasActiveTenure) });
+      }
       const res = await TermTenure.updateMany(
-        { memberId: new mongoose.Types.ObjectId(memberId) },
+        { memberId: objectId },
         { $set: { status: "REMOVED" } }
       );
       // Optionally mark TeamMember as inactive
-      await TeamMember.updateOne({ _id: new mongoose.Types.ObjectId(memberId) }, { $set: { isActive: false } });
+      await TeamMember.updateOne({ _id: objectId }, { $set: { isActive: false } });
       return NextResponse.json({ ok: true, action: "remove", modified: res.modifiedCount }, { status: 200 });
     }
 
@@ -89,6 +148,21 @@ export async function POST(req: NextRequest) {
         roleId: new mongoose.Types.ObjectId(targetRoleId),
         status: "ACTIVE",
       });
+      const [role, committee, term] = await Promise.all([
+        Role.findById(newTenure.roleId),
+        Committee.findById(newTenure.committeeId),
+        Term.findById(newTenure.termId),
+      ]);
+      const updatedMember = await TeamMember.findByIdAndUpdate(memberId, {
+        $set: {
+          role: role?.name || "Member",
+          roleType: role?.roleType || "MEMBER",
+          team: committee?.name || "Core",
+          year: term?.name || "",
+          isActive: true,
+        },
+      }, { new: true });
+      if (updatedMember) await syncTeamMemberLegacyProfile(updatedMember);
       return NextResponse.json({ ok: true, action: "copy", newTenure }, { status: 201 });
     }
 

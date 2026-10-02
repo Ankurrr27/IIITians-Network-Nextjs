@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     const payload = requireAdmin(req);
     if (isNextResponse(payload)) return payload;
     
-    const posts = await Discuss.find().sort({ createdAt: -1 });
+    const posts = await Discuss.find().sort({ createdAt: -1 }).populate("account", "clubName collegeName");
     return NextResponse.json(posts);
   } catch (err: unknown) {
     return NextResponse.json({ message: err instanceof Error ? err.message : "Server error" }, { status: 500 });

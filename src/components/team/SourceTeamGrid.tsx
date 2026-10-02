@@ -108,8 +108,8 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
   const leadGridClass =
     leads.length === 3
-      ? "grid gap-4 sm:grid-cols-2 xl:grid-cols-3"
-      : "grid gap-4 sm:grid-cols-2 xl:grid-cols-4";
+      ? "grid justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      : "grid justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-4";
 
   if (!members.length) {
     return <div className="py-12 text-center text-slate-500">No team members found.</div>;
@@ -250,7 +250,7 @@ function ExecCard({ member }: { member: SocialMember }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
+      className="ui-card ui-card-hover group mx-auto w-full max-w-xs overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
       <div className="h-1 bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400" />
       <div className="grid gap-0 md:grid-cols-[220px_1fr]">
@@ -303,7 +303,7 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
       className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
     >
       <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
-        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-[3/4] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
+        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-square overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
         </div>
         
@@ -322,7 +322,7 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
         </div>
       </div>
 
-      <div className="px-4 pb-4 pt-3 text-center sm:px-5 sm:pb-5 sm:pt-4 bg-white">
+      <div className="px-3 pb-3 pt-2.5 text-center sm:px-4 sm:pb-4 sm:pt-3 bg-white">
         <h4 className="line-clamp-2 text-sm font-extrabold leading-tight text-slate-900 sm:text-base">{member.name}</h4>
         
         {/* Mobile Role */}
