@@ -4,6 +4,8 @@ import TermTenure from "@/models/TermTenure";
 import TeamMember from "@/models/TeamMember";
 import PromotionLog from "@/models/PromotionLog";
 import Role from "@/models/Role";
+import Term from "@/models/Term";
+import Committee from "@/models/Committee";
 import { requireAdmin, isNextResponse } from "@/lib/requireAdmin";
 import { syncTeamMemberLegacyProfile } from "@/lib/teamLegacySync";
 
@@ -28,8 +30,8 @@ export async function POST(req: NextRequest) {
     for (const promo of promotions) {
       const tenure = await TermTenure.findById(promo.tenureId)
         .populate("roleId")
-        .populate("committeeId")
-        .populate("termId");
+        .populate({ path: "committeeId", model: Committee })
+        .populate({ path: "termId", model: Term });
       if (!tenure) continue;
 
       const oldRoleId = tenure.roleId._id;
