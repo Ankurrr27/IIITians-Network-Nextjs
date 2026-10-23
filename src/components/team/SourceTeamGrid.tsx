@@ -1,9 +1,8 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Github, Globe, Instagram, Linkedin, Twitter, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { Github, Globe, Instagram, Linkedin, Twitter } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import type { ITeamMember } from "@/types";
 
 type SocialMember = ITeamMember & {
@@ -81,18 +80,6 @@ function photoUrl(member: ITeamMember) {
   return member.photo?.url || "/placeholder.svg";
 }
 
-function getNormalizedTeam(member: { role?: string; team?: string }) {
-  const r = (member.role || "").toLowerCase();
-  const t = (member.team || "").toLowerCase();
-
-  if (r.includes("design") || t.includes("design")) return "Design";
-  if (r.includes("content") || t.includes("content")) return "Content";
-  if (r.includes("social") || r.includes("media") || t.includes("social") || t.includes("media")) return "Social Media";
-  if (r.includes("developer") || r.includes("tech") || r.includes("development") || t.includes("tech") || t.includes("dev")) return "Tech";
-
-  return member.team || "";
-}
-
 export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[] }) {
   const execs = members
     .filter((member) => member.roleType === "EXEC")
@@ -108,8 +95,8 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
 
   const leadGridClass =
     leads.length === 3
-      ? "grid justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-3"
-      : "grid justify-items-center gap-4 sm:grid-cols-2 xl:grid-cols-4";
+      ? "grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-3"
+      : "grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-2 xl:grid-cols-4";
 
   if (!members.length) {
     return <div className="py-12 text-center text-slate-500">No team members found.</div>;
@@ -136,19 +123,19 @@ export default function SourceTeamGrid({ members = [] }: { members: ITeamMember[
         <section>
           <div className="mb-4">
             <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
-              Team Lead
+              Team Leads
             </h2>
           </div>
           <div className={leadGridClass}>
             {leads.map((member) => (
-              <LeadCard key={member._id} member={member as SocialMember} teamMembers={team.filter(m => getNormalizedTeam(m) === getNormalizedTeam(member)) as SocialMember[]} />
+              <LeadCard key={member._id} member={member as SocialMember} />
             ))}
           </div>
         </section>
       )}
 
       {team.length > 0 && (
-        <section className="hidden sm:block">
+        <section>
           <div className="mb-4">
             <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Members
@@ -182,7 +169,7 @@ function ExecCard({ member }: { member: SocialMember }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
         whileHover={{ y: -4 }}
-        className="ui-card ui-card-hover overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50 lg:col-span-2 mb-4 -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
+        className="ui-card ui-card-hover overflow-hidden bg-gradient-to-br from-slate-50 via-white to-indigo-50 lg:col-span-2 mb-4 rounded-xl sm:rounded-[1.2rem]"
       >
         <div className="flex flex-col sm:grid sm:grid-cols-[170px_1fr] lg:grid-cols-[280px_1fr]">
           {/* Mobile: Row with small avatar. Desktop: Full column with large image */}
@@ -193,7 +180,6 @@ function ExecCard({ member }: { member: SocialMember }) {
             </div>
 
             <div className="sm:hidden flex-1 min-w-0">
-
               <h3 className="text-base font-bold text-slate-900 truncate">{member.name}</h3>
               <p className="mt-0.5 text-[11px] font-medium text-indigo-600 truncate">{member.role} {member.iiit ? `- ${member.iiit}` : ""}</p>
             </div>
@@ -202,8 +188,6 @@ function ExecCard({ member }: { member: SocialMember }) {
           <div className="p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:gap-4">
               {/* Desktop Header */}
-
-
               <div className="hidden sm:block">
                 <h3 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{member.name}</h3>
                 <p className="mt-1 text-sm font-medium text-indigo-600 sm:text-base">
@@ -250,7 +234,7 @@ function ExecCard({ member }: { member: SocialMember }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, ease: "easeOut" }}
       whileHover={{ y: -4 }}
-      className="ui-card ui-card-hover group mx-auto w-full max-w-xs overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
+      className="ui-card ui-card-hover group w-full overflow-hidden rounded-xl sm:rounded-[1.2rem]"
     >
       <div className="h-1 bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400" />
       <div className="grid gap-0 md:grid-cols-[220px_1fr]">
@@ -291,22 +275,20 @@ function ExecCard({ member }: { member: SocialMember }) {
   );
 }
 
-function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMembers?: SocialMember[] }) {
-
+function LeadCard({ member }: { member: SocialMember }) {
   return (
-    <div className="flex flex-col">
     <motion.article
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: "easeOut" }}
       whileHover={{ y: -6 }}
-      className="ui-card ui-card-hover group overflow-hidden -mx-4 sm:mx-0 rounded-none sm:rounded-[1.2rem] border-x-0 sm:border-x"
+      className="ui-card ui-card-hover group flex flex-col h-full overflow-hidden"
     >
-      <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
-        <div className="relative h-20 w-20 sm:h-auto sm:w-full sm:aspect-square overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
+      <div className="relative flex justify-center pt-3 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
+        <div className="relative h-16 w-16 sm:h-auto sm:w-full sm:aspect-square overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
         </div>
-        
+
         {/* Desktop Overlay */}
         <div className="hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-3.5">
           <span className="truncate text-xs font-semibold uppercase tracking-[0.14em] text-white/95">{member.role}</span>
@@ -322,29 +304,29 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
         </div>
       </div>
 
-      <div className="px-3 pb-3 pt-2.5 text-center sm:px-4 sm:pb-4 sm:pt-3 bg-white">
-        <h4 className="line-clamp-2 text-sm font-extrabold leading-tight text-slate-900 sm:text-base">{member.name}</h4>
-        
+      <div className="flex flex-col flex-1 px-3 pb-3 pt-2 text-center sm:px-4 sm:pb-4 sm:pt-3 bg-white">
+        <h4 className="line-clamp-2 text-xs font-bold leading-tight text-slate-900 sm:text-base">{member.name}</h4>
+
         {/* Mobile Role */}
-        <p className="mt-0.5 sm:hidden text-[10px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
-        
-        <p className="mt-1 text-[11px] leading-4 text-slate-500 sm:text-xs truncate">{member.iiit}</p>
-        
-        {/* Mobile Social Links & Chevron Toggle */}
-        <div className="mt-3 flex sm:hidden items-center justify-between border-t border-slate-100 pt-3">
-          <div className="flex items-center gap-3">
-            <div className="flex flex-wrap gap-2.5">
-              {socialLinks.map(({ key, Icon, color }) =>
-                member[key as keyof SocialMember] ? (
-                  <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`${color} opacity-80 hover:opacity-100 transition`}>
-                    <Icon className="w-4 h-4" />
-                  </a>
-                ) : null
-              )}
-            </div>
-          </div>
-          <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600">
-            Profile &rarr;
+        <p className="mt-0.5 sm:hidden text-[9px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
+
+        <p className="mt-0.5 sm:mt-1 text-[10px] leading-4 text-slate-500 sm:text-xs truncate">{member.iiit}</p>
+
+        {/* Mobile Social Links */}
+        <div className="mt-auto pt-2 flex sm:hidden justify-center gap-2">
+          {socialLinks.map(({ key, Icon, color }) =>
+            member[key as keyof SocialMember] ? (
+              <a key={key} href={member[key as keyof SocialMember] as string} target="_blank" rel="noreferrer" className={`${color} opacity-80 hover:opacity-100 transition`}>
+                <Icon className="w-3.5 h-3.5" />
+              </a>
+            ) : null
+          )}
+        </div>
+
+        {/* Mobile Profile Link */}
+        <div className="mt-2.5 border-t border-slate-100 pt-2.5 sm:hidden">
+          <Link href={`/legacy?search=${encodeURIComponent(member.name)}`} className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700">
+            See Profile &rarr;
           </Link>
         </div>
 
@@ -356,28 +338,17 @@ function LeadCard({ member, teamMembers = [] }: { member: SocialMember, teamMemb
         </div>
       </div>
     </motion.article>
- 
-      {teamMembers && teamMembers.length > 0 && (
-        <div className="sm:hidden mt-1 mb-2 px-1">
-          <div className="grid grid-cols-2 gap-3 pt-2 pb-1">
-            {teamMembers.map((m) => (
-              <MemberCard key={m._id} member={m} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
   );
 }
 
 function MemberCard({ member }: { member: SocialMember }) {
   return (
-    <article className="ui-card ui-card-hover group overflow-hidden">
-      <div className="relative flex justify-center pt-4 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
+    <article className="ui-card ui-card-hover group flex flex-col h-full overflow-hidden">
+      <div className="relative flex justify-center pt-3 sm:pt-0 sm:block bg-slate-50 sm:bg-slate-100">
         <div className="relative h-16 w-16 sm:h-auto sm:w-full sm:aspect-[3/4] overflow-hidden rounded-full sm:rounded-none ring-2 ring-white sm:ring-0 shadow-sm sm:shadow-none">
           <img src={photoUrl(member)} alt={member.name} className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />
         </div>
-        
+
         {/* Desktop Overlay */}
         <div className="hidden sm:flex absolute inset-x-0 bottom-0 items-center justify-between gap-2 bg-gradient-to-t from-slate-950/80 via-slate-950/35 to-transparent p-2.5">
           <span className="truncate text-[10px] font-medium uppercase tracking-[0.14em] text-white/90">{member.role}</span>
@@ -392,20 +363,25 @@ function MemberCard({ member }: { member: SocialMember }) {
                 <Instagram size={15} />
               </a>
             )}
+            {member.twitter && (
+              <a href={member.twitter} target="_blank" rel="noreferrer" className="text-[#1DA1F2] transition hover:scale-110 opacity-90 hover:opacity-100 flex items-center justify-center p-1">
+                <Twitter size={15} />
+              </a>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="px-3 pb-3 pt-2.5 text-center sm:px-3.5 sm:pb-3.5 sm:pt-3">
+      <div className="flex flex-col flex-1 px-3 pb-3 pt-2 text-center sm:px-3.5 sm:pb-3.5 sm:pt-3 bg-white">
         <h4 className="line-clamp-2 text-xs font-semibold leading-tight text-slate-900 sm:text-sm">{member.name}</h4>
-        
+
         {/* Mobile Role */}
         <p className="mt-0.5 sm:hidden text-[9px] font-bold uppercase tracking-[0.15em] text-indigo-600 truncate">{member.role}</p>
-        
+
         <p className="mt-0.5 sm:mt-1 text-[10px] leading-4 text-slate-500 sm:text-[11px] truncate">{member.iiit}</p>
-        
+
         {/* Mobile Social Links */}
-        <div className="mt-2 flex sm:hidden justify-center gap-2">
+        <div className="mt-auto pt-2 flex sm:hidden justify-center gap-2">
           {member.linkedin && (
             <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-[#0077b5] opacity-80 hover:opacity-100 transition">
               <Linkedin size={13} />
@@ -414,6 +390,11 @@ function MemberCard({ member }: { member: SocialMember }) {
           {member.instagram && (
             <a href={member.instagram} target="_blank" rel="noreferrer" className="text-[#E1306C] opacity-80 hover:opacity-100 transition">
               <Instagram size={13} />
+            </a>
+          )}
+          {member.twitter && (
+            <a href={member.twitter} target="_blank" rel="noreferrer" className="text-[#1DA1F2] opacity-80 hover:opacity-100 transition">
+              <Twitter size={13} />
             </a>
           )}
         </div>

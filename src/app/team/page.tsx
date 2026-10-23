@@ -81,13 +81,13 @@ export default async function TeamPage() {
         memberId,
         role: tenure.roleId?.name || member.role || "Member",
         roleType: roleType === "EXEC" || roleType === "LEAD" || roleType === "MEMBER" ? roleType : member.roleType || "MEMBER",
-        team: tenure.committeeId?.name || member.team || "Core",
+        team: (tenure.committeeId?.name || member.team || "Core") as any,
         year,
         isActive: tenure.status === "ACTIVE",
         tenureStatus: tenure.status,
         order: tenure.committeeId?.order ?? member.order ?? 9999,
-        createdAt: tenure.createdAt || member.createdAt,
-      }];
+        createdAt: tenure.createdAt ? tenure.createdAt.toISOString() : (member.createdAt instanceof Date ? member.createdAt.toISOString() : member.createdAt),
+      } as unknown as ITeamMember];
     });
 
     profiles.sort((left, right) =>
@@ -107,13 +107,20 @@ export default async function TeamPage() {
         !seenProfileTerms.has(assignmentKey)
       ) {
         seenProfileTerms.add(assignmentKey);
-        members.push({ ...profile, _id: memberId, memberId, tenureStatus: "PROFILE" });
+        members.push({
+          ...profile,
+          _id: memberId,
+          memberId,
+          tenureStatus: "PROFILE",
+          createdAt: profile.createdAt ? profile.createdAt.toISOString() : undefined,
+        } as unknown as ITeamMember);
       }
     }
-    members.sort((left, right) => compareTermsNewestFirst(left.year || "", right.year || "") || left.order - right.order);
+    members.sort((left, right) => compareTermsNewestFirst(left.year || "", right.year || "") || (left.order ?? 9999) - (right.order ?? 9999));
   } catch (error) {
     console.error("Failed to fetch team members from DB:", error);
   }
+
   return (
     <Suspense fallback={
       <div className="flex h-screen items-center justify-center bg-white">
